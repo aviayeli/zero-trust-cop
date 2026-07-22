@@ -1,0 +1,19 @@
+[project]
+name = "zero-trust-cop"
+version = "0.1.0"
+description = "Deterministic Dec-POMDP cop-and-thief game engine (Phase 1: base logic)."
+requires-python = ">=3.12"
+dependencies = []
+
+[dependency-groups]
+dev = ["pytest>=8.0"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests/engine"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+pythonpath = ["src"]
+
+[tool.setuptools.packages.find]
+where = ["src"]

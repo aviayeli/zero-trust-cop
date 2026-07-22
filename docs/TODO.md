@@ -6,10 +6,10 @@ Order follows `PLAN.md`'s dependency chain: `errors.py` → `config.py` → `act
 
 ## 0. Scaffolding (no game logic yet)
 
-- [ ] Create `src/engine/__init__.py` (empty package marker).
-- [ ] Create `tests/engine/__init__.py` (empty package marker).
-- [ ] Add/confirm a test runner config (e.g. `pytest.ini` / `pyproject.toml` `[tool.pytest]` section) so `tests/engine/` is discoverable.
-- [ ] Confirm the test runner executes with zero collected tests and no errors (sanity check before any test content exists).
+- [x] Create `src/engine/__init__.py` (empty package marker).
+- [x] Create `tests/engine/__init__.py` (empty package marker).
+- [x] Add/confirm a test runner config (e.g. `pytest.ini` / `pyproject.toml` `[tool.pytest]` section) so `tests/engine/` is discoverable.
+- [x] Confirm the test runner executes with zero collected tests and no errors (sanity check before any test content exists).
 
 ## 1. `errors.py` (leaf — no dependencies)
 
