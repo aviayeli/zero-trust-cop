@@ -7,21 +7,21 @@ Order follows `PLAN.md`'s dependency chain: `errors.py` → `config.py` → `act
 ## 0. Scaffolding (no game logic yet)
 
 - [x] Create `src/engine/__init__.py` (empty package marker).
-- [x] Create `tests/engine/__init__.py` (empty package marker).
+- [x] Create `tests/engine/__init__.py` (empty package marker). *(Later removed in Task 1: a `tests/engine` package collides with the `src/engine` package name under pytest import; resolved via `--import-mode=importlib` + no `__init__.py` in `tests/`.)*
 - [x] Add/confirm a test runner config (e.g. `pytest.ini` / `pyproject.toml` `[tool.pytest]` section) so `tests/engine/` is discoverable.
 - [x] Confirm the test runner executes with zero collected tests and no errors (sanity check before any test content exists).
 
 ## 1. `errors.py` (leaf — no dependencies)
 
-- [ ] **Test first**: write `tests/engine/test_errors.py` asserting:
-  - [ ] `InvalidActionError` exists and is an `Exception` subclass.
-  - [ ] `BarrierLimitError` exists and is an `Exception` subclass.
-  - [ ] `IllegalBarrierPlacementError` exists and is an `Exception` subclass.
-  - [ ] Each error type can be raised and caught with a custom message.
-- [ ] Run tests and confirm they **fail** (module does not exist yet).
-- [ ] **Implement** `src/engine/errors.py` with exactly the exception classes required to pass the above — nothing else.
-- [ ] Run tests and confirm they **pass**.
-- [ ] Confirm `errors.py` is under 150 lines.
+- [x] **Test first**: write `tests/engine/test_errors.py` asserting:
+  - [x] `InvalidActionError` exists and is an `Exception` subclass.
+  - [x] `BarrierLimitError` exists and is an `Exception` subclass.
+  - [x] `IllegalBarrierPlacementError` exists and is an `Exception` subclass.
+  - [x] Each error type can be raised and caught with a custom message.
+- [x] Run tests and confirm they **fail** (module does not exist yet).
+- [x] **Implement** `src/engine/errors.py` with exactly the exception classes required to pass the above — nothing else.
+- [x] Run tests and confirm they **pass** (6 passed).
+- [x] Confirm `errors.py` is under 150 lines (19 lines).
 
 ## 2. `config.py` (leaf — no dependencies)
 

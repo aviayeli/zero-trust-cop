@@ -14,6 +14,9 @@ python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 pythonpath = ["src"]
+# importlib mode + no __init__.py in tests/ avoids the src-layout name clash
+# between the source package `engine` and the test dir (both would be `engine`).
+addopts = ["--import-mode=importlib"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
