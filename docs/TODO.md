@@ -41,15 +41,15 @@ Order follows `PLAN.md`'s dependency chain: `errors.py` → `config.py` → `act
 
 ## 3. `actions.py` (depends on: `errors.py`)
 
-- [ ] **Test first**: write `tests/engine/test_actions.py` asserting:
-  - [ ] `Action` enum has exactly the 5 members `N, S, E, W, STAY` (and no others).
-  - [ ] `parse_action("N")` through `parse_action("STAY")` each return the correct `Action` member.
-  - [ ] `parse_action("n")` / lowercase or any token outside `{N,S,E,W,STAY}` raises `InvalidActionError`.
-  - [ ] Each directional `Action` maps to the correct `(row, col)` delta (e.g. `N → (-1, 0)`, `S → (1, 0)`, `E → (0, 1)`, `W → (0, -1)`); `STAY → (0, 0)`.
-- [ ] Run tests and confirm they **fail**.
-- [ ] **Implement** `src/engine/actions.py` — `Action` enum, `parse_action()`, and the delta lookup — sourcing the valid token set from `GameConfig.move_set` rather than a hardcoded literal list.
-- [ ] Run tests and confirm they **pass**.
-- [ ] Confirm `actions.py` is under 150 lines.
+- [x] **Test first**: write `tests/engine/test_actions.py` asserting:
+  - [x] `Action` enum has exactly the 5 members `N, S, E, W, STAY` (and no others).
+  - [x] `parse_action("N")` through `parse_action("STAY")` each return the correct `Action` member.
+  - [x] `parse_action("n")` / lowercase or any token outside `{N,S,E,W,STAY}` raises `InvalidActionError`.
+  - [x] Each directional `Action` maps to the correct `(row, col)` delta (e.g. `N → (-1, 0)`, `S → (1, 0)`, `E → (0, 1)`, `W → (0, -1)`); `STAY → (0, 0)`.
+- [x] Run tests and confirm they **fail**.
+- [x] **Implement** `src/engine/actions.py` — `Action` enum, `parse_action()`, and the delta lookup. *Architecture note:* per the dependency graph, `actions.py` depends only on `errors.py` (not `config.py`); the enum is the vocabulary definition, and a **drift-guard test** asserts `[a.name for a in Action] == GameConfig.move_set` so `config/game.json` remains the source of truth without runtime coupling.
+- [x] Run tests and confirm they **pass** (10 passed; full suite 19 passed).
+- [x] Confirm `actions.py` is under 150 lines (55 lines).
 
 ## 4. `board.py` (depends on: `config.py`, `errors.py`)
 
