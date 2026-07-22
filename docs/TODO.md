@@ -25,19 +25,19 @@ Order follows `PLAN.md`'s dependency chain: `errors.py` → `config.py` → `act
 
 ## 2. `config.py` (leaf — no dependencies)
 
-- [ ] **Test first**: write `tests/engine/test_config.py` asserting:
-  - [ ] `load_config(path)` loads `config/game.json` and returns a `GameConfig` with `grid_size == 7`.
-  - [ ] `GameConfig.cop_start == [0, 0]`.
-  - [ ] `GameConfig.thief_start == [3, 3]`.
-  - [ ] `GameConfig.move_set == ["N", "S", "E", "W", "STAY"]`.
-  - [ ] `GameConfig.max_barriers == 14`.
-  - [ ] `GameConfig.max_moves == 35`.
-  - [ ] `GameConfig.survival_threshold == 35`.
-  - [ ] `load_config` raises a clear error (not a silent default) if the file is missing or a required key is absent.
-- [ ] Run tests and confirm they **fail** (module does not exist yet).
-- [ ] **Implement** `src/engine/config.py` — `GameConfig` dataclass + `load_config()` — reading only from `config/game.json`, with no hyperparameter values duplicated as literals elsewhere in the module.
-- [ ] Run tests and confirm they **pass**.
-- [ ] Confirm `config.py` is under 150 lines.
+- [x] **Test first**: write `tests/engine/test_config.py` asserting:
+  - [x] `load_config(path)` loads `config/game.json` and returns a `GameConfig` with `grid_size == 7`.
+  - [x] `GameConfig.cop_start == [0, 0]`.
+  - [x] `GameConfig.thief_start == [3, 3]`.
+  - [x] `GameConfig.move_set == ["N", "S", "E", "W", "STAY"]`.
+  - [x] `GameConfig.max_barriers == 14`.
+  - [x] `GameConfig.max_moves == 35`.
+  - [x] `GameConfig.survival_threshold == 35`.
+  - [x] `load_config` raises a clear error (not a silent default) if the file is missing or a required key is absent.
+- [x] Run tests and confirm they **fail** (module does not exist yet).
+- [x] **Implement** `src/engine/config.py` — `GameConfig` dataclass + `load_config()` — reading only from `config/game.json`, with no hyperparameter values duplicated as literals elsewhere in the module.
+- [x] Run tests and confirm they **pass** (3 passed; grep confirms no literal game values in config.py).
+- [x] Confirm `config.py` is under 150 lines (44 lines).
 
 ## 3. `actions.py` (depends on: `errors.py`)
 
