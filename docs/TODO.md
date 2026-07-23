@@ -53,17 +53,17 @@ Order follows `PLAN.md`'s dependency chain: `errors.py` → `config.py` → `act
 
 ## 4. `board.py` (depends on: `config.py`, `errors.py`)
 
-- [ ] **Test first**: write `tests/engine/test_board.py` asserting:
-  - [ ] `Board.in_bounds((r, c))` is `True` for all `r, c ∈ [0, 6]` and `False` for any coordinate outside that range, on a `grid_size == 7` board.
-  - [ ] `Board.is_barrier(pos)` is `False` before any placement.
-  - [ ] `place_barrier(pos)` makes `is_barrier(pos)` become `True`.
-  - [ ] `place_barrier` on a cell currently occupied by the Cop or Thief raises `IllegalBarrierPlacementError`.
-  - [ ] Placing a 15th barrier raises `BarrierLimitError`; `barrier_count` stops incrementing after the cap.
-  - [ ] `barrier_count` accurately reflects the number of successful placements at each step.
-- [ ] Run tests and confirm they **fail**.
-- [ ] **Implement** `src/engine/board.py` — `Board` class backed by `GameConfig.grid_size` and `GameConfig.max_barriers` — no hardcoded `7` or `14`.
-- [ ] Run tests and confirm they **pass**.
-- [ ] Confirm `board.py` is under 150 lines.
+- [x] **Test first**: write `tests/engine/test_board.py` asserting:
+  - [x] `Board.in_bounds((r, c))` is `True` for all `r, c ∈ [0, 6]` and `False` for any coordinate outside that range, on a `grid_size == 7` board.
+  - [x] `Board.is_barrier(pos)` is `False` before any placement.
+  - [x] `place_barrier(pos)` makes `is_barrier(pos)` become `True`.
+  - [x] `place_barrier` on a cell currently occupied by the Cop or Thief raises `IllegalBarrierPlacementError`.
+  - [x] Placing a 15th barrier raises `BarrierLimitError`; `barrier_count` stops incrementing after the cap.
+  - [x] `barrier_count` accurately reflects the number of successful placements at each step.
+- [x] Run tests and confirm they **fail**.
+- [x] **Implement** `src/engine/board.py` — `Board` class backed by `GameConfig.grid_size` and `GameConfig.max_barriers` — no hardcoded `7` or `14`. *Design:* `Board(config)`; `place_barrier(pos, occupied=())` takes occupancy from the caller (Board stays decoupled from `player.py`); barriers held in a `set` (duplicate-safe); occupancy check precedes cap check.
+- [x] Run tests and confirm they **pass** (11 passed; full suite 30 passed).
+- [x] Confirm `board.py` is under 150 lines (75 lines).
 
 ## 5. `player.py` (depends on: `actions.py`)
 
