@@ -79,19 +79,19 @@ Order follows `PLAN.md`'s dependency chain: `errors.py` → `config.py` → `act
 
 ## 6. `resolver.py` (depends on: `board.py`, `player.py`, `actions.py`) — implements the locked FR5 algorithm
 
-- [ ] **Test first**: write `tests/engine/test_resolver.py` asserting, per the FR5 tie-break rule in `PLAN.md`:
-  - [ ] Both agents make unobstructed legal moves → both positions update as intended, `captured == False`.
-  - [ ] Cop's intended move is out of bounds → Cop resolves to `STAY`; Thief's unobstructed move is unaffected.
-  - [ ] Thief's intended move lands on a barrier → Thief resolves to `STAY`; Cop's unobstructed move is unaffected.
-  - [ ] Both agents' intended moves are simultaneously blocked (bounds and/or barrier) → both resolve to `STAY` independently, `captured` evaluated on the resolved (unchanged) positions.
-  - [ ] Both agents move into the same cell → `TurnResult.captured == True` (case a, same-cell).
-  - [ ] Agents swap cells (`new_cop_pos == old_thief_pos AND new_thief_pos == old_cop_pos`) → `TurnResult.captured == True` (case b, crossing paths).
-  - [ ] Agents pass through adjacent cells without colliding or swapping → `captured == False`.
-  - [ ] A capture case where one agent's move first resolves to `STAY` due to bounds/barrier, then that `STAY` position happens to equal the other agent's new position → capture still correctly detected on the *resolved* positions, not the originally intended ones.
-- [ ] Run tests and confirm they **fail**.
-- [ ] **Implement** `src/engine/resolver.py` — `TurnResult` + `resolve_turn()` implementing steps 1–3 of the FR5 algorithm from `PLAN.md` exactly, and only here.
-- [ ] Run tests and confirm they **pass**.
-- [ ] Confirm `resolver.py` is under 150 lines.
+- [x] **Test first**: write `tests/engine/test_resolver.py` asserting, per the FR5 tie-break rule in `PLAN.md`:
+  - [x] Both agents make unobstructed legal moves → both positions update as intended, `captured == False`.
+  - [x] Cop's intended move is out of bounds → Cop resolves to `STAY`; Thief's unobstructed move is unaffected.
+  - [x] Thief's intended move lands on a barrier → Thief resolves to `STAY`; Cop's unobstructed move is unaffected.
+  - [x] Both agents' intended moves are simultaneously blocked (bounds and/or barrier) → both resolve to `STAY` independently, `captured` evaluated on the resolved (unchanged) positions.
+  - [x] Both agents move into the same cell → `TurnResult.captured == True` (case a, same-cell).
+  - [x] Agents swap cells (`new_cop_pos == old_thief_pos AND new_thief_pos == old_cop_pos`) → `TurnResult.captured == True` (case b, crossing paths).
+  - [x] Agents pass through adjacent cells without colliding or swapping → `captured == False`.
+  - [x] A capture case where one agent's move first resolves to `STAY` due to bounds/barrier, then that `STAY` position happens to equal the other agent's new position → capture still correctly detected on the *resolved* positions, not the originally intended ones.
+- [x] Run tests and confirm they **fail**.
+- [x] **Implement** `src/engine/resolver.py` — `TurnResult` + `resolve_turn()` implementing steps 1–3 of the FR5 algorithm from `PLAN.md` exactly, and only here.
+- [x] Run tests and confirm they **pass** (11 passed; full suite 50 passed). *Conductor also ran 7 independent adversarial scenarios (follow-vs-swap both directions, barrier-STAY capture, no false-positive swaps) — all pass; capture logic confirmed present only in resolver.py; inputs verified unmutated.*
+- [x] Confirm `resolver.py` is under 150 lines (90 lines).
 
 ## 7. `game_loop.py` (depends on: `config.py`, `board.py`, `player.py`, `resolver.py`, `errors.py`)
 
