@@ -1,6 +1,7 @@
 """Tests for src/mcp_server/server.py — zero-trust P2P FastMCP server."""
 
 import asyncio
+import json
 import os
 import pytest
 
@@ -112,7 +113,8 @@ def test_make_move_both_roles_resolve_turn():
     assert "captured" in b
     assert "turn_count" in b
     assert "is_terminated" in b
-    assert "terminal_reason" in b
+    assert b["terminal_reason"] is None
+    json.dumps(b)
 
 
 def test_make_move_rejects_invalid_direction():
@@ -125,15 +127,16 @@ def test_make_move_rejects_invalid_direction():
 
 
 def test_get_match_status_delegates():
-    """get_match_status returns all required keys."""
+    """get_match_status returns all required keys with correct values and JSON-serializable."""
     app = create_app("police")
     async def run_status():
         return await app.get_match_status()
     result = asyncio.run(run_status())
-    assert "turn_count" in result
-    assert "is_terminated" in result
-    assert "pending_roles" in result
-    assert "terminal_reason" in result
+    assert result["turn_count"] == 0
+    assert result["is_terminated"] is False
+    assert result["pending_roles"] == []
+    assert result["terminal_reason"] is None
+    json.dumps(result)
 
 
 def test_parse_args_requires_role():

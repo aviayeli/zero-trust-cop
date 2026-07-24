@@ -56,7 +56,7 @@ def build_move_resolved(match_state, result, role: str) -> dict:
         "captured": result.captured,
         "turn_count": match_state.turn_count,
         "is_terminated": match_state.is_terminated,
-        "terminal_reason": match_state.terminal_reason,
+        "terminal_reason": match_state.terminal_reason(),
     }
 
 
@@ -71,6 +71,6 @@ def build_status(match_state) -> dict:
     return {
         "turn_count": match_state.turn_count,
         "is_terminated": match_state.is_terminated,
-        "pending_roles": match_state.pending_roles,
-        "terminal_reason": match_state.terminal_reason,
+        "pending_roles": match_state.pending_roles(),
+        "terminal_reason": match_state.terminal_reason(),
     }

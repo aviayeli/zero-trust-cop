@@ -25,14 +25,15 @@ def make_match_state(
     pending_roles=None,
     terminal_reason=None,
 ):
+    _pending = pending_roles if pending_roles is not None else []
     return SimpleNamespace(
         turn_count=turn_count,
         is_terminated=is_terminated,
         cop_position=cop_position,
         thief_position=thief_position,
         barrier_count=barrier_count,
-        pending_roles=pending_roles if pending_roles is not None else [],
-        terminal_reason=terminal_reason,
+        pending_roles=lambda _v=_pending: _v,
+        terminal_reason=lambda _v=terminal_reason: _v,
     )
 
 
