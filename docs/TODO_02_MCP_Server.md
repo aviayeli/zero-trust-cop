@@ -53,25 +53,25 @@ Dependency nuance: `observations.py`'s functions reference a `MatchState` (which
 
 ## 3. `match_state.py` (the locked mechanism; depends on the real `GameEpisode` + injectable clock)
 
-- [ ] Test first: write `tests/mcp_server/test_match_state.py` covering, per `PLAN_02`'s locked algorithm:
-  - [ ] The 2-slot buffer: `MatchState` starts with both `cop_action`/`thief_action` slots empty.
-  - [ ] First `submit(role, token)` this turn returns a **waiting** outcome and does **not** advance the episode (`GameEpisode.step` not called).
-  - [ ] Second `submit(role, token)` this turn triggers exactly one `GameEpisode.step` call and returns a **resolved** outcome carrying the `TurnResult`; both slots and the deadline are cleared afterward.
-  - [ ] Invalid role is rejected — no slot touched, no deadline touched, no engine call.
-  - [ ] Invalid direction token (via `parse_action` raising `InvalidActionError`) is rejected — no slot touched, no mutation.
-  - [ ] Double-submission (same role submits twice before the turn resolves) is rejected — no overwrite of the existing buffered action, no mutation.
-  - [ ] Lazy timeout via an **injected fake clock**: buffer one role's action, advance the fake clock past `response_timeout_sec`, then make the next call (a `submit` or a read accessor) and confirm the stale half-filled turn is cleared/forfeited before that call proceeds — no real `time.sleep` anywhere in the test.
-  - [ ] `terminal_reason()` derivation: a resolved capture turn yields `"capture"`; a resolved turn at `turn_count == max_moves` with no capture yields `"max_moves_reached"`; a non-terminated match yields `None`.
-  - [ ] Concurrency (FR8): two `submit()` coroutines driven concurrently via `asyncio.gather` against a shared `MatchState` resolve to exactly one `GameEpisode.step` call — no lost action, no double-counted action (spy/count on the episode's `step`).
-  - [ ] Determinism check: the `TurnResult` produced via `MatchState.submit` matches what a direct Phase-1 `GameEpisode.step(cop_token, thief_token)` call produces for the same inputs against an equivalent fresh episode.
-- [ ] Run tests, confirm they **FAIL** — RED.
-- [ ] Implement `src/mcp_server/match_state.py` per the locked algorithm in `PLAN_02_MCP_Server.md`:
+- [x] Test first: write `tests/mcp_server/test_match_state.py` covering, per `PLAN_02`'s locked algorithm:
+  - [x] The 2-slot buffer: `MatchState` starts with both `cop_action`/`thief_action` slots empty.
+  - [x] First `submit(role, token)` this turn returns a **waiting** outcome and does **not** advance the episode (`GameEpisode.step` not called).
+  - [x] Second `submit(role, token)` this turn triggers exactly one `GameEpisode.step` call and returns a **resolved** outcome carrying the `TurnResult`; both slots and the deadline are cleared afterward.
+  - [x] Invalid role is rejected — no slot touched, no deadline touched, no engine call.
+  - [x] Invalid direction token (via `parse_action` raising `InvalidActionError`) is rejected — no slot touched, no mutation.
+  - [x] Double-submission (same role submits twice before the turn resolves) is rejected — no overwrite of the existing buffered action, no mutation.
+  - [x] Lazy timeout via an **injected fake clock**: buffer one role's action, advance the fake clock past `response_timeout_sec`, then make the next call (a `submit` or a read accessor) and confirm the stale half-filled turn is cleared/forfeited before that call proceeds — no real `time.sleep` anywhere in the test.
+  - [x] `terminal_reason()` derivation: a resolved capture turn yields `"capture"`; a resolved turn at `turn_count == max_moves` with no capture yields `"max_moves_reached"`; a non-terminated match yields `None`.
+  - [x] Concurrency (FR8): two `submit()` coroutines driven concurrently via `asyncio.gather` against a shared `MatchState` resolve to exactly one `GameEpisode.step` call — no lost action, no double-counted action (spy/count on the episode's `step`).
+  - [x] Determinism check: the `TurnResult` produced via `MatchState.submit` matches what a direct Phase-1 `GameEpisode.step(cop_token, thief_token)` call produces for the same inputs against an equivalent fresh episode.
+- [x] Run tests, confirm they **FAIL** — RED.
+- [x] Implement `src/mcp_server/match_state.py` per the locked algorithm in `PLAN_02_MCP_Server.md`:
   - `MatchState(episode: GameEpisode, response_timeout_sec: float, clock=time.monotonic)`, `response_timeout_sec` sourced from `GameConfig.response_timeout_sec` (Task 0), never a literal.
   - `async submit(role, token) -> SubmitOutcome` guarded by a single `asyncio.Lock` held for the full critical section (steps 1–6 of the locked algorithm).
   - `pending_roles()`, `terminal_reason()`, and read-only passthrough accessors (`turn_count`, `is_terminated`, `cop_position`, `thief_position`, `barrier_count`).
   - All resolution delegated to `GameEpisode.step` — no capture logic re-implemented here.
-- [ ] Run tests, confirm **GREEN**; confirm full suite green.
-- [ ] Confirm `match_state.py` is under 150 lines.
+- [x] Run tests, confirm **GREEN**; confirm full suite green (13 passed; full suite 91 passed).
+- [x] Confirm `match_state.py` is under 150 lines (148 lines; trimmed from an initial 167 — Conductor caught the overflow before commit). *Timeout semantics: option (a) — stale action flushed, triggering submit becomes first of a fresh turn — approved by Conductor+Judge. asyncio.Lock concurrency verified via asyncio.gather (exactly one step).*
 
 ## 4. `server.py` (FastMCP wiring; depends on `match_state.py` + `observations.py`)
 
