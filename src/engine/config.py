@@ -15,6 +15,8 @@ class GameConfig:
     max_barriers: int
     max_moves: int
     survival_threshold: int
+    response_timeout_sec: int
+    watchdog_timeout_sec: int
 
 
 def load_config(path: str) -> GameConfig:
@@ -41,4 +43,6 @@ def load_config(path: str) -> GameConfig:
         max_barriers=data["movement_and_barriers"]["max_barriers"],
         max_moves=data["movement_and_barriers"]["max_moves"],
         survival_threshold=data["movement_and_barriers"]["survival_threshold"],
+        response_timeout_sec=data["network_and_league"]["response_timeout_sec"],
+        watchdog_timeout_sec=data["network_and_league"]["watchdog_timeout_sec"],
     )

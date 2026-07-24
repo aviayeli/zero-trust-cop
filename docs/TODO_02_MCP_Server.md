@@ -10,11 +10,11 @@ Tests run with `uv run pytest`; import prefix is `engine` (not `src.engine`), ma
 
 This task MODIFIES the otherwise-locked Phase 1 `src/engine/config.py` and `tests/engine/test_config.py`, under explicit user authorization, so Phase 2 can source timeouts from `GameConfig` (this SUPERSEDES PLAN_02's default "direct JSON read in server.py" — recorded here as the superseding note). Strict TDD steps:
 
-- [ ] Test first: extend `tests/engine/test_config.py` to assert `GameConfig` now exposes `response_timeout_sec == 30` and `watchdog_timeout_sec == 60`, loaded from `config/game.json`'s `network_and_league` block. Keep all existing config assertions intact.
-- [ ] Run tests, confirm the NEW assertions **FAIL** (fields don't exist yet) — RED.
-- [ ] Implement: add the two fields to the `GameConfig` dataclass and read them from `data["network_and_league"][...]` in `load_config`. Additive only — do not change existing fields or their parsing.
-- [ ] Run tests, confirm **GREEN**, and confirm the FULL existing suite (63 prior tests + new) all pass — the additive change breaks nothing.
-- [ ] Confirm `config.py` still under 150 lines.
+- [x] Test first: extend `tests/engine/test_config.py` to assert `GameConfig` now exposes `response_timeout_sec == 30` and `watchdog_timeout_sec == 60`, loaded from `config/game.json`'s `network_and_league` block. Keep all existing config assertions intact.
+- [x] Run tests, confirm the NEW assertions **FAIL** (fields don't exist yet) — RED (`AttributeError`).
+- [x] Implement: add the two fields to the `GameConfig` dataclass and read them from `data["network_and_league"][...]` in `load_config`. Additive only — do not change existing fields or their parsing.
+- [x] Run tests, confirm **GREEN**, and confirm the FULL existing suite (63 prior tests + new) all pass — the additive change breaks nothing. *(Verified: 63 passed; `game.json` already had the fields so it was left untouched; `GameConfig` constructed only in `load_config`, no other site broken by the new required fields.)*
+- [x] Confirm `config.py` still under 150 lines (48 lines).
 
 Note: adding required dataclass fields means every `GameConfig(...)` construction must supply them; verify the only construction site is `load_config` (Phase 1 tests build config via `load_config`, so they remain green). Also note the existing missing-key test still raises `KeyError` (`grid_size` is accessed first, before `network_and_league` is ever reached).
 

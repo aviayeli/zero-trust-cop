@@ -16,6 +16,8 @@ def test_load_config_from_game_json():
     assert config.max_barriers == 14
     assert config.max_moves == 35
     assert config.survival_threshold == 35
+    assert config.response_timeout_sec == 30
+    assert config.watchdog_timeout_sec == 60
 
 
 def test_load_config_nonexistent_file():
