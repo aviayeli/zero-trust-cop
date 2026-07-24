@@ -95,19 +95,19 @@ Order follows `PLAN.md`'s dependency chain: `errors.py` → `config.py` → `act
 
 ## 7. `game_loop.py` (depends on: `config.py`, `board.py`, `player.py`, `resolver.py`, `errors.py`)
 
-- [ ] **Test first**: write `tests/engine/test_game_loop.py` asserting:
-  - [ ] `GameEpisode.reset()` places Cop at `GameConfig.cop_start` and Thief at `GameConfig.thief_start`, turn count `0`, `is_terminated == False`.
-  - [ ] `step(cop_token, thief_token)` with malformed tokens raises `InvalidActionError` and does not mutate state (turn count unchanged).
-  - [ ] `step()` with two valid tokens advances turn count by exactly 1 and appends one entry to `history`.
-  - [ ] `step()` returns the same `TurnResult` shape/values `resolver.resolve_turn()` would produce for the same inputs (no divergent logic re-implemented in `game_loop.py`).
-  - [ ] Episode sets `is_terminated == True` immediately when a `step()` produces a capture, and no further `step()` calls mutate state afterward.
-  - [ ] Episode sets `is_terminated == True` exactly when turn count reaches `GameConfig.max_moves` (35) with no capture, and not one turn earlier/later.
-  - [ ] `history` after a full episode contains one entry per resolved turn, in order, each recording the two submitted actions and the resulting `TurnResult`.
-  - [ ] **Determinism (FR7)**: `replay(actions)` run twice against a fresh episode from the same starting state and the same recorded action sequence produces identical `history` output both times (byte/value-equal).
-- [ ] Run tests and confirm they **fail**.
-- [ ] **Implement** `src/engine/game_loop.py` — `GameEpisode` with `reset()`, `step()`, `is_terminated`, `history`, `replay()`.
-- [ ] Run tests and confirm they **pass**.
-- [ ] Confirm `game_loop.py` is under 150 lines.
+- [x] **Test first**: write `tests/engine/test_game_loop.py` asserting:
+  - [x] `GameEpisode.reset()` places Cop at `GameConfig.cop_start` and Thief at `GameConfig.thief_start`, turn count `0`, `is_terminated == False`.
+  - [x] `step(cop_token, thief_token)` with malformed tokens raises `InvalidActionError` and does not mutate state (turn count unchanged).
+  - [x] `step()` with two valid tokens advances turn count by exactly 1 and appends one entry to `history`.
+  - [x] `step()` returns the same `TurnResult` shape/values `resolver.resolve_turn()` would produce for the same inputs (no divergent logic re-implemented in `game_loop.py`).
+  - [x] Episode sets `is_terminated == True` immediately when a `step()` produces a capture, and no further `step()` calls mutate state afterward.
+  - [x] Episode sets `is_terminated == True` exactly when turn count reaches `GameConfig.max_moves` (35) with no capture, and not one turn earlier/later.
+  - [x] `history` after a full episode contains one entry per resolved turn, in order, each recording the two submitted actions and the resulting `TurnResult`.
+  - [x] **Determinism (FR7)**: `replay(actions)` run twice against a fresh episode from the same starting state and the same recorded action sequence produces identical `history` output both times (byte/value-equal).
+- [x] Run tests and confirm they **fail**.
+- [x] **Implement** `src/engine/game_loop.py` — `GameEpisode` with `reset()`, `step()`, `is_terminated`, `history`, `replay()`. *Positions normalized to tuples (config starts are lists — avoids `(0,0)==[0,0]` False bug); capture/resolution fully delegated to `resolve_turn` (not re-implemented); terminated `step()` is a no-op.*
+- [x] Run tests and confirm they **pass** (13 passed; full suite 63 passed). *Conductor independently verified FR6 timing (not terminated 1..34, terminated exactly at 35), FR7 determinism across fresh + re-replayed episodes incl. a mid-episode capture, and tuple normalization.*
+- [x] Confirm `game_loop.py` is under 150 lines (106 lines).
 
 ## 8. Cross-Module Verification (after all modules pass individually)
 
