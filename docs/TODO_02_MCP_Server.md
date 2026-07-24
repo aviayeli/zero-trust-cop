@@ -24,6 +24,18 @@ Note: adding required dataclass fields means every `GameConfig(...)` constructio
 - [ ] Add the `fastmcp` (or chosen MCP SDK, per PLAN_02 Open Items) dependency to `pyproject.toml`.
 - [ ] Confirm the test runner discovers `tests/mcp_server/` and executes with zero collected tests and no errors (sanity check before any test content exists).
 
+## 1.5 Global Multi-Agent Environment Setup (machine-level; no secrets committed)
+
+This section configures a GLOBAL, OS-level multi-agent routing environment with LLM-Blender-style ensembling of `gemini` and `codex-agent` CLI wrappers. This is a MACHINE-LEVEL change applied by the user outside this repository — no part of it is committed here.
+
+- [ ] Anthropic/Claude access continues via the existing Ubuntu CLI login (`claude_cli`) and requires NO API key in the environment.
+- [ ] Provide (in a later execution step, not now) a setup script or `~/.bashrc`/`~/.zshrc` block that exports ONLY the placeholder env-var names `OPENAI_API_KEY` and `GEMINI_API_KEY`, whose actual values live in a machine-level location the user controls (their shell profile or a git-ignored `.env`), NEVER in a tracked repo file.
+- [ ] Establish global shell aliases `gemini` and `codex-agent` that wrap the respective CLI tools and read their credentials from the environment variables above (never from inline literals).
+- [ ] If a `.env` approach is used, keep it git-ignored (the repo already ignores `.env`) and commit only a `.env.example` containing blank placeholders (`OPENAI_API_KEY=` / `GEMINI_API_KEY=`), never real values.
+- [ ] Verification — confirm `git status` shows no secret-bearing file staged, and grep the repo to confirm no literal key/token string is ever committed.
+
+**Security invariant:** No literal API keys, tokens, or secrets are ever written to any file tracked by this repository. Only placeholder env-var names appear here; real values live only in the user's machine-level environment.
+
 ## 2. `observations.py` (pure view functions) — FIRST per user's requested order
 
 Dependency nuance: `observations.py`'s functions reference a `MatchState` (which is built in Task 3, later). To honor strict TDD and the user's observations-first ordering, its failing tests are written against **duck-typed stub fixtures** — a tiny fake object exposing the same read accessors as the real `MatchState` (`turn_count`, `is_terminated`, `cop_position`, `thief_position`, `barrier_count`, `pending_roles`, `terminal_reason`) — plus plain `TurnResult`-shaped values, **not** the real `MatchState`. This lets `observations.py` be built and tested before `match_state.py` exists. `observations.py` uses string/deferred type annotations for its `MatchState` parameter so the module does not import a non-existent `MatchState` at module load time.
