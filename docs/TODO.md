@@ -111,11 +111,11 @@ Order follows `PLAN.md`'s dependency chain: `errors.py` → `config.py` → `act
 
 ## 8. Cross-Module Verification (after all modules pass individually)
 
-- [ ] Run the full `tests/engine/` suite together and confirm all tests pass with no interaction/order-dependence issues.
-- [ ] Confirm every file under `src/engine/` is ≤150 lines (re-check as a batch, not just per-module).
-- [ ] Grep `src/engine/` for literal hyperparameter values (`7`, `14`, `35`, `"N"`, `"STAY"`, etc. used as magic numbers rather than sourced from `GameConfig`) and confirm none exist outside `config.py` and its own tests/fixtures.
-- [ ] Manually walk one full 35-turn episode via `GameEpisode` (or a scripted sequence) to sanity-check FR6 termination fires at exactly turn 35 when no capture occurs.
-- [ ] Manually walk one scripted capture-by-swap scenario end-to-end through `GameEpisode` to confirm FR5 case (b) surfaces correctly at the episode level, not just inside `resolver.py`'s unit tests.
+- [x] Run the full `tests/engine/` suite together and confirm all tests pass with no interaction/order-dependence issues.
+- [x] Confirm every file under `src/engine/` is ≤150 lines (re-check as a batch, not just per-module).
+- [x] Grep `src/engine/` for literal hyperparameter values (`7`, `14`, `35`, `"N"`, `"STAY"`, etc. used as magic numbers rather than sourced from `GameConfig`) and confirm none exist outside `config.py` and its own tests/fixtures.
+- [x] Manually walk one full 35-turn episode via `GameEpisode` (or a scripted sequence) to sanity-check FR6 termination fires at exactly turn 35 when no capture occurs.
+- [x] Manually walk one scripted capture-by-swap scenario end-to-end through `GameEpisode` to confirm FR5 case (b) surfaces correctly at the episode level, not just inside `resolver.py`'s unit tests.
 
 ## Explicitly Out of Scope for This TODO
 
