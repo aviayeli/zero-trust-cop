@@ -19,3 +19,8 @@ This file governs all work in this repository. It OVERRIDES default behavior and
 ## Enforcement
 
 Any proposed change that violates a rule above must be flagged and stopped before proceeding — do not silently work around these constraints.
+
+## Subagent Routing Policy (FinOps)
+You must strictly optimize token usage by delegating context-heavy or mechanical tasks to subagents.
+- For reading large files, running pytest, or fixing syntax/linting errors, YOU MUST use a fast/cheap subagent (e.g., Haiku).
+- Reserve your own reasoning (Sonnet) ONLY for implementing deep architectural logic (e.g., the asyncio.Lock concurrency in Task 3).
