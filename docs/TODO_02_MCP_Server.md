@@ -40,16 +40,16 @@ This section configures a GLOBAL, OS-level multi-agent routing environment with 
 
 Dependency nuance: `observations.py`'s functions reference a `MatchState` (which is built in Task 3, later). To honor strict TDD and the user's observations-first ordering, its failing tests are written against **duck-typed stub fixtures** — a tiny fake object exposing the same read accessors as the real `MatchState` (`turn_count`, `is_terminated`, `cop_position`, `thief_position`, `barrier_count`, `pending_roles`, `terminal_reason`) — plus plain `TurnResult`-shaped values, **not** the real `MatchState`. This lets `observations.py` be built and tested before `match_state.py` exists. `observations.py` uses string/deferred type annotations for its `MatchState` parameter so the module does not import a non-existent `MatchState` at module load time.
 
-- [ ] Test first: write `tests/mcp_server/test_observations.py` asserting the exact dict schemas from `PLAN_02_MCP_Server.md`'s Tool Schemas section:
-  - [ ] `build_observation(stub_match_state, config, role)` returns the own-position-only shape (`role`, `position`, `turn_count`, `is_terminated`, `grid_size`, `barrier_count`) — excludes the opponent's position.
-  - [ ] `build_move_waiting(role)` returns `{"status": "waiting", "role": ..., "message": ...}`.
-  - [ ] `build_move_resolved(stub_match_state, result, role)` returns `{"status": "resolved", "role", "cop_position", "thief_position", "captured", "turn_count", "is_terminated", "terminal_reason"}`.
-  - [ ] `build_move_error(reason)` returns the shared `{"error": ..., "message": ...}` shape for invalid role / invalid direction / double-submission cases.
-  - [ ] `build_status(stub_match_state)` returns `{"turn_count", "is_terminated", "pending_roles", "terminal_reason"}` — no scoring fields anywhere.
-- [ ] Run tests, confirm they **FAIL** (module does not exist yet) — RED.
-- [ ] Implement `src/mcp_server/observations.py` — five pure functions only, no locking/IO/engine-mutation, matching `PLAN_02`'s Module Responsibilities & Interfaces for `observations.py` exactly.
-- [ ] Run tests, confirm **GREEN**; confirm full suite (Phase 1 engine tests + new observations tests) green.
-- [ ] Confirm `observations.py` is under 150 lines.
+- [x] Test first: write `tests/mcp_server/test_observations.py` asserting the exact dict schemas from `PLAN_02_MCP_Server.md`'s Tool Schemas section:
+  - [x] `build_observation(stub_match_state, config, role)` returns the own-position-only shape (`role`, `position`, `turn_count`, `is_terminated`, `grid_size`, `barrier_count`) — excludes the opponent's position.
+  - [x] `build_move_waiting(role)` returns `{"status": "waiting", "role": ..., "message": ...}`.
+  - [x] `build_move_resolved(stub_match_state, result, role)` returns `{"status": "resolved", "role", "cop_position", "thief_position", "captured", "turn_count", "is_terminated", "terminal_reason"}`.
+  - [x] `build_move_error(reason)` returns the shared `{"error": ..., "message": ...}` shape for invalid role / invalid direction / double-submission cases.
+  - [x] `build_status(stub_match_state)` returns `{"turn_count", "is_terminated", "pending_roles", "terminal_reason"}` — no scoring fields anywhere.
+- [x] Run tests, confirm they **FAIL** (module does not exist yet) — RED (`ModuleNotFoundError`).
+- [x] Implement `src/mcp_server/observations.py` — five pure functions only, no locking/IO/engine-mutation, matching `PLAN_02`'s Module Responsibilities & Interfaces for `observations.py` exactly. *(Verified: duck-typed, uses `from __future__ import annotations` — no `engine`/`match_state` import at load; opponent position excluded for both roles; Conductor independently exercised all 5 functions against PLAN_02 schemas.)*
+- [x] Run tests, confirm **GREEN**; confirm full suite (Phase 1 engine tests + new observations tests) green (15 passed; full suite 78 passed).
+- [x] Confirm `observations.py` is under 150 lines (76 lines).
 
 ## 3. `match_state.py` (the locked mechanism; depends on the real `GameEpisode` + injectable clock)
 
