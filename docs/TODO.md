@@ -67,15 +67,15 @@ Order follows `PLAN.md`'s dependency chain: `errors.py` → `config.py` → `act
 
 ## 5. `player.py` (depends on: `actions.py`)
 
-- [ ] **Test first**: write `tests/engine/test_player.py` asserting:
-  - [ ] `PlayerState` holds a `position` and a `role` (cop/thief) and initializes to the position given.
-  - [ ] `intended_position(state, Action.N)` returns `position + (-1, 0)` with no bounds/barrier awareness (i.e. it can return an out-of-grid coordinate — that check is explicitly not this module's job).
-  - [ ] `intended_position(state, Action.STAY)` returns `position` unchanged.
-  - [ ] `intended_position` is a pure function: calling it does not mutate `state.position`.
-- [ ] Run tests and confirm they **fail**.
-- [ ] **Implement** `src/engine/player.py` — `PlayerState` + `intended_position()`.
-- [ ] Run tests and confirm they **pass**.
-- [ ] Confirm `player.py` is under 150 lines.
+- [x] **Test first**: write `tests/engine/test_player.py` asserting:
+  - [x] `PlayerState` holds a `position` and a `role` (cop/thief) and initializes to the position given.
+  - [x] `intended_position(state, Action.N)` returns `position + (-1, 0)` with no bounds/barrier awareness (i.e. it can return an out-of-grid coordinate — that check is explicitly not this module's job).
+  - [x] `intended_position(state, Action.STAY)` returns `position` unchanged.
+  - [x] `intended_position` is a pure function: calling it does not mutate `state.position`.
+- [x] Run tests and confirm they **fail**.
+- [x] **Implement** `src/engine/player.py` — `PlayerState` (dataclass) + `intended_position()`, reusing `action_delta` from `actions.py` (no re-hardcoded deltas).
+- [x] Run tests and confirm they **pass** (9 passed; full suite 39 passed).
+- [x] Confirm `player.py` is under 150 lines (36 lines).
 
 ## 6. `resolver.py` (depends on: `board.py`, `player.py`, `actions.py`) — implements the locked FR5 algorithm
 
