@@ -20,9 +20,9 @@ Note: adding required dataclass fields means every `GameConfig(...)` constructio
 
 ## 1. Scaffolding for `src/mcp_server/`
 
-- [ ] Create `src/mcp_server/__init__.py` (empty package marker). Do **NOT** create `tests/mcp_server/__init__.py` — per the Phase 1 lesson (Task 1 note in `docs/TODO.md`), a `tests/mcp_server` package would collide with the `src/mcp_server` package name under pytest the same way `tests/engine` collided with `src/engine`; keep `tests/mcp_server/` package-free, relying on the existing `--import-mode=importlib` config.
-- [ ] Add the `fastmcp` (or chosen MCP SDK, per PLAN_02 Open Items) dependency to `pyproject.toml`.
-- [ ] Confirm the test runner discovers `tests/mcp_server/` and executes with zero collected tests and no errors (sanity check before any test content exists).
+- [x] Create `src/mcp_server/__init__.py` (empty package marker). Do **NOT** create `tests/mcp_server/__init__.py` — per the Phase 1 lesson (Task 1 note in `docs/TODO.md`), a `tests/mcp_server` package would collide with the `src/mcp_server` package name under pytest the same way `tests/engine` collided with `src/engine`; keep `tests/mcp_server/` package-free, relying on the existing `--import-mode=importlib` config.
+- [x] Add the `fastmcp` (or chosen MCP SDK, per PLAN_02 Open Items) dependency to `pyproject.toml`. *(Resolved: official MCP SDK `mcp>=1.28.1`, which provides `mcp.server.fastmcp.FastMCP`. Finding for Task 3: FastMCP supports BOTH `async def` and plain `def` tool handlers — validated by `is_async`/`_is_async_callable` in `mcp/server/fastmcp/tools/base.py` and the conditional `await` in `func_metadata.py` — so PLAN_02's `asyncio.Lock` choice is viable if handlers are `async def`; `threading.Lock` remains an option if sync.)*
+- [x] Confirm the test runner discovers `tests/mcp_server/` and executes with zero collected tests and no errors (sanity check before any test content exists). *(Conductor fix: `testpaths` was `["tests/engine"]`, which would NOT collect `tests/mcp_server/` on a bare `uv run pytest` — changed to `["tests"]`; verified a probe test in `tests/mcp_server/` is now collected (64 with probe, 63 without). Without this, Task 2's RED/GREEN runs would have silently skipped the new tests.)*
 
 ## 1.5 Global Multi-Agent Environment Setup (machine-level; no secrets committed)
 
