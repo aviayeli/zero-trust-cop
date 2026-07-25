@@ -1,0 +1,12 @@
+{
+  "group_name": "groupa",
+  "members": ["Avi Ayeli"],
+  "repos": {
+    "cop": "https://github.com/aviayeli/zero-trust-cop",
+    "thief": "https://github.com/aviayeli/zero-trust-cop"
+  },
+  "mcp_servers": {
+    "cop": "http://127.0.0.1:8802/mcp",
+    "thief": "http://127.0.0.1:8801/mcp"
+  }
+}
