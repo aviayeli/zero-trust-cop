@@ -83,6 +83,7 @@ def test_missing_strategy_field_raises_key_error(tmp_path, missing_key):
         "exploration_rate": "0.1",
         "initial_q_value": "0.0",
         "invalid_move_penalty": "-1.0",
+        "honesty_prior": "0.5",
         "qtable_path": '"qtable.json"',
     }
     del fields[missing_key]
@@ -113,6 +114,7 @@ discount_factor = 0.9
 exploration_rate = 0.1
 initial_q_value = 0.0
 invalid_move_penalty = -1.0
+honesty_prior = 0.5
 qtable_path = "custom-qtable.json"
 """
     )
