@@ -100,31 +100,91 @@ are verified without FastMCP in the way.
 - [ ] Run tests, confirm GREEN; full suite green.
 - [ ] Confirm under 150 lines.
 
-## 7. Wire the two signed tools into `server.py` — GATED on interop agreement
+## FR4 resolution (was an open item in PLAN_03)
+
+FR4 asked that a submission claiming the peer's OWN role "from a remote source" be
+rejected. Over stdio there is no transport distinction: the peer's own client and
+the opponent both reach the same tool surface, so "remote origin" is not
+observable and cannot be enforced as written.
+
+Resolved: **key possession is the authority, not transport origin.** Every
+submission — including the peer's own — must carry a signature that verifies
+against the claimed role's public key. Only the police peer holds the police
+private key, so only it can submit as police; the thief cannot forge that role
+without stealing the key. This is precisely what choosing Ed25519 over a shared
+secret bought us (PRD_03 "Known Limitation This Phase Removes"), and it makes FR4
+a property of the signature check rather than a separate origin test.
+
+Consequence: the server needs the PUBLIC key of both roles. Its own comes from
+`load_signing_key(own_role).public_key()` — no extra file — and the opponent's
+from `load_peer_public_key(own_role, peer_role)`.
+
+## 7a. `submissions.py` — the authenticated submission pipeline
+
+Split out from the original Step 7 because that step could not fit one change:
+`server.py` is at 119/150 and `test_server.py` at 147/150, and making
+`create_app` load keys breaks all 12 of its existing `create_app()` calls at once.
+7a is the logic, testable in isolation with injected collaborators and touching no
+existing test. 7b is the wiring.
+
+- [ ] Test first, with an injected fake/real `MatchState`, a real `CommitmentBook`,
+      and real Ed25519 keys generated in-test:
+  - [ ] A correctly signed commitment is accepted.
+  - [ ] A commitment with a tampered payload or a signature from the WRONG key is
+        rejected; `MatchState` is NOT mutated, the role's slot is NOT consumed,
+        and the episode does NOT advance (FR3).
+  - [ ] **Turn is taken from the engine, not the caller.** A submission whose
+        `turn` does not equal `MatchState.turn_count` is rejected before the
+        commitment book is touched. This closes Step 6's two gaps: a reveal
+        mislabelled with a future turn, and a peer wiping in-progress state by
+        committing at an arbitrary higher turn.
+  - [ ] **The signature binds the turn.** A signature valid at turn N is rejected
+        at turn N+1 (FR5) — verify this through the pipeline, not only through
+        `identity` unit tests, since `crypto.verify` does NOT cover turn and the
+        signature is the only thing that does.
+  - [ ] A reveal before both commitments are in is rejected (front-running).
+  - [ ] A reveal that fails `crypto.verify` against the stored `h_commit` is
+        rejected as a broken commitment.
+  - [ ] Both valid reveals drive `MatchState.submit` exactly once per role and
+        advance the episode exactly one turn.
+  - [ ] Rejections return the `observations.build_move_error` shape (FR3).
+- [ ] Run tests, confirm RED.
+- [ ] Implement `src/mcp_server/submissions.py`. It orchestrates only:
+      signature check (`identity`) → turn check against `MatchState.turn_count` →
+      ordering (`commitments`) → resolution (`MatchState.submit`) → payload
+      shaping (`observations`). It must not re-implement any of them.
+      The peer→engine role mapping is INJECTED by the caller, not redeclared.
+- [ ] Run tests, confirm GREEN; full suite green.
+- [ ] Confirm under 150 lines.
+
+## 7b. Wire the tool surface into `server.py` — GATED on interop agreement
 
 - [ ] BLOCKER: confirm the opposing group has agreed to the FR7 schemas. Do not
       ship a unilateral protocol change.
+- [ ] Refactor first, as its own reviewable change: `server.py` imports
+      `PEER_ROLES` from `identity` instead of declaring its own copy. Two tuples
+      that must agree is the drift shape that caused the Task 4.5 bug; if they
+      diverged, `server.py` would accept a role `identity` rejects.
 - [ ] Test first:
   - [ ] The tool surface is exactly `submit_commitment`, `reveal_move`,
         `get_observation`, `get_match_status`; `make_move` is GONE.
   - [ ] Update the pinned wire-schema test to the new input schemas —
         deliberately, as an approved supersession of `PRD_02` FR2, recorded as
         such in the test docstring so it does not read as an incidental edit.
-  - [ ] A correctly signed commitment is accepted; a tampered or mis-signed one
-        is rejected, `MatchState` is NOT mutated, the role's slot is NOT
-        consumed, and the episode does NOT advance (FR3).
-  - [ ] A submission claiming the peer's OWN role from a remote origin is
-        rejected (FR4).
-  - [ ] A signature valid at turn N replayed at turn N+1 is rejected (FR5).
-  - [ ] End-to-end: two signed commitments then two valid reveals advance the
-        episode exactly one turn, and the Task 7 primitive is exercised through
-        the live tool surface rather than only its unit tests.
+  - [ ] `create_app` RAISES when the peer's signing key is missing — no
+        unauthenticated fallback (FR1). This is a behaviour change: every
+        existing `create_app()` test must now supply a `config_root` containing
+        generated keys.
+  - [ ] End-to-end through the live tools: two signed commitments then two valid
+        reveals advance the episode exactly one turn, exercising the Task 7
+        primitive through the real surface rather than only its unit tests.
 - [ ] Run tests, confirm RED.
-- [ ] Implement. Tool bodies stay delegation-only: signature checks live in
-      `identity.py`, ordering in `commitments.py`, resolution in `MatchState`.
-- [ ] Run tests, confirm GREEN; full suite green.
-- [ ] Confirm `server.py` under 150 lines — at 119 this is tight. Extract a
-      helper module rather than breaching the limit.
+- [ ] Implement. Tool bodies stay delegation-only — all logic lives in
+      `submissions.py` from 7a.
+- [ ] Confirm `server.py` under 150 lines.
+- [ ] `test_server.py` is at 147/150. Adding a keys fixture and the new
+      end-to-end tests WILL breach it — split it (e.g.
+      `test_server_tools.py`) rather than letting it grow past the limit.
 
 ## 8. Step-0 Computational Fairness Declaration (FR6) — separate commit
 
