@@ -37,7 +37,13 @@ commit — identity and fairness-declaration are unrelated concerns.
       containing a format comment only — never real key material.
 - [ ] Verification: generate a throwaway keypair, run `git status`, confirm the
       private key is untracked; then delete the throwaway.
-- [ ] Grep the repo to confirm no `PRIVATE KEY` block is tracked.
+- [ ] Grep the repo to confirm no private key block is tracked. Pin the audit to the
+      five-dash PEM delimiter, which is what a real key file always contains:
+      `grep -rn '\-\-\-\-\-BEGIN' config/ src/ tests/ docs/` (or `git grep -n -e '-----BEGIN'`,
+      which excludes `.venv/` by construction). Do NOT grep the bare phrase
+      `BEGIN PRIVATE KEY`: the `.pem.example` placeholders legitimately describe the
+      PEM format in prose, so that form returns permanent false positives — and an
+      audit with known false hits is one people learn to ignore.
 
 ## 4. `identity.py` — sign / verify
 

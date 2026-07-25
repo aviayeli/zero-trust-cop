@@ -16,5 +16,10 @@ venv/
 # Environment / secrets
 .env
 
+# Ed25519 private key material
+*.pem
+config/*/signing_key*
+!config/*/signing_key.pem.example
+
 # Claude Code local config and throwaway Builder worktrees
 .claude/
