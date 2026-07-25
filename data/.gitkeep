@@ -1,0 +1,2 @@
+# Q-table deliverables live here (data/q_table_<role>.json).
+# Tracked on purpose: they are evidence that Tabular Q-learning ran over the series.
