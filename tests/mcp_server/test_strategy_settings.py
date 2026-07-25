@@ -116,6 +116,10 @@ initial_q_value = 0.0
 invalid_move_penalty = -1.0
 honesty_prior = 0.5
 qtable_path = "custom-qtable.json"
+epsilon_decay_factor = 0.999
+epsilon_floor = 0.01
+num_games = 2000
+hint_max_words = 15
 """
     )
     assert load_strategy_settings("police", config_root=str(tmp_path)).learning_rate == 0.42

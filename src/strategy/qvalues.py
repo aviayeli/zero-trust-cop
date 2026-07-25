@@ -25,6 +25,7 @@ class QValues:
     def __init__(self, config: GameConfig, settings: StrategySettings) -> None:
         self.config = config
         self.settings = settings
+        self._epsilon = settings.exploration_rate
         self.q_table: dict[tuple[tuple[tuple[int, int] | None, int], str], float] = {}
 
     def state_key(
@@ -104,9 +105,19 @@ class QValues:
                 best, best_value = action, value
         return best
 
+    def decay_epsilon(self) -> None:
+        """Apply one decay step, clamped at epsilon_floor."""
+        self._epsilon *= self.settings.epsilon_decay_factor
+        self._epsilon = max(self._epsilon, self.settings.epsilon_floor)
+
+    @property
+    def epsilon(self) -> float:
+        """Read the current mutable epsilon value."""
+        return self._epsilon
+
     def select_action(self, state: tuple, rng) -> str:
         """Choose epsilon-greedily using the caller-provided random generator."""
-        if rng.random() < self.settings.exploration_rate:
+        if rng.random() < self._epsilon:
             return rng.choice(self.config.move_set)
         return self.best_action(state)
 

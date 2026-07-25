@@ -22,6 +22,10 @@ class StrategySettings:
     invalid_move_penalty: float
     honesty_prior: float
     qtable_path: str
+    epsilon_decay_factor: float
+    epsilon_floor: float
+    num_games: int
+    hint_max_words: int
 
 
 def strategy_settings_path(role: str, config_root: str | None = None) -> str:
@@ -45,4 +49,8 @@ def load_strategy_settings(
         invalid_move_penalty=strategy["invalid_move_penalty"],
         honesty_prior=strategy["honesty_prior"],
         qtable_path=strategy["qtable_path"],
+        epsilon_decay_factor=strategy["epsilon_decay_factor"],
+        epsilon_floor=strategy["epsilon_floor"],
+        num_games=strategy["num_games"],
+        hint_max_words=strategy["hint_max_words"],
     )
