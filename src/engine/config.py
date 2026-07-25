@@ -17,6 +17,9 @@ class GameConfig:
     survival_threshold: int
     response_timeout_sec: int
     watchdog_timeout_sec: int
+    pheromone_center_intensity: float
+    pheromone_decay: float
+    pheromone_grid_size: int
 
 
 def load_config(path: str) -> GameConfig:
@@ -45,4 +48,7 @@ def load_config(path: str) -> GameConfig:
         survival_threshold=data["movement_and_barriers"]["survival_threshold"],
         response_timeout_sec=data["network_and_league"]["response_timeout_sec"],
         watchdog_timeout_sec=data["network_and_league"]["watchdog_timeout_sec"],
+        pheromone_center_intensity=data["pheromones"]["pheromone_center_intensity"],
+        pheromone_decay=data["pheromones"]["pheromone_decay"],
+        pheromone_grid_size=data["pheromones"]["pheromone_grid_size"],
     )

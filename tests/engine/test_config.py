@@ -18,6 +18,14 @@ def test_load_config_from_game_json():
     assert config.survival_threshold == 35
     assert config.response_timeout_sec == 30
     assert config.watchdog_timeout_sec == 60
+    assert config.pheromone_center_intensity == 0.9
+    assert config.pheromone_decay == 0.1
+    assert config.pheromone_grid_size == 5
+    assert isinstance(config.pheromone_center_intensity, float)
+    assert isinstance(config.pheromone_decay, float)
+    assert isinstance(config.pheromone_grid_size, int)
+    assert config.pheromone_grid_size == 5
+    assert config.grid_size == 7
 
 
 def test_load_config_nonexistent_file():
