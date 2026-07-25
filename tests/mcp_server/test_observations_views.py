@@ -93,3 +93,7 @@ def test_build_move_waiting_thief():
         "role": "thief",
         "message": "action buffered; waiting for cop",
     }
+
+
+def test_build_move_waiting_default_opponent_is_unchanged():
+    assert build_move_waiting("cop")["message"] == "action buffered; waiting for thief"

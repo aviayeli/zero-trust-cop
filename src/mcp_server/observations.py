@@ -36,9 +36,9 @@ def build_observation(match_state, config, role: str) -> dict:
     }
 
 
-def build_move_waiting(role: str) -> dict:
+def build_move_waiting(role: str, opponent: str | None = None) -> dict:
     """Shape the make_move "waiting" payload for the first submitter of a turn."""
-    opponent = _OPPONENT_OF[role]
+    opponent = opponent if opponent is not None else _OPPONENT_OF[role]
     return {
         "status": "waiting",
         "role": role,

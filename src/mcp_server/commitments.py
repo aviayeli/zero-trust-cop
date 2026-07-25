@@ -47,6 +47,10 @@ class CommitmentBook:
             return "half"
         return "empty"
 
+    def commitment_for(self, role: str) -> str | None:
+        """Return the stored commitment digest for a role this turn, or None."""
+        return self._commitments.get(role)
+
     def commit(self, role: str, turn: int, h_commit: str) -> CommitOutcome:
         if role not in PEER_ROLES:
             return CommitOutcome("rejected", "invalid_role")

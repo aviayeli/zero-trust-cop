@@ -111,3 +111,12 @@ def test_revealing_twice_for_the_same_role_is_rejected():
 
     assert outcome.status == "rejected"
     assert outcome.reason == "already_revealed"
+
+
+def test_commitment_for_returns_the_stored_digest_for_a_role():
+    book = CommitmentBook()
+    h_commit, _ = _commit("N")
+
+    assert book.commitment_for("police") is None
+    book.commit("police", 0, h_commit)
+    assert book.commitment_for("police") == h_commit
