@@ -21,6 +21,11 @@ from secrets import compare_digest, token_hex
 _NONCE_BYTES = 16
 
 
+def canonical_json(payload: dict) -> bytes:
+    """Serialize a payload to the project's canonical JSON wire format."""
+    return json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
+
+
 def _canonical_payload(state: str, move: str, intent: str, nonce: str) -> bytes:
     """The exact byte string both peers hash.
 
@@ -28,11 +33,9 @@ def _canonical_payload(state: str, move: str, intent: str, nonce: str) -> bytes:
     implementations, so the serialization is pinned: sorted keys and no
     whitespace, giving one canonical form per payload.
     """
-    return json.dumps(
-        {"state": state, "move": move, "intent": intent, "nonce": nonce},
-        sort_keys=True,
-        separators=(",", ":"),
-    ).encode()
+    return canonical_json(
+        {"state": state, "move": move, "intent": intent, "nonce": nonce}
+    )
 
 
 def commit(state: str, move: str, intent: str) -> tuple[str, str]:
