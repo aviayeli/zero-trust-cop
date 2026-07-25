@@ -26,6 +26,18 @@ def test_load_config_from_game_json():
     assert isinstance(config.pheromone_grid_size, int)
     assert config.pheromone_grid_size == 5
     assert config.grid_size == 7
+    assert config.capture_cop == 20
+    assert config.capture_thief == 5
+    assert config.survival_cop == 5
+    assert config.survival_thief == 10
+    assert config.tie_score == 2
+    assert config.technical_loss == 0
+    assert isinstance(config.capture_cop, int)
+    assert isinstance(config.capture_thief, int)
+    assert isinstance(config.survival_cop, int)
+    assert isinstance(config.survival_thief, int)
+    assert isinstance(config.tie_score, int)
+    assert isinstance(config.technical_loss, int)
 
 
 def test_load_config_nonexistent_file():

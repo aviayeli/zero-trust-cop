@@ -20,6 +20,12 @@ class GameConfig:
     pheromone_center_intensity: float
     pheromone_decay: float
     pheromone_grid_size: int
+    capture_cop: int
+    capture_thief: int
+    survival_cop: int
+    survival_thief: int
+    tie_score: int
+    technical_loss: int
 
 
 def load_config(path: str) -> GameConfig:
@@ -51,4 +57,10 @@ def load_config(path: str) -> GameConfig:
         pheromone_center_intensity=data["pheromones"]["pheromone_center_intensity"],
         pheromone_decay=data["pheromones"]["pheromone_decay"],
         pheromone_grid_size=data["pheromones"]["pheromone_grid_size"],
+        capture_cop=data["scoring"]["capture_cop"],
+        capture_thief=data["scoring"]["capture_thief"],
+        survival_cop=data["scoring"]["survival_cop"],
+        survival_thief=data["scoring"]["survival_thief"],
+        tie_score=data["scoring"]["tie_score"],
+        technical_loss=data["scoring"]["technical_loss"],
     )
