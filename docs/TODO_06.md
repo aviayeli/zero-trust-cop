@@ -23,8 +23,8 @@ chain produces.
 - [x] Promote `PLAN_06` into `docs/PRD_06_Local_MCP_Simulation.md`.
 - [x] Record the D1–D3 rulings: streamable HTTP on configured ports, mirrored
       local truth, and `make_move` replaced by the secured surface.
-- [ ] Add the transport ports to config as tunables (needed by Step 3, not by
-      Step 1). They are hyperparameters and must not appear as literals.
+- [x] Add the transport ports to config as tunables (police 8801, thief 8802,
+      under a `[transport]` block; never literals in Python).
 
 ## 1. Put commit-reveal and signatures on the tool surface (the deferred 7b) — DONE
 
@@ -67,7 +67,7 @@ chain produces.
 - [ ] Confirm GREEN; confirm `src/engine/` still imports neither `strategy`
       nor `agent` (the Step 5 guard should catch any regression).
 
-## 3. `src/scripts/run_local_mcp_match.py` — the two-peer harness
+## 3. `src/scripts/run_local_mcp_match.py` — the two-peer harness — DONE except timeouts
 
 - [ ] Test first:
   - [ ] Both peers start on their configured ports/channels and both answer
@@ -78,9 +78,15 @@ chain produces.
         order; assert the ordering, not just the outcome.
   - [ ] Both peers are torn down even when the match raises — no orphaned
         listeners after a failure.
-  - [ ] Time handling: a peer that never reveals forfeits the turn on the
-        configured `response_timeout_sec`. Use `MatchState`'s injectable
-        `clock` — do NOT put a real sleep in a test.
+  - [ ] **NOT DONE — reopened as a real gap.** `response_timeout_sec` guards
+        `MatchState`'s action buffer, but under commit-reveal that buffer is
+        never half-filled: `SubmissionGate.reveal_move` submits BOTH moves at
+        once only after both peers reveal. Verified empirically — a peer that
+        commits and then goes silent leaves the book at `half_revealed` with
+        the action buffer EMPTY, so the lazy expiry never fires and the turn
+        stalls forever. Closing this needs a timeout on `CommitmentBook`, which
+        is new scope and a protocol question (what does a forfeited commitment
+        phase resolve to?). Tracked as D7.
   - [ ] A tampered reveal from a hostile client is rejected over the wire,
         proving the security is live in the running server and not merely
         unit-tested.

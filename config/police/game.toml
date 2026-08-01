@@ -11,3 +11,7 @@ epsilon_floor = 0.01
 num_games = 2000
 hint_max_words = 15
 match_exploration_rate = 0.0
+
+[transport]
+host = "127.0.0.1"
+port = 8801

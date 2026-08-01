@@ -23,6 +23,7 @@ from mcp_server.match_state import MatchState
 from mcp_server.peer_keys import load_public_keys
 from mcp_server.peer_policy import build_peer_policy
 from mcp_server.submissions import SubmissionGate
+from mcp_server.transport import load_transport_settings
 from mcp_server.tools import register_tools
 
 
@@ -71,7 +72,13 @@ def create_app(role, config=None, config_root=None):
     )
     policy = build_peer_policy(role, own_role, config, config_root)
 
-    mcp = FastMCP(f"zero-trust-cop-{role}")
+    binding = load_transport_settings(role, config_root)
+    mcp = FastMCP(
+        f"zero-trust-cop-{role}",
+        host=binding.host,
+        port=binding.port,
+        log_level="ERROR",
+    )
     tools = register_tools(mcp, gate, match_state, config, own_role)
 
     return SimpleNamespace(
@@ -84,6 +91,7 @@ def create_app(role, config=None, config_root=None):
         role=role,
         own_role=own_role,
         config_path=config_path,
+        binding=binding,
         **vars(tools),
     )
 
@@ -102,6 +110,12 @@ def parse_args(argv=None):
         default=None,
         help="Config directory root (default: ZTC_CONFIG_ROOT env or 'config')",
     )
+    parser.add_argument(
+        "--transport",
+        default="streamable-http",
+        choices=("stdio", "streamable-http"),
+        help="Wire transport; D1 rules streamable HTTP for local P2P play",
+    )
     return parser.parse_args(argv)
 
 
@@ -109,7 +123,7 @@ def main(argv=None):
     """Run the MCP server for a peer."""
     args = parse_args(argv)
     app = create_app(args.role, config_root=args.config_root)
-    app.mcp.run(transport="stdio")
+    app.mcp.run(transport=args.transport)
 
 
 if __name__ == "__main__":
