@@ -1,0 +1,21 @@
+{
+  "artifact_version": 1,
+  "game_id": "ztc001",
+  "games": [
+    {
+      "captured": true,
+      "cop_position": [
+        0,
+        2
+      ],
+      "game_number": 1,
+      "terminal_reason": "capture",
+      "thief_position": [
+        0,
+        2
+      ],
+      "turns": 5
+    }
+  ],
+  "group_id": "groupa"
+}

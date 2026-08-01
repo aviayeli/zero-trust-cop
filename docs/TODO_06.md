@@ -8,7 +8,11 @@ streamable HTTP on configured ports (D1), mirrored local truth (D2), and
 D5 is also ruled: match play is GREEDY, epsilon 0.0, configured via the
 private `match_exploration_rate` key.
 
-D4 (log location) and D6 (barriers) remain open and block Steps 4–6.
+D7 is ruled: a stalled peer forfeits to `technical_loss`.
+D4 is ruled: artifacts land under `logs/<group_id>/`.
+
+D6 (barriers during the match) remains open; the tables never saw an
+interior barrier, so the simulation deliberately plays a bare board.
 
 Strict TDD throughout: a failing test precedes every implementation change,
 and the RED must be confirmed before code is written. Each step is its own
@@ -94,7 +98,7 @@ chain produces.
       exchange into its own module if not.
 - [ ] Confirm GREEN.
 
-## 4. Match log
+## 4. Match log — DONE (D4)
 
 - [ ] Test first:
   - [ ] Each peer writes its OWN log (D2 mirrored truth).
@@ -106,7 +110,7 @@ chain produces.
         `tmp_path`.
 - [ ] Confirm RED, then implement. Confirm GREEN.
 
-## 5. Replay verifier — and prove it can FAIL
+## 5. Replay verifier — and prove it can FAIL — DONE
 
 - [ ] Test first. `Verified OK` requires ALL of:
   - [ ] every commitment digest re-derives from its revealed tuple;
@@ -122,7 +126,7 @@ chain produces.
   - [ ] two peer logs that disagree.
 - [ ] Confirm RED, then implement. Confirm GREEN.
 
-## 6. Execute the simulation and commit the artifacts
+## 6. Execute the simulation and commit the artifacts — DONE
 
 - [ ] Run a full local match end to end, recording the seed.
 - [ ] Verify the produced log reports `Verified OK`.

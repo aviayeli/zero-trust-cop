@@ -50,7 +50,15 @@ def register_tools(mcp, gate, match_state, config, own_role):
 
     @mcp.tool()
     async def get_match_status() -> dict:
-        return observations.build_status(match_state)
+        forfeited = gate.expire_if_stalled()
+        status = observations.build_status(match_state)
+        if forfeited:
+            status.update(
+                is_terminated=True,
+                terminal_reason="technical_loss",
+                forfeited_by=list(forfeited),
+            )
+        return status
 
     return SimpleNamespace(
         get_observation=get_observation,

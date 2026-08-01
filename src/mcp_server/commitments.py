@@ -5,6 +5,7 @@ until both commitments are present so the second peer cannot wait to see an
 opponent's move before choosing its own commitment.
 """
 
+import time
 from dataclasses import dataclass
 
 from mcp_server.crypto import verify
@@ -31,10 +32,33 @@ class RevealOutcome:
 class CommitmentBook:
     """Hold the two peers' commitments and verified move reveals for one turn."""
 
-    def __init__(self, turn: int = 0):
+    def __init__(self, turn: int = 0, timeout_seconds=None, clock=time.monotonic):
+        """``timeout_seconds`` None disables forfeits (the in-process trainer)."""
         self._turn = turn
         self._commitments: dict[str, str] = {}
         self._moves: dict[str, str] = {}
+        self._timeout_seconds = timeout_seconds
+        self._clock = clock
+        self._deadline = None
+
+    def stalled_roles(self) -> list:
+        """Roles that have not completed this turn once the deadline passed (D7).
+
+        The clock starts at the FIRST commitment. Blame is attributed to the
+        phase that is actually blocked: while a commitment is outstanding only
+        the silent committer is at fault, because a reveal is REFUSED until
+        both commitments are in — so its opponent is blocked, not stalling.
+        """
+        if self._deadline is None or self._clock() <= self._deadline:
+            return []
+        missing = [role for role in PEER_ROLES if role not in self._commitments]
+        if missing:
+            return missing
+        return [role for role in PEER_ROLES if role not in self._moves]
+
+    def _start_deadline(self) -> None:
+        if self._timeout_seconds is not None and self._deadline is None:
+            self._deadline = self._clock() + self._timeout_seconds
 
     def state(self) -> str:
         if len(self._moves) == len(PEER_ROLES):
@@ -60,10 +84,12 @@ class CommitmentBook:
             self._turn = turn
             self._commitments.clear()
             self._moves.clear()
+            self._deadline = None
         if role in self._commitments:
             return CommitOutcome("rejected", "already_committed")
 
         self._commitments[role] = h_commit
+        self._start_deadline()
         if len(self._commitments) == len(PEER_ROLES):
             return CommitOutcome("both_committed")
         return CommitOutcome("waiting")

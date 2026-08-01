@@ -94,3 +94,36 @@ def make_commitment():
         }
 
     return build
+
+
+class HandCrankedClock:
+    """A monotonic clock the test advances explicitly; nothing ever sleeps."""
+
+    def __init__(self):
+        self.now = 0.0
+
+    def __call__(self):
+        return self.now
+
+    def advance(self, seconds):
+        self.now += seconds
+
+
+@pytest.fixture
+def forfeit_clock():
+    return HandCrankedClock()
+
+
+@pytest.fixture
+def forfeit_app(secure_config_root, forfeit_clock):
+    """A police peer whose commitment book runs on the injected clock."""
+    return create_app("police", config_root=secure_config_root, clock=forfeit_clock)
+
+
+@pytest.fixture
+def commitment_pair(make_commitment, peer_keys):
+    """Both peers' signed commitments for turn 0."""
+    return (
+        make_commitment(peer_keys["police"], "police", 0),
+        make_commitment(peer_keys["thief"], "thief", 0),
+    )

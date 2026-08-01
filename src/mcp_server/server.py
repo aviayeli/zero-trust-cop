@@ -40,13 +40,14 @@ def peer_config_path(role, config_root=None):
     return os.path.join(config_root, role, _CONFIG_FILENAME)
 
 
-def create_app(role, config=None, config_root=None):
+def create_app(role, config=None, config_root=None, clock=None):
     """Build a wired FastMCP app for a peer role.
 
     Args:
         role: "police" or "thief" peer identity.
         config: Optional GameConfig (for testing). If None, loads from file.
         config_root: Optional config directory override.
+        clock: Optional monotonic clock for the commitment timeout (testing).
 
     Returns:
         SimpleNamespace with mcp, match_state, book, gate, policy, config,
@@ -66,7 +67,10 @@ def create_app(role, config=None, config_root=None):
     own_role = _ENGINE_ROLE[role]
     episode = GameEpisode(config)
     match_state = MatchState(episode, config.response_timeout_sec)
-    book = CommitmentBook()
+    book = CommitmentBook(
+        timeout_seconds=config.response_timeout_sec,
+        **({"clock": clock} if clock is not None else {}),
+    )
     gate = SubmissionGate(
         match_state, book, load_public_keys(role, config_root), dict(_ENGINE_ROLE)
     )

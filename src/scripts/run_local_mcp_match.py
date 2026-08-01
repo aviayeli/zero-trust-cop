@@ -10,6 +10,7 @@ independent engines are compared every turn.
 
 import argparse
 import contextlib
+import json
 from random import Random
 
 import anyio
@@ -23,6 +24,7 @@ from mcp_server.identity import load_signing_key
 from mcp_server.keygen import ensure_keys
 from mcp_server.peer_client import PeerClient
 from mcp_server.peer_policy import build_peer_policy
+from scripts.match_log import write_artifacts
 from scripts.match_loop import play_match
 from scripts.peer_processes import PEER_ROLES, running_peers
 
@@ -70,6 +72,13 @@ async def run_match(bindings, config, seed, config_root=None):
         return await play_match(clients, connections, Board(config), config)
 
 
+def _group_id(config_root=None):
+    """The group directory logs land in, from the published declaration."""
+    root = config_root or "config"
+    with open(f"{root}/declaration.json") as declared:
+        return json.load(declared)["group_name"]
+
+
 def _report(seed, history):
     """Print the match summary, including the seed that reproduces it."""
     final = history[-1]["result"]
@@ -87,6 +96,10 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description="Local P2P MCP match.")
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--config-root", default=None)
+    parser.add_argument("--game-id", default=None,
+                        help="artifact game id; omit to skip writing artifacts")
+    parser.add_argument("--game-number", type=int, default=1)
+    parser.add_argument("--logs-dir", default="logs")
     args = parser.parse_args(argv)
 
     created = ensure_keys(args.config_root)
@@ -100,6 +113,14 @@ def main(argv=None):
         history = anyio.run(run_match, bindings, config, args.seed, args.config_root)
 
     _report(args.seed, history)
+
+    if args.game_id:
+        paths = write_artifacts(
+            args.logs_dir, args.game_id, args.game_number, history,
+            group_id=_group_id(args.config_root), config_root=args.config_root,
+        )
+        for kind, path in sorted(paths.items()):
+            print(f"{kind}={path}")
     return history
 
 

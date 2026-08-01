@@ -20,9 +20,22 @@ class SubmissionGate:
         self.book = book
         self.public_keys = public_keys
         self.engine_role = engine_role
+        self.forfeited_by: list = []
+
+    def expire_if_stalled(self) -> list:
+        """Forfeit the match against any peer that stalled this turn (D7).
+
+        Checked lazily, like MatchState's own expiry: a stalled match produces
+        no further traffic except the compliant peer polling its status.
+        """
+        if not self.forfeited_by:
+            self.forfeited_by = self.book.stalled_roles()
+        return self.forfeited_by
 
     def submit_commitment(self, role, turn, h_commit, signature) -> dict:
         """Authenticate a commitment before adding it to the commitment book."""
+        if self.expire_if_stalled():
+            return observations.build_move_error("match_forfeited")
         if role not in self.public_keys:
             return observations.build_move_error("invalid_role")
         if turn != self.match_state.turn_count:
@@ -39,6 +52,8 @@ class SubmissionGate:
 
     async def reveal_move(self, role, turn, state, move, intent, nonce, signature) -> dict:
         """Authenticate and reveal a move, resolving the engine when both reveal."""
+        if self.expire_if_stalled():
+            return observations.build_move_error("match_forfeited")
         if role not in self.public_keys:
             return observations.build_move_error("invalid_role")
         if turn != self.match_state.turn_count:
