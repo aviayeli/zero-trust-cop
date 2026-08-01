@@ -80,7 +80,7 @@ def test_startup_wires_config_timeout():
     """MatchState receives response_timeout_sec from loaded config."""
     app = create_app("police")
     cfg = load_config(app.config_path)
-    assert app.match_state._response_timeout_sec == cfg.response_timeout_sec
+    assert app.match_state.response_timeout_sec == cfg.response_timeout_sec
 
 
 def test_get_observation_serves_only_own_role():

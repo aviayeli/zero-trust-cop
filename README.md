@@ -300,8 +300,8 @@ never produces an artifact.)
 
 | Discipline | State |
 |---|---|
-| Test suite | **459 tests**, all passing (unit → live two-process HTTP) |
-| Line limit | every one of the **106** tracked Python files ≤ **150 lines** (max: 149) |
+| Test suite | **493 tests**, all passing (unit → live two-process HTTP) |
+| Line limit | every one of the **111** tracked Python files ≤ **150 lines** (max: 149) |
 | TDD | strict red→green: every implementation change preceded by a confirmed failing test |
 | Hyperparameters | zero tunables inlined in Python — all in `config/game.json` / per-peer `game.toml` |
 | Lifecycle | PRD → PLAN → TODO under `docs/`, per phase |
@@ -309,7 +309,7 @@ never produces an artifact.)
 ### Mutation testing as a review gate
 
 Passing tests are treated as a *claim*, verified by breaking the code and
-requiring the suite to notice. Across phases 5–6, **26+ targeted mutants**
+requiring the suite to notice. Across phases 5–6, **38+ targeted mutants**
 were introduced and all killed, including: dense per-turn rewards, disabled
 signature verification, a removed reveal-before-commit gate, `crypto.verify`
 forced true, the plaintext tool re-registered, an inert divergence detector,
@@ -359,7 +359,7 @@ configured for pytest; standalone scripts take `PYTHONPATH=src`.
 
 ```bash
 .venv/bin/python -m pytest -q
-# expected: 459 passed
+# expected: 493 passed
 ```
 
 (Includes the live-transport tests: they spawn both peer processes on
@@ -488,14 +488,32 @@ src/strategy/         Q-learning, pheromones, belief, private settings
 src/agent/            the policy layer consuming both
 src/mcp_server/       crypto, identity, commitment book, gate, tools, server
 src/scripts/          trainer, match harness, log writer, replay verifier
-tests/                66 test modules mirroring the source layout
+tests/                69 test modules mirroring the source layout
 ```
 
 ## Known limitations (stated, not hidden)
 
+- **The Q-tables cover ~2% of the representable state space.** Measured, not
+  estimated: the police table holds 68 distinct states and the thief 46, out
+  of the 2,704 that `(relative_opponent, barrier_mask)` can express on a 7×7
+  board — **2.51%** and **1.70%** respectively. Only 14/68 and 13/46 of those
+  states have all five actions valued. In an unseen state `best_action` falls
+  back to `move_set[0]` (`N`) by tie order, and with match-time ε = 0 there is
+  no exploration to escape it, so an opponent that steers play off the trained
+  manifold meets a fixed-direction agent.
+
+  This is characteristic of tabular Q-learning under **deterministic
+  self-play**: once the cop wins reliably the trajectory distribution
+  collapses, the same states are revisited, and exploration stops discovering
+  new ones. The 100% capture rate in §3 should therefore be read as
+  convergence *against this specific thief on this trajectory manifold*, not
+  as general competence. Broadening it needs opponent diversity (randomised
+  or pooled policies) or a function approximator — a training phase in its own
+  right, not a tuning change.
 - **Barriers are never placed.** `max_barriers: 14` is config-driven but the
   engine never populates the board, so both training and matches run on a
-  bare grid; the Q-tables have never seen an interior barrier.
+  bare grid; the Q-tables have never seen an interior barrier. This is also
+  why the `barrier_mask` half of the state key only ever encodes board edges.
 - **The thief's deception is deterministic** and therefore predictable — a
   belief tracker drives its honesty score to 0 and inverts it. It is the
   specified baseline, not a strong strategy.

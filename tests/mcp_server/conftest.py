@@ -27,6 +27,7 @@ def _make_match_state(
     barrier_count=3,
     pending_roles=None,
     terminal_reason=None,
+    forfeited_by=None,
 ):
     """A MatchState double locked to the real class's public interface.
 
@@ -43,6 +44,7 @@ def _make_match_state(
     ms.barrier_count = barrier_count
     ms.pending_roles.return_value = [] if pending_roles is None else pending_roles
     ms.terminal_reason.return_value = terminal_reason
+    ms.forfeited_by = [] if forfeited_by is None else forfeited_by
     return ms
 
 

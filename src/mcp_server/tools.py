@@ -24,6 +24,7 @@ def register_tools(mcp, gate, match_state, config, own_role):
 
     @mcp.tool()
     async def get_observation(role: str) -> dict:
+        gate.expire_if_stalled()
         if role != own_role:
             return observations.build_move_error("invalid_role")
         return observations.build_observation(match_state, config, own_role)
@@ -50,15 +51,8 @@ def register_tools(mcp, gate, match_state, config, own_role):
 
     @mcp.tool()
     async def get_match_status() -> dict:
-        forfeited = gate.expire_if_stalled()
-        status = observations.build_status(match_state)
-        if forfeited:
-            status.update(
-                is_terminated=True,
-                terminal_reason="technical_loss",
-                forfeited_by=list(forfeited),
-            )
-        return status
+        gate.expire_if_stalled()
+        return observations.build_status(match_state)
 
     return SimpleNamespace(
         get_observation=get_observation,

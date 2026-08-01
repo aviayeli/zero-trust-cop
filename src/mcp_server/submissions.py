@@ -30,6 +30,7 @@ class SubmissionGate:
         """
         if not self.forfeited_by:
             self.forfeited_by = self.book.stalled_roles()
+            self.match_state.forfeit(self.forfeited_by)
         return self.forfeited_by
 
     def submit_commitment(self, role, turn, h_commit, signature) -> dict:

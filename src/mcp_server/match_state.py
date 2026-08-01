@@ -1,11 +1,16 @@
 """MatchState: the async action-buffering core of the MCP server.
 
 Implements PLAN_02_MCP_Server.md's locked algorithm: a 2-slot per-turn action
-buffer guarded by a single asyncio.Lock, a lazy wall-clock timeout (no blocking
-sleep), one GameEpisode.step trigger once both roles submit, and terminal_reason
-derivation. Bridge layer only: it imports parse_action/InvalidActionError for
-token validation and delegates all resolution to an injected GameEpisode's
-step() — it never re-implements engine logic.
+buffer guarded by a single asyncio.Lock, a lazy wall-clock timeout (no
+blocking sleep), one GameEpisode.step trigger once both roles submit, and
+terminal_reason derivation. Bridge layer only: it delegates all resolution to
+an injected GameEpisode's step() and never re-implements engine logic. The
+slot mechanics live in action_buffer.ActionBuffer.
+
+It also owns FORFEIT state (audit V5). That state was previously held by
+SubmissionGate and patched onto get_match_status alone, so a peer polling
+get_observation saw a live match while the status tool reported a technical
+loss. Terminal state belongs to the one object every tool already reads.
 """
 
 from __future__ import annotations
@@ -14,8 +19,9 @@ import asyncio
 import time
 from dataclasses import dataclass
 
-from engine.actions import parse_action
-from engine.errors import InvalidActionError
+from mcp_server.action_buffer import ActionBuffer
+
+TECHNICAL_LOSS = "technical_loss"
 
 
 @dataclass
@@ -39,11 +45,8 @@ class MatchState:
 
     def __init__(self, episode, response_timeout_sec: float, clock=time.monotonic):
         self._episode = episode
-        self._response_timeout_sec = response_timeout_sec
-        self._clock = clock
-        self._cop_action: str | None = None
-        self._thief_action: str | None = None
-        self._deadline: float | None = None
+        self._buffer = ActionBuffer(response_timeout_sec, clock)
+        self._forfeited_by: list = []
         self._lock = asyncio.Lock()
 
     async def submit(self, role: str, token: str) -> SubmitOutcome:
@@ -53,79 +56,61 @@ class MatchState:
         one GameEpisode.step fires per turn even under concurrent calls (FR8).
         """
         async with self._lock:
-            self._expire_if_stale()
+            self._buffer.expire_if_stale()
 
-            if role not in ("cop", "thief"):
+            if not self._buffer.is_known_role(role):
                 return SubmitOutcome("rejected", reason="invalid_role")
-            try:
-                parse_action(token)
-            except InvalidActionError:
+            if not self._buffer.is_valid_token(token):
                 return SubmitOutcome("rejected", reason="invalid_direction")
-            if self._slot_filled(role):
+            if self._buffer.filled(role):
                 return SubmitOutcome("rejected", reason="already_submitted")
 
-            was_empty = not self._any_filled()
-            self._set_slot(role, token)
-            if was_empty:
-                self._deadline = self._clock() + self._response_timeout_sec
-
-            if self._cop_action is not None and self._thief_action is not None:
-                result = self._episode.step(self._cop_action, self._thief_action)
-                self._clear()
+            self._buffer.accept(role, token)
+            if self._buffer.both_filled():
+                result = self._episode.step(*self._buffer.actions())
+                self._buffer.clear()
                 return SubmitOutcome("resolved", result=result)
             return SubmitOutcome("waiting")
+
+    def forfeit(self, roles) -> None:
+        """End the match against every non-responsive peer (D7 / V5).
+
+        An empty list is a no-op, so a healthy match is never terminated by a
+        stall check that found nothing.
+        """
+        if roles:
+            self._forfeited_by = list(roles)
+
+    @property
+    def forfeited_by(self) -> list:
+        """The roles that forfeited, or an empty list while the match is live."""
+        return list(self._forfeited_by)
 
     def pending_roles(self) -> list:
         """Roles with a buffered, unresolved action this turn (raw buffer; a
         stale half-filled turn is forfeited lazily on the next submit)."""
-        return self._filled_roles()
+        return self._buffer.filled_roles()
 
     def terminal_reason(self) -> str | None:
-        """'capture' | 'max_moves_reached' | None (capture checked first, per
-        GameEpisode.step precedence)."""
-        ep = self._episode
-        if not ep.is_terminated:
+        """'capture' | 'max_moves_reached' | 'technical_loss' | None.
+
+        A real game outcome outranks a forfeit: if the episode actually
+        finished, that is what happened, and a later stall check must not
+        relabel it.
+        """
+        episode = self._episode
+        if episode.is_terminated:
+            if episode.history and episode.history[-1].result.captured:
+                return "capture"
+            if episode.turn_count >= episode.config.max_moves:
+                return "max_moves_reached"
             return None
-        if ep.history and ep.history[-1].result.captured:
-            return "capture"
-        if ep.turn_count >= ep.config.max_moves:
-            return "max_moves_reached"
-        return None
+        return TECHNICAL_LOSS if self._forfeited_by else None
 
-    # --- internal buffer helpers ------------------------------------------
-
-    def _slot_filled(self, role: str) -> bool:
-        return (self._cop_action if role == "cop" else self._thief_action) is not None
-
-    def _set_slot(self, role: str, token: str) -> None:
-        if role == "cop":
-            self._cop_action = token
-        else:
-            self._thief_action = token
-
-    def _any_filled(self) -> bool:
-        return self._cop_action is not None or self._thief_action is not None
-
-    def _filled_roles(self) -> list:
-        roles = []
-        if self._cop_action is not None:
-            roles.append("cop")
-        if self._thief_action is not None:
-            roles.append("thief")
-        return roles
-
-    def _clear(self) -> None:
-        self._cop_action = None
-        self._thief_action = None
-        self._deadline = None
-
-    def _expire_if_stale(self) -> None:
-        """Forfeit a half-filled turn whose deadline has passed (option a)."""
-        stale = self._deadline is not None and self._clock() > self._deadline
-        if stale and len(self._filled_roles()) == 1:
-            self._clear()
-
-    # --- read-only passthrough accessors ----------------------------------
+    @property
+    def response_timeout_sec(self) -> float:
+        """The configured per-turn deadline, in seconds."""
+        return self._buffer.response_timeout_sec
 
     @property
     def turn_count(self) -> int:
@@ -133,7 +118,7 @@ class MatchState:
 
     @property
     def is_terminated(self) -> bool:
-        return self._episode.is_terminated
+        return bool(self._forfeited_by) or self._episode.is_terminated
 
     @property
     def cop_position(self):

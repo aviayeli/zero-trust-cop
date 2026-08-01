@@ -73,4 +73,5 @@ def build_status(match_state) -> dict:
         "is_terminated": match_state.is_terminated,
         "pending_roles": match_state.pending_roles(),
         "terminal_reason": match_state.terminal_reason(),
+        "forfeited_by": match_state.forfeited_by,
     }
