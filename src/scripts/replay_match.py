@@ -7,13 +7,11 @@
 3. replaying the logged moves through a fresh GameEpisode reproduces the
    logged final state.
 
-Anything less is ``TAMPERED!``. A verifier that only replayed would accept a
-log with forged signatures; one that only checked signatures would accept a
-log whose recorded outcome never happened.
-
-The fourth PRD_06 clause — that the two peers' logs agree — is enforced at
-MATCH time instead: play_match compares both engines every turn and raises
-DivergenceError, so a disagreeing pair never reaches an artifact.
+Anything less is ``TAMPERED!``: replay alone would accept forged signatures,
+and signatures alone would accept an outcome that never happened. PRD_06's
+fourth clause — that both peers' logs agree — is enforced at MATCH time, so a
+disagreeing pair never reaches an artifact. ``--render`` draws the same
+reconstruction step by step; it changes no verdict.
 """
 
 import argparse
@@ -25,6 +23,7 @@ from engine.game_loop import GameEpisode
 from mcp_server.crypto import verify
 from mcp_server.identity import verify_signature
 from mcp_server.peer_keys import load_public_keys
+from scripts.render_replay import DEFAULT_DELAY, pause_for, render_replay
 
 VERIFIED = "Verified OK"
 TAMPERED = "TAMPERED!"
@@ -109,23 +108,36 @@ def verify_log(log, config, public_keys) -> VerificationReport:
     return VerificationReport(ok=not failures, failures=failures)
 
 
-def main(argv=None):
-    """Verify a log file from disk and exit non-zero when it is tampered."""
+def parse_args(argv=None):
+    """Parse the verifier CLI. Rendering is additive and off by default."""
     parser = argparse.ArgumentParser(description="Replay-verify a match log.")
     parser.add_argument("log_path")
     parser.add_argument("--config", default="config/game.json")
     parser.add_argument("--config-root", default=None)
     parser.add_argument("--own-role", default="police")
-    args = parser.parse_args(argv)
+    parser.add_argument("--render", action="store_true",
+                        help="draw each turn on an ASCII board before verifying")
+    parser.add_argument("--render-delay", type=float, default=DEFAULT_DELAY,
+                        help="seconds between rendered turns (0 for none)")
+    parser.add_argument("--step", action="store_true",
+                        help="with --render, wait for Enter between turns")
+    return parser.parse_args(argv)
+
+
+def main(argv=None):
+    """Verify a log file from disk and exit non-zero when it is tampered."""
+    args = parse_args(argv)
 
     with open(args.log_path) as log_file:
         log = json.load(log_file)
+    config = load_config(args.config)
+    public_keys = load_public_keys(args.own_role, args.config_root)
 
-    report = verify_log(
-        log,
-        load_config(args.config),
-        load_public_keys(args.own_role, args.config_root),
-    )
+    if args.render:
+        render_replay(log, config, public_keys, delay=args.render_delay,
+                      pause=pause_for(args.step))
+
+    report = verify_log(log, config, public_keys)
     print(report)
     for failure in report.failures:
         print(f"  - {failure}")
