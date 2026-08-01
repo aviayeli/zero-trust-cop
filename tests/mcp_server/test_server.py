@@ -55,16 +55,24 @@ def test_police_peer_loads_from_its_own_config_dir():
     assert thief.config_path.endswith(os.path.join("thief", "game.json"))
 
 
-def test_exactly_three_tools_registered_with_wire_schema():
-    """FastMCP registers exactly 3 tools, and the public input schema names the
-    parameter `role` — remote peers call over this contract, so a rename breaks P2P."""
+def test_exactly_four_tools_registered_with_wire_schema():
+    """FastMCP registers exactly 4 tools, and the public input schema names the
+    parameter `role` — remote peers call over this contract, so a rename breaks P2P.
+
+    Moves reach the engine only via commit-then-reveal; the unauthenticated
+    plaintext make_move tool was removed in Phase 6 (D3).
+    """
     app = create_app("police")
     async def fetch_tools():
         return {t.name: t.inputSchema for t in await app.mcp.list_tools()}
     schemas = asyncio.run(fetch_tools())
-    assert set(schemas) == {"get_observation", "make_move", "get_match_status"}
+    assert set(schemas) == {
+        "get_observation",
+        "submit_commitment",
+        "reveal_move",
+        "get_match_status",
+    }
     assert list(schemas["get_observation"]["properties"]) == ["role"]
-    assert list(schemas["make_move"]["properties"]) == ["role", "direction"]
     assert schemas["get_match_status"].get("properties", {}) == {}
 
 
@@ -88,42 +96,14 @@ def test_get_observation_serves_only_own_role():
     assert thief_obs["error"] == "invalid_role"
 
 
-def test_make_move_first_submission_waits():
-    """First make_move submission returns status='waiting'."""
+def test_no_unauthenticated_path_reaches_the_engine():
+    """D3: the plaintext move tool is gone, not merely unused.
+
+    Turn resolution is covered end-to-end in tests/mcp_server/secure/, which
+    drives the commit-reveal pipeline the engine now sits behind.
+    """
     app = create_app("police")
-    async def run_move():
-        return await app.make_move("cop", "N")
-    result = asyncio.run(run_move())
-    assert result["status"] == "waiting"
-    assert result["role"] == "cop"
-
-
-def test_make_move_both_roles_resolve_turn():
-    """Submitting both roles resolves turn and returns full state."""
-    app = create_app("police")
-    async def run_moves():
-        a = await app.make_move("cop", "N")
-        b = await app.make_move("thief", "S")
-        return a, b
-    a, b = asyncio.run(run_moves())
-    assert a["status"] == "waiting"
-    assert b["status"] == "resolved"
-    assert "cop_position" in b
-    assert "thief_position" in b
-    assert "captured" in b
-    assert "turn_count" in b
-    assert "is_terminated" in b
-    assert b["terminal_reason"] is None
-    json.dumps(b)
-
-
-def test_make_move_rejects_invalid_direction():
-    """make_move rejects invalid direction."""
-    app = create_app("police")
-    async def run_move():
-        return await app.make_move("cop", "DIAGONAL")
-    result = asyncio.run(run_move())
-    assert result["error"] == "invalid_direction"
+    assert not hasattr(app, "make_move")
 
 
 def test_get_match_status_delegates():

@@ -14,7 +14,10 @@ from mcp.server.fastmcp import FastMCP
 
 from engine.config import load_config
 from engine.game_loop import GameEpisode
+from mcp_server.commitments import CommitmentBook
 from mcp_server.match_state import MatchState
+from mcp_server.peer_keys import load_public_keys
+from mcp_server.submissions import SubmissionGate
 from mcp_server import observations
 
 
@@ -53,6 +56,10 @@ def create_app(role, config=None, config_root=None):
     own_role = _ENGINE_ROLE[role]
     episode = GameEpisode(config)
     match_state = MatchState(episode, config.response_timeout_sec)
+    book = CommitmentBook()
+    gate = SubmissionGate(
+        match_state, book, load_public_keys(role, config_root), dict(_ENGINE_ROLE)
+    )
     mcp = FastMCP(f"zero-trust-cop-{role}")
 
     # NOTE: these parameters must stay named `role` — FastMCP derives the public
@@ -65,14 +72,28 @@ def create_app(role, config=None, config_root=None):
             return observations.build_move_error("invalid_role")
         return observations.build_observation(match_state, config, own_role)
 
+    # A move reaches the engine ONLY through commit-then-reveal. The former
+    # plaintext make_move tool accepted an unsigned direction from any caller,
+    # under any role, with nothing binding it to a prior commitment (D3).
     @mcp.tool()
-    async def make_move(role: str, direction: str) -> dict:
-        outcome = await match_state.submit(role, direction)
-        if outcome.status == "waiting":
-            return observations.build_move_waiting(role)
-        if outcome.status == "resolved":
-            return observations.build_move_resolved(match_state, outcome.result, role)
-        return observations.build_move_error(outcome.reason)
+    async def submit_commitment(
+        role: str, turn: int, h_commit: str, signature: str
+    ) -> dict:
+        return gate.submit_commitment(role, turn, h_commit, signature)
+
+    @mcp.tool()
+    async def reveal_move(
+        role: str,
+        turn: int,
+        state: str,
+        move: str,
+        intent: str,
+        nonce: str,
+        signature: str,
+    ) -> dict:
+        return await gate.reveal_move(
+            role, turn, state, move, intent, nonce, signature
+        )
 
     @mcp.tool()
     async def get_match_status() -> dict:
@@ -81,12 +102,15 @@ def create_app(role, config=None, config_root=None):
     return SimpleNamespace(
         mcp=mcp,
         match_state=match_state,
+        book=book,
+        gate=gate,
         config=config,
         role=role,
         own_role=own_role,
         config_path=config_path,
         get_observation=get_observation,
-        make_move=make_move,
+        submit_commitment=submit_commitment,
+        reveal_move=reveal_move,
         get_match_status=get_match_status,
     )
 

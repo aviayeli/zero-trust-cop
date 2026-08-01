@@ -2,12 +2,16 @@
 
 ## Status
 
-DRAFT for review. **No `PRD_06` exists.** The constitution requires
-`PRD.md → PLAN.md → TODO.md` in order. Phase 5 already ran without a `PRD_05`
-— `PLAN_05` said its content "should be promoted into one before
-implementation" and that never happened. This plan records the same gap
-rather than repeating it silently: if it is approved, promote it into
-`PRD_06` before any implementation begins.
+APPROVED and promoted into `docs/PRD_06_Local_MCP_Simulation.md`, which is now
+the authority for Phase 6. This document keeps the design reasoning and the
+verified audit of what was already built; the PRD carries the requirements and
+acceptance criteria.
+
+The document-lifecycle gap is closed for this phase: unlike Phase 5, which ran
+without a `PRD_05`, implementation here began only after promotion.
+
+D1–D3 are ruled (see below). D4–D6 remain open and are settled as the steps
+reach them.
 
 Phase 6 removes the external dependency that blocked Step 7b. Rather than
 waiting for the opposing group to agree the FR7 schemas, both peers are run
@@ -163,16 +167,18 @@ A verifier that only checks (3) would pass a match with forged signatures. A
 verifier that cannot FAIL is worthless — it must be proven to reject a
 tampered log, per the standard this project now holds guards to.
 
-## Decisions needed before implementation
+## Decisions — D1–D3 RULED, D4–D6 open
 
-- **D1 — Transport.** `streamable-http` on two configured localhost ports
-  (matches the request, real TCP), or stdio subprocesses (simpler, no ports,
-  still real serialisation)? Recommendation: streamable-http.
-- **D2 — Match topology.** Mirrored local truth (recommended) or one peer
-  hosting the authoritative match?
-- **D3 — Does `make_move` survive?** It is unauthenticated and bypasses
-  commit-reveal entirely. Leaving it registered leaves the front-running hole
-  open next to the fix. Recommendation: remove it, or gate it behind config.
+- **D1 — Transport. RULED: streamable HTTP** on configured local ports
+  (police 8801, thief 8802 by default). Ports live in config, never as
+  literals in Python.
+- **D2 — Match topology. RULED: mirrored local truth.** Each peer keeps its
+  own `GameEpisode` ground truth and independently validates the opponent's
+  signed disclosures every turn. Neither peer trusts the other's engine.
+  Divergence is detected per turn.
+- **D3 — `make_move`. RULED: replaced.** The unauthenticated plaintext tool is
+  removed and the commit-reveal pipeline takes its place, with `AgentPolicy`
+  supplying moves from the trained tables.
 - **D4 — Log location and tracking.** `data/` alongside the Q-tables, or a
   new `logs/` directory? Tracked as deliverables or ignored?
 - **D5 — Exploration during a match.** Force epsilon to zero for competitive

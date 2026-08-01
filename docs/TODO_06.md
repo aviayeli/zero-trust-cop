@@ -1,8 +1,12 @@
 # TODO — Phase 6: Local P2P MCP Simulation
 
-From `PLAN_06_Local_MCP_Simulation.md`. **Blocked on the approval gate**: no
-`PRD_06` exists and D1–D6 are undecided. Nothing below starts until both are
-resolved.
+From `docs/PRD_06_Local_MCP_Simulation.md`, promoted from `PLAN_06` with the
+D1–D3 rulings applied. The approval gate is **cleared for Steps 1–3**:
+streamable HTTP on configured ports (D1), mirrored local truth (D2), and
+`make_move` replaced by the secured surface (D3).
+
+D4 (log location), D5 (match-time exploration) and D6 (barriers) are still
+open and block Steps 4–6, not Step 1.
 
 Strict TDD throughout: a failing test precedes every implementation change,
 and the RED must be confirmed before code is written. Each step is its own
@@ -12,13 +16,13 @@ Steps 1–4 are a dependency chain: the wire has no security until Step 1, so a
 simulation before it would validate nothing. Steps 5–6 consume the match the
 chain produces.
 
-## 0. Promote to `PRD_06` and settle D1–D6
+## 0. Promote to `PRD_06` and settle D1–D3 — DONE
 
-- [ ] Promote `PLAN_06` into `docs/PRD_06_Local_MCP_Simulation.md`.
-- [ ] Record the D1–D6 rulings in it, especially D1 (transport), D2 (match
-      topology) and D3 (whether `make_move` survives).
-- [ ] Add the transport ports to config as tunables. They are hyperparameters
-      and must not appear as literals in Python.
+- [x] Promote `PLAN_06` into `docs/PRD_06_Local_MCP_Simulation.md`.
+- [x] Record the D1–D3 rulings: streamable HTTP on configured ports, mirrored
+      local truth, and `make_move` replaced by the secured surface.
+- [ ] Add the transport ports to config as tunables (needed by Step 3, not by
+      Step 1). They are hyperparameters and must not appear as literals.
 
 ## 1. Put commit-reveal and signatures on the tool surface (the deferred 7b)
 
