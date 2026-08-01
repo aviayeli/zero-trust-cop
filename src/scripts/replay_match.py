@@ -2,15 +2,17 @@
 
 ``Verified OK`` is reported only when ALL of these hold:
 
-1. every commitment digest re-derives from its revealed tuple;
-2. every signature re-verifies against that peer's public key FOR THAT TURN;
-3. replaying the logged moves through a fresh GameEpisode reproduces the
-   logged final state.
+1. the log has the structural shape a match record must have;
+2. turn indices are contiguous and ascending;
+3. every commitment digest re-derives from its revealed tuple;
+4. every signature re-verifies against that peer's public key FOR THAT TURN;
+5. replaying the logged moves reproduces EVERY recorded turn result, and the
+   number of logged turns matches the number the replay actually reached.
 
-Anything less is ``TAMPERED!``: replay alone would accept forged signatures,
-and signatures alone would accept an outcome that never happened. PRD_06's
-fourth clause — that both peers' logs agree — is enforced at MATCH time, so a
-disagreeing pair never reaches an artifact. ``--render`` draws the same
+Anything less is ``TAMPERED!``. Check 5 is stated per-turn deliberately: an
+earlier version compared only the final state, so a wholly fabricated middle
+certified clean. PRD_06's cross-peer clause is enforced at MATCH time, where
+play_match compares both engines every turn. ``--render`` draws the same
 reconstruction step by step; it changes no verdict.
 """
 
@@ -19,15 +21,18 @@ import json
 from dataclasses import dataclass, field
 
 from engine.config import load_config
-from engine.game_loop import GameEpisode
-from mcp_server.crypto import verify
-from mcp_server.identity import verify_signature
 from mcp_server.peer_keys import load_public_keys
+from scripts.log_checks import (
+    check_commitments,
+    check_replay,
+    check_signatures,
+    check_structure,
+    check_turn_indices,
+)
 from scripts.render_replay import DEFAULT_DELAY, pause_for, render_replay
 
 VERIFIED = "Verified OK"
 TAMPERED = "TAMPERED!"
-_ENGINE_ORDER = ("police", "thief")
 
 
 @dataclass
@@ -44,67 +49,22 @@ class VerificationReport:
         return {"status": str(self), "ok": self.ok, "failures": list(self.failures)}
 
 
-def _check_commitments(log, failures) -> None:
-    """Re-derive every digest from what was actually revealed."""
-    for turn in log["turns"]:
-        for role, entry in turn["submissions"].items():
-            if not verify(
-                entry["state"],
-                entry["move"],
-                entry["intent"],
-                entry["nonce"],
-                entry["h_commit"],
-            ):
-                failures.append(
-                    f"turn {turn['turn']} {role}: commitment does not match reveal"
-                )
-
-
-def _check_signatures(log, public_keys, failures) -> None:
-    """Re-verify every signature against the turn it claims to belong to."""
-    for turn in log["turns"]:
-        for role, entry in turn["submissions"].items():
-            if role not in public_keys:
-                failures.append(f"turn {turn['turn']} {role}: no public key")
-                continue
-            if not verify_signature(
-                public_keys[role], role, turn["turn"], entry["h_commit"],
-                entry["signature"],
-            ):
-                failures.append(f"turn {turn['turn']} {role}: signature invalid")
-
-
-def _check_replay(log, config, failures) -> None:
-    """Replay the logged moves and compare the reconstructed final state."""
-    actions = [
-        (
-            turn["submissions"]["police"]["move"],
-            turn["submissions"]["thief"]["move"],
-        )
-        for turn in log["turns"]
-    ]
-    episode = GameEpisode(config).replay(actions)
-    recorded = log["turns"][-1]["result"]
-
-    expected = {
-        "cop_position": tuple(episode.cop_state.position),
-        "thief_position": tuple(episode.thief_state.position),
-        "turn_count": episode.turn_count,
-    }
-    for key, value in expected.items():
-        logged = recorded[key]
-        if isinstance(value, tuple):
-            logged = tuple(logged)
-        if logged != value:
-            failures.append(f"replay disagrees on {key}: {logged!r} != {value!r}")
-
-
 def verify_log(log, config, public_keys) -> VerificationReport:
-    """Run all three checks and return the combined verdict."""
+    """Run every check and return the combined verdict.
+
+    The blanket except is deliberate and is the V4 fix: a verifier exists to
+    ANSWER, and a hostile artifact must not be able to trade a verdict for a
+    traceback that a CI gate could mistake for infrastructure failure.
+    """
     failures: list = []
-    _check_commitments(log, failures)
-    _check_signatures(log, public_keys, failures)
-    _check_replay(log, config, failures)
+    try:
+        if check_structure(log, failures):
+            check_turn_indices(log, failures)
+            check_commitments(log, failures)
+            check_signatures(log, public_keys, failures)
+            check_replay(log, config, failures)
+    except Exception as error:
+        failures.append(f"malformed log: {type(error).__name__}: {error}")
     return VerificationReport(ok=not failures, failures=failures)
 
 
