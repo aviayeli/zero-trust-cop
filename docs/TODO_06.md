@@ -5,8 +5,10 @@ D1–D3 rulings applied. The approval gate is **cleared for Steps 1–3**:
 streamable HTTP on configured ports (D1), mirrored local truth (D2), and
 `make_move` replaced by the secured surface (D3).
 
-D4 (log location), D5 (match-time exploration) and D6 (barriers) are still
-open and block Steps 4–6, not Step 1.
+D5 is also ruled: match play is GREEDY, epsilon 0.0, configured via the
+private `match_exploration_rate` key.
+
+D4 (log location) and D6 (barriers) remain open and block Steps 4–6.
 
 Strict TDD throughout: a failing test precedes every implementation change,
 and the RED must be confirmed before code is written. Each step is its own
@@ -24,7 +26,7 @@ chain produces.
 - [ ] Add the transport ports to config as tunables (needed by Step 3, not by
       Step 1). They are hyperparameters and must not appear as literals.
 
-## 1. Put commit-reveal and signatures on the tool surface (the deferred 7b)
+## 1. Put commit-reveal and signatures on the tool surface (the deferred 7b) — DONE
 
 - [ ] Test first, against `create_app`'s returned tool callables:
   - [ ] A `submit_commitment` tool exists and rejects an invalid signature
@@ -48,7 +50,7 @@ chain produces.
       at 119 and will need splitting — put the tool registrations in their own
       module rather than growing it past the limit.
 
-## 2. Load the trained policy into each peer
+## 2. Load the trained policy into each peer — DONE (D5: greedy)
 
 - [ ] Test first:
   - [ ] `create_app` builds an `AgentPolicy` for its own role.

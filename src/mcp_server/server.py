@@ -1,9 +1,13 @@
 """FastMCP server wiring for zero-trust P2P cop-thief game.
 
 Each peer (police or thief) runs its own independent FastMCP server instance,
-with its own config directory and local-truth GameEpisode/MatchState.
-Composition root: loads peer-specific config, constructs GameEpisode + MatchState,
-registers three thin @tool wrappers delegating to match_state and observations.
+with its own config directory and local-truth GameEpisode/MatchState — the
+mirrored-local-truth topology of D2, in which neither peer trusts the other's
+engine.
+
+Composition root only: it loads peer config, assembles the episode, buffer,
+commitment book, authenticated submission gate and greedy policy, then hands
+tool registration to mcp_server.tools.
 """
 
 import argparse
@@ -17,8 +21,9 @@ from engine.game_loop import GameEpisode
 from mcp_server.commitments import CommitmentBook
 from mcp_server.match_state import MatchState
 from mcp_server.peer_keys import load_public_keys
+from mcp_server.peer_policy import build_peer_policy
 from mcp_server.submissions import SubmissionGate
-from mcp_server import observations
+from mcp_server.tools import register_tools
 
 
 PEER_ROLES = ("police", "thief")
@@ -39,12 +44,16 @@ def create_app(role, config=None, config_root=None):
 
     Args:
         role: "police" or "thief" peer identity.
-        config: Optional GameConfig (for testing). If None, loads from config file.
-        config_root: Optional config directory override (default: ZTC_CONFIG_ROOT env or "config").
+        config: Optional GameConfig (for testing). If None, loads from file.
+        config_root: Optional config directory override.
 
     Returns:
-        SimpleNamespace with mcp, match_state, config, role, own_role, config_path,
-        and tool callables (get_observation, make_move, get_match_status).
+        SimpleNamespace with mcp, match_state, book, gate, policy, config,
+        role, own_role, config_path, and the registered tool callables.
+
+    Raises:
+        ValueError: unknown role, mismatched table layout, or an empty table.
+        FileNotFoundError: the peer's configured qtable_path is absent.
     """
     if role not in PEER_ROLES:
         raise ValueError(f"role must be one of {PEER_ROLES}")
@@ -60,63 +69,27 @@ def create_app(role, config=None, config_root=None):
     gate = SubmissionGate(
         match_state, book, load_public_keys(role, config_root), dict(_ENGINE_ROLE)
     )
+    policy = build_peer_policy(role, own_role, config, config_root)
+
     mcp = FastMCP(f"zero-trust-cop-{role}")
-
-    # NOTE: these parameters must stay named `role` — FastMCP derives the public
-    # tool input schema from the signature, so a rename changes the P2P wire
-    # contract. Shadowing the outer `role` is safe: the peer identity is read
-    # from the captured `own_role`, never from the outer name.
-    @mcp.tool()
-    async def get_observation(role: str) -> dict:
-        if role != own_role:
-            return observations.build_move_error("invalid_role")
-        return observations.build_observation(match_state, config, own_role)
-
-    # A move reaches the engine ONLY through commit-then-reveal. The former
-    # plaintext make_move tool accepted an unsigned direction from any caller,
-    # under any role, with nothing binding it to a prior commitment (D3).
-    @mcp.tool()
-    async def submit_commitment(
-        role: str, turn: int, h_commit: str, signature: str
-    ) -> dict:
-        return gate.submit_commitment(role, turn, h_commit, signature)
-
-    @mcp.tool()
-    async def reveal_move(
-        role: str,
-        turn: int,
-        state: str,
-        move: str,
-        intent: str,
-        nonce: str,
-        signature: str,
-    ) -> dict:
-        return await gate.reveal_move(
-            role, turn, state, move, intent, nonce, signature
-        )
-
-    @mcp.tool()
-    async def get_match_status() -> dict:
-        return observations.build_status(match_state)
+    tools = register_tools(mcp, gate, match_state, config, own_role)
 
     return SimpleNamespace(
         mcp=mcp,
         match_state=match_state,
         book=book,
         gate=gate,
+        policy=policy,
         config=config,
         role=role,
         own_role=own_role,
         config_path=config_path,
-        get_observation=get_observation,
-        submit_commitment=submit_commitment,
-        reveal_move=reveal_move,
-        get_match_status=get_match_status,
+        **vars(tools),
     )
 
 
 def parse_args(argv=None):
-    """Parse CLI arguments: --role (required, choices: police/thief), --config-root (optional)."""
+    """Parse CLI arguments: --role (required), --config-root (optional)."""
     parser = argparse.ArgumentParser(description="Zero-trust cop-thief MCP server")
     parser.add_argument(
         "--role",

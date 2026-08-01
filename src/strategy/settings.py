@@ -26,6 +26,7 @@ class StrategySettings:
     epsilon_floor: float
     num_games: int
     hint_max_words: int
+    match_exploration_rate: float
 
 
 def strategy_settings_path(role: str, config_root: str | None = None) -> str:
@@ -53,4 +54,5 @@ def load_strategy_settings(
         epsilon_floor=strategy["epsilon_floor"],
         num_games=strategy["num_games"],
         hint_max_words=strategy["hint_max_words"],
+        match_exploration_rate=strategy["match_exploration_rate"],
     )

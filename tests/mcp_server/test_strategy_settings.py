@@ -120,6 +120,7 @@ epsilon_decay_factor = 0.999
 epsilon_floor = 0.01
 num_games = 2000
 hint_max_words = 15
+match_exploration_rate = 0.0
 """
     )
     assert load_strategy_settings("police", config_root=str(tmp_path)).learning_rate == 0.42

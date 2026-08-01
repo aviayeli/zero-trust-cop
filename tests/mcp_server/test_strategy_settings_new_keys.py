@@ -72,3 +72,11 @@ def test_qtable_path_differs_between_roles():
     police = load_strategy_settings("police")
     thief = load_strategy_settings("thief")
     assert police.qtable_path != thief.qtable_path
+
+
+@pytest.mark.parametrize("role", ["police", "thief"])
+def test_match_exploration_rate_loads_as_a_float(role):
+    """D5: match play is greedy, and the rate is configured, not hardcoded."""
+    settings = load_strategy_settings(role)
+    assert settings.match_exploration_rate == 0.0
+    assert isinstance(settings.match_exploration_rate, float)
