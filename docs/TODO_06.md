@@ -11,8 +11,14 @@ private `match_exploration_rate` key.
 D7 is ruled: a stalled peer forfeits to `technical_loss`.
 D4 is ruled: artifacts land under `logs/<group_id>/`.
 
-D6 (barriers during the match) remains open; the tables never saw an
-interior barrier, so the simulation deliberately plays a bare board.
+D6 is ruled: barrier handling stays driven by `config/game.json`
+(`max_barriers`), never by literals in Python.
+
+Standing caveat, unchanged by that ruling: `GameEpisode.reset()` builds a
+`Board` with an EMPTY barrier set and nothing calls `place_barrier()`, so no
+barrier is ever placed and `max_barriers: 14` is currently an unapproached
+cap. Matches and the Phase 5 tables therefore both assume a bare board.
+Actually populating barriers is an engine change and its own phase.
 
 Strict TDD throughout: a failing test precedes every implementation change,
 and the RED must be confirmed before code is written. Each step is its own

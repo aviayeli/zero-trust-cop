@@ -183,7 +183,10 @@ tampered log, per the standard this project now holds guards to.
   new `logs/` directory? Tracked as deliverables or ignored?
 - **D5 — Exploration during a match.** Force epsilon to zero for competitive
   play, or play with the trained residual epsilon (~0.0135 after 2000 games)?
-- **D6 — Barriers.** Phase 5's tables never saw an interior barrier because
+- **D6 — Barriers. RULED: config-driven via `max_barriers`.** Note this does
+  not change behaviour today: no barrier is ever placed, so the cap is
+  unapproached and both peers play a bare board.
+- **D6 (original framing).** Phase 5's tables never saw an interior barrier because
   `GameEpisode.reset()` places none. If the simulation places barriers, the
   peers play a board their tables were not trained on. Recommendation: keep
   the board barrier-free for Phase 6 so the simulation tests the PROTOCOL,
