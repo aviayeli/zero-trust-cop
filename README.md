@@ -300,8 +300,8 @@ never produces an artifact.)
 
 | Discipline | State |
 |---|---|
-| Test suite | **432 tests**, all passing (unit → live two-process HTTP) |
-| Line limit | every one of the **102** tracked Python files ≤ **150 lines** (max: 148) |
+| Test suite | **459 tests**, all passing (unit → live two-process HTTP) |
+| Line limit | every one of the **106** tracked Python files ≤ **150 lines** (max: 149) |
 | TDD | strict red→green: every implementation change preceded by a confirmed failing test |
 | Hyperparameters | zero tunables inlined in Python — all in `config/game.json` / per-peer `game.toml` |
 | Lifecycle | PRD → PLAN → TODO under `docs/`, per phase |
@@ -309,7 +309,7 @@ never produces an artifact.)
 ### Mutation testing as a review gate
 
 Passing tests are treated as a *claim*, verified by breaking the code and
-requiring the suite to notice. Across phases 5–6, **22+ targeted mutants**
+requiring the suite to notice. Across phases 5–6, **26+ targeted mutants**
 were introduced and all killed, including: dense per-turn rewards, disabled
 signature verification, a removed reveal-before-commit gate, `crypto.verify`
 forced true, the plaintext tool re-registered, an inert divergence detector,
@@ -359,7 +359,7 @@ configured for pytest; standalone scripts take `PYTHONPATH=src`.
 
 ```bash
 .venv/bin/python -m pytest -q
-# expected: 432 passed
+# expected: 459 passed
 ```
 
 (Includes the live-transport tests: they spawn both peer processes on
@@ -411,6 +411,68 @@ To see it refuse a forgery, edit any `intent`, `move`, `signature`, or result
 field in a *copy* of the log and re-run — it prints `TAMPERED!` with the
 exact turn and reason, and exits 1.
 
+### 6 — Watch the replay on the terminal grid (`--render`)
+
+| Flag | Effect |
+|---|---|
+| `--render` | draw each turn on an ASCII board before reporting the verdict |
+| `--render-delay N` | seconds between turns (default `0.5`; `0` renders instantly) |
+| `--step` | wait for **Enter** between turns instead of pausing |
+
+```bash
+PYTHONPATH=src .venv/bin/python -m scripts.replay_match \
+    logs/groupa/log_ztc001_g01.json --render --render-delay 0.5
+```
+
+```
+legend: C=cop T=thief X=capture #=barrier .=clear 1-9=scent
+
+── Turn 3 ──────────────────────────────
+  police move=E     commit=OK signature=OK  intent='east'
+  thief  move=N     commit=OK signature=OK  intent='south'
+
+    . C 8 T 8 3 .
+    . 3 9 9 9 3 .
+    . 3 7 9 7 3 .
+    . . 3 7 3 . .
+    . . . 3 . . .
+    . . . . . . .
+    . . . . . . .
+
+    cop=(0, 1)  thief=(0, 3)
+
+… Turn 5 …
+
+    3 9 X 9 9 5 .
+    . 5 9 9 9 2 .
+    . 2 9 9 6 2 .
+
+    cop=(0, 2)  thief=(0, 2)  ** CAPTURED **
+
+Verified OK
+```
+
+Scent levels `1`–`9` come from the real `PheromoneField`, so the thief's
+trail visibly thickens and decays as the match runs. Two properties become
+legible that plain output hides: the thief's **deception** (`move=N` while
+`intent='south'` — always inverted, §1), and per-turn tampering, flagged in
+place rather than only in the summary:
+
+```
+  thief  move=N     commit=OK signature=!!  intent='south'
+...
+TAMPERED!
+  - turn 2 thief: signature invalid          (exit 1)
+```
+
+The renderer steps a **fresh `GameEpisode` from the logged moves** rather than
+reading the recorded positions — a view that echoed the file would draw a
+forged match exactly as its author intended. Two tests falsify a recorded
+position while leaving the moves genuine to hold that line.
+
+Rendering is purely additive: without `--render` the tool is byte-for-byte
+the same fast cryptographic check (~0.06 s), pinned by test.
+
 ---
 
 ## Repository layout
@@ -426,7 +488,7 @@ src/strategy/         Q-learning, pheromones, belief, private settings
 src/agent/            the policy layer consuming both
 src/mcp_server/       crypto, identity, commitment book, gate, tools, server
 src/scripts/          trainer, match harness, log writer, replay verifier
-tests/                63 test modules mirroring the source layout
+tests/                66 test modules mirroring the source layout
 ```
 
 ## Known limitations (stated, not hidden)
