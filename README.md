@@ -300,8 +300,8 @@ never produces an artifact.)
 
 | Discipline | State |
 |---|---|
-| Test suite | **493 tests**, all passing (unit → live two-process HTTP) |
-| Line limit | every one of the **111** tracked Python files ≤ **150 lines** (max: 149) |
+| Test suite | **502 tests**, all passing (unit → live two-process HTTP) |
+| Line limit | every one of the **112** tracked Python files ≤ **150 lines** (max: 149) |
 | TDD | strict red→green: every implementation change preceded by a confirmed failing test |
 | Hyperparameters | zero tunables inlined in Python — all in `config/game.json` / per-peer `game.toml` |
 | Lifecycle | PRD → PLAN → TODO under `docs/`, per phase |
@@ -359,7 +359,7 @@ configured for pytest; standalone scripts take `PYTHONPATH=src`.
 
 ```bash
 .venv/bin/python -m pytest -q
-# expected: 493 passed
+# expected: 502 passed
 ```
 
 (Includes the live-transport tests: they spawn both peer processes on
@@ -488,7 +488,7 @@ src/strategy/         Q-learning, pheromones, belief, private settings
 src/agent/            the policy layer consuming both
 src/mcp_server/       crypto, identity, commitment book, gate, tools, server
 src/scripts/          trainer, match harness, log writer, replay verifier
-tests/                69 test modules mirroring the source layout
+tests/                70 test modules mirroring the source layout
 ```
 
 ## Known limitations (stated, not hidden)
