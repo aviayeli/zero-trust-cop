@@ -2,6 +2,7 @@
   "artifact_version": 1,
   "game_id": "ztc001",
   "game_number": 1,
+  "game_uid": "ztc001",
   "group_id": "groupa",
   "turns": [
     {
@@ -23,19 +24,19 @@
       },
       "submissions": {
         "police": {
-          "h_commit": "7c95c8a42089e0a533955642bb80368228cd50e6dc5b97113ea42631623d3ed6",
+          "h_commit": "32d48b16fbd4d4031c172a7dcd6f5ca2a7671368c03ff36cedfc2c1f38cd07e3",
           "intent": "truth",
           "move": "MOVE:N",
-          "nonce": "c60eeed22cd40832f42c15c8e0a282bd",
-          "signature": "b5793091555271d364b5cef3fb236f54ed0f9174040f3632775ad33fe7d98b9f4438ed5443b04bdb910d700784c679d10ab86b16cff3f473c9c0f9f5d53e9f08",
+          "nonce": "a3297622fa5cccd9fd57f1c7ebae0b1c",
+          "signature": "923f15fc406751eeb588d48aa1bdfa40110cd88a31f46efa7741258114c1ae82153c28be71e1f2e76f731685748ee80ef40c88c810803c57baf6d9c37032710c",
           "state": "0|(0, 0)|(3, 3)"
         },
         "thief": {
-          "h_commit": "0223dbf6a729ca6c060927c7a29fb94e8da4d28b9e06572d2e95795e62f137cd",
+          "h_commit": "23e3bfd9f9f8b50d1ecc212c976001ee28c58bb647fd04f953e942fb23e9ce57",
           "intent": "lie",
           "move": "MOVE:N",
-          "nonce": "87910b39a41d124575f4fb5c0f76d601",
-          "signature": "197726da6b4e49ae2c11a73e0c1ce1c72b2d293aac506b9dcf5ee0be1eea7c7088720d56ba19408d21dacf3ebc90846a3496639da2c606ad1217fe19fffbe008",
+          "nonce": "b193c045bab96d089ed0c23c70530c40",
+          "signature": "efbdd8fe71ab808d598912ff11537f911e1b070e27c79e40f9065cb6aa0086fdeb596983884e39d48e2a27433059db20d098a50b1912b0a3ed0d64386e6fbe0f",
           "state": "0|(3, 3)|(0, 0)"
         }
       },
@@ -60,19 +61,19 @@
       },
       "submissions": {
         "police": {
-          "h_commit": "6ccb91ac57aa11cae473f8bf59ddc7b8a69d3fa4694639b8aea0a188d9a3e7b5",
+          "h_commit": "b796a3e0414ad2f5f8c4668d5f79e09546135544de16e0a82e1b1fd9e5489f24",
           "intent": "truth",
           "move": "MOVE:N",
-          "nonce": "671a465966f5168d469c375d1718a23d",
-          "signature": "e742bd37bfe9ca463604868e9afe0bc80a0e6b75ce2964d322f023719af36eb19f91f137326c818dd863b0076055acbeae6216e467985f112ea29f42297f2c03",
+          "nonce": "d580bdb1fe0093bbdf243afc7491934a",
+          "signature": "12d7dfa9f1b1235036b0ff6e1cf4fdcaa79da58988bab07e9b4141b2baa319dfe01183d33911bb7527272e4a06658ab09f8767b2d55b4dbe034a5aaad698cc05",
           "state": "1|(0, 0)|(2, 3)"
         },
         "thief": {
-          "h_commit": "45699dadb8f11ea0cd10e93e728a9270e853ba144e6693ba0631c574cdcac844",
+          "h_commit": "3c6f385b2c71f0751dfe8a55c36e635f786dcf46d36e354d3054ac45e09a329e",
           "intent": "lie",
           "move": "MOVE:N",
-          "nonce": "b22f2efe46b7b24c48d8e1620aaab328",
-          "signature": "b245d91145fd0ffdb95d0706d658f05b5629583ead3839041eccf50681e15545766607e3c59c8903e2391ba912861d4289ddc799b0c16131abde4fe600ed910c",
+          "nonce": "22190408d4ddb135fe618eb9fa04c5e5",
+          "signature": "ffbd7180754a55017a2ca68a381639c08bd9a5f385846a3582e12cba85811bd476a07b10427bf339c19e96184b2a3be5c19889044fe1faddc13266ec7c01ff08",
           "state": "1|(2, 3)|(0, 0)"
         }
       },
@@ -97,19 +98,19 @@
       },
       "submissions": {
         "police": {
-          "h_commit": "5dcab8387ca2d1fd085b78dd502a32961682b1f0a9aad63c3d9776847fc3b9ad",
+          "h_commit": "9848571889a4b5553ed549b36a4771827d74b401840804a70d42d175196dcb28",
           "intent": "truth",
           "move": "MOVE:E",
-          "nonce": "2799af42c3ed528fa8686176e75fc821",
-          "signature": "9f2f9e6d2e5ff4cb901ec63943b118ba0fabb613209da17863a8bf19ee1796b5672ef2da2a668fec6fe57ecd892504d97e6b79babe671cdd95fb1aaafa6df503",
+          "nonce": "f585529ba3a9c9f1d2e913e9b3583ea1",
+          "signature": "669359830a8897878b92fe6481569ac6af9bcbe20b9e4f8d3559a74a5c2331acb74c23ec495f18f6d74d67a9518e78b8dae8ef759d78c056b6300570fcfd6501",
           "state": "2|(0, 0)|(1, 3)"
         },
         "thief": {
-          "h_commit": "7b5722d124d57ab679b6859a6e01900a589899cdf5ddfdddcb9d92a6dd1d6143",
+          "h_commit": "c0f3b1ca8243ea1c203f3a788e29f063e982fbfac46987a234a4bd6bb3a6786d",
           "intent": "lie",
           "move": "MOVE:N",
-          "nonce": "97dbee88d177a78b0393c14473286189",
-          "signature": "7c80948a602cfad39a8a08733da05bea7b1717dc14a5cb3ea99b66b9695e357cec2a576cc94e7b2234c38b45497208c39e36e8f57962aaff2e760781227d6803",
+          "nonce": "99a216a46ac627acd041f8f3c4559ebb",
+          "signature": "81c8d157d470ed4415608c048b6d4020c17382a21a170f8c3a2673f597c39185fd221487215463c4f70f8856b6b7c025e6b5cbdbd914361fb2b9505670fa8c04",
           "state": "2|(1, 3)|(0, 0)"
         }
       },
@@ -134,19 +135,19 @@
       },
       "submissions": {
         "police": {
-          "h_commit": "e719b937f30490fa85df6cae55b470a93ed3be545895a8e8c4119489efd2aa91",
+          "h_commit": "d5189c809122beddfa5c3477abe700751be051cf43c87f131390553592665409",
           "intent": "truth",
           "move": "MOVE:E",
-          "nonce": "fe23559a16655ea0c86dc8ed78d2f185",
-          "signature": "b40fc813128351a7ad3a8be9e7f362845423b2d899fe2a1defca3b1eb64367f14d37bf6022b7acd73f9bc6f1a18364e10c7171741ce94c45350e3dd32762cb04",
+          "nonce": "b3e99270af38493d2c3080bcd4b65746",
+          "signature": "8721a5d3d8d194adaa3b813d3d6b5d0b07c72968e8f2c4e5921807d28dac0bc3d7db05bb4e68f09193230a576702caccff0276c5ca7ecac0a6a3cf79284b890e",
           "state": "3|(0, 1)|(0, 3)"
         },
         "thief": {
-          "h_commit": "5637fd1277bf47c38d5c959c88998659a583150aeda68cf9d703ee3612b14d18",
+          "h_commit": "42ddb5a6f98ae372c36a08b08f7c9d1f7bf47689ae55dc08059f9b7146dad367",
           "intent": "lie",
           "move": "MOVE:N",
-          "nonce": "33677d1f4aa5331685bcffdbac3ea4cb",
-          "signature": "1f11e11a2cac8f41c575bf524e712251492bb49c43207c5ee03e59e8d3d33a2ae6704a795298a6523e0d2376f265102dd95afde24032ddef77e8534a4786430b",
+          "nonce": "19c1727eb33380a3c4c9b63cdc1cd76c",
+          "signature": "5171073917a3531181d5706c6b5b63a6180e24f4f3e5945e9ce3798e64bd0f449d878d85c285a46c6eb513506fb6859d6db0716a5df568762571ed2c9007510b",
           "state": "3|(0, 3)|(0, 1)"
         }
       },
@@ -171,19 +172,19 @@
       },
       "submissions": {
         "police": {
-          "h_commit": "577644ad01667cbbd09533d0dfdf7259388693a6f1d18700ac8ee1fffc4ce419",
+          "h_commit": "8c5b04abc2ef650adc61469d5083aafdfa1e6fceb29915d085703304b4e8db2c",
           "intent": "truth",
           "move": "MOVE:N",
-          "nonce": "cc131332c90a9c2663e71d6224371f2c",
-          "signature": "e85cf57c7869176feff46cb27e5ba4e91de3ed74c68b84c517f25771674afbc9ca49d2eba174a6859530d4fd7751d4226b1ff0fb91018fed5201fff2a14e0a01",
+          "nonce": "8387a7756629134a9e8d871aa333aff3",
+          "signature": "9beb5b1d4030c8a7206212c1b8cf677a80c01e02f5be369cec656ac95915657a0abbca2931b09dcc328e8a495d84d13f713974990f06326ebd65f84ca7ed380c",
           "state": "4|(0, 2)|(0, 3)"
         },
         "thief": {
-          "h_commit": "e9ddc2fe4974a45984a168907bad949b1b02849559e067ffd8dde3884e8cb0c0",
+          "h_commit": "448555ddde7a0ca3cf02a8e3db3afcea634ed5f1c3e6a5291b96cf1752363653",
           "intent": "lie",
           "move": "MOVE:W",
-          "nonce": "a627b5277ab458a81df58f2b05c2302e",
-          "signature": "dc69012df2294663388a82fc7061c918e6edccc9ae2b3eaa1291c3b091e6cebdb4b476d88b9c431608cab2e2e5c8aba006bdb49c9c58ed9d7a09c2ead7783608",
+          "nonce": "7663a6eea79f090d86802d8ce587eb55",
+          "signature": "6dae1a6389551a79c0de5a8b8c8241ca040309c98ccff53d3d9f930b23dad817f7ff031d6fb8b7147f0994764defab145603b3395a188330d03629f7bcd45400",
           "state": "4|(0, 3)|(0, 2)"
         }
       },

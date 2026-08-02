@@ -53,11 +53,22 @@ def test_commit_hides_the_move_across_calls():
     assert first != second
 
 
-def test_digest_matches_independently_computed_canonical_json():
-    """Pins the wire format: the other group's peer must agree byte for byte."""
+def test_digest_matches_independently_computed_positional_concatenation():
+    """Pins the wire format (Rulebook 5.3): the other group must agree byte
+    for byte. Computed here from a literal f-string rather than by calling the
+    module's own helper, so the test cannot drift along with the code."""
     h_commit, nonce = commit(STATE, MOVE, INTENT)
-    expected = hashlib.sha256(_canonical(STATE, MOVE, INTENT, nonce)).hexdigest()
+    expected = hashlib.sha256(
+        f"{STATE}{MOVE}{INTENT}{nonce}".encode()
+    ).hexdigest()
     assert h_commit == expected
+
+
+def test_a_legacy_json_sealed_digest_is_still_accepted():
+    """Backwards compatibility: artifacts sealed before 5.3 must still verify."""
+    nonce = "abc123"
+    legacy = hashlib.sha256(_canonical(STATE, MOVE, INTENT, nonce)).hexdigest()
+    assert verify(STATE, MOVE, INTENT, nonce, legacy) is True
 
 
 # --- verify: honest reveal --------------------------------------------------

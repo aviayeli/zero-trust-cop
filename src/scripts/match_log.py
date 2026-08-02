@@ -14,12 +14,12 @@ but the file and the peers' public keys.
 
 import json
 import os
-import shutil
 
 from mcp_server.declaration import github_commit, write_declaration
 from mcp_server.repos import load_repos
 
 ARTIFACT_VERSION = 1
+ARTIFACT_KINDS = ("declaration", "config", "log", "result")
 _SUBMISSION_FIELDS = ("h_commit", "signature", "state", "move", "intent", "nonce")
 
 
@@ -50,6 +50,7 @@ def build_log(game_id, game_number, history, group_id) -> dict:
     """Assemble the replayable per-game log payload."""
     return {
         "artifact_version": ARTIFACT_VERSION,
+        "game_uid": game_id,
         "game_id": game_id,
         "game_number": game_number,
         "group_id": group_id,
@@ -62,6 +63,7 @@ def build_result(game_id, game_number, history, group_id) -> dict:
     final = history[-1]["result"]
     return {
         "artifact_version": ARTIFACT_VERSION,
+        "game_uid": game_id,
         "game_id": game_id,
         "group_id": group_id,
         "github_commit": github_commit(),
@@ -77,6 +79,18 @@ def build_result(game_id, game_number, history, group_id) -> dict:
             }
         ],
     }
+
+
+def _stamp_config(config_root, group_dir, suffix, game_uid) -> str:
+    """Snapshot the shared contract, stamped with the run's identity.
+
+    Copied rather than referenced so the artifact records what the match
+    ACTUALLY ran under, and stamped so all four files tie together.
+    """
+    with open(os.path.join(config_root, "game.json")) as shared:
+        snapshot = json.load(shared)
+    snapshot["game_uid"] = game_uid
+    return _dump(os.path.join(group_dir, f"config_{suffix}.json"), snapshot)
 
 
 def _dump(path, payload) -> str:
@@ -96,13 +110,9 @@ def write_artifacts(
     suffix = f"{game_id}_g{game_number:02d}"
     root = config_root or "config"
 
-    shutil.copyfile(
-        os.path.join(root, "game.json"),
-        os.path.join(group_dir, f"config_{suffix}.json"),
-    )
     return {
         "declaration": write_declaration(game_id, group_dir, config_root),
-        "config": os.path.join(group_dir, f"config_{suffix}.json"),
+        "config": _stamp_config(root, group_dir, suffix, game_id),
         "log": _dump(
             os.path.join(group_dir, f"log_{suffix}.json"),
             build_log(game_id, game_number, history, group_id),

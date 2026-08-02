@@ -42,7 +42,12 @@ the other, and they meet only over the authenticated wire.
 | Role | Repository |
 |---|---|
 | **Cop / police** (this repo) | https://github.com/aviayeli/zero-trust-cop |
-| **Thief** | https://github.com/aviayeli/zero-trust-thief |
+| **Thief / evader** — *cross-link* | **https://github.com/aviayeli/zero-trust-thief** |
+
+> **Cross-repository link:** the evading half of this pair lives at
+> **https://github.com/aviayeli/zero-trust-thief**. Both peers share one
+> engine and one wire protocol; they differ in which policy they load and
+> which `config/<role>/` workspace they run from.
 
 Both URLs are declared once in each peer's `config/<role>/game.toml` under
 `[game.repos]`, and are emitted into `declaration_<game_id>.json` and
@@ -72,6 +77,41 @@ the classic pursuit–evasion family:
   (≤ 15 words) whose honesty is never guaranteed: the cop states its true
   direction, the thief states the opposite (`STAY` maps to `STAY` — a
   deterministic deception baseline with a documented honest hole).
+
+### Formal Dec-POMDP model
+
+The match is the tuple $\langle n, S, \{A_i\}, P, R, \{\Omega_i\}, O, \gamma \rangle$:
+
+| Symbol | Instantiation here |
+|---|---|
+| $n$ | $2$ agents — $i \in \{\text{cop}, \text{thief}\}$ |
+| $S$ | $\{(c, t, B, k)\}$ — cop cell $c$, thief cell $t$ on the $7 \times 7$ grid, barrier set $B \subseteq \text{cells}$, turn index $k \le 35$ |
+| $A_i$ | $\{\texttt{N}, \texttt{S}, \texttt{E}, \texttt{W}, \texttt{STAY}\}$, identical for both agents |
+| $P$ | **Transition function** $P(s' \mid s, a_{\text{cop}}, a_{\text{thief}})$. **Deterministic**: each agent's intended cell is resolved independently, and an illegal target (off-board or in $B$) collapses to $\texttt{STAY}$; the turn then terminates iff the resolved cells coincide or the agents swapped. So $P(s' \mid s, \vec{a}) \in \{0, 1\}$ for every $(s, \vec{a})$ |
+| $R$ | $R_{\text{cop}}$: $+20$ capture, $+5$ survival. $R_{\text{thief}}$: $+5$ capture, $+10$ survival. $0$ on technical loss. **Sparse** — paid only on the terminating transition |
+| $\Omega_i$ | Own cell, the opponent's **last resolved** cell, the barrier mask of the four adjacent cells, and the opponent's committed $\langle \textit{move}, \textit{intent} \rangle$ |
+| $O$ | **Observation probability** $O(o_i \mid s', \vec{a})$. **Deterministic** ($\in \{0,1\}$) and *lagging*: a peer observes the opponent's position as of the last resolved turn, never mid-turn. Honesty is not observable — $\textit{intent}$ is self-reported and may be a lie |
+| $\gamma$ | $0.9$ (`discount_factor`, `config/<role>/game.toml`) |
+
+Both $P$ and $O$ are degenerate distributions: the environment is
+deterministic, and *partial observability — not stochasticity — is the entire
+source of difficulty*. Neither agent can see the other's move before
+committing to its own, which is exactly what the commit–reveal protocol (§2)
+enforces cryptographically.
+
+### Two grids, not one
+
+Two $5 \times 5$-vs-$7 \times 7$ sizes are easy to conflate:
+
+| Grid | Size | Meaning |
+|---|---|---|
+| **Board** | $7 \times 7$ | the playing field; what the GUI renders (49 cells) |
+| **Scent kernel** | $5 \times 5$ | `pheromone_grid_size = 5` — the emission *footprint* stamped around an observed opponent, centre intensity $0.90$, decay $0.10$/turn |
+
+The kernel is a $5 \times 5$ **stamp applied onto** the $7 \times 7$ board, not
+a board of its own; it is clipped at the edges, never wrapped. Overlapping
+stamps accumulate, so a cell's concentration can exceed $0.90$ (peak $2.41$
+observed) — it is a concentration, not a normalised probability.
 
 ### The architecture
 
@@ -130,7 +170,7 @@ Every one of these is closed by a specific mechanism with a specific test.
 Each turn is two-phase. Both peers first publish a **commitment**:
 
 ```
-h_commit = SHA-256(canonical_json(state, move, intent, nonce))
+h_commit = SHA256( State || Move || Intent || Nonce )   # Rulebook 5.3
 ```
 
 The payload states a **direction** and an **honesty flag** separately
@@ -363,8 +403,8 @@ never produces an artifact.)
 
 | Discipline | State |
 |---|---|
-| Test suite | **595 tests**, all passing (unit → live two-process HTTP) |
-| Line limit | every one of the **127** tracked Python files ≤ **150 lines** (max: 149) |
+| Test suite | **614 tests**, all passing (unit → live two-process HTTP) |
+| Line limit | every one of the **129** tracked Python files ≤ **150 lines** (max: 149) |
 | TDD | strict red→green: every implementation change preceded by a confirmed failing test |
 | Hyperparameters | zero tunables inlined in Python — all in `config/game.json` / per-peer `game.toml` |
 | Lifecycle | PRD → PLAN → TODO under `docs/`, per phase |
@@ -422,7 +462,7 @@ configured for pytest; standalone scripts take `PYTHONPATH=src`.
 
 ```bash
 .venv/bin/python -m pytest -q
-# expected: 595 passed
+# expected: 614 passed
 ```
 
 (Includes the live-transport tests: they spawn both peer processes on
@@ -552,8 +592,10 @@ PYTHONPATH=src .venv/bin/python -m gui.live_heatmap logs/groupa/log_ztc001_g01.j
 PYTHONPATH=src .venv/bin/python -m gui.replay logs/groupa/log_ztc001_g01.json
 ```
 
-**Live Belief Heatmap** — every cell is shaded red in proportion to that
-cell's pheromone concentration, which decays each turn, so the thief's trail
+**Live Belief Heatmap** — renders the $7 \times 7$ **board** (49 cells); the
+$5 \times 5$ figure in the spec is the *scent kernel* stamped onto it, not the
+display size (see §1, "Two grids, not one"). Every cell is shaded red in
+proportion to that cell's pheromone concentration, which decays each turn, so the thief's trail
 builds and fades as the match runs. The field is a *concentration*, not a
 normalised probability (overlapping kernels reach 2.41 on a real match), so
 the shading clamps rather than claiming a probability it does not compute.
@@ -586,7 +628,7 @@ src/strategy/         Q-learning, pheromones, belief, private settings
 src/agent/            the policy layer consuming both
 src/mcp_server/       crypto, identity, commitment book, gate, tools, server
 src/scripts/          trainer, match harness, log writer, replay verifier
-tests/                75 test modules mirroring the source layout
+tests/                77 test modules mirroring the source layout
 ```
 
 ## Known limitations (stated, not hidden)

@@ -92,10 +92,17 @@ def test_write_uses_required_game_id_and_exact_filename(tmp_path):
 
 
 def test_written_file_round_trips_with_exact_schema(tmp_path):
+    """The WRITTEN file adds game_uid; build_declaration alone does not.
+
+    The identifier is a property of the run, not of the declaration content,
+    which is why it is stamped at write time and why the two key sets differ
+    by exactly that one field.
+    """
     path = declaration.write_declaration("match-8", str(tmp_path))
     with open(path, encoding="utf-8") as artifact:
         payload = json.load(artifact)
-    assert set(payload) == EXPECTED_KEYS
+    assert set(payload) == EXPECTED_KEYS | {"game_uid"}
+    assert payload["game_uid"] == "match-8"
     assert set(payload["repos"]) == {"cop", "thief"}
     assert set(payload["mcp_servers"]) == {"cop", "thief"}
     assert set(payload["hardware"]) == {"type", "os", "cpu", "ram", "gpu_vram"}

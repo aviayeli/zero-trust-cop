@@ -1,6 +1,7 @@
 {
   "artifact_version": 1,
   "game_id": "ztc001",
+  "game_uid": "ztc001",
   "games": [
     {
       "captured": true,
@@ -17,7 +18,7 @@
       "turns": 5
     }
   ],
-  "github_commit": "0524c4c9912753c48bb3048c19fa3ec05eba5f38",
+  "github_commit": "bfdd8b17bf09a234c952ca885bfb13a8c6f08b55",
   "group_id": "groupa",
   "repos": {
     "cop": "https://github.com/aviayeli/zero-trust-cop",

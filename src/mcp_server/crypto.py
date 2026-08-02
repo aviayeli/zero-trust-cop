@@ -2,8 +2,8 @@
 
 The two peers move simultaneously with no trusted arbiter, so neither may be
 able to choose its move after learning the opponent's. Each peer publishes
-h_commit — a SHA-256 digest binding (state, move, intent) to a fresh secret
-nonce — and reveals (move, intent, nonce) only once both commitments have been
+h_commit — SHA256(State || Move || Intent || Nonce), binding the move and the
+honesty flag to a fresh secret nonce — and reveals (move, intent, nonce) only once both commitments have been
 exchanged. The opponent recomputes the digest to confirm the revealed move is
 the one that was committed.
 
@@ -26,12 +26,27 @@ def canonical_json(payload: dict) -> bytes:
     return json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
 
 
-def _canonical_payload(state: str, move: str, intent: str, nonce: str) -> bytes:
-    """The exact byte string both peers hash.
+def positional_payload(state: str, move: str, intent: str, nonce: str) -> bytes:
+    """The exact byte string both peers hash: ``State || Move || Intent || Nonce``.
 
-    Any divergence here silently breaks interop between the two groups'
-    implementations, so the serialization is pinned: sorted keys and no
-    whitespace, giving one canonical form per payload.
+    Rulebook 5.3 specifies literal positional concatenation, so that is what
+    is emitted. Any divergence here silently breaks interop between the two
+    groups' implementations -- and cannot be caught by either group alone,
+    since each verifies against its own serialization.
+
+    Caveat inherent to the specified format: plain concatenation has no field
+    delimiters, so boundaries are positional only. The trailing nonce is
+    fixed-length and ``intent`` is one of two known words, which bounds the
+    ambiguity in practice, but a delimited form would be strictly safer.
+    """
+    return f"{state}{move}{intent}{nonce}".encode()
+
+
+def _legacy_payload(state: str, move: str, intent: str, nonce: str) -> bytes:
+    """The superseded sorted-key JSON form, retained for verification only.
+
+    Artifacts sealed before the 5.3 alignment must stay verifiable; nothing
+    emits this form any more.
     """
     return canonical_json(
         {"state": state, "move": move, "intent": intent, "nonce": nonce}
@@ -46,7 +61,7 @@ def commit(state: str, move: str, intent: str) -> tuple[str, str]:
     it, the digest of a small move set would be trivially brute-forced.
     """
     nonce = token_hex(_NONCE_BYTES)
-    payload = _canonical_payload(state, move, intent, nonce)
+    payload = positional_payload(state, move, intent, nonce)
     return hashlib.sha256(payload).hexdigest(), nonce
 
 
@@ -57,6 +72,8 @@ def verify(state: str, move: str, intent: str, nonce: str, h_commit: str) -> boo
     through timing how many leading characters matched and hand an opponent a
     search gradient toward a colliding reveal.
     """
-    payload = _canonical_payload(state, move, intent, nonce)
-    expected = hashlib.sha256(payload).hexdigest()
-    return compare_digest(expected, h_commit)
+    for build in (positional_payload, _legacy_payload):
+        expected = hashlib.sha256(build(state, move, intent, nonce)).hexdigest()
+        if compare_digest(expected, h_commit):
+            return True
+    return False

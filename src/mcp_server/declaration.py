@@ -136,7 +136,8 @@ def write_declaration(
     """Write and return ``declaration_<game_id>.json`` in ``output_dir``."""
     os.makedirs(output_dir, exist_ok=True)
     path = os.path.join(output_dir, f"declaration_{game_id}.json")
+    payload = dict(build_declaration(config_root), game_uid=game_id)
     with open(path, "w", encoding="utf-8", newline="\n") as artifact:
-        json.dump(build_declaration(config_root), artifact, indent=2, sort_keys=True)
+        json.dump(payload, artifact, indent=2, sort_keys=True)
         artifact.write("\n")
     return path
