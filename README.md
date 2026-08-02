@@ -17,6 +17,20 @@ $ python -m scripts.replay_match logs/groupa/log_ztc001_g01.json
 Verified OK
 ```
 
+### Academic submission index
+
+| Required topic | Where |
+|---|---|
+| Dec-POMDP model & pursuit–evasion dynamics | [§1](#1-project-overview) |
+| FastMCP orchestration & wire protocol | [§4](#4-wire-protocol-and-local-p2p-simulation) |
+| Strategy (Q-learning, pheromone belief, deception) | [§3](#3-reinforcement-learning-and-convergence) |
+| Performance curves | [§3 — convergence](#empirical-convergence) |
+| Replay viewer output | [§6 step 6](#6--watch-the-replay-on-the-terminal-grid---render) |
+
+There is **no graphical GUI**: the replay viewer is a terminal ASCII renderer,
+and §6 step 6 shows its verbatim output rather than a screenshot of something
+that does not exist.
+
 ---
 
 ## 1. Project overview
@@ -195,11 +209,23 @@ Offline self-play, 2,000 games, seed `20260801`, ε decayed once per game.
 Cop capture rate per 200-game block:
 
 ```
-games    0– 200   10.5%
-games  200– 400   53.0%
-games  400– 600   94.0%
-games  600– 800   99.5%
-games  800–2000   ~100%   (99.5–100% for the final 1,200 games)
+capture rate, by 200-game block          seed 20260801
+100% ┤                    ●───●───●───●───●───●───●
+     │            ●───●
+ 75% ┤        ●
+     │
+ 50% ┤    ●
+     │
+ 25% ┤
+     │●
+  0% ┼────┬───┬───┬───┬───┬───┬───┬───┬───┬───
+     0   200 400 600 800 1k  1.2k 1.4k 1.6k 2k
+
+games    0– 200   10.5%      games 1000–1200   99.5%
+games  200– 400   53.0%      games 1200–1400  100.0%
+games  400– 600   94.0%      games 1400–1600  100.0%
+games  600– 800   99.5%      games 1600–1800  100.0%
+games  800–1000  100.0%      games 1800–2000  100.0%
 ```
 
 The committed deliverables `data/q_table_police.json` (160 entries, 147
@@ -300,8 +326,8 @@ never produces an artifact.)
 
 | Discipline | State |
 |---|---|
-| Test suite | **502 tests**, all passing (unit → live two-process HTTP) |
-| Line limit | every one of the **112** tracked Python files ≤ **150 lines** (max: 149) |
+| Test suite | **511 tests**, all passing (unit → live two-process HTTP) |
+| Line limit | every one of the **113** tracked Python files ≤ **150 lines** (max: 149) |
 | TDD | strict red→green: every implementation change preceded by a confirmed failing test |
 | Hyperparameters | zero tunables inlined in Python — all in `config/game.json` / per-peer `game.toml` |
 | Lifecycle | PRD → PLAN → TODO under `docs/`, per phase |
@@ -359,7 +385,7 @@ configured for pytest; standalone scripts take `PYTHONPATH=src`.
 
 ```bash
 .venv/bin/python -m pytest -q
-# expected: 502 passed
+# expected: 511 passed
 ```
 
 (Includes the live-transport tests: they spawn both peer processes on
@@ -488,7 +514,7 @@ src/strategy/         Q-learning, pheromones, belief, private settings
 src/agent/            the policy layer consuming both
 src/mcp_server/       crypto, identity, commitment book, gate, tools, server
 src/scripts/          trainer, match harness, log writer, replay verifier
-tests/                70 test modules mirroring the source layout
+tests/                71 test modules mirroring the source layout
 ```
 
 ## Known limitations (stated, not hidden)
@@ -517,6 +543,20 @@ tests/                70 test modules mirroring the source layout
 - **The thief's deception is deterministic** and therefore predictable — a
   belief tracker drives its honesty score to 0 and inverts it. It is the
   specified baseline, not a strong strategy.
+- **A match log is reproducible in trajectory, not byte-for-byte.** Re-running
+  a seeded match reproduces every move and every per-turn result exactly
+  (verified by diffing the regenerated artifact), but the commitment nonces
+  come from `secrets.token_hex` and are deliberately unseedable — a
+  predictable nonce would let an opponent brute-force a commitment over the
+  five-element move set and destroy the anti-front-running property. So
+  digests and signatures differ between runs by design. The Q-tables, which
+  carry no nonces, *are* byte-reproducible from their seed.
+- **Peers bind loopback by default.** `host = "127.0.0.1"` in each peer's
+  `[transport]` block keeps a local match off the network. For a live remote
+  match through a tunnel (ngrok, Localtonet), set `host = "0.0.0.0"` in that
+  peer's `config/<role>/game.toml` and point the tunnel at its port. This is
+  a deliberate opt-in: the wire is authenticated but not encrypted, so
+  exposing a peer publicly is a decision, not a default.
 - **Local simulation ≠ interop.** A passing local match proves our two peers
   agree with each other, not that either matches an external group's schema
   reading. The `config_*`/`log_*`/`result_*` artifact field layouts are this

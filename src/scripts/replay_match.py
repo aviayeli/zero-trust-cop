@@ -18,6 +18,8 @@ reconstruction step by step; it changes no verdict.
 
 import argparse
 import json
+import os
+import sys
 from dataclasses import dataclass, field
 
 from engine.config import load_config
@@ -33,6 +35,26 @@ from scripts.render_replay import DEFAULT_DELAY, pause_for, render_replay
 
 VERIFIED = "Verified OK"
 TAMPERED = "TAMPERED!"
+_GREEN, _RED, _RESET = "\033[32m", "\033[31m", "\033[0m"
+
+
+def colour_enabled(stream=None) -> bool:
+    """Colour only a real terminal, and never when NO_COLOR is set.
+
+    Piped, redirected and pytest-captured output must stay byte-clean, or
+    escape sequences leak into logs and into assertions on stdout.
+    """
+    if os.environ.get("NO_COLOR"):
+        return False
+    stream = sys.stdout if stream is None else stream
+    return bool(getattr(stream, "isatty", lambda: False)())
+
+
+def colourise(verdict: str, ok: bool, enabled: bool) -> str:
+    """Wrap a verdict in green (pass) or red (fail) when colour is on."""
+    if not enabled:
+        return verdict
+    return f"{_GREEN if ok else _RED}{verdict}{_RESET}"
 
 
 @dataclass
@@ -98,7 +120,7 @@ def main(argv=None):
                       pause=pause_for(args.step))
 
     report = verify_log(log, config, public_keys)
-    print(report)
+    print(colourise(str(report), report.ok, colour_enabled()))
     for failure in report.failures:
         print(f"  - {failure}")
     raise SystemExit(0 if report.ok else 1)

@@ -87,6 +87,15 @@ def _probe_commit() -> str:
         return _UNKNOWN
 
 
+def github_commit() -> str:
+    """The Step-0 commit hash, or the sentinel when git is unavailable.
+
+    Public so match artifacts can record the same provenance the declaration
+    does, without rebuilding the whole declaration (which probes hardware).
+    """
+    return _probe_string(_probe_commit, _UNKNOWN)
+
+
 def build_declaration(config_root: str | None = None) -> dict:
     """Return a complete, deterministic declaration payload."""
     root = _config_root(config_root)
@@ -109,7 +118,7 @@ def build_declaration(config_root: str | None = None) -> dict:
             "ram": _probe_string(_probe_ram, _UNKNOWN),
             "gpu_vram": _probe_string(_probe_gpu_vram, _NO_HARDWARE),
         },
-        "github_commit_hash": _probe_string(_probe_commit, _UNKNOWN),
+        "github_commit_hash": github_commit(),
         "timezone": _probe_string(
             lambda: datetime.datetime.now().astimezone().tzname(), _UNKNOWN
         ),
