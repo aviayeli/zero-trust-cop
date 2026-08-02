@@ -1,3 +1,9 @@
+# not sent: ModuleNotFoundError: No module named 'googleapiclient'
+To: rmisegal+uoh26finalgame@gmail.com
+Subject: [zero-trust] match report ztc001
+
+zero-trust match report for game_uid=ztc001
+
 {
   "artifact_version": 1,
   "game_id": "ztc001",

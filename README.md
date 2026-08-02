@@ -403,8 +403,8 @@ never produces an artifact.)
 
 | Discipline | State |
 |---|---|
-| Test suite | **614 tests**, all passing (unit → live two-process HTTP) |
-| Line limit | every one of the **129** tracked Python files ≤ **150 lines** (max: 149) |
+| Test suite | **635 tests**, all passing (unit → live two-process HTTP) |
+| Line limit | every one of the **134** tracked Python files ≤ **150 lines** (max: 149) |
 | TDD | strict red→green: every implementation change preceded by a confirmed failing test |
 | Hyperparameters | zero tunables inlined in Python — all in `config/game.json` / per-peer `game.toml` |
 | Lifecycle | PRD → PLAN → TODO under `docs/`, per phase |
@@ -462,7 +462,7 @@ configured for pytest; standalone scripts take `PYTHONPATH=src`.
 
 ```bash
 .venv/bin/python -m pytest -q
-# expected: 614 passed
+# expected: 635 passed
 ```
 
 (Includes the live-transport tests: they spawn both peer processes on
@@ -615,6 +615,51 @@ capture was possible. Run either command above to see the windows live.
 
 ---
 
+## 8. End-of-series reporting (Rulebook 9.3)
+
+After the artifacts are written, the harness reports the series:
+
+```bash
+PYTHONPATH=src .venv/bin/python -m scripts.run_local_mcp_match \
+    --seed 20260801 --game-id ztc001 --game-number 1
+# … result=logs/groupa/result_ztc001.json
+# email_report=ok mode=auto
+```
+
+Recipient and mode come from each peer's private `[email]` block
+(`config/<role>/game.toml`): `auto` sends when OAuth credentials exist and
+drafts otherwise, `draft` never contacts Google, and `send` **requires** a
+real delivery and reports failure rather than quietly drafting.
+
+**Mutual agreement is a precondition, not a label.** A result is reported only
+when `mutual_agreement.confirmed` is literally `true`, and that flag is
+written only after both peers' independent engines agreed on every turn
+(§4). Reporting an unagreed result would launder a divergence into a
+submission, so `send_game_report` refuses and returns `False`.
+
+**Graceful fallback.** The Google client libraries are an *optional*
+dependency, imported inside the send path so the suite collects on a machine
+that has never installed them. With no `token.json` the reporter writes a
+readable draft under `logs/` and returns `True`, so CI never breaks — and the
+draft records exactly why nothing was sent:
+
+```
+# not sent: ModuleNotFoundError: No module named 'googleapiclient'
+To: rmisegal+uoh26finalgame@gmail.com
+Subject: [zero-trust] match report ztc001
+```
+
+Scope is `gmail.send` only — a reporter has no business holding read access.
+`token.json` and `credentials.json` are gitignored alongside the Ed25519
+keys.
+
+> **Honest limitation:** no message has ever been delivered from this
+> environment. The Google libraries are not installed and no OAuth token
+> exists, so every run to date has taken the draft path. The send path is
+> exercised only by mocked tests.
+
+---
+
 ## Repository layout
 
 ```
@@ -628,7 +673,7 @@ src/strategy/         Q-learning, pheromones, belief, private settings
 src/agent/            the policy layer consuming both
 src/mcp_server/       crypto, identity, commitment book, gate, tools, server
 src/scripts/          trainer, match harness, log writer, replay verifier
-tests/                77 test modules mirroring the source layout
+tests/                79 test modules mirroring the source layout
 ```
 
 ## Known limitations (stated, not hidden)

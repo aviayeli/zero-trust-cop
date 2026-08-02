@@ -16,6 +16,12 @@ venv/
 # Environment / secrets
 .env
 
+# Google OAuth artifacts — bearer credentials, never committed
+token.json
+credentials.json
+config/*/token.json
+config/*/credentials.json
+
 # Ed25519 private key material
 *.pem
 config/*/signing_key*

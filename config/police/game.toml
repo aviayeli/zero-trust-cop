@@ -23,3 +23,11 @@ public_url = ""
 [game.repos]
 cop = "https://github.com/aviayeli/zero-trust-cop"
 thief = "https://github.com/aviayeli/zero-trust-thief"
+
+[email]
+# Where the end-of-series report goes.
+recipient = "rmisegal+uoh26finalgame@gmail.com"
+# auto  = send if credentials exist, otherwise write a local draft
+# draft = never send; always write the draft artifact
+# send  = require a real send; report failure rather than drafting
+mode = "auto"

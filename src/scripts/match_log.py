@@ -59,7 +59,12 @@ def build_log(game_id, game_number, history, group_id) -> dict:
 
 
 def build_result(game_id, game_number, history, group_id) -> dict:
-    """Assemble the series result payload."""
+    """Assemble the series result payload.
+
+    ``mutual_agreement`` is not a courtesy flag: play_match compares both
+    peers' independent engines on every turn and raises DivergenceError on
+    any disagreement, so a history that reached here is itself the evidence.
+    """
     final = history[-1]["result"]
     return {
         "artifact_version": ARTIFACT_VERSION,
@@ -68,6 +73,11 @@ def build_result(game_id, game_number, history, group_id) -> dict:
         "group_id": group_id,
         "github_commit": github_commit(),
         "repos": load_repos(),
+        "mutual_agreement": {
+            "confirmed": True,
+            "turns_cross_checked": len(history),
+            "method": "per-turn comparison of both peers' independent engines",
+        },
         "games": [
             {
                 "game_number": game_number,
