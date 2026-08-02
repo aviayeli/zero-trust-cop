@@ -404,7 +404,7 @@ never produces an artifact.)
 | Discipline | State |
 |---|---|
 | Test suite | **635 tests**, all passing (unit → live two-process HTTP) |
-| Line limit | every one of the **134** tracked Python files ≤ **150 lines** (max: 149) |
+| Line limit | every one of the **135** tracked Python files ≤ **150 lines** (max: 149) |
 | TDD | strict red→green: every implementation change preceded by a confirmed failing test |
 | Hyperparameters | zero tunables inlined in Python — all in `config/game.json` / per-peer `game.toml` |
 | Lifecycle | PRD → PLAN → TODO under `docs/`, per phase |
@@ -673,6 +673,7 @@ src/strategy/         Q-learning, pheromones, belief, private settings
 src/agent/            the policy layer consuming both
 src/mcp_server/       crypto, identity, commitment book, gate, tools, server
 src/scripts/          trainer, match harness, log writer, replay verifier
+scripts/              ops tooling: sync_repos.sh, thief_readme.py
 tests/                79 test modules mirroring the source layout
 ```
 
