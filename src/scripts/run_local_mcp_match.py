@@ -33,7 +33,7 @@ _ENGINE_ROLE = {"police": "cop", "thief": "thief"}
 
 def peer_url(binding) -> str:
     """Streamable-HTTP endpoint for one peer."""
-    return f"http://{binding.host}:{binding.port}/mcp"
+    return f"http://{binding.host}:{binding.my_port}/mcp"
 
 
 def build_clients(config, seed, config_root=None):

@@ -11,7 +11,7 @@ field cannot mask the rest of the report.
 
 from engine.game_loop import GameEpisode
 from mcp_server.crypto import verify
-from mcp_server.directions import is_move
+from mcp_server.directions import decode, is_wire_move
 from mcp_server.identity import verify_signature
 
 from scripts.log_shape import PEER_ROLES
@@ -90,11 +90,11 @@ def check_replay(log, config, failures) -> None:
     episode = GameEpisode(config)
     for index, turn in enumerate(log["turns"]):
         submissions = turn["submissions"]
-        moves = [submissions[r]["move"] for r in PEER_ROLES]
-        if not all(is_move(move) for move in moves):
+        wire = [submissions[r]["move"] for r in PEER_ROLES]
+        if not all(is_wire_move(move) for move in wire):
             failures.append(f"turn {index}: move outside the wire vocabulary")
             continue
-        result = episode.step(*moves)
+        result = episode.step(*(decode(move) for move in wire))
         if result is None:
             failures.append(f"turn {index}: replay produced no result")
             continue

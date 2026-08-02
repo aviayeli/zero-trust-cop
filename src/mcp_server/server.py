@@ -23,7 +23,7 @@ from mcp_server.match_state import MatchState
 from mcp_server.peer_keys import load_public_keys
 from mcp_server.peer_policy import build_peer_policy
 from mcp_server.submissions import SubmissionGate
-from mcp_server.transport import load_transport_settings
+from mcp_server.transport import load_network_settings
 from mcp_server.tools import register_tools
 
 
@@ -76,11 +76,11 @@ def create_app(role, config=None, config_root=None, clock=None):
     )
     policy = build_peer_policy(role, own_role, config, config_root)
 
-    binding = load_transport_settings(role, config_root)
+    binding = load_network_settings(role, config_root)
     mcp = FastMCP(
         f"zero-trust-cop-{role}",
         host=binding.host,
-        port=binding.port,
+        port=binding.my_port,
         log_level="ERROR",
     )
     tools = register_tools(mcp, gate, match_state, config, own_role)

@@ -12,11 +12,12 @@ num_games = 2000
 hint_max_words = 15
 match_exploration_rate = 0.0
 
-[transport]
+[network]
 host = "127.0.0.1"
-port = 8801
-# Public tunnel (ngrok / Localtonet) for live league matches.
-# Empty means loopback only; set host = "0.0.0.0" to expose the peer.
+my_port = 8801
+opponent_url = "http://127.0.0.1:8802/mcp"
+# Public tunnel (ngrok / Localtonet) for league matches. Empty means
+# loopback only; set host = "0.0.0.0" to expose this peer.
 public_url = ""
 
 [game.repos]

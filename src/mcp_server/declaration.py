@@ -20,6 +20,7 @@ import subprocess
 
 
 _UNKNOWN = "unknown"
+SYSTEM_SPEC = "system_spec"
 _NO_HARDWARE = "none"
 
 
@@ -113,12 +114,14 @@ def build_declaration(config_root: str | None = None) -> dict:
             "thief": declared["mcp_servers"]["thief"],
         },
         "hardware": {
+            "type": SYSTEM_SPEC,
             "os": _probe_string(platform.platform, _UNKNOWN),
             "cpu": _probe_string(_probe_cpu, _UNKNOWN),
             "ram": _probe_string(_probe_ram, _UNKNOWN),
             "gpu_vram": _probe_string(_probe_gpu_vram, _NO_HARDWARE),
         },
         "github_commit_hash": github_commit(),
+        "github_commit": github_commit(),
         "timezone": _probe_string(
             lambda: datetime.datetime.now().astimezone().tzname(), _UNKNOWN
         ),

@@ -5,7 +5,7 @@ what lets a peer be zero-trust about its opponent while still being able to
 prove its own submissions.
 
 The payload states a DIRECTION and an HONESTY flag separately (v3.0.0):
-``move`` is an engine token and ``intent`` is 'truth' or 'lie'. The flag is
+``move`` is the prefixed wire spelling and ``intent`` is 'truth'/'lie'. The flag is
 DERIVED by comparing the policy's UNTRUNCATED claim against the move it
 actually plays -- not hardcoded per role, so it stays correct if the
 deception policy changes, and not read off the truncated hint, which a small
@@ -15,7 +15,7 @@ hint_max_words could empty and make an honest peer look like a liar.
 from dataclasses import dataclass
 
 from mcp_server.crypto import commit
-from mcp_server.directions import LIE, TRUTH, token_for_claim
+from mcp_server.directions import LIE, TRUTH, encode, token_for_claim
 from mcp_server.identity import sign
 
 
@@ -54,10 +54,11 @@ class PeerClient:
     def prepare(self, turn, own_position, opponent_position, board) -> Submission:
         """Choose this turn's move and return its signed commitment."""
         state_key = self.policy.state_key(own_position, opponent_position, board)
-        move, _truncated_hint = self.policy.decide(state_key, self.rng)
+        token, _truncated_hint = self.policy.decide(state_key, self.rng)
 
-        claimed = token_for_claim(self.policy.intent_for_move(move))
-        intent = TRUTH if claimed == move else LIE
+        claimed = token_for_claim(self.policy.intent_for_move(token))
+        intent = TRUTH if claimed == token else LIE
+        move = encode(token)
         state = state_token(turn, own_position, opponent_position)
         h_commit, nonce = commit(state, move, intent)
         return Submission(

@@ -289,8 +289,10 @@ roughly one move in 74 to exploration.
 ### Transport
 
 Each peer is an independent **FastMCP** server on **streamable HTTP**, bound
-to configured local ports (`[transport]` in each peer's `game.toml`: police
-`127.0.0.1:8801`, thief `127.0.0.1:8802`). Tool parameter names are part of
+to configured local ports. The canonical block is `[network]` in each peer's
+`game.toml` — `my_port` is where that peer listens and `opponent_url` is where
+it reaches the other half (police 8801, thief 8802). `public_url` carries an
+ngrok/Localtonet endpoint for league play and is empty for local matches. Tool parameter names are part of
 the wire contract — FastMCP derives the public JSON schema from the Python
 signatures, so a rename is a protocol change and the schemas are pinned by
 test. Four tools per peer:
@@ -361,8 +363,8 @@ never produces an artifact.)
 
 | Discipline | State |
 |---|---|
-| Test suite | **559 tests**, all passing (unit → live two-process HTTP) |
-| Line limit | every one of the **125** tracked Python files ≤ **150 lines** (max: 149) |
+| Test suite | **595 tests**, all passing (unit → live two-process HTTP) |
+| Line limit | every one of the **127** tracked Python files ≤ **150 lines** (max: 149) |
 | TDD | strict red→green: every implementation change preceded by a confirmed failing test |
 | Hyperparameters | zero tunables inlined in Python — all in `config/game.json` / per-peer `game.toml` |
 | Lifecycle | PRD → PLAN → TODO under `docs/`, per phase |
@@ -420,7 +422,7 @@ configured for pytest; standalone scripts take `PYTHONPATH=src`.
 
 ```bash
 .venv/bin/python -m pytest -q
-# expected: 559 passed
+# expected: 595 passed
 ```
 
 (Includes the live-transport tests: they spawn both peer processes on
@@ -584,7 +586,7 @@ src/strategy/         Q-learning, pheromones, belief, private settings
 src/agent/            the policy layer consuming both
 src/mcp_server/       crypto, identity, commitment book, gate, tools, server
 src/scripts/          trainer, match harness, log writer, replay verifier
-tests/                74 test modules mirroring the source layout
+tests/                75 test modules mirroring the source layout
 ```
 
 ## Known limitations (stated, not hidden)

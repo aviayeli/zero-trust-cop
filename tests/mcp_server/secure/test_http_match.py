@@ -48,11 +48,11 @@ def test_a_failing_block_still_stops_both_peers(isolated_root):
     with pytest.raises(RuntimeError):
         with running_peers(isolated_root) as started:
             bindings.update(started)
-            assert port_is_open(started["police"].host, started["police"].port)
+            assert port_is_open(started["police"].host, started["police"].my_port)
             raise RuntimeError("match blew up")
 
     for binding in bindings.values():
-        assert not port_is_open(binding.host, binding.port, timeout=0.5)
+        assert not port_is_open(binding.host, binding.my_port, timeout=0.5)
 
 
 def test_both_peers_answer_over_http(isolated_root):

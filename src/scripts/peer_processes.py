@@ -10,7 +10,7 @@ import subprocess
 import sys
 import time
 
-from mcp_server.transport import load_transport_settings
+from mcp_server.transport import load_network_settings
 
 PEER_ROLES = ("police", "thief")
 _POLL_SECONDS = 0.05
@@ -52,13 +52,17 @@ def running_peers(config_root: str | None = None, startup_timeout: float = 30.0)
     Yields:
         {role: TransportSettings} once every peer is accepting connections.
     """
-    bindings = {role: load_transport_settings(role, config_root) for role in PEER_ROLES}
+    bindings = {
+        role: load_network_settings(role, config_root) for role in PEER_ROLES
+    }
     processes = []
     try:
         for role in PEER_ROLES:
             processes.append(_spawn(role, config_root))
         for role in PEER_ROLES:
-            wait_for_port(bindings[role].host, bindings[role].port, startup_timeout)
+            wait_for_port(
+                bindings[role].host, bindings[role].my_port, startup_timeout
+            )
         yield bindings
     finally:
         for process in processes:

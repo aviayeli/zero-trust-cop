@@ -12,7 +12,8 @@ from mcp_server import declaration
 
 EXPECTED_KEYS = {
     "group_name", "members", "repos", "mcp_servers", "hardware",
-    "github_commit_hash", "timezone", "token_budget", "num_games",
+    "github_commit_hash",
+    "github_commit", "timezone", "token_budget", "num_games",
 }
 
 
@@ -24,7 +25,7 @@ def test_payload_nested_objects_have_exact_schema_keys():
     payload = declaration.build_declaration()
     assert set(payload["repos"]) == {"cop", "thief"}
     assert set(payload["mcp_servers"]) == {"cop", "thief"}
-    assert set(payload["hardware"]) == {"os", "cpu", "ram", "gpu_vram"}
+    assert set(payload["hardware"]) == {"type", "os", "cpu", "ram", "gpu_vram"}
 
 
 def test_budget_and_game_count_are_integer_values_from_game_config():
@@ -97,7 +98,7 @@ def test_written_file_round_trips_with_exact_schema(tmp_path):
     assert set(payload) == EXPECTED_KEYS
     assert set(payload["repos"]) == {"cop", "thief"}
     assert set(payload["mcp_servers"]) == {"cop", "thief"}
-    assert set(payload["hardware"]) == {"os", "cpu", "ram", "gpu_vram"}
+    assert set(payload["hardware"]) == {"type", "os", "cpu", "ram", "gpu_vram"}
 
 
 def test_same_game_id_produces_byte_identical_output(tmp_path):
@@ -123,3 +124,18 @@ def test_incomplete_declared_config_is_a_setup_error(tmp_path):
     )
     with pytest.raises(KeyError):
         declaration.build_declaration(config_root=str(tmp_path))
+
+
+def test_the_hardware_block_is_sealed_as_a_system_spec():
+    """Step-0 must name what the hardware block IS, not just list fields."""
+    payload = declaration.build_declaration()
+
+    assert payload["hardware"]["type"] == declaration.SYSTEM_SPEC == "system_spec"
+
+
+def test_the_commit_hash_is_emitted_under_both_names():
+    """github_commit_hash is the PRD_03 FR6 name; github_commit is the v3 name."""
+    payload = declaration.build_declaration()
+
+    assert payload["github_commit"] == payload["github_commit_hash"]
+    assert len(payload["github_commit"]) in (7, 40) or payload["github_commit"] == "unknown"

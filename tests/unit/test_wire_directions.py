@@ -11,6 +11,9 @@ from mcp_server.directions import (
     LIE,
     MOVES,
     TRUTH,
+    decode,
+    encode,
+    is_wire_move,
     is_intent,
     is_move,
     opposite,
@@ -79,3 +82,40 @@ def test_a_deceptive_hint_is_the_opposite_move():
 def test_an_invalid_intent_cannot_produce_a_hint():
     with pytest.raises(ValueError):
         stated_hint("N", "maybe")
+
+
+# --- MOVE: wire spelling -----------------------------------------------------
+
+@pytest.mark.parametrize("token", ["N", "S", "E", "W", "STAY"])
+def test_every_token_encodes_with_the_move_prefix(token):
+    assert encode(token) == f"MOVE:{token}"
+
+
+@pytest.mark.parametrize("token", ["N", "S", "E", "W", "STAY"])
+def test_encode_and_decode_round_trip(token):
+    assert decode(encode(token)) == token
+
+
+@pytest.mark.parametrize("token", ["N", "S", "E", "W", "STAY"])
+def test_a_bare_token_still_decodes(token):
+    """Logs written before the prefix existed must still verify."""
+    assert decode(token) == token
+
+
+@pytest.mark.parametrize("bad", [
+    "MOVE:BARRIER", "MOVE:", "MOVE:n", "move:N", "NORTH", "", None, 7, "MOVE:NE",
+])
+def test_anything_else_is_refused(bad):
+    assert not is_wire_move(bad)
+    with pytest.raises(ValueError):
+        decode(bad)
+
+
+def test_an_unknown_token_cannot_be_encoded():
+    with pytest.raises(ValueError):
+        encode("BARRIER")
+
+
+def test_the_prefix_is_not_applied_twice():
+    with pytest.raises(ValueError):
+        encode("MOVE:N")

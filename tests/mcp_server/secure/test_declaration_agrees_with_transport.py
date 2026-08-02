@@ -8,17 +8,17 @@ following our own Step-0 artifact would have talked to the wrong role.
 import pytest
 
 from mcp_server.declaration import build_declaration
-from mcp_server.transport import load_transport_settings
+from mcp_server.transport import load_network_settings
 
 _ENGINE_ROLE = {"police": "cop", "thief": "thief"}
 
 
 @pytest.mark.parametrize("peer_role", ["police", "thief"])
 def test_the_declaration_advertises_the_port_the_peer_binds(peer_role):
-    binding = load_transport_settings(peer_role)
+    binding = load_network_settings(peer_role)
     advertised = build_declaration()["mcp_servers"][_ENGINE_ROLE[peer_role]]
 
-    assert advertised == f"http://{binding.host}:{binding.port}/mcp"
+    assert advertised == f"http://{binding.host}:{binding.my_port}/mcp"
 
 
 def test_the_two_advertised_endpoints_differ():
