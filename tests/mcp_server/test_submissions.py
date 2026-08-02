@@ -27,7 +27,7 @@ def _signed(key, role, turn, digest):
     return sign(key, role, turn, digest)
 
 
-def _commitment(key, role, turn, move="north"):
+def _commitment(key, role, turn, move="N"):
     digest, nonce = commit("state", move, "truth")
     return digest, nonce, _signed(key, role, turn, digest)
 
@@ -76,32 +76,32 @@ def test_reveal_before_both_commits_is_rejected():
     gate, _, keys = _gate()
     digest, nonce, signature = _commitment(keys["police"], "police", 0)
     gate.submit_commitment("police", 0, digest, signature)
-    assert asyncio.run(gate.reveal_move("police", 0, "state", "north", "truth", nonce, signature))["error"] == "reveal_before_commit"
+    assert asyncio.run(gate.reveal_move("police", 0, "state", "N", "truth", nonce, signature))["error"] == "reveal_before_commit"
 
 
-@pytest.mark.parametrize("move, signature_key", [("south", "police"), ("north", "thief")])
+@pytest.mark.parametrize("move, signature_key", [("S", "police"), ("N", "thief")])
 def test_broken_commitment_and_bad_reveal_signature_are_rejected(move, signature_key):
     gate, _, keys = _gate()
     police_digest, police_nonce, police_signature = _commitment(keys["police"], "police", 0)
-    thief_digest, _, thief_signature = _commitment(keys["thief"], "thief", 0, "south")
+    thief_digest, _, thief_signature = _commitment(keys["thief"], "thief", 0, "S")
     gate.submit_commitment("police", 0, police_digest, police_signature)
     gate.submit_commitment("thief", 0, thief_digest, thief_signature)
     signature = _signed(keys[signature_key], "police", 0, police_digest)
-    expected = "broken_commitment" if move == "south" else "invalid_signature"
+    expected = "broken_commitment" if move == "S" else "invalid_signature"
     result = asyncio.run(gate.reveal_move("police", 0, "state", move, "truth", police_nonce, signature))
     assert result["error"] == expected
 
 
 def test_signed_reveals_resolve_once_and_advance_one_turn():
     gate, state, keys = _gate()
-    police = _commitment(keys["police"], "police", 0, "north")
-    thief = _commitment(keys["thief"], "thief", 0, "south")
+    police = _commitment(keys["police"], "police", 0, "N")
+    thief = _commitment(keys["thief"], "thief", 0, "S")
     gate.submit_commitment("police", 0, police[0], police[2])
     gate.submit_commitment("thief", 0, thief[0], thief[2])
 
     async def reveal_both():
-        first = await gate.reveal_move("police", 0, "state", "north", "truth", police[1], police[2])
-        second = await gate.reveal_move("thief", 0, "state", "south", "truth", thief[1], thief[2])
+        first = await gate.reveal_move("police", 0, "state", "N", "truth", police[1], police[2])
+        second = await gate.reveal_move("thief", 0, "state", "S", "truth", thief[1], thief[2])
         return first, second
 
     first, second = asyncio.run(reveal_both())
@@ -119,5 +119,5 @@ def test_unknown_role_is_rejected_by_both_entry_points():
     gate, _, keys = _gate()
     digest, _, signature = _commitment(keys["police"], "spectator", 0)
     assert gate.submit_commitment("spectator", 0, digest, signature)["error"] == "invalid_role"
-    result = asyncio.run(gate.reveal_move("spectator", 0, "state", "north", "truth", "nonce", signature))
+    result = asyncio.run(gate.reveal_move("spectator", 0, "state", "N", "truth", "nonce", signature))
     assert result["error"] == "invalid_role"

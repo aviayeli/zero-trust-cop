@@ -1,49 +1,33 @@
-"""Wire encoding for moves and honesty (payload semantics v3.0.0).
+"""Wire vocabulary for moves and honesty (payload v3.0.0).
 
-The wire states a DIRECTION and an HONESTY flag separately:
+The wire states a MOVE and an HONESTY flag separately:
 
-    move   = 'north' | 'south' | 'east' | 'west' | 'stay'
+    move   = 'N' | 'S' | 'E' | 'W' | 'STAY'      (engine tokens, uppercase)
     intent = 'truth' | 'lie'
 
-The engine speaks ``N/S/E/W/STAY`` and must never learn that a wire encoding
-exists, so the translation lives here, above it. ``src/engine/`` is guarded by
-an AST import test precisely to keep that boundary.
+Move tokens are the engine's own vocabulary, so nothing is translated at the
+boundary and a malformed token fails in exactly one place.
 
 The verbal hint an opponent would have heard is derivable rather than
-transmitted: it is the move itself when truthful, and its opposite when not.
-That keeps the belief tracker scoring the same evidence it always did, while
-the payload itself now says plainly whether the peer lied.
+transmitted: the move itself when truthful, its opposite when not. The policy
+states its claim as a word ("north"), so the word map below exists only to
+compare that claim against the move actually played — it is not a wire form.
 """
 
 TRUTH = "truth"
 LIE = "lie"
 _INTENTS = (TRUTH, LIE)
 
-_WORDS = {"N": "north", "S": "south", "E": "east", "W": "west", "STAY": "stay"}
-_TOKENS = {word: token for token, word in _WORDS.items()}
-_OPPOSITE = {
-    "north": "south",
-    "south": "north",
-    "east": "west",
-    "west": "east",
-    "stay": "stay",
+MOVES = ("N", "S", "E", "W", "STAY")
+_OPPOSITE = {"N": "S", "S": "N", "E": "W", "W": "E", "STAY": "STAY"}
+_WORD_TO_TOKEN = {
+    "north": "N", "south": "S", "east": "E", "west": "W", "stay": "STAY",
 }
 
 
-def to_word(token: str) -> str:
-    """Engine token -> wire direction word."""
-    try:
-        return _WORDS[token]
-    except KeyError:
-        raise ValueError(f"unknown move token: {token!r}") from None
-
-
-def to_token(word: str) -> str:
-    """Wire direction word -> engine token."""
-    try:
-        return _TOKENS[word]
-    except KeyError:
-        raise ValueError(f"unknown direction word: {word!r}") from None
+def is_move(token) -> bool:
+    """Whether a value is one of the five permitted move tokens."""
+    return token in MOVES
 
 
 def is_intent(value) -> bool:
@@ -51,16 +35,24 @@ def is_intent(value) -> bool:
     return value in _INTENTS
 
 
-def opposite(word: str) -> str:
-    """The inverse direction. ``stay`` is its own opposite (D4)."""
+def token_for_claim(word: str) -> str:
+    """The move token a policy's spoken claim refers to."""
     try:
-        return _OPPOSITE[word]
+        return _WORD_TO_TOKEN[word.strip().lower()]
     except KeyError:
-        raise ValueError(f"unknown direction word: {word!r}") from None
+        raise ValueError(f"unknown direction claim: {word!r}") from None
 
 
-def stated_hint(move_word: str, intent: str) -> str:
-    """The hint the peer claimed: the move when truthful, else its opposite."""
+def opposite(token: str) -> str:
+    """The inverse move. ``STAY`` is its own opposite (D4)."""
+    try:
+        return _OPPOSITE[token]
+    except KeyError:
+        raise ValueError(f"unknown move token: {token!r}") from None
+
+
+def stated_hint(move: str, intent: str) -> str:
+    """The move the peer claimed: its own when truthful, else the opposite."""
     if not is_intent(intent):
         raise ValueError(f"intent must be one of {_INTENTS}: {intent!r}")
-    return move_word if intent == TRUTH else opposite(move_word)
+    return move if intent == TRUTH else opposite(move)

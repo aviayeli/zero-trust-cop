@@ -25,13 +25,11 @@ Verified OK
 | FastMCP orchestration & wire protocol | [§4](#4-wire-protocol-and-local-p2p-simulation) |
 | Strategy (Q-learning, pheromone belief, deception) | [§3](#3-reinforcement-learning-and-convergence) |
 | Performance curves | [§3 — convergence](#empirical-convergence) |
-| Replay viewer output | [§6 step 6](#6--watch-the-replay-on-the-terminal-grid---render) |
+| Live GUI & Replay App | [§7](#7-tkinter-gui-live-heatmap-and-replay-viewer) |
 | Cross-repository links | [§0](#0-the-two-repositories) |
 
-There is **no graphical GUI**: the replay viewer is a terminal ASCII renderer,
-and §6 step 6 shows its verbatim output rather than a screenshot of something
-that does not exist. The belief heatmap it draws is shaded in red intensity
-proportional to pheromone concentration when the output is a terminal.
+Two viewers ship: a Tkinter **Live Belief Heatmap** and a Tkinter **Replay
+App** (§7), plus a terminal ASCII renderer (§6 step 6) for headless use.
 
 ---
 
@@ -363,8 +361,8 @@ never produces an artifact.)
 
 | Discipline | State |
 |---|---|
-| Test suite | **530 tests**, all passing (unit → live two-process HTTP) |
-| Line limit | every one of the **118** tracked Python files ≤ **150 lines** (max: 149) |
+| Test suite | **559 tests**, all passing (unit → live two-process HTTP) |
+| Line limit | every one of the **125** tracked Python files ≤ **150 lines** (max: 149) |
 | TDD | strict red→green: every implementation change preceded by a confirmed failing test |
 | Hyperparameters | zero tunables inlined in Python — all in `config/game.json` / per-peer `game.toml` |
 | Lifecycle | PRD → PLAN → TODO under `docs/`, per phase |
@@ -422,7 +420,7 @@ configured for pytest; standalone scripts take `PYTHONPATH=src`.
 
 ```bash
 .venv/bin/python -m pytest -q
-# expected: 530 passed
+# expected: 559 passed
 ```
 
 (Includes the live-transport tests: they spawn both peer processes on
@@ -542,6 +540,37 @@ the same fast cryptographic check (~0.06 s), pinned by test.
 
 ---
 
+## 7. Tkinter GUI: live heatmap and replay viewer
+
+```bash
+# Live belief heatmap — auto-advances, red intensity ∝ pheromone concentration
+PYTHONPATH=src .venv/bin/python -m gui.live_heatmap logs/groupa/log_ztc001_g01.json
+
+# Replay viewer — steps turn by turn, stamps the verdict badge
+PYTHONPATH=src .venv/bin/python -m gui.replay logs/groupa/log_ztc001_g01.json
+```
+
+**Live Belief Heatmap** — every cell is shaded red in proportion to that
+cell's pheromone concentration, which decays each turn, so the thief's trail
+builds and fades as the match runs. The field is a *concentration*, not a
+normalised probability (overlapping kernels reach 2.41 on a real match), so
+the shading clamps rather than claiming a probability it does not compute.
+
+**Replay Viewer** — a green `Verified OK` badge on a clean log, a red
+`TAMPERED!` banner on an altered one. The badge is driven by the *same*
+`verify_log` the headless CLI uses, so the window cannot disagree with
+`scripts.replay_match`, and frames are replayed from the logged **moves**
+rather than the recorded positions — a forged log is drawn as it truly
+reconstructs.
+
+Canvas exports of all three states are committed under
+[`docs/screenshots/`](docs/screenshots): `replay_verified_ok.eps`,
+`replay_tampered.eps`, `live_belief_heatmap.eps`. They are **EPS, not PNG**:
+this build environment has neither Pillow nor ImageMagick, so no raster
+capture was possible. Run either command above to see the windows live.
+
+---
+
 ## Repository layout
 
 ```
@@ -555,7 +584,7 @@ src/strategy/         Q-learning, pheromones, belief, private settings
 src/agent/            the policy layer consuming both
 src/mcp_server/       crypto, identity, commitment book, gate, tools, server
 src/scripts/          trainer, match harness, log writer, replay verifier
-tests/                72 test modules mirroring the source layout
+tests/                74 test modules mirroring the source layout
 ```
 
 ## Known limitations (stated, not hidden)

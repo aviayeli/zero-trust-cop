@@ -13,7 +13,6 @@ from dataclasses import dataclass
 
 from engine.game_loop import GameEpisode
 from mcp_server.crypto import verify
-from mcp_server.directions import to_token
 from mcp_server.identity import verify_signature
 from scripts.heatmap import EMPTY, heat_cell
 from strategy.pheromones import PheromoneField
@@ -93,7 +92,7 @@ def replay_frames(log, config, public_keys):
 
     for turn in log["turns"]:
         moves = {role: entry["move"] for role, entry in turn["submissions"].items()}
-        result = episode.step(to_token(moves["police"]), to_token(moves["thief"]))
+        result = episode.step(moves["police"], moves["thief"])
         field.advance(deposits=[result.thief_position])
         yield Frame(
             turn=turn["turn"],

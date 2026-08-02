@@ -80,7 +80,7 @@ def app(secure_config_root):
 def make_commitment():
     """Build a signed commitment plus everything needed to reveal it."""
 
-    def build(key, role, turn, move="north", intent="truth", state="s0"):
+    def build(key, role, turn, move="N", intent="truth", state="s0"):
         digest, nonce = commit(state, move, intent)
         return {
             "role": role,

@@ -30,7 +30,7 @@ def test_a_reveal_that_does_not_match_its_commitment_is_refused(
     app, peer_keys, make_commitment
 ):
     """The anti-front-running property: commit to N, then try to play S."""
-    police = make_commitment(peer_keys["police"], "police", 0, move="north")
+    police = make_commitment(peer_keys["police"], "police", 0, move="N")
     thief = make_commitment(peer_keys["thief"], "thief", 0)
 
     async def substitute_move():
@@ -39,7 +39,7 @@ def test_a_reveal_that_does_not_match_its_commitment_is_refused(
                 entry["role"], 0, entry["h_commit"], entry["signature"]
             )
         return await app.reveal_move(
-            "police", 0, police["state"], "south",
+            "police", 0, police["state"], "S",
             police["intent"], police["nonce"], police["signature"],
         )
 
