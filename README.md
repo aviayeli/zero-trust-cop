@@ -26,10 +26,30 @@ Verified OK
 | Strategy (Q-learning, pheromone belief, deception) | [§3](#3-reinforcement-learning-and-convergence) |
 | Performance curves | [§3 — convergence](#empirical-convergence) |
 | Replay viewer output | [§6 step 6](#6--watch-the-replay-on-the-terminal-grid---render) |
+| Cross-repository links | [§0](#0-the-two-repositories) |
 
 There is **no graphical GUI**: the replay viewer is a terminal ASCII renderer,
 and §6 step 6 shows its verbatim output rather than a screenshot of something
-that does not exist.
+that does not exist. The belief heatmap it draws is shaded in red intensity
+proportional to pheromone concentration when the output is a terminal.
+
+---
+
+## 0. The two repositories
+
+This submission is one half of a **two-repository pair**. Each peer is an
+independent process with its own config, keys and runtime; neither imports
+the other, and they meet only over the authenticated wire.
+
+| Role | Repository |
+|---|---|
+| **Cop / police** (this repo) | https://github.com/aviayeli/zero-trust-cop |
+| **Thief** | https://github.com/aviayeli/zero-trust-thief |
+
+Both URLs are declared once in each peer's `config/<role>/game.toml` under
+`[game.repos]`, and are emitted into `declaration_<game_id>.json` and
+`result_<game_id>.json`, so a marker holding either artifact can find the
+other half of the pair.
 
 ---
 
@@ -115,7 +135,24 @@ Each turn is two-phase. Both peers first publish a **commitment**:
 h_commit = SHA-256(canonical_json(state, move, intent, nonce))
 ```
 
-with a 32-hex-character random nonce (`secrets.token_hex`). Only after *both*
+The payload states a **direction** and an **honesty flag** separately
+(payload v3.0.0):
+
+```
+move   = 'north' | 'south' | 'east' | 'west' | 'stay'
+intent = 'truth' | 'lie'
+```
+
+The engine speaks `N/S/E/W/STAY`, so the translation lives at the protocol
+layer (`mcp_server/directions.py`) — `src/engine/` must never learn a wire
+encoding exists, and an AST test enforces that. The honesty flag is *derived*
+by comparing the policy's untruncated claim against the move it actually
+plays, so it stays correct if the deception policy changes, and a small
+`hint_max_words` cannot empty the hint and make an honest peer look like a
+liar. The hint an opponent's belief tracker scores is reconstructed from the
+pair: the move when truthful, its opposite when not.
+
+Commitments use a 32-hex-character random nonce (`secrets.token_hex`). Only after *both*
 commitments are booked may either peer **reveal** `(state, move, intent,
 nonce)`. The `CommitmentBook` refuses early reveals (`reveal_before_commit`),
 double commits (`already_committed`), and reveals that fail to re-derive the
@@ -326,8 +363,8 @@ never produces an artifact.)
 
 | Discipline | State |
 |---|---|
-| Test suite | **511 tests**, all passing (unit → live two-process HTTP) |
-| Line limit | every one of the **113** tracked Python files ≤ **150 lines** (max: 149) |
+| Test suite | **530 tests**, all passing (unit → live two-process HTTP) |
+| Line limit | every one of the **118** tracked Python files ≤ **150 lines** (max: 149) |
 | TDD | strict red→green: every implementation change preceded by a confirmed failing test |
 | Hyperparameters | zero tunables inlined in Python — all in `config/game.json` / per-peer `game.toml` |
 | Lifecycle | PRD → PLAN → TODO under `docs/`, per phase |
@@ -385,7 +422,7 @@ configured for pytest; standalone scripts take `PYTHONPATH=src`.
 
 ```bash
 .venv/bin/python -m pytest -q
-# expected: 511 passed
+# expected: 530 passed
 ```
 
 (Includes the live-transport tests: they spawn both peer processes on
@@ -444,6 +481,10 @@ exact turn and reason, and exits 1.
 | `--render` | draw each turn on an ASCII board before reporting the verdict |
 | `--render-delay N` | seconds between turns (default `0.5`; `0` renders instantly) |
 | `--step` | wait for **Enter** between turns instead of pausing |
+
+On a terminal the belief heatmap shades cells in red intensity proportional
+to pheromone concentration, and the verdict prints as a green `Verified OK`
+or red `TAMPERED!` badge. Piped or redirected output stays byte-clean.
 
 ```bash
 PYTHONPATH=src .venv/bin/python -m scripts.replay_match \
@@ -514,7 +555,7 @@ src/strategy/         Q-learning, pheromones, belief, private settings
 src/agent/            the policy layer consuming both
 src/mcp_server/       crypto, identity, commitment book, gate, tools, server
 src/scripts/          trainer, match harness, log writer, replay verifier
-tests/                71 test modules mirroring the source layout
+tests/                72 test modules mirroring the source layout
 ```
 
 ## Known limitations (stated, not hidden)

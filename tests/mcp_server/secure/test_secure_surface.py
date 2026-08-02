@@ -70,8 +70,8 @@ def test_loading_public_keys_needs_no_private_key(secure_config_root, tmp_path):
 def test_both_commit_then_both_reveal_advances_the_engine(
     app, peer_keys, make_commitment
 ):
-    police = make_commitment(peer_keys["police"], "police", 0, move="S")
-    thief = make_commitment(peer_keys["thief"], "thief", 0, move="N")
+    police = make_commitment(peer_keys["police"], "police", 0, move="south")
+    thief = make_commitment(peer_keys["thief"], "thief", 0, move="north")
 
     async def play_turn():
         first = await app.submit_commitment(

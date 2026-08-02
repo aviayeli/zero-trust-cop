@@ -57,7 +57,8 @@ def test_a_genuine_match_verifies(played):
 def test_an_edited_intent_breaks_only_the_commitment_digest(played):
     log, config, keys = played
     tampered = copy.deepcopy(log)
-    tampered["turns"][0]["submissions"]["police"]["intent"] = "somewhere else"
+    entry = tampered["turns"][0]["submissions"]["police"]
+    entry["intent"] = "lie" if entry["intent"] == "truth" else "truth"
 
     report = verify_log(tampered, config, keys)
 

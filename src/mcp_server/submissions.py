@@ -6,6 +6,7 @@ in-progress commitments.
 """
 
 from mcp_server import observations
+from mcp_server.directions import is_intent, to_token
 from mcp_server.identity import verify_signature
 from engine.actions import parse_action
 from engine.errors import InvalidActionError
@@ -64,9 +65,11 @@ class SubmissionGate:
             return observations.build_move_error("reveal_before_commit")
         if not verify_signature(self.public_keys[role], role, turn, h_commit, signature):
             return observations.build_move_error("invalid_signature")
+        if not is_intent(intent):
+            return observations.build_move_error("invalid_intent")
         try:
-            parse_action(move)
-        except InvalidActionError:
+            parse_action(to_token(move))
+        except (InvalidActionError, ValueError):
             return observations.build_move_error("invalid_direction")
 
         outcome = self.book.reveal(role, turn, state, move, intent, nonce)
@@ -77,7 +80,9 @@ class SubmissionGate:
 
         result = None
         for peer_role, peer_move in outcome.moves.items():
-            submitted = await self.match_state.submit(self.engine_role[peer_role], peer_move)
+            submitted = await self.match_state.submit(
+                self.engine_role[peer_role], to_token(peer_move)
+            )
             if submitted.status == "rejected":
                 return observations.build_move_error(submitted.reason)
             if submitted.status == "resolved":

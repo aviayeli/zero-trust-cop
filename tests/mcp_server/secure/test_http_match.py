@@ -104,7 +104,7 @@ def test_a_tampered_reveal_is_refused_over_the_wire(isolated_root, match_config)
                         entry.role, 0, entry.h_commit, entry.signature
                     )
                 police = submissions["police"]
-                swapped = "S" if police.move != "S" else "N"
+                swapped = "south" if police.move != "south" else "north"
                 return await peer.reveal_move(
                     "police", 0, police.state, swapped,
                     police.intent, police.nonce, police.signature,

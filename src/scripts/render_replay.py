@@ -13,11 +13,12 @@ from dataclasses import dataclass
 
 from engine.game_loop import GameEpisode
 from mcp_server.crypto import verify
+from mcp_server.directions import to_token
 from mcp_server.identity import verify_signature
+from scripts.heatmap import EMPTY, heat_cell
 from strategy.pheromones import PheromoneField
 
-COP, THIEF, CAPTURE, BARRIER, EMPTY = "C", "T", "X", "#", "."
-_SCENT_LEVELS = "123456789"
+COP, THIEF, CAPTURE, BARRIER = "C", "T", "X", "#"
 _MARKS = {True: "OK", False: "!!"}
 _ROLES = ("police", "thief")
 DEFAULT_DELAY = 0.5
@@ -38,15 +39,9 @@ class Frame:
     checks: dict
 
 
-def scent_symbol(intensity: float) -> str:
-    """Map a pheromone concentration onto one trace character."""
-    if intensity <= 0:
-        return EMPTY
-    level = int(intensity * len(_SCENT_LEVELS))
-    return _SCENT_LEVELS[min(level, len(_SCENT_LEVELS) - 1)]
 
 
-def board_lines(config, cop, thief, barriers, scent) -> list:
+def board_lines(config, cop, thief, barriers, scent, colour=False) -> list:
     """Draw the grid. Agents outrank barriers and traces on a shared cell."""
     lines = []
     for row in range(config.grid_size):
@@ -62,7 +57,7 @@ def board_lines(config, cop, thief, barriers, scent) -> list:
             elif cell in barriers:
                 cells.append(BARRIER)
             else:
-                cells.append(scent_symbol(scent.get(cell, 0.0)))
+                cells.append(heat_cell(scent.get(cell, 0.0), colour))
         lines.append(" ".join(cells))
     return lines
 
@@ -98,7 +93,7 @@ def replay_frames(log, config, public_keys):
 
     for turn in log["turns"]:
         moves = {role: entry["move"] for role, entry in turn["submissions"].items()}
-        result = episode.step(moves["police"], moves["thief"])
+        result = episode.step(to_token(moves["police"]), to_token(moves["thief"]))
         field.advance(deposits=[result.thief_position])
         yield Frame(
             turn=turn["turn"],
@@ -113,7 +108,7 @@ def replay_frames(log, config, public_keys):
         )
 
 
-def frame_lines(frame, config) -> list:
+def frame_lines(frame, config, colour=False) -> list:
     """Header, per-role verification status, and the board for one turn."""
     lines = [f"── Turn {frame.turn + 1} " + "─" * 30]
     for role in _ROLES:
@@ -125,8 +120,8 @@ def frame_lines(frame, config) -> list:
             f"  intent={frame.intents[role]!r}"
         )
     lines.append("")
-    lines.extend(f"    {line}" for line in
-                 board_lines(config, frame.cop, frame.thief, frame.barriers, frame.scent))
+    lines.extend(f"    {line}" for line in board_lines(
+        config, frame.cop, frame.thief, frame.barriers, frame.scent, colour))
     capture = "  ** CAPTURED **" if frame.captured else ""
     lines += ["", f"    cop={frame.cop}  thief={frame.thief}{capture}", ""]
     return lines
@@ -138,12 +133,12 @@ def pause_for(step: bool):
 
 
 def render_replay(log, config, public_keys, write=print, pause=time.sleep,
-                  delay=DEFAULT_DELAY) -> None:
+                  delay=DEFAULT_DELAY, colour=False) -> None:
     """Draw every turn in order, pausing between frames."""
     write(f"legend: {COP}=cop {THIEF}=thief {CAPTURE}=capture "
           f"{BARRIER}=barrier {EMPTY}=clear 1-9=scent")
     write("")
     for frame in replay_frames(log, config, public_keys):
-        for line in frame_lines(frame, config):
+        for line in frame_lines(frame, config, colour):
             write(line)
         pause(delay)

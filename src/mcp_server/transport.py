@@ -21,6 +21,7 @@ class TransportSettings:
 
     host: str
     port: int
+    public_url: str = ""
 
 
 def load_transport_settings(
@@ -29,4 +30,8 @@ def load_transport_settings(
     """Load one peer's [transport] block, failing loudly on any missing key."""
     with open(strategy_settings_path(role, config_root), "rb") as config_file:
         transport = tomllib.load(config_file)["transport"]
-    return TransportSettings(host=transport["host"], port=transport["port"])
+    return TransportSettings(
+        host=transport["host"],
+        port=transport["port"],
+        public_url=transport.get("public_url", ""),
+    )

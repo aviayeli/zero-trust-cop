@@ -17,6 +17,7 @@ import os
 import shutil
 
 from mcp_server.declaration import github_commit, write_declaration
+from mcp_server.repos import load_repos
 
 ARTIFACT_VERSION = 1
 _SUBMISSION_FIELDS = ("h_commit", "signature", "state", "move", "intent", "nonce")
@@ -64,6 +65,7 @@ def build_result(game_id, game_number, history, group_id) -> dict:
         "game_id": game_id,
         "group_id": group_id,
         "github_commit": github_commit(),
+        "repos": load_repos(),
         "games": [
             {
                 "game_number": game_number,

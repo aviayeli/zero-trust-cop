@@ -1,58 +1,27 @@
 """The individual integrity checks behind a ``Verified OK`` verdict.
 
 Split out of ``replay_match.py`` so each check has room to be thorough. The
-audit found the replay compared only the FINAL state, so a wholly fabricated
-per-turn trajectory certified clean (V1); that turn indices (V2) and turn
-counts (V3) were unchecked; and that hostile field types crashed the verifier
-outright (V4).
+audit found the replay compared only the FINAL state, so a fabricated
+per-turn trajectory certified clean (V1); indices (V2) and turn counts (V3)
+went unchecked; and hostile field types crashed the verifier (V4).
 
 Every check APPENDS to a shared failures list rather than raising, so one bad
-field cannot mask the rest of the report, and a hostile log cannot suppress
-the verdict by making the verifier throw.
+field cannot mask the rest of the report.
 """
 
 from engine.game_loop import GameEpisode
 from mcp_server.crypto import verify
+from mcp_server.directions import to_token
 from mcp_server.identity import verify_signature
 
-PEER_ROLES = ("police", "thief")
-
-
-def check_structure(log, failures) -> bool:
-    """Validate the shape every later check assumes. False stops the run."""
-    turns = log.get("turns")
-    if not isinstance(turns, list) or not turns:
-        failures.append("log contains no turns")
-        return False
-    for index, turn in enumerate(turns):
-        submissions = turn.get("submissions") if isinstance(turn, dict) else None
-        if not isinstance(submissions, dict):
-            failures.append(f"turn {index}: no submissions block")
-            continue
-        missing = [role for role in PEER_ROLES if role not in submissions]
-        if missing:
-            failures.append(f"turn {index}: missing submissions for {missing}")
-        if not isinstance(turn.get("result"), dict):
-            failures.append(f"turn {index}: no result block")
-    return not failures
-
-
-def check_turn_indices(log, failures) -> None:
-    """Turn indices must be contiguous and ascending (V2).
-
-    Signatures bind each entry's OWN turn field, so reordering entries while
-    leaving those fields intact is invisible to the signature check.
-    """
-    for index, turn in enumerate(log["turns"]):
-        if turn.get("turn") != index:
-            failures.append(f"turn {index}: index recorded as {turn.get('turn')!r}")
+from scripts.log_shape import PEER_ROLES
 
 
 def _safe_verify(entry) -> bool:
     """A hostile digest must fail the check, not crash it (V4).
 
-    ``secrets.compare_digest`` raises TypeError on non-ASCII input, which
-    would otherwise let an attacker choose a traceback over a verdict.
+    ``compare_digest`` raises on non-ASCII, which would otherwise let an
+    attacker choose a traceback over a verdict.
     """
     try:
         return verify(
@@ -112,18 +81,21 @@ def _compare_turn(index, recorded, result, turn_count, failures) -> None:
 
 
 def check_replay(log, config, failures) -> None:
-    """Replay turn by turn, comparing EVERY recorded result (V1) and the count (V3).
+    """Replay turn by turn, comparing EVERY result (V1) and the count (V3).
 
-    Comparing only the final state let an attacker rewrite the whole middle of
-    a match. Comparing the count catches turns padded on after termination,
-    where ``GameEpisode.step`` is a silent no-op and the state cannot move.
+    Comparing only the final state let an attacker rewrite a match's middle.
+    The count catches turns padded on after termination, where
+    ``GameEpisode.step`` is a no-op and the state cannot move.
     """
     episode = GameEpisode(config)
     for index, turn in enumerate(log["turns"]):
         submissions = turn["submissions"]
-        result = episode.step(
-            submissions["police"]["move"], submissions["thief"]["move"]
-        )
+        try:
+            moves = [to_token(submissions[r]["move"]) for r in PEER_ROLES]
+        except ValueError as error:
+            failures.append(f"turn {index}: {error}")
+            continue
+        result = episode.step(*moves)
         if result is None:
             failures.append(f"turn {index}: replay produced no result")
             continue

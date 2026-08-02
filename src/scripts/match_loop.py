@@ -1,10 +1,16 @@
 """Drive one local P2P match: commit everywhere, then reveal everywhere.
 
+The wire carries an honesty FLAG, so the belief tracker is fed the hint
+that flag implies -- the move when truthful, its opposite when not -- and
+keeps scoring the same evidence it always did.
+
 Mirrored local truth (D2): every peer's server keeps its OWN GameEpisode, so
 each submission is broadcast to both. The two engines advance independently
 and are compared every turn — which is the point, since neither peer trusts
 the other's engine. A disagreement is raised, never absorbed.
 """
+
+from mcp_server.directions import stated_hint
 
 _OTHER = {"police": "thief", "thief": "police"}
 _COMPARED = (

@@ -24,13 +24,8 @@ from dataclasses import dataclass, field
 
 from engine.config import load_config
 from mcp_server.peer_keys import load_public_keys
-from scripts.log_checks import (
-    check_commitments,
-    check_replay,
-    check_signatures,
-    check_structure,
-    check_turn_indices,
-)
+from scripts.log_checks import check_commitments, check_replay, check_signatures
+from scripts.log_shape import check_intents, check_structure, check_turn_indices
 from scripts.render_replay import DEFAULT_DELAY, pause_for, render_replay
 
 VERIFIED = "Verified OK"
@@ -82,6 +77,7 @@ def verify_log(log, config, public_keys) -> VerificationReport:
     try:
         if check_structure(log, failures):
             check_turn_indices(log, failures)
+            check_intents(log, failures)
             check_commitments(log, failures)
             check_signatures(log, public_keys, failures)
             check_replay(log, config, failures)
@@ -117,7 +113,7 @@ def main(argv=None):
 
     if args.render:
         render_replay(log, config, public_keys, delay=args.render_delay,
-                      pause=pause_for(args.step))
+                      pause=pause_for(args.step), colour=colour_enabled())
 
     report = verify_log(log, config, public_keys)
     print(colourise(str(report), report.ok, colour_enabled()))

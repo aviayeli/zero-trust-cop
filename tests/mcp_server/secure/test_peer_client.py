@@ -84,14 +84,15 @@ def test_the_committed_intent_respects_the_configured_word_cap(client, board, ap
     assert len(submission.intent.split()) <= cap
 
 
-def test_truncation_happens_BEFORE_the_digest_is_computed(
+def test_truncation_cannot_forge_a_lie(
     secure_config_root, peer_keys, app, board
 ):
-    """Proved with a zero-word cap, so the cap cannot pass vacuously.
+    """A zero-word hint cap must not make an honest peer look deceptive.
 
-    Real intents are a single direction word, well under the configured cap of
-    15, so a cap assertion alone would hold even if truncation were applied
-    after committing — or never applied at all.
+    Under payload v3.0.0 the hint is no longer hashed — intent carries the
+    honesty flag instead. Deriving that flag from the TRUNCATED hint would
+    read an emptied string as disagreement and label a truthful cop a liar,
+    so it is derived from the policy's untruncated claim.
     """
     policy = build_peer_policy("police", "cop", app.config, secure_config_root)
     policy.settings = replace(policy.settings, hint_max_words=0)
@@ -99,9 +100,10 @@ def test_truncation_happens_BEFORE_the_digest_is_computed(
 
     submission = _prepare(client, board)
 
-    assert submission.intent == ""
+    assert submission.intent == "truth", "an honest cop must stay 'truth'"
     assert verify(
-        submission.state, submission.move, "", submission.nonce, submission.h_commit
+        submission.state, submission.move, submission.intent,
+        submission.nonce, submission.h_commit,
     )
 
 

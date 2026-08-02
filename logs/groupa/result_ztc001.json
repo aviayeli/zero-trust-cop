@@ -17,6 +17,10 @@
       "turns": 5
     }
   ],
-  "github_commit": "9e0cf71f230c96e8e109e7df42eb74dd5577d53d",
-  "group_id": "groupa"
+  "github_commit": "e5302382e522a7f07eb94d9bbf03d1f2382ff0b8",
+  "group_id": "groupa",
+  "repos": {
+    "cop": "https://github.com/aviayeli/zero-trust-cop",
+    "thief": "https://github.com/aviayeli/zero-trust-thief"
+  }
 }

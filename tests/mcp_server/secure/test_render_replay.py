@@ -14,16 +14,15 @@ import pytest
 
 from engine.config import load_config
 from mcp_server.peer_keys import load_public_keys
+from scripts.heatmap import EMPTY, heat_cell, scent_symbol
 from scripts.render_replay import (
     BARRIER,
     CAPTURE,
     COP,
-    EMPTY,
     THIEF,
     board_lines,
     render_replay,
     replay_frames,
-    scent_symbol,
     turn_checks,
 )
 
@@ -101,3 +100,21 @@ def test_an_agent_outranks_a_scent_trace_on_the_same_cell(config):
     ]
 
     assert cells[0][0] == COP
+
+
+def test_a_strong_belief_is_a_brighter_red_than_a_faint_one():
+    """The heatmap shades in PROPORTION to belief, not a flat mark."""
+    faint = heat_cell(0.05, colour=True)
+    strong = heat_cell(0.95, colour=True)
+
+    assert faint != strong
+    assert "\033[38;5;" in faint and "\033[38;5;" in strong
+
+
+def test_an_empty_cell_is_never_shaded():
+    assert heat_cell(0.0, colour=True) == EMPTY
+
+
+def test_the_heatmap_stays_byte_clean_without_colour():
+    assert heat_cell(0.9, colour=False) == scent_symbol(0.9)
+    assert "\033" not in heat_cell(0.9, colour=False)

@@ -15,3 +15,10 @@ match_exploration_rate = 0.0
 [transport]
 host = "127.0.0.1"
 port = 8802
+# Public tunnel (ngrok / Localtonet) for live league matches.
+# Empty means loopback only; set host = "0.0.0.0" to expose the peer.
+public_url = ""
+
+[game.repos]
+cop = "https://github.com/aviayeli/zero-trust-cop"
+thief = "https://github.com/aviayeli/zero-trust-thief"
