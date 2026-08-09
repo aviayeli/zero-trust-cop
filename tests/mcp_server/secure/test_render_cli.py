@@ -8,7 +8,7 @@ import pytest
 
 from scripts.replay_match import main, parse_args
 
-LOG = "logs/groupa/log_ztc001_g01.json"
+LOG = "logs/aviayeli/log_aviayeli_g01.json"
 
 
 def test_render_is_off_by_default():

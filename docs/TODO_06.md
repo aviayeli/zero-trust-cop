@@ -33,7 +33,7 @@ chain produces.
 - [x] Promote `PLAN_06` into `docs/PRD_06_Local_MCP_Simulation.md`.
 - [x] Record the D1–D3 rulings: streamable HTTP on configured ports, mirrored
       local truth, and `make_move` replaced by the secured surface.
-- [x] Add the transport ports to config as tunables (police 8801, thief 8802,
+- [x] Add the transport ports to config as tunables (police 8801, thief 8802, (SUPERSEDED by PRD_07: cop 8802, thief 8801.)
       under a `[transport]` block; never literals in Python).
 
 ## 1. Put commit-reveal and signatures on the tool surface (the deferred 7b) — DONE

@@ -170,7 +170,7 @@ tampered log, per the standard this project now holds guards to.
 ## Decisions — D1–D3 RULED, D4–D6 open
 
 - **D1 — Transport. RULED: streamable HTTP** on configured local ports
-  (police 8801, thief 8802 by default). Ports live in config, never as
+  (police 8801, thief 8802 by default). Ports live in config, never as (SUPERSEDED by PRD_07: cop 8802, thief 8801.)
   literals in Python.
 - **D2 — Match topology. RULED: mirrored local truth.** Each peer keeps its
   own `GameEpisode` ground truth and independently validates the opponent's

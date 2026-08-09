@@ -17,7 +17,7 @@ from engine.config import load_config
 from mcp_server.peer_keys import load_public_keys
 from scripts.replay_match import TAMPERED, VERIFIED, main, verify_log
 
-REAL_LOG = Path("logs/groupa/log_ztc001_g01.json")
+REAL_LOG = Path("logs/aviayeli/log_aviayeli_g01.json")
 
 
 @pytest.fixture

@@ -5,6 +5,12 @@ in red proportional to its pheromone concentration, which decays every turn,
 so the thief's trail visibly builds and fades. Auto-advances on a timer,
 which is what makes it "live" as opposed to the step-by-step replay viewer.
 
+The rendered board is the full 7x7 and stays that way; the 5x5 figure in the
+spec is the scent KERNEL stamped onto it, not the display size. Decay is
+geometric at rho = 0.10 per turn from a 0.9 centre, so a trail dims to about
+a third of its peak over ten turns rather than disappearing — old trail is
+still faintly visible late in a match, and that is correct, not a render bug.
+
 The field is a CONCENTRATION, not a normalised probability: overlapping
 kernels can push a cell above 1.0 (observed peak 2.41 on a real match), so
 the shading clamps rather than claiming a probability it does not compute.

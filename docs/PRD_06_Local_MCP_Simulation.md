@@ -18,7 +18,7 @@ other, not that either matches another team's reading of the schema.
 ## Approved decisions
 
 - **D1 — Transport.** Streamable HTTP over configured local ports
-  (police 8801, thief 8802 by default). Ports are tunables and live in config.
+  (police 8801, thief 8802 by default). Ports are tunables and live in config. (SUPERSEDED by PRD_07: cop 8802, thief 8801.)
 - **D2 — Topology.** Mirrored local truth. Each peer keeps its own
   `GameEpisode` as ground truth and independently validates the opponent's
   signed commit-reveal disclosures every turn. Neither peer trusts the other's

@@ -14,7 +14,7 @@ from engine.config import load_config
 from mcp_server.peer_keys import load_public_keys
 from scripts.render_replay import render_replay, replay_frames, turn_checks
 
-REAL_LOG = Path("logs/groupa/log_ztc001_g01.json")
+REAL_LOG = Path("logs/aviayeli/log_aviayeli_g01.json")
 
 
 @pytest.fixture

@@ -11,17 +11,18 @@ from unittest.mock import patch
 
 import pytest
 
+from mcp_server.repos import load_email_settings
 from reporting import email_sender as sender
 
 
 @pytest.fixture
 def result_path(tmp_path):
     payload = {
-        "game_uid": "ztc001",
+        "game_uid": "aviayeli",
         "mutual_agreement": {"confirmed": True, "turns_cross_checked": 5},
         "games": [{"game_number": 1, "terminal_reason": "capture"}],
     }
-    path = tmp_path / "result_ztc001.json"
+    path = tmp_path / "result_aviayeli.json"
     path.write_text(json.dumps(payload, indent=2))
     return path
 
@@ -87,7 +88,7 @@ def test_the_draft_contains_the_whole_report(tmp_path, result_path):
 
     text = _drafts(tmp_path)[0].read_text()
     assert sender.DEFAULT_RECIPIENT in text
-    assert "ztc001" in text and "mutual_agreement" in text
+    assert "aviayeli" in text and "mutual_agreement" in text
 
 
 def test_a_missing_result_file_fails_without_raising(tmp_path):
@@ -118,8 +119,13 @@ def test_the_harness_trigger_reads_config_and_reports(tmp_path, result_path, cap
         _report_by_email(str(result_path), None, str(tmp_path))
 
     reporter.assert_called_once()
-    assert reporter.call_args.kwargs["recipient"] == sender.DEFAULT_RECIPIENT
-    assert reporter.call_args.kwargs["config_mode"] in sender.MODES
+    # The trigger's job is to forward the peer's [email] block, whatever it
+    # says — pinning this to DEFAULT_RECIPIENT would test the constant instead
+    # and break the moment the configured recipient is retargeted.
+    configured = load_email_settings("police")
+    assert reporter.call_args.kwargs["recipient"] == configured["recipient"]
+    assert reporter.call_args.kwargs["config_mode"] == configured["mode"]
+    assert configured["mode"] in sender.MODES
     assert "email_report=ok" in capsys.readouterr().out
 
 

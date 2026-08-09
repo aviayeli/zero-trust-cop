@@ -4,6 +4,17 @@ Each cell follows ``tau(t + 1) = max(0, (1 - rho) * tau(t) + delta)``;
 the ``max(0, ...)`` is a hard invariant.  The configured footprint is a 5x5
 box whose non-zero cells form a 13-cell Manhattan diamond, leaving its corners
 at zero.  Kernels at board edges are clipped, never wrapped or redistributed.
+
+CONFIGURED CONSTANTS (``config/game.json``, never literals here):
+``pheromone_center_intensity = 0.9`` at the observed cell and
+``pheromone_decay`` rho = 0.10 per turn.
+
+The decay is GEOMETRIC, not subtractive, and the difference is worth stating
+because it is easy to misread rho = 0.10 as "gone in ten turns".  A lone 0.9
+deposit retains 0.9 * 0.9**10 = 0.314 after ten turns, falls below 0.01 at
+turn 43, and is only retired at turn 268, when ``_ROUND_DIGITS`` rounds it to
+zero.  A trace therefore fades but never expires on a 35-move match; nothing
+in this module clears the field on a schedule.
 """
 
 from collections.abc import Iterable

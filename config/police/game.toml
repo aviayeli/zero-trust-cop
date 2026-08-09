@@ -14,8 +14,8 @@ match_exploration_rate = 0.0
 
 [network]
 host = "127.0.0.1"
-my_port = 8801
-opponent_url = "http://127.0.0.1:8802/mcp"
+my_port = 8802
+opponent_url = "http://127.0.0.1:8801/mcp"
 # Public tunnel (ngrok / Localtonet) for league matches. Empty means
 # loopback only; set host = "0.0.0.0" to expose this peer.
 public_url = ""
@@ -26,8 +26,8 @@ thief = "https://github.com/aviayeli/zero-trust-thief"
 
 [email]
 # Where the end-of-series report goes.
-recipient = "rmisegal+uoh26finalgame@gmail.com"
+recipient = "avi.ayeli@gmail.com"
 # auto  = send if credentials exist, otherwise write a local draft
 # draft = never send; always write the draft artifact
 # send  = require a real send; report failure rather than drafting
-mode = "auto"
+mode = "send"

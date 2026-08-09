@@ -40,7 +40,7 @@ def test_each_view_builds_a_real_widget(view):
         pytest.skip(f"no display available: {error}")
     root.withdraw()
     try:
-        widget = board_view._VIEWS[view](root, "logs/groupa/log_ztc001_g01.json")
+        widget = board_view._VIEWS[view](root, "logs/aviayeli/log_aviayeli_g01.json")
         assert isinstance(widget, tk.Frame)
     finally:
         root.destroy()

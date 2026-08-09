@@ -12,6 +12,7 @@ default port would bind somewhere its opponent is not calling.
 from dataclasses import dataclass
 import tomllib
 
+from mcp_server.tunnel import parse_public_url
 from strategy.settings import strategy_settings_path
 
 
@@ -35,5 +36,5 @@ def load_network_settings(
         host=network["host"],
         my_port=network["my_port"],
         opponent_url=network["opponent_url"],
-        public_url=network.get("public_url", ""),
+        public_url=parse_public_url(network.get("public_url", "")),
     )

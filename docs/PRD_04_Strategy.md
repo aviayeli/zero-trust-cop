@@ -60,7 +60,7 @@ are tunable and must not be literals in source. They go in the peer's own privat
 `config/<role>/game.toml`, under a `[strategy]` block.
 
 Rationale: `config/game.json` carries `schema_version` and `agreed_between:
-["groupa","groupb"]` — it is the shared, signed contract. Learning parameters are
+["aviayeli","groupb"]` — it is the shared, signed contract. Learning parameters are
 private to a peer and must not perturb a file both sides parse.
 
 Implementation notes:

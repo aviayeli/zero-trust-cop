@@ -46,7 +46,7 @@ class _Sub:
 
 
 def test_the_log_records_every_field_a_verifier_needs(history):
-    log = build_log("g1", 1, history, group_id="groupa")
+    log = build_log("g1", 1, history, group_id="aviayeli")
 
     turn = log["turns"][0]
     for role in ("police", "thief"):
@@ -57,7 +57,7 @@ def test_the_log_records_every_field_a_verifier_needs(history):
 
 
 def test_the_log_records_the_resolved_outcome(history):
-    log = build_log("g1", 1, history, group_id="groupa")
+    log = build_log("g1", 1, history, group_id="aviayeli")
 
     result = log["turns"][0]["result"]
     assert result["cop_position"] == [0, 1]
@@ -66,33 +66,33 @@ def test_the_log_records_the_resolved_outcome(history):
 
 
 def test_the_log_is_self_describing(history):
-    log = build_log("g1", 1, history, group_id="groupa")
+    log = build_log("g1", 1, history, group_id="aviayeli")
 
     assert log["artifact_version"] == ARTIFACT_VERSION
     assert log["game_id"] == "g1"
     assert log["game_number"] == 1
-    assert log["group_id"] == "groupa"
+    assert log["group_id"] == "aviayeli"
 
 
 def test_the_log_is_json_serialisable(history):
     """Positions arrive as tuples and must not reach json.dump raw."""
-    json.dumps(build_log("g1", 1, history, group_id="groupa"))
+    json.dumps(build_log("g1", 1, history, group_id="aviayeli"))
 
 
 def test_all_four_artifacts_land_under_the_group_directory(tmp_path, history):
     paths = write_artifacts(
-        tmp_path, "g1", 1, history, group_id="groupa", config_root="config"
+        tmp_path, "g1", 1, history, group_id="aviayeli", config_root="config"
     )
 
     assert set(paths) == {"declaration", "config", "log", "result"}
     for path in paths.values():
-        assert Path(path).parent == tmp_path / "groupa"
+        assert Path(path).parent == tmp_path / "aviayeli"
         assert Path(path).exists()
 
 
 def test_the_filenames_follow_the_required_pattern(tmp_path, history):
     paths = write_artifacts(
-        tmp_path, "abc", 7, history, group_id="groupa", config_root="config"
+        tmp_path, "abc", 7, history, group_id="aviayeli", config_root="config"
     )
 
     assert Path(paths["declaration"]).name == "declaration_abc.json"
@@ -103,7 +103,7 @@ def test_the_filenames_follow_the_required_pattern(tmp_path, history):
 
 def test_the_config_artifact_snapshots_the_shared_contract(tmp_path, history):
     paths = write_artifacts(
-        tmp_path, "abc", 1, history, group_id="groupa", config_root="config"
+        tmp_path, "abc", 1, history, group_id="aviayeli", config_root="config"
     )
 
     snapshot = json.loads(Path(paths["config"]).read_text())
@@ -114,7 +114,7 @@ def test_the_config_artifact_snapshots_the_shared_contract(tmp_path, history):
 
 def test_the_result_artifact_reports_the_outcome(tmp_path, history):
     paths = write_artifacts(
-        tmp_path, "abc", 1, history, group_id="groupa", config_root="config"
+        tmp_path, "abc", 1, history, group_id="aviayeli", config_root="config"
     )
 
     result = json.loads(Path(paths["result"]).read_text())
@@ -127,10 +127,10 @@ def test_the_result_artifact_reports_the_outcome(tmp_path, history):
 def test_writing_twice_is_byte_identical(tmp_path, history):
     """An artifact that shifts between runs cannot be defended."""
     first = write_artifacts(
-        tmp_path / "a", "abc", 1, history, group_id="groupa", config_root="config"
+        tmp_path / "a", "abc", 1, history, group_id="aviayeli", config_root="config"
     )
     second = write_artifacts(
-        tmp_path / "b", "abc", 1, history, group_id="groupa", config_root="config"
+        tmp_path / "b", "abc", 1, history, group_id="aviayeli", config_root="config"
     )
 
     assert Path(first["log"]).read_text() == Path(second["log"]).read_text()

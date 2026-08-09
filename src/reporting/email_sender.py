@@ -10,14 +10,19 @@ Two properties matter more than delivery itself:
   writes a draft artifact and returns True. The draft is what stops that being
   indistinguishable from a real send: there is always a file on disk saying
   exactly what would have gone out.
+
+This module holds the POLICY. Message construction lives in
+``reporting.mime_report`` — the report is a multipart message carrying the
+result as an ``application/json`` attachment (Rulebook 34 / 9.3.3), and
+keeping that separate is what keeps this file under the line limit.
 """
 
 import json
 import logging
 import os
-from email.mime.text import MIMEText
 
 from reporting.gmail_transport import SCOPE, TOKEN_FILE, gmail_send
+from reporting.mime_report import attachment_json, build_message, summary_text
 
 DEFAULT_RECIPIENT = "rmisegal+uoh26finalgame@gmail.com"
 MODES = ("auto", "draft", "send")
@@ -30,26 +35,15 @@ def mutual_agreement_confirmed(result: dict) -> bool:
     return isinstance(agreement, dict) and agreement.get("confirmed") is True
 
 
-def build_message(result: dict, recipient: str) -> MIMEText:
-    """A plain-text MIME message whose body is the result JSON."""
-    uid = result.get("game_uid", "unknown")
-    body = f"zero-trust match report for game_uid={uid}\n\n" + json.dumps(
-        result, indent=2, sort_keys=True
-    )
-    message = MIMEText(body, "plain", "utf-8")
-    message["To"] = recipient
-    message["From"] = "me"
-    message["Subject"] = f"[zero-trust] match report {uid}"
-    return message
-
-
 def message_text(message) -> str:
-    """The human-readable body.
+    """Everything the message conveys, as readable text, for the draft.
 
-    MIMEText base64-encodes a utf-8 payload, so get_payload() alone would
-    write an unreadable blob into the draft and defeat its whole purpose.
+    The body alone is no longer the report — it is a summary pointing at an
+    attachment. A draft holding only that would record that a send was
+    attempted while losing the result it was attempting to send, so the
+    decoded attachment is appended and the draft stays complete evidence.
     """
-    return message.get_payload(decode=True).decode("utf-8")
+    return f"{summary_text(message)}\n\n{attachment_json(message)}"
 
 
 def _write_draft(message, draft_dir: str, uid: str, reason: str) -> str:

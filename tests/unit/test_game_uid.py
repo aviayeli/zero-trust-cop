@@ -28,7 +28,7 @@ def history():
 @pytest.fixture
 def written(tmp_path, history):
     paths = write_artifacts(tmp_path, "ztc042", 3, history,
-                            group_id="groupa", config_root="config")
+                            group_id="aviayeli", config_root="config")
     return {kind: json.loads(Path(path).read_text()) for kind, path in paths.items()}
 
 

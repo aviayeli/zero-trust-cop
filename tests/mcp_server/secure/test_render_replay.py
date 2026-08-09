@@ -26,7 +26,7 @@ from scripts.render_replay import (
     turn_checks,
 )
 
-REAL_LOG = Path("logs/groupa/log_ztc001_g01.json")
+REAL_LOG = Path("logs/aviayeli/log_aviayeli_g01.json")
 
 
 @pytest.fixture

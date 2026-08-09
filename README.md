@@ -13,7 +13,7 @@ match produces a log that a standalone verifier can replay and certify
 
 ```
 seed=20260801  turns=5  terminal_reason=capture  peers_agreed=True
-$ python -m scripts.replay_match logs/groupa/log_ztc001_g01.json
+$ python -m scripts.replay_match logs/aviayeli/log_aviayeli_g01.json
 Verified OK
 ```
 
@@ -331,8 +331,15 @@ roughly one move in 74 to exploration.
 Each peer is an independent **FastMCP** server on **streamable HTTP**, bound
 to configured local ports. The canonical block is `[network]` in each peer's
 `game.toml` — `my_port` is where that peer listens and `opponent_url` is where
-it reaches the other half (police 8801, thief 8802). `public_url` carries an
-ngrok/Localtonet endpoint for league play and is empty for local matches. Tool parameter names are part of
+it reaches the other half (**police/cop 8802, thief 8801**). `config/declaration.json`
+advertises the same pair, and a test pins the declaration to the binding so the
+two cannot drift apart. `public_url` carries an ngrok/Localtonet endpoint for
+league play and is empty for local matches; it is *validated* at config load
+(`mcp_server.tunnel.parse_public_url`) rather than passed through, because
+nothing local ever dials it — a malformed endpoint would otherwise surface only
+as the opposing group failing to reach us mid-series. http/https with a host is
+accepted and normalised; a bare host, a scheme-relative `//host`, and ngrok's
+`tcp://` forwarder are rejected. Tool parameter names are part of
 the wire contract — FastMCP derives the public JSON schema from the Python
 signatures, so a rename is a protocol change and the schemas are pinned by
 test. Four tools per peer:
@@ -403,8 +410,8 @@ never produces an artifact.)
 
 | Discipline | State |
 |---|---|
-| Test suite | **635 tests**, all passing (unit → live two-process HTTP) |
-| Line limit | every one of the **135** tracked Python files ≤ **150 lines** (max: 149) |
+| Test suite | **673 tests**, all passing (unit → live two-process HTTP) |
+| Line limit | every one of the **139** tracked Python files ≤ **150 lines** (max: 149) |
 | TDD | strict red→green: every implementation change preceded by a confirmed failing test |
 | Hyperparameters | zero tunables inlined in Python — all in `config/game.json` / per-peer `game.toml` |
 | Lifecycle | PRD → PLAN → TODO under `docs/`, per phase |
@@ -462,11 +469,11 @@ configured for pytest; standalone scripts take `PYTHONPATH=src`.
 
 ```bash
 .venv/bin/python -m pytest -q
-# expected: 635 passed
+# expected: 673 passed
 ```
 
 (Includes the live-transport tests: they spawn both peer processes on
-127.0.0.1:8801/8802 against an isolated temporary config root.)
+127.0.0.1:8802/8801 against an isolated temporary config root.)
 
 ### 2 — Train the agents offline (reproduces `data/q_table_*.json`)
 
@@ -492,9 +499,9 @@ The match harness also does this automatically at startup.
 
 ```bash
 PYTHONPATH=src .venv/bin/python -m scripts.run_local_mcp_match \
-    --seed 20260801 --game-id ztc001 --game-number 1
+    --seed 20260801 --game-id aviayeli --game-number 1
 # seed=20260801  turns=5  terminal_reason=capture  peers_agreed=True
-# → logs/groupa/{declaration_ztc001,config_ztc001_g01,log_ztc001_g01,result_ztc001}.json
+# → logs/aviayeli/{declaration_aviayeli,config_aviayeli_g01,log_aviayeli_g01,result_aviayeli}.json
 ```
 
 This spawns both peer servers over streamable HTTP, plays the full
@@ -506,7 +513,7 @@ even on failure.
 
 ```bash
 PYTHONPATH=src .venv/bin/python -m scripts.replay_match \
-    logs/groupa/log_ztc001_g01.json --own-role police
+    logs/aviayeli/log_aviayeli_g01.json --own-role police
 # Verified OK          (exit 0)
 ```
 
@@ -528,7 +535,7 @@ or red `TAMPERED!` badge. Piped or redirected output stays byte-clean.
 
 ```bash
 PYTHONPATH=src .venv/bin/python -m scripts.replay_match \
-    logs/groupa/log_ztc001_g01.json --render --render-delay 0.5
+    logs/aviayeli/log_aviayeli_g01.json --render --render-delay 0.5
 ```
 
 ```
@@ -586,10 +593,10 @@ the same fast cryptographic check (~0.06 s), pinned by test.
 
 ```bash
 # Live belief heatmap — auto-advances, red intensity ∝ pheromone concentration
-PYTHONPATH=src .venv/bin/python -m gui.live_heatmap logs/groupa/log_ztc001_g01.json
+PYTHONPATH=src .venv/bin/python -m gui.live_heatmap logs/aviayeli/log_aviayeli_g01.json
 
 # Replay viewer — steps turn by turn, stamps the verdict badge
-PYTHONPATH=src .venv/bin/python -m gui.replay logs/groupa/log_ztc001_g01.json
+PYTHONPATH=src .venv/bin/python -m gui.replay logs/aviayeli/log_aviayeli_g01.json
 ```
 
 **Live Belief Heatmap** — renders the $7 \times 7$ **board** (49 cells); the
@@ -599,6 +606,17 @@ proportion to that cell's pheromone concentration, which decays each turn, so th
 builds and fades as the match runs. The field is a *concentration*, not a
 normalised probability (overlapping kernels reach 2.41 on a real match), so
 the shading clamps rather than claiming a probability it does not compute.
+
+**Decay rate.** Both constants are configured in `config/game.json`, never
+inlined: `pheromone_center_intensity = 0.9` at the observed cell and
+`pheromone_decay` ρ = `0.10` per turn. The recurrence is *geometric* —
+$\tau(t{+}1) = \max(0,\ (1-\rho)\,\tau(t) + \delta)$ — so a lone 0.9 deposit
+retains $0.9 \times 0.9^{10} = 0.314$ after ten turns, drops below 0.01 at
+turn 43, and is only retired at turn 268 by the field's 12-digit rounding. It
+fades; it does not expire inside a 35-move match. Read ρ = 0.10 as "loses a
+tenth of what remains each turn", not "gone in ten turns" — the latter would
+describe *subtractive* decay, which is a different model and not the one
+implemented here.
 
 **Replay Viewer** — a green `Verified OK` badge on a clean log, a red
 `TAMPERED!` banner on an altered one. The badge is driven by the *same*
@@ -621,8 +639,8 @@ After the artifacts are written, the harness reports the series:
 
 ```bash
 PYTHONPATH=src .venv/bin/python -m scripts.run_local_mcp_match \
-    --seed 20260801 --game-id ztc001 --game-number 1
-# … result=logs/groupa/result_ztc001.json
+    --seed 20260801 --game-id aviayeli --game-number 1
+# … result=logs/aviayeli/result_aviayeli.json
 # email_report=ok mode=auto
 ```
 
@@ -637,26 +655,45 @@ written only after both peers' independent engines agreed on every turn
 (§4). Reporting an unagreed result would launder a divergence into a
 submission, so `send_game_report` refuses and returns `False`.
 
+**The result is an attachment, never body text** (Rulebook 34 / §9.3.3). The
+message is `multipart/mixed`: a short summary body, plus the result as a
+base64-encoded `application/json` part filed under the same name it has on
+disk, `result_<game_uid>.json`. Body text is not merely discouraged — the body
+is asserted brace-free by test, so a serialised result cannot creep back in
+"for readability". A body would also be reflowed and line-wrapped in transit;
+the attachment arrives byte-identical to the artifact both peers agreed on.
+
 **Graceful fallback.** The Google client libraries are an *optional*
 dependency, imported inside the send path so the suite collects on a machine
 that has never installed them. With no `token.json` the reporter writes a
 readable draft under `logs/` and returns `True`, so CI never breaks — and the
-draft records exactly why nothing was sent:
+draft records exactly why nothing was sent. The draft carries the summary
+*and* the decoded attachment, so it stays complete evidence even though the
+body no longer holds the report:
 
 ```
 # not sent: ModuleNotFoundError: No module named 'googleapiclient'
 To: rmisegal+uoh26finalgame@gmail.com
-Subject: [zero-trust] match report ztc001
+Subject: [zero-trust] match report aviayeli
+
+zero-trust match report for game_uid=aviayeli
+…
+The full result is attached as result_aviayeli.json (application/json).
+
+{ …the attached payload, decoded… }
 ```
 
 Scope is `gmail.send` only — a reporter has no business holding read access.
 `token.json` and `credentials.json` are gitignored alongside the Ed25519
 keys.
 
-> **Honest limitation:** no message has ever been delivered from this
-> environment. The Google libraries are not installed and no OAuth token
-> exists, so every run to date has taken the draft path. The send path is
-> exercised only by mocked tests.
+> **Delivery status:** the send path has now been exercised for real. With
+> `token.json` present and `mode = "send"`, the harness run of 2026-08-09
+> delivered the multipart report — `result_aviayeli.json` attached as
+> `application/json` — to the address configured in `config/<role>/game.toml`.
+> The draft path remains the fallback and is what runs wherever no OAuth token
+> exists; the *failure* branches are still exercised only by mocked tests,
+> since provoking a real Gmail rejection is not something CI can do.
 
 ---
 

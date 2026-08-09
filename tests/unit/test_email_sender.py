@@ -18,12 +18,12 @@ from reporting import email_sender as sender
 @pytest.fixture
 def result_path(tmp_path):
     payload = {
-        "game_uid": "ztc001",
+        "game_uid": "aviayeli",
         "github_commit": "abc123",
         "mutual_agreement": {"confirmed": True, "turns_cross_checked": 5},
         "games": [{"game_number": 1, "terminal_reason": "capture"}],
     }
-    path = tmp_path / "result_ztc001.json"
+    path = tmp_path / "result_aviayeli.json"
     path.write_text(json.dumps(payload, indent=2))
     return path
 
@@ -59,16 +59,22 @@ def test_a_result_without_agreement_is_never_sent(tmp_path, result_path):
 
 # --- message construction ----------------------------------------------------
 
-def test_the_message_is_plain_text_and_carries_the_result_json(result_path):
+def test_the_message_is_multipart_and_attaches_the_result_json(result_path):
+    """Inverted deliberately: this test used to require a text/plain body.
+
+    Rulebook 34 / 9.3.3 forbids exactly that. The full attachment contract is
+    pinned in test_email_attachment.py; what matters here is that the policy
+    layer hands the transport a multipart, not a pasted-in report.
+    """
     body = json.loads(result_path.read_text())
 
     message = sender.build_message(body, "someone@example.com")
 
-    assert message.get_content_type() == "text/plain"
+    assert message.get_content_type() == "multipart/mixed"
     assert message["To"] == "someone@example.com"
     text = sender.message_text(message)
-    assert "ztc001" in text
-    assert json.loads(text.split("\n\n", 1)[1])["game_uid"] == "ztc001"
+    assert "aviayeli" in text
+    assert json.loads(text.split("\n\n")[-1])["game_uid"] == "aviayeli"
 
 
 def test_the_body_is_readable_not_base64(result_path):
@@ -81,7 +87,7 @@ def test_the_body_is_readable_not_base64(result_path):
 def test_the_subject_names_the_game(result_path):
     message = sender.build_message(json.loads(result_path.read_text()), "a@b.c")
 
-    assert "ztc001" in message["Subject"]
+    assert "aviayeli" in message["Subject"]
 
 
 def test_the_default_recipient_is_the_course_address():

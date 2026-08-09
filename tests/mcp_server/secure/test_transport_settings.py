@@ -26,8 +26,14 @@ def test_the_two_peers_bind_different_ports():
 
 
 def test_the_configured_ports_are_the_ruled_ones():
-    assert load_network_settings("police").my_port == 8801
-    assert load_network_settings("thief").my_port == 8802
+    """cop listens on 8802 and thief on 8801, NOT the other way round.
+
+    Pinned as literals on purpose: the pairing below only proves the two
+    configs are self-consistent, so a matched double-swap would satisfy it
+    while advertising the wrong role to every external peer.
+    """
+    assert load_network_settings("police").my_port == 8802
+    assert load_network_settings("thief").my_port == 8801
 
 
 def test_peers_stay_on_the_loopback_interface():

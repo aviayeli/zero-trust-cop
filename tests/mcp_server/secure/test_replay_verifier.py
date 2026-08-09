@@ -40,7 +40,7 @@ def played(secure_config_root, peer_keys):
     history = asyncio.run(
         play_match(clients, [apps["police"], apps["thief"]], Board(config), config)
     )
-    log = build_log("t1", 1, history, group_id="groupa")
+    log = build_log("t1", 1, history, group_id="aviayeli")
     keys = load_public_keys("police", secure_config_root)
     return log, config, keys
 

@@ -125,7 +125,7 @@ def test_missing_declared_config_is_a_setup_error(tmp_path):
 
 def test_incomplete_declared_config_is_a_setup_error(tmp_path):
     """A present-but-incomplete declaration must not silently degrade."""
-    (tmp_path / "declaration.json").write_text('{"group_name": "groupa"}')
+    (tmp_path / "declaration.json").write_text('{"group_name": "aviayeli"}')
     (tmp_path / "game.json").write_text(
         '{"network_and_league": {"token_budget_per_series": 1, "num_games": 1}}'
     )

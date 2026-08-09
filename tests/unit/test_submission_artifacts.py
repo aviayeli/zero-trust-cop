@@ -35,14 +35,14 @@ def test_the_probe_returns_a_git_sha():
 
 
 def test_the_result_summary_carries_the_commit_hash(history):
-    result = build_result("g1", 1, history, group_id="groupa")
+    result = build_result("g1", 1, history, group_id="aviayeli")
 
     assert result["github_commit"] == github_commit()
 
 
 def test_the_written_result_artifact_carries_it_too(tmp_path, history):
     paths = write_artifacts(tmp_path, "g1", 1, history,
-                            group_id="groupa", config_root="config")
+                            group_id="aviayeli", config_root="config")
 
     written = json.loads(Path(paths["result"]).read_text())
     assert written["github_commit"] == github_commit()
@@ -51,7 +51,7 @@ def test_the_written_result_artifact_carries_it_too(tmp_path, history):
 def test_the_declaration_and_the_result_agree_on_provenance(tmp_path, history):
     """Both artifacts must name the SAME commit, or the pair is incoherent."""
     paths = write_artifacts(tmp_path, "g1", 1, history,
-                            group_id="groupa", config_root="config")
+                            group_id="aviayeli", config_root="config")
 
     declaration = json.loads(Path(paths["declaration"]).read_text())
     result = json.loads(Path(paths["result"]).read_text())
@@ -85,7 +85,7 @@ def test_capsys_captured_output_is_never_coloured(capsys):
     from scripts.replay_match import main
 
     with pytest.raises(SystemExit) as exited:
-        main(["logs/groupa/log_ztc001_g01.json"])
+        main(["logs/aviayeli/log_aviayeli_g01.json"])
 
     assert exited.value.code == 0
     assert capsys.readouterr().out.strip() == VERIFIED
