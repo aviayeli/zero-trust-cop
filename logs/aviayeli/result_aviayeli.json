@@ -1,0 +1,32 @@
+{
+  "artifact_version": 1,
+  "game_id": "aviayeli",
+  "game_uid": "aviayeli",
+  "games": [
+    {
+      "captured": true,
+      "cop_position": [
+        0,
+        2
+      ],
+      "game_number": 1,
+      "terminal_reason": "capture",
+      "thief_position": [
+        0,
+        2
+      ],
+      "turns": 5
+    }
+  ],
+  "github_commit": "685082697025ea2fdcf016e66714eb27fdf99ab2",
+  "group_id": "aviayeli",
+  "mutual_agreement": {
+    "confirmed": true,
+    "method": "per-turn comparison of both peers' independent engines",
+    "turns_cross_checked": 5
+  },
+  "repos": {
+    "cop": "https://github.com/aviayeli/zero-trust-cop",
+    "thief": "https://github.com/aviayeli/zero-trust-thief"
+  }
+}

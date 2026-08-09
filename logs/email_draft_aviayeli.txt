@@ -1,0 +1,38 @@
+# not sent: ModuleNotFoundError: No module named 'googleapiclient'
+To: rmisegal+uoh26finalgame@gmail.com
+Subject: [zero-trust] match report aviayeli
+
+zero-trust match report for game_uid=aviayeli
+
+{
+  "artifact_version": 1,
+  "game_id": "aviayeli",
+  "game_uid": "aviayeli",
+  "games": [
+    {
+      "captured": true,
+      "cop_position": [
+        0,
+        2
+      ],
+      "game_number": 1,
+      "terminal_reason": "capture",
+      "thief_position": [
+        0,
+        2
+      ],
+      "turns": 5
+    }
+  ],
+  "github_commit": "fc74aa50232995f4bbbd0d5d1724a62286c8938b",
+  "group_id": "aviayeli",
+  "mutual_agreement": {
+    "confirmed": true,
+    "method": "per-turn comparison of both peers' independent engines",
+    "turns_cross_checked": 5
+  },
+  "repos": {
+    "cop": "https://github.com/aviayeli/zero-trust-cop",
+    "thief": "https://github.com/aviayeli/zero-trust-thief"
+  }
+}
