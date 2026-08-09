@@ -21,6 +21,9 @@ token.json
 credentials.json
 config/*/token.json
 config/*/credentials.json
+credentials.json
+client_secret_*.json
+*:Zone.Identifier
 
 # Ed25519 private key material
 *.pem
