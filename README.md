@@ -411,7 +411,7 @@ never produces an artifact.)
 | Discipline | State |
 |---|---|
 | Test suite | **673 tests**, all passing (unit → live two-process HTTP) |
-| Line limit | every one of the **139** tracked Python files ≤ **150 lines** (max: 149) |
+| Line limit | every one of the **140** tracked Python files ≤ **150 lines** (max: 149) |
 | TDD | strict red→green: every implementation change preceded by a confirmed failing test |
 | Hyperparameters | zero tunables inlined in Python — all in `config/game.json` / per-peer `game.toml` |
 | Lifecycle | PRD → PLAN → TODO under `docs/`, per phase |
