@@ -10,7 +10,6 @@ independent engines are compared every turn.
 
 import argparse
 import contextlib
-import json
 from random import Random
 
 import anyio
@@ -24,15 +23,12 @@ from mcp_server.identity import load_signing_key
 from mcp_server.keygen import ensure_keys
 from mcp_server.peer_client import PeerClient
 from mcp_server.peer_policy import build_peer_policy
-from mcp_server.repos import load_email_settings
-from reporting.email_sender import send_game_report
 from scripts.match_log import write_artifacts
 from scripts.match_loop import play_match
+from scripts.match_report import group_id, report_by_email
 from scripts.peer_processes import PEER_ROLES, running_peers
 
 _ENGINE_ROLE = {"police": "cop", "thief": "thief"}
-# Both peers' [email] blocks are identical; read one of them.
-_REPORTING_ROLE = "police"
 
 
 def peer_url(binding) -> str:
@@ -55,8 +51,12 @@ def build_clients(config, seed, config_root=None):
 
 
 @contextlib.asynccontextmanager
-async def connected_peers(bindings):
-    """Open a live session to every peer, closing them all on the way out."""
+async def connected_peers(bindings, timeout_seconds):
+    """Open a live session to every peer, closing them all on the way out.
+
+    ``timeout_seconds`` is the published ``watchdog_timeout_sec``: a peer that
+    stops answering forfeits the match rather than hanging the tournament.
+    """
     async with contextlib.AsyncExitStack() as stack:
         connections = []
         for role in PEER_ROLES:
@@ -65,22 +65,19 @@ async def connected_peers(bindings):
             )
             session = await stack.enter_async_context(ClientSession(read, write))
             await session.initialize()
-            connections.append(HttpPeer(session))
+            connections.append(HttpPeer(session, timeout_seconds))
         yield connections
 
 
 async def run_match(bindings, config, seed, config_root=None):
-    """Drive a whole match over the wire and return its per-turn history."""
+    """Drive a whole match over the wire and return its per-turn history.
+
+    Raises:
+        TechnicalLossError: a peer stalled past ``watchdog_timeout_sec``.
+    """
     clients = build_clients(config, seed, config_root)
-    async with connected_peers(bindings) as connections:
+    async with connected_peers(bindings, config.watchdog_timeout_sec) as connections:
         return await play_match(clients, connections, Board(config), config)
-
-
-def _group_id(config_root=None):
-    """The group directory logs land in, from the published declaration."""
-    root = config_root or "config"
-    with open(f"{root}/declaration.json") as declared:
-        return json.load(declared)["group_name"]
 
 
 def _report(seed, history):
@@ -93,18 +90,6 @@ def _report(seed, history):
     print(f"cop_position={tuple(final['cop_position'])}")
     print(f"thief_position={tuple(final['thief_position'])}")
     print("peers_agreed=True")
-
-
-def _report_by_email(result_path, config_root, logs_dir):
-    """Post-game step: email the result, or leave a draft if it cannot send."""
-    settings = load_email_settings(_REPORTING_ROLE, config_root)
-    handled = send_game_report(
-        result_path,
-        recipient=settings["recipient"],
-        config_mode=settings["mode"],
-        draft_dir=logs_dir,
-    )
-    print(f"email_report={'ok' if handled else 'FAILED'} mode={settings['mode']}")
 
 
 def main(argv=None):
@@ -133,11 +118,11 @@ def main(argv=None):
     if args.game_id:
         paths = write_artifacts(
             args.logs_dir, args.game_id, args.game_number, history,
-            group_id=_group_id(args.config_root), config_root=args.config_root,
+            group_id=group_id(args.config_root), config_root=args.config_root,
         )
         for kind, path in sorted(paths.items()):
             print(f"{kind}={path}")
-        _report_by_email(paths["result"], args.config_root, args.logs_dir)
+        report_by_email(paths["result"], args.config_root, args.logs_dir)
     return history
 
 

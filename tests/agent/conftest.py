@@ -43,6 +43,7 @@ def strategy_settings(game_config):
         exploration_rate=0.1,
         initial_q_value=0.0,
         invalid_move_penalty=-1.0,
+        step_cost=-0.01,
         honesty_prior=0.5,
         qtable_path="/tmp/q_table.json",
         epsilon_decay_factor=0.995,

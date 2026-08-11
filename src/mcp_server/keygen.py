@@ -8,10 +8,23 @@ Idempotent, and deliberately so: an existing private key is NEVER replaced.
 Regenerating one would silently invalidate every public half already
 published to the other peer, and every signature made under it.
 
+Public halves are protected just as firmly, and for the same reason. A clean
+checkout IS the state "``.pub`` present, ``.pem`` absent": the public keys are
+tracked and the private ones are not. Republishing there would overwrite the
+very keys the shipped match log was signed under, so a genuine log would read
+as TAMPERED on a grader's machine. ``ensure_keys`` therefore refuses to
+overwrite a shipped public half whose private key it had to generate, and says
+so on stdout.
+
+The cost of that refusal is stated plainly rather than hidden: on such a
+checkout the freshly generated private key does NOT match the published public
+half, so LIVE play will be rejected by signature verification until the
+operator either restores the original ``signing_key.pem`` or deletes the
+shipped ``.pub`` files to publish a fresh set. Verifiability of the shipped
+evidence is treated as outranking live play on an untouched clone.
+
 Note for interop: the committed ``.pub`` files belong to whoever generated
-them. A checkout without the matching private keys necessarily produces new
-ones, so the published public halves change and must be re-shared with any
-external peer.
+them, so a peer that does regenerate must re-share its public half.
 """
 
 import os
@@ -28,6 +41,14 @@ from mcp_server.identity import (
 )
 
 _KEY_MODE = 0o600
+CLEAN_CHECKOUT_WARNING = (
+    "⚠️ Shipped public key exists but private key is missing (clean checkout). "
+    "Skipping key generation to protect log signature integrity."
+)
+_RECOVERY_HINT = (
+    "   Restore signing_key.pem to play live, or delete the shipped "
+    "config/*/peers/*.pub files to publish a fresh set."
+)
 
 
 def _write_private_key(path: str, private_key) -> None:
@@ -50,15 +71,23 @@ def _public_hex(private_key) -> str:
     return raw.hex()
 
 
-def _publish(path: str, hex_key: str) -> None:
-    """Write a public half only when it differs, to keep reruns a no-op."""
+def _publish(path: str, hex_key: str, protected: bool) -> bool:
+    """Write a public half only when it differs, to keep reruns a no-op.
+
+    Returns:
+        Whether an EXISTING shipped half was left in place untouched, i.e.
+        whether this call refused to publish.
+    """
     os.makedirs(os.path.dirname(path), exist_ok=True)
     if os.path.exists(path):
         with open(path) as existing:
             if existing.read().strip() == hex_key:
-                return
+                return False
+        if protected:
+            return True
     with open(path, "w") as key_file:
         key_file.write(hex_key)
+    return False
 
 
 def ensure_keys(config_root: str | None = None) -> list:
@@ -82,11 +111,16 @@ def ensure_keys(config_root: str | None = None) -> list:
         keys[role] = private_key
         created.append(role)
 
+    refused = False
     for own_role in PEER_ROLES:
         os.makedirs(os.path.join(root, own_role, "peers"), exist_ok=True)
         for peer_role, private_key in keys.items():
-            _publish(
+            refused |= _publish(
                 peer_public_key_path(own_role, peer_role, config_root),
                 _public_hex(private_key),
+                protected=peer_role in created,
             )
+    if refused:
+        print(CLEAN_CHECKOUT_WARNING)
+        print(_RECOVERY_HINT)
     return created

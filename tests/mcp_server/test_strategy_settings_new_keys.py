@@ -75,6 +75,21 @@ def test_qtable_path_differs_between_roles():
 
 
 @pytest.mark.parametrize("role", ["police", "thief"])
+def test_step_cost_loads_as_a_small_negative_float(role):
+    """The living penalty is configured per peer, never inlined in the trainer."""
+    settings = load_strategy_settings(role)
+    assert settings.step_cost == -0.01
+    assert isinstance(settings.step_cost, float)
+
+
+@pytest.mark.parametrize("role", ["police", "thief"])
+def test_step_cost_is_dwarfed_by_every_terminal_payoff(role):
+    """Shaping must nudge the policy, never rewrite the payoff matrix."""
+    settings = load_strategy_settings(role)
+    assert abs(settings.step_cost) < abs(settings.invalid_move_penalty)
+
+
+@pytest.mark.parametrize("role", ["police", "thief"])
 def test_match_exploration_rate_loads_as_a_float(role):
     """D5: match play is greedy, and the rate is configured, not hardcoded."""
     settings = load_strategy_settings(role)

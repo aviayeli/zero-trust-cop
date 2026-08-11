@@ -112,11 +112,11 @@ def test_the_harness_trigger_reads_config_and_reports(tmp_path, result_path, cap
     Unit-testing send_game_report could not catch that — only exercising the
     harness's own wiring does.
     """
-    from scripts.run_local_mcp_match import _report_by_email
+    from scripts.match_report import report_by_email
 
-    with patch("scripts.run_local_mcp_match.send_game_report",
+    with patch("scripts.match_report.send_game_report",
                return_value=True) as reporter:
-        _report_by_email(str(result_path), None, str(tmp_path))
+        report_by_email(str(result_path), None, str(tmp_path))
 
     reporter.assert_called_once()
     # The trigger's job is to forward the peer's [email] block, whatever it
@@ -130,9 +130,9 @@ def test_the_harness_trigger_reads_config_and_reports(tmp_path, result_path, cap
 
 
 def test_the_harness_trigger_announces_a_failure(tmp_path, result_path, capsys):
-    from scripts.run_local_mcp_match import _report_by_email
+    from scripts.match_report import report_by_email
 
-    with patch("scripts.run_local_mcp_match.send_game_report", return_value=False):
-        _report_by_email(str(result_path), None, str(tmp_path))
+    with patch("scripts.match_report.send_game_report", return_value=False):
+        report_by_email(str(result_path), None, str(tmp_path))
 
     assert "email_report=FAILED" in capsys.readouterr().out

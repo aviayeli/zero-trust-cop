@@ -20,6 +20,7 @@ class StrategySettings:
     exploration_rate: float
     initial_q_value: float
     invalid_move_penalty: float
+    step_cost: float
     honesty_prior: float
     qtable_path: str
     epsilon_decay_factor: float
@@ -48,6 +49,7 @@ def load_strategy_settings(
         exploration_rate=strategy["exploration_rate"],
         initial_q_value=strategy["initial_q_value"],
         invalid_move_penalty=strategy["invalid_move_penalty"],
+        step_cost=strategy["step_cost"],
         honesty_prior=strategy["honesty_prior"],
         qtable_path=strategy["qtable_path"],
         epsilon_decay_factor=strategy["epsilon_decay_factor"],

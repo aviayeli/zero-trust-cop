@@ -11,6 +11,7 @@ the PRODUCTION signing keys — key material that is gitignored and therefore
 unrecoverable. A test must never be able to reach it.
 """
 
+from pathlib import Path
 from random import Random
 
 import anyio
@@ -31,7 +32,16 @@ from scripts.run_local_mcp_match import connected_peers, peer_url, run_match
 
 @pytest.fixture
 def isolated_root(secure_config_root):
-    """A complete peer workspace with its own throwaway signing keys."""
+    """A complete peer workspace with its own throwaway signing keys.
+
+    ``secure_config_root`` seeds public halves whose private keys live only in
+    memory — which is the clean-checkout shape ``ensure_keys`` now REFUSES to
+    republish over (``test_keygen_protection``). They are cleared first so the
+    generated keypairs are internally consistent; a live match needs the two
+    halves to match, which is the whole point of that refusal.
+    """
+    for pub in Path(secure_config_root).glob("*/peers/*.pub"):
+        pub.unlink()
     ensure_keys(secure_config_root)
     return secure_config_root
 
@@ -55,11 +65,13 @@ def test_a_failing_block_still_stops_both_peers(isolated_root):
         assert not port_is_open(binding.host, binding.my_port, timeout=0.5)
 
 
-def test_both_peers_answer_over_http(isolated_root):
+def test_both_peers_answer_over_http(isolated_root, match_config):
     with running_peers(isolated_root) as bindings:
 
         async def ask():
-            async with connected_peers(bindings) as connections:
+            async with connected_peers(
+                bindings, match_config.watchdog_timeout_sec
+            ) as connections:
                 return [await peer.get_match_status() for peer in connections]
 
         statuses = anyio.run(ask)
@@ -88,7 +100,7 @@ def test_a_tampered_reveal_is_refused_over_the_wire(isolated_root, match_config)
         async with streamable_http_client(url) as (read, write, _):
             async with ClientSession(read, write) as session:
                 await session.initialize()
-                peer = HttpPeer(session)
+                peer = HttpPeer(session, match_config.watchdog_timeout_sec)
                 board = Board(match_config)
                 submissions = {
                     role: PeerClient(

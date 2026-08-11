@@ -4,6 +4,10 @@ discount_factor = 0.9
 exploration_rate = 0.1
 initial_q_value = 0.0
 invalid_move_penalty = -1.0
+# Living penalty applied on every turn that is not a capture, so a
+# shorter pursuit is worth more than a longer one. Kept two orders of
+# magnitude below the terminal payoffs: the outcome still dominates.
+step_cost = -0.01
 honesty_prior = 0.5
 qtable_path = "data/q_table_thief.json"
 epsilon_decay_factor = 0.999
@@ -30,4 +34,4 @@ recipient = "rmisegal+uoh26finalgame@gmail.com"
 # auto  = send if credentials exist, otherwise write a local draft
 # draft = never send; always write the draft artifact
 # send  = require a real send; report failure rather than drafting
-mode = "draft"
+mode = "auto"

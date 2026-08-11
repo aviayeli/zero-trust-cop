@@ -1,24 +1,53 @@
-# PLAN — Phase 1: Base Logic
+# PLAN — System Architecture (Phases 1–7)
 
-Derived from `docs/PRD_01_Base_Logic.md`. Defines the software architecture only. No code and no `TODO.md` yet — awaiting approval.
+Derived from the `PRD_0*.md` series. This is the top-level architectural
+specification for the completed system: a zero-trust, peer-to-peer Police–Thief
+pursuit game in which two mutually distrusting FastMCP peers play a lockstep
+commit–reveal match with no trusted arbiter, no shared memory, and no shared
+process.
+
+Phase-level detail lives in the per-phase documents (`PLAN_02_MCP_Server.md`,
+`PLAN_03_Security.md`, `PLAN_04_Strategy.md`, `PLAN_05_Wiring_and_Training.md`,
+`PLAN_06_Local_MCP_Simulation.md`, `PLAN_07_Submission_Alignment.md`). This file
+is the authority on module boundaries, locked algorithms, and cross-phase
+invariants; where it and a phase document disagree, this file wins.
 
 ## Design Principles Applied
 
-- **Simplicity First / Surgical Changes**: each module owns exactly one concern; nothing is built for phases 2+ (no networking, no MCP, no scoring/pheromones).
-- **150-line limit**: modules are split along the natural seams in the PRD (grid, agents, resolution, config, errors) so each stays well under 150 lines. If any module approaches the limit during implementation, it must be split further before it is exceeded — not after.
-- **No hardcoded hyperparameters**: exactly one module (`config.py`) is allowed to know the path to `config/game.json`; every other module receives values through it, never as literals.
-- **Strict TDD**: this PLAN's job is to define module boundaries and public interfaces precisely enough that `TODO.md` can sequence failing tests before any implementation.
+- **Simplicity First / Surgical Changes**: each module owns exactly one concern.
+  Composition roots (`mcp_server/server.py`, `scripts/run_local_mcp_match.py`)
+  wire dependencies and hold no logic of their own.
+- **150-line limit**: modules are split along natural seams *before* the limit is
+  reached, not after — `tools.py` was split out of `server.py`, `log_checks.py`
+  and `log_shape.py` out of `replay_match.py`, `mime_report.py` out of
+  `email_sender.py`, `action_buffer.py` out of `match_state.py`,
+  `match_report.py` out of `run_local_mcp_match.py`. The longest tracked
+  module is `strategy/qvalues.py` at 147 lines.
+- **No hardcoded hyperparameters**: every tunable lives in `config/game.json`
+  (shared contract) or `config/<role>/game.toml` (per-peer strategy and
+  networking). `engine/config.py` and `strategy/settings.py` are the only
+  modules permitted to know those paths.
+- **Strict TDD**: every module below was specified precisely enough that a
+  failing test could be written before it existed. Current state: **702 tests
+  passing**.
 
 ## FR5 Turn-Resolution & Tie-Break Rule (locked)
 
-This is the authoritative resolution algorithm every module below must implement identically to `PRD_01_Base_Logic.md` FR5:
+This is the authoritative resolution algorithm every layer must implement
+identically to `PRD_01_Base_Logic.md` FR5. It is implemented once, in
+`engine/resolver.py`, and nothing else duplicates it:
 
-1. **Simultaneous evaluation** — compute both agents' *intended* new positions from the current board state, before committing either.
-2. **Barrier & bounds check** — for each agent independently: if its intended position is off-grid or on a barrier cell, that agent's move resolves to `STAY` (i.e. its position does not change). This check is per-agent and does not depend on the other agent's move.
+1. **Simultaneous evaluation** — compute both agents' *intended* new positions
+   from the current board state, before committing either.
+2. **Barrier & bounds check** — for each agent independently: if its intended
+   position is off-grid or on a barrier cell, that agent's move resolves to
+   `STAY`. This check is per-agent and does not depend on the other agent's move.
 3. **Capture check** — after both positions are resolved:
    - a) `new_cop_pos == new_thief_pos` → capture, or
-   - b) `new_cop_pos == old_thief_pos AND new_thief_pos == old_cop_pos` → capture (agents swapped cells / crossed paths).
-4. Only a malformed action token (not one of `N/S/E/W/STAY`) is rejected as illegal input, prior to step 1 — it never reaches resolution.
+   - b) `new_cop_pos == old_thief_pos AND new_thief_pos == old_cop_pos` → capture
+        (agents swapped cells / crossed paths).
+4. Only a malformed action token (not one of `N/S/E/W/STAY`) is rejected as
+   illegal input, prior to step 1 — it never reaches resolution.
 
 ## Module Architecture
 
@@ -26,109 +55,797 @@ This is the authoritative resolution algorithm every module below must implement
 zero-trust-cop/
 ├── CLAUDE.md
 ├── config/
-│   └── game.json
-├── docs/
-│   ├── PRD_01_Base_Logic.md
-│   ├── PLAN.md
-│   └── TODO.md              (next step, not yet created)
+│   ├── game.json               # shared contract: board, scoring, pheromones, league
+│   ├── declaration.json         # Step-0 identity: group, members, repos, endpoints
+│   ├── police/                  # peer workspace: game.json, game.toml, keys, peers/*.pub
+│   └── thief/                   # peer workspace: game.json, game.toml, keys, peers/*.pub
+├── docs/                        # PRD → PLAN → TODO, per phase
 ├── src/
-│   └── engine/
-│       ├── __init__.py
-│       ├── config.py         # loads & validates config/game.json
-│       ├── actions.py        # Action enum/type + validity check
-│       ├── board.py          # grid bounds + barrier placement/lookup
-│       ├── player.py         # agent position state + intended-move computation
-│       ├── resolver.py       # FR5 algorithm: bounds/barrier resolution + capture check
-│       ├── game_loop.py       # episode orchestration: init, step, termination (FR6), history
-│       └── errors.py         # exception types (e.g. InvalidActionError, BarrierLimitError)
-└── tests/
-    └── engine/
-        ├── test_config.py
-        ├── test_actions.py
-        ├── test_board.py
-        ├── test_player.py
-        ├── test_resolver.py
-        └── test_game_loop.py
+│   ├── engine/                  # deterministic, offline game core (Phase 1)
+│   │   ├── config.py            # loads & validates config/game.json
+│   │   ├── actions.py           # Action enum/type + validity check
+│   │   ├── board.py             # grid bounds + barrier placement/lookup
+│   │   ├── player.py            # agent position state + intended-move computation
+│   │   ├── resolver.py          # FR5 algorithm: bounds/barrier resolution + capture
+│   │   ├── game_loop.py         # episode orchestration: init, step, termination, history
+│   │   └── errors.py            # shared exception types
+│   ├── mcp_server/              # FastMCP peer + zero-trust protocol (Phases 2–3)
+│   │   ├── server.py            # composition root: one FastMCP app per peer
+│   │   ├── tools.py             # the four-tool wire surface
+│   │   ├── observations.py      # observation/status payload construction
+│   │   ├── submissions.py       # SubmissionGate: signature auth + stall expiry
+│   │   ├── commitments.py       # CommitmentBook: the lockstep phase machine
+│   │   ├── crypto.py            # SHA-256 commit/verify primitive
+│   │   ├── identity.py          # Ed25519 sign/verify, key paths, PEER_ROLES
+│   │   ├── keygen.py            # first-run key material generation
+│   │   ├── peer_keys.py         # public-key loading by own-role workspace
+│   │   ├── match_state.py       # async 2-slot turn buffer + terminal reason
+│   │   ├── action_buffer.py     # the slot mechanics behind MatchState
+│   │   ├── directions.py        # wire-vocabulary encode/decode + stated hints
+│   │   ├── peer_client.py       # PeerClient: prepare() one signed submission
+│   │   ├── peer_policy.py       # builds a match-mode AgentPolicy for a peer
+│   │   ├── http_peer.py         # streamable-HTTP tool invocation
+│   │   ├── transport.py         # [network] settings loader
+│   │   ├── tunnel.py            # public_url validation/normalisation
+│   │   └── repos.py             # repo + [email] settings loader
+│   ├── strategy/                # the AI brain (Phase 4)
+│   │   ├── qvalues.py           # tabular Q-learning + persistence
+│   │   ├── pheromones.py        # decaying scent-trail belief field
+│   │   ├── belief.py            # stated-intent honesty tracker
+│   │   └── settings.py          # [strategy] settings loader
+│   ├── agent/agent_core.py      # AgentPolicy: the policy layer over strategy/
+│   ├── gui/                     # replay viewer, live heatmap, canvas, palette
+│   ├── reporting/               # Gmail transport, MIME report, send policy
+│   └── scripts/                 # match loop, artifacts, reporting, verifier, tournaments
+└── tests/                       # 702 tests, mirroring the src/ layout
 ```
 
-## Module Responsibilities & Interfaces
+## 1. Engine Layer — Module Responsibilities & Interfaces
 
 ### `config.py`
-- **Owns**: reading and parsing `config/game.json`; the single source of truth for every hyperparameter (`grid_size`, `cop_start`, `thief_start`, `move_set`, `max_barriers`, `max_moves`, `survival_threshold`).
-- **Exposes**: a `GameConfig` (dataclass or similar) with typed fields for the above, and a `load_config(path: str) -> GameConfig` function.
-- **Depends on**: nothing (leaf module).
-- **Used by**: every other module — no module reads `config/game.json` directly except this one.
+- **Owns**: reading and parsing `config/game.json`; the single source of truth
+  for every shared hyperparameter (`grid_size`, `cop_start`, `thief_start`,
+  `move_set`, `max_barriers`, `max_moves`, `survival_threshold`, the `scoring`
+  block, the `pheromones` block, the `network_and_league` block).
+- **Exposes**: `GameConfig` with typed fields, and `load_config(path) -> GameConfig`.
+- **Used by**: every other module — no module reads `config/game.json` directly.
 
 ### `actions.py`
-- **Owns**: the fixed action vocabulary and the "is this a legal token" check described in FR3/step 4 above.
-- **Exposes**: an `Action` enum (`N, S, E, W, STAY`) and `parse_action(token: str) -> Action`, raising `InvalidActionError` (from `errors.py`) for anything outside the set. Also exposes the `(row, col)` delta for each directional action.
-- **Depends on**: `errors.py`.
-- **Used by**: `player.py`, `resolver.py`, `game_loop.py`.
+- **Owns**: the fixed action vocabulary and the legal-token check (FR3 / step 4).
+- **Exposes**: `Action` enum (`N, S, E, W, STAY`), `parse_action(token) -> Action`
+  raising `InvalidActionError`, and the `(row, col)` delta per action.
+- **Drift guard**: a test asserts `[a.name for a in Action] == GameConfig.move_set`,
+  so `config/game.json` stays the source of truth without runtime coupling.
 
 ### `board.py`
-- **Owns**: grid bounds (from `GameConfig.grid_size`) and barrier state (placement, lookup, count).
-- **Exposes**: `Board` class with `in_bounds(pos) -> bool`, `is_barrier(pos) -> bool`, `place_barrier(pos)` (enforces the 14-barrier cap and occupancy rule from FR4, raising `BarrierLimitError`/`IllegalBarrierError` as appropriate), and `barrier_count`.
-- **Depends on**: `config.py`, `errors.py`.
-- **Used by**: `resolver.py`, `game_loop.py`.
+- **Owns**: grid bounds and barrier state (placement, lookup, count).
+- **Exposes**: `Board.in_bounds(pos)`, `is_barrier(pos)`,
+  `place_barrier(pos, occupied=())` (enforces the 14-barrier cap and the
+  occupancy rule), `barrier_count`. Occupancy is supplied by the caller so the
+  board stays decoupled from `player.py`.
 
 ### `player.py`
-- **Owns**: a single agent's position state and the pure computation of an *intended* next position given a current position and an `Action` (no bounds/barrier awareness — that's the resolver's job, per FR5 step 2's separation of concerns).
-- **Exposes**: `PlayerState` (position, role) and `intended_position(state, action) -> (row, col)`.
-- **Depends on**: `actions.py`.
-- **Used by**: `resolver.py`, `game_loop.py`.
+- **Owns**: one agent's position state and the *pure* computation of an intended
+  next position — deliberately with no bounds or barrier awareness, per FR5's
+  separation of concerns.
+- **Exposes**: `PlayerState(position, role)`, `intended_position(state, action)`.
 
 ### `resolver.py`
-- **Owns**: the FR5 algorithm exactly as locked above — steps 1–3 (simultaneous evaluation, per-agent barrier/bounds resolution to `STAY`, capture check). This is the only module that implements the tie-break/capture rule; nothing else duplicates it.
-- **Exposes**: `resolve_turn(board, cop_state, thief_state, cop_action, thief_action) -> TurnResult`, where `TurnResult` carries the two resolved positions and a `captured: bool` flag.
-- **Depends on**: `board.py`, `player.py`, `actions.py`.
-- **Used by**: `game_loop.py`.
+- **Owns**: the FR5 algorithm exactly as locked above. The only implementation of
+  the tie-break/capture rule in the codebase.
+- **Exposes**: `resolve_turn(board, cop_state, thief_state, cop_action, thief_action)
+  -> TurnResult` carrying both resolved positions and `captured: bool`.
 
 ### `game_loop.py`
-- **Owns**: episode-level orchestration — initializing Cop/Thief at their configured start positions, driving one `step()` per turn via `resolver.py`, tracking turn count, enforcing FR6 termination (capture from `TurnResult.captured`, or turn count reaching `max_moves`), and recording full episode history for deterministic replay (FR7).
-- **Exposes**: `GameEpisode` class with `reset()`, `step(cop_action, thief_action) -> TurnResult`, `is_terminated -> bool`, `history` (ordered list of resolved turns), and a `replay(actions: list[tuple]) -> GameEpisode` helper that reconstructs an episode deterministically from a recorded action sequence.
-- **Depends on**: `config.py`, `board.py`, `player.py`, `resolver.py`, `errors.py`.
-- **Used by**: test suite and, in later phases, the networking/MCP layer (out of scope here).
+- **Owns**: episode orchestration — initialising agents at configured starts,
+  driving one `step()` per turn through `resolver.py`, tracking turn count,
+  enforcing FR6 termination (capture, or turn count reaching `max_moves`), and
+  recording full history for deterministic replay (FR7).
+- **Exposes**: `GameEpisode` with `reset()`, `step()`, `is_terminated`, `history`,
+  `replay(actions)`.
+- **Invariants**: positions are normalised to tuples (config starts are JSON
+  lists, so `(0,0) == [0,0]` would otherwise be False); a `step()` on a
+  terminated episode is a no-op.
 
 ### `errors.py`
-- **Owns**: all engine-specific exception types (`InvalidActionError`, `BarrierLimitError`, `IllegalBarrierPlacementError`, etc.) so every module raises from a shared, importable set rather than ad hoc exceptions.
-- **Depends on**: nothing (leaf module).
+- **Owns**: all engine exception types (`InvalidActionError`, `BarrierLimitError`,
+  `IllegalBarrierPlacementError`) so no module raises ad hoc.
 
-## Data Flow (per turn)
+## 2. Core Communication — FastMCP Peer Isolation
+
+### Repository isolation
+
+Isolation is enforced at four levels, not one. The weakest of them is the one
+that defines the guarantee, so all four are stated:
+
+| Level | Boundary | Enforced by |
+|-------|----------|-------------|
+| Repository | Two independent GitHub repositories | `zero-trust-cop` and `zero-trust-thief`, each self-contained and separately clonable |
+| Process | One OS process per peer | `peer_processes.running_peers` spawns and reaps both |
+| State | One `GameEpisode`, `MatchState` and `CommitmentBook` per peer | `server.create_app` builds them per role |
+| Configuration | One workspace per peer | `config/<role>/` — own `game.toml`, own `signing_key.pem`, own `peers/*.pub` |
+
+There is **no shared memory, no shared file, and no shared database table**
+between the peers at runtime. They meet only over the authenticated wire of
+§2's tool surface, and neither imports the other's package.
+
+**Cross-links (submission requirement).** Each repository's `README.md` §0
+carries a direct link to the other, in both a table row and a prose callout.
+Both URLs are also declared once per peer in `config/<role>/game.toml` under
+`[game.repos]` and are emitted into `declaration_<game_id>.json` and
+`result_<game_id>.json`, so a marker holding *either* artifact can find the
+other half of the pair without consulting either README.
+
+**Build-time propagation is not runtime coupling.** `scripts/sync_repos.sh`
+rebuilds the thief branch from this repository and regenerates its README via
+`scripts/thief_readme.py`, which fails loudly if any cross-link anchor stops
+matching. The thief branch is *rebuilt*, never rebased, because both branches
+edit README §0 and a rebase conflicts on every run — which once produced a
+half-converted README with two inconsistent cross-link tables. This is a
+release tool that runs on a developer machine between matches; it creates no
+link between the two peers while a match is in progress.
+
+### Topology
+
+Two independent FastMCP servers, each in its own OS process, each with its own
+config directory, its own key material, and — critically — **its own
+`GameEpisode`**. There is no shared memory, no shared database, and no shared
+engine instance between peers. This is the *mirrored local truth* topology (D2):
+neither peer trusts the other's engine, so each keeps its own and the two are
+compared every turn.
+
+| Peer     | Engine role | Port   | Endpoint                      | Workspace        |
+|----------|-------------|--------|-------------------------------|------------------|
+| `thief`  | thief       | `8801` | `http://127.0.0.1:8801/mcp`   | `config/thief/`  |
+| `police` | cop         | `8802` | `http://127.0.0.1:8802/mcp`   | `config/police/` |
+
+Each peer's `[network].opponent_url` points at the other's port, and
+`config/declaration.json::mcp_servers` publishes the same pair. Three
+independent sources therefore encode the port assignment, and
+`test_declaration_agrees_with_transport` fails if they ever drift apart.
+Transport is **streamable HTTP**, not stdio, so the peers talk over a real
+network transport that a remote opponent could substitute for loopback;
+`tunnel.py::parse_public_url` validates an optional ngrok/Localtonet
+`public_url` for league play, accepting empty (loopback-only) and rejecting
+bare hosts, `tcp://`, `//host`, and host-less URLs.
+
+### Wire surface
+
+`tools.py` registers exactly four tools per peer. FastMCP derives each tool's
+public input schema from its Python signature, so **parameter names are the
+protocol** and a rename is a breaking protocol change:
+
+| Tool                | Signature                                                     | Purpose |
+|---------------------|---------------------------------------------------------------|---------|
+| `get_observation`   | `(role)`                                                      | This peer's view of the board; refuses a caller claiming the wrong role. |
+| `submit_commitment` | `(role, turn, h_commit, signature)`                           | Publish a binding digest for this turn. |
+| `reveal_move`       | `(role, turn, state, move, intent, nonce, signature)`         | Open the commitment; resolves the turn once both are in. |
+| `get_match_status`  | `()`                                                          | Turn count, positions, termination and terminal reason. |
+
+A peer's own identity is read from the `own_role` captured at registration,
+never from the caller-supplied `role` argument, so a caller cannot assume the
+server's identity by asserting it.
+
+### Cross-engine agreement
+
+`scripts/match_loop.py::play_match` broadcasts every submission to **both**
+peers, then compares the two independently-computed results on
+`turn_count`, `cop_position`, `thief_position`, `captured`, and `is_terminated`.
+Any mismatch raises `DivergenceError` and aborts the match. A disagreement is
+raised, never absorbed — that comparison is the entire point of running two
+engines, and it is what later licenses the `mutual_agreement.confirmed` flag in
+the result artifact.
+
+## 3. Cryptographic State Machine — Commit-Reveal Lockstep
+
+### The problem
+
+Both agents move simultaneously with no trusted arbiter. A naive
+"send me your move" protocol lets whichever peer answers second choose its move
+after seeing the first — a total break of simultaneity. Commit–reveal removes
+that option.
+
+### The commitment primitive (`mcp_server/crypto.py`)
 
 ```
-game_loop.step(cop_action_token, thief_action_token)
-  → actions.parse_action() on each token           [rejects malformed tokens]
-  → resolver.resolve_turn(board, cop_state, thief_state, cop_action, thief_action)
-      → player.intended_position() for each agent
-      → board.in_bounds() / board.is_barrier() per agent → resolve to STAY if blocked
-      → capture check (same-cell OR swap)
-      → return TurnResult
-  → game_loop commits new positions, appends to history, increments turn count
-  → game_loop checks termination (captured OR turn_count == max_moves)
+h_commit = SHA256( State || Move || Intent || Nonce )
 ```
 
-## Determinism Strategy (FR7)
+- **Positional concatenation, no delimiters** — Rulebook 5.3 specifies literal
+  concatenation, so that is what is emitted. This is an interoperability
+  contract with the opposing group: any divergence silently breaks cross-group
+  play and *cannot be detected by either group alone*, since each verifies
+  against its own serialisation. Documented caveat: field boundaries are
+  positional only; the fixed-length trailing nonce and the two-word `intent`
+  vocabulary bound the ambiguity in practice, but a delimited form would be
+  strictly safer.
+- **Nonce** — 16 bytes (128 bits) from `secrets.token_hex`, fresh per
+  commitment. The nonce is what hides the move: without it, a five-element move
+  set is brute-forced instantly.
+- **Verification** — `verify()` recomputes the digest and compares with
+  `secrets.compare_digest`, not `==`, which would leak through timing how many
+  leading characters matched and hand an opponent a search gradient toward a
+  colliding reveal. A superseded canonical-JSON payload form is still *accepted*
+  for verification so artifacts sealed before the 5.3 alignment stay verifiable;
+  nothing emits it any more.
+- **Scope, stated honestly** — this proves a revealed move matches an earlier
+  commitment *by whoever holds the nonce*. Authentication of *who* submitted it
+  is a separate mechanism (below), and nothing here encrypts traffic.
 
-- No module uses randomness, wall-clock time, or any other non-deterministic source.
-- `GameEpisode.history` records every `(cop_action, thief_action, TurnResult)` in order, which is sufficient to fully reconstruct an episode via `replay()`.
-- All state mutation happens only inside `game_loop.py`'s `step()`; `resolver.py` and `player.py` are pure functions over their inputs, which makes determinism straightforward to test (same inputs → same outputs, no hidden state).
+### Authentication (`mcp_server/identity.py`)
 
-## Test Strategy (per TDD, detail belongs in TODO.md)
+Every submission is signed with **Ed25519** over
+`canonical_json({"role", "turn", "h_commit"})` — sorted keys, no whitespace —
+and transmitted as lowercase hex. Binding the turn number into the signed
+message is what stops a captured signature from being replayed on a later turn.
+Each peer workspace holds its own `signing_key.pem` and a `peers/<role>.pub`
+directory of 32-byte raw-hex public keys; `keygen.ensure_keys` generates any
+missing material on first run. `SubmissionGate` rejects an unsigned or
+mis-signed submission before `CommitmentBook` ever sees it.
 
-Each module above gets a corresponding `tests/engine/test_*.py` written and failing *before* that module's implementation exists, per `CLAUDE.md`. At minimum, `test_resolver.py` must cover:
-- Both agents make unobstructed legal moves.
-- One agent's move is blocked by bounds → resolves to `STAY`; other agent's move is unaffected.
-- One agent's move is blocked by a barrier → resolves to `STAY`.
-- Both agents move into the same cell → capture (case a).
-- Agents swap cells → capture (case b).
-- A near-miss (agents pass through adjacent cells without swapping or colliding) → no capture.
+### Phase machine
 
-## Open Items for TODO.md
+The per-peer turn lifecycle is the six-phase cycle below. It is **not** a single
+`GamePhaseMachine` class — the responsibility is deliberately split so that each
+guard lives with the state it protects: the authoritative shared-turn state is
+`CommitmentBook.state()`, the per-peer computation phases live in
+`PeerClient.prepare`, and turn resolution lives in `MatchState`. The mapping is
+exact and is what the tests pin:
 
-- Exact ordering/granularity of TDD tasks per module.
-- Whether `errors.py` and `actions.py` are built first (both are leaf/near-leaf dependencies everything else needs).
-- Fixture/config strategy for tests (e.g. a test-only `config/game.json` fixture vs. loading the real one).
+| Phase                 | Implemented by                              | `CommitmentBook.state()` | Exit condition |
+|-----------------------|---------------------------------------------|--------------------------|----------------|
+| `WAITING_FOR_OPPONENT`| `tools.get_observation` / `MatchState`      | `empty`                  | Turn opens; observation retrieved. |
+| `COMPUTING_MOVE`      | `PeerClient.prepare` → `AgentPolicy.decide` | `empty`                  | `(move, intent)` chosen from the Q-table. |
+| `COMMITTING`          | `crypto.commit` → `identity.sign` → `submit_commitment` | `half` → `both_committed` | Both peers' digests are on record. |
+| `AWAITING_REVEAL`     | `CommitmentBook.reveal` guard               | `both_committed`         | First reveal accepted. |
+| `VERIFYING`           | `crypto.verify` + `verify_signature`        | `half_revealed` → `resolved` | Both reveals verified. |
+| → `WAITING_FOR_OPPONENT` | `MatchState.submit` → `GameEpisode.step` | `empty` (turn `n+1`)     | Turn resolved, buffer cleared, turn incremented. |
 
-## Approval Gate
+**Transition rules (locked).**
 
-Per the document lifecycle in `CLAUDE.md`, no implementation code and no `TODO.md` task list is written until this architecture is approved.
+1. **No reveal before both commitments.** `reveal()` returns
+   `reveal_before_commit` unless `len(commitments) == len(PEER_ROLES)`. This is
+   the load-bearing rule: without it the second peer could withhold its
+   commitment, read the first peer's reveal, and only then commit.
+2. **One commitment per role per turn.** A second attempt returns
+   `already_committed`; a second reveal returns `already_revealed`.
+3. **Monotonic turns.** A commitment for a turn *below* the book's current turn
+   is `stale_turn`. A commitment for a turn *above* it rolls the book forward —
+   clearing commitments, moves, and the deadline — so a new turn always starts
+   clean.
+4. **A broken commitment is fatal to that reveal.** If the revealed
+   `(state, move, intent, nonce)` does not reproduce the stored digest, the
+   reveal is rejected as `broken_commitment` and the move never reaches the
+   engine.
+5. **Blame follows the blocked phase (D7).** `stalled_roles()` starts its
+   deadline at the *first* commitment. While any commitment is outstanding, only
+   the silent committer is at fault — its opponent is *blocked*, not stalling,
+   because rule 1 refuses its reveal. Once both commitments are in, blame moves
+   to whoever has not revealed. Timeouts are `response_timeout_sec = 30`;
+   `MatchState.forfeit` then records a `technical_loss`.
+6. **A real outcome outranks a forfeit.** `terminal_reason()` returns `capture`
+   or `max_moves_reached` from the episode's own history before it will consider
+   `technical_loss`, so a late stall check cannot relabel a match that actually
+   finished.
+
+### Rejection and disqualification codes
+
+Every refusal returns a machine-readable code rather than a free-text message,
+so a peer — or a grader — can distinguish a protocol violation from a transport
+failure. The codes partition into three severities:
+
+Every refusal is shaped by `observations.build_move_error` into
+`{"error": <code>, "message": …}`, so the code is the contract and the prose is
+advisory. The gate checks run in a fixed order — forfeit, role, turn,
+signature, vocabulary, then the book — so an unauthenticated caller can never
+reach the commitment book at all:
+
+| Code | Raised by | Phase | Severity | Meaning |
+|------|-----------|-------|----------|---------|
+| `invalid_role` | `SubmissionGate`, `CommitmentBook`, `MatchState`, `tools.get_observation` | any | **Rejected** | Role is not one of `("police", "thief")`, has no loaded public key, or — on `get_observation` — is not this server's `own_role`. |
+| `wrong_turn` | `SubmissionGate` | `COMMITTING`, `AWAITING_REVEAL` | **Rejected** | The caller-supplied turn is not `MatchState.turn_count`. The gate treats its own turn counter as authoritative, because a caller-supplied turn could label a reveal as future work or clear a book's in-progress commitments. |
+| `stale_turn` | `CommitmentBook` | `COMMITTING`, `AWAITING_REVEAL` | **Rejected** | Submission names a turn below the book's current turn (the book's own guard, behind the gate's). |
+| `already_committed` | `CommitmentBook.commit` | `COMMITTING` | **Rejected** | A second commitment from a role in one turn. |
+| `already_revealed` | `CommitmentBook.reveal` | `VERIFYING` | **Rejected** | A second reveal from a role in one turn. |
+| `already_submitted` | `MatchState.submit` | resolution | **Rejected** | That role's buffer slot is already filled this turn. |
+| `invalid_direction` | `SubmissionGate`, `MatchState.submit` | `VERIFYING`, resolution | **Rejected** | Move is outside the wire vocabulary, or fails `parse_action` after decoding. |
+| `invalid_intent` | `SubmissionGate.reveal_move` | `VERIFYING` | **Rejected** | The revealed intent is not a well-formed intent string. |
+| `reveal_before_commit` | `SubmissionGate`, `CommitmentBook.reveal` | `AWAITING_REVEAL` | **Protocol violation** | A reveal arrived before both commitments were on record — an attempt to break simultaneity. Guarded twice: the gate refuses when this role has no stored digest, the book refuses until *both* are present. |
+| `invalid_signature` | `SubmissionGate` | `COMMITTING`, `VERIFYING` | **Protocol violation** | Ed25519 verification failed for this `(role, turn, h_commit)`. Checked before the book is touched, so a forged or replayed submission never enters protocol state. |
+| `broken_commitment` | `CommitmentBook.reveal` | `VERIFYING` | **Protocol violation** | The revealed tuple does not reproduce the stored digest — an attempt to change a move after committing. The move never reaches the engine. |
+| `match_forfeited` | `SubmissionGate` | any | **Disqualification** | The match already ended against a stalled peer; further submissions are refused rather than silently accepted into a dead match. |
+| `technical_loss` | `MatchState.terminal_reason` | any | **Disqualification** | The peer named by `stalled_roles()` exceeded `response_timeout_sec = 30` in the phase it was blocking. Terminal for the match. |
+
+The severities are operationally different: a **rejection** is recoverable — the
+caller may correct and retry within the turn — whereas a **protocol violation**
+means the submission is discarded and the turn cannot resolve from it, and a
+**disqualification** ends the match. Only the last class is terminal, and even
+then a real game outcome outranks a forfeit (rule 6 above), so a match that
+genuinely finished can never be relabelled by a late stall check.
+
+### Turn resolution concurrency
+
+`MatchState` holds a two-slot action buffer guarded by a single `asyncio.Lock`.
+The read-modify-step sequence runs entirely inside the lock, so **exactly one**
+`GameEpisode.step` fires per turn even under concurrent submissions (FR8).
+Timeout is a lazy wall-clock check (`expire_if_stale`) rather than a blocking
+sleep, and the clock is injectable so timeout behaviour is deterministically
+testable. Rejection codes are `invalid_role`, `invalid_direction`,
+`already_submitted`.
+
+## 4. Physical & Strategic Models
+
+### 4.1 Thief Scent Trail (`strategy/pheromones.py`)
+
+The thief leaves a decaying trace, and the cop reads that trace where no
+revealed position is available.
+
+**Where the field is actually used — stated up front, because the two roles are
+not interchangeable.** The scent trail is deposited by exactly one caller,
+`AgentPolicy.observe_opponent`, and that caller runs in exactly one place: the
+**offline trainer** (`scripts/tournament_loop.play_episode`). It is read by
+exactly one caller, `AgentPolicy.hybrid_opponent_cell`, and only when no
+resolved opponent cell was supplied. That gives the field two concrete jobs:
+
+1. **Offline belief substrate during policy convergence.** In training, the
+   opponent's cell is withheld on turn 0 of every episode (`_last_resolved`
+   returns `None`), so the state key for that turn is built from
+   `PheromoneField.strongest()`. The field is *not* reset between games, so
+   from game 2 onward every episode opens with a belief carried over from
+   where the opponent was previously seen — a decaying, recursively-updated
+   memory across the whole 2000-game series.
+2. **Visualisation substrate.** `scripts/render_replay.py` rebuilds the field
+   from a signed match log to drive the Tkinter and CLI heatmaps
+   (`gui/live_heatmap.py`, §6.2). This is what a reader of a finished match
+   sees; it is a rendering of the log, not a live input to play.
+
+**What it is NOT.** In a live P2P league match the field is inert: the match
+loop feeds `PeerClient.prepare` a resolved coordinate on every turn (§4.2), so
+the fallback never fires, and a live peer's field is never even deposited into.
+Nor is it a reward term — the two shaping terms the learner actually receives
+are `invalid_move_penalty` and `step_cost` (§4.2), and neither consults it.
+Naming this precisely is the point: an earlier draft of this document called
+the field "the live belief map", which the live code path does not support.
+
+Both constants are configured in `config/game.json`, never inlined:
+
+| Symbol | Config key                     | Value |
+|--------|--------------------------------|-------|
+| τ₀     | `pheromone_center_intensity`   | `0.90` |
+| ρ      | `pheromone_decay`              | `0.10` |
+| window | `pheromone_grid_size`          | `5` (odd, validated) |
+
+**Recurrence (locked).**
+
+$$\tau(t{+}1) = \max\bigl(0,\ (1-\rho)\,\tau(t) + \delta\bigr)$$
+
+The `max(0, …)` clamp is a hard invariant: a concentration is never negative,
+including under the signed direct-delta path retained to make that clamp
+testable.
+
+**Kernel.** One observation stamps a linear Manhattan-falloff kernel over a 5×5
+box with radius `r = 2` and `scale = r + 1 = 3`:
+
+$$\delta(c) = \tau_0 \cdot \frac{\text{scale} - d_{\text{Manhattan}}(c, \text{centre})}{\text{scale}},\qquad d \le r$$
+
+so the centre receives `0.90`, the four cells at `d=1` receive `0.60`, the eight
+at `d=2` receive `0.30`, and the four **corners of the 5×5 box are left at zero**
+— the non-zero footprint is a 13-cell Manhattan diamond inscribed in the
+declared 5×5 window. Kernels at board edges are **clipped**, never wrapped and
+never redistributed; a trace near a wall is genuinely weaker, which is a
+physical claim the model makes deliberately.
+
+**Documented discrepancy — geometric vs. subtractive decay.** The reference
+simulator's description of ρ implies *subtractive linear* decay, i.e.
+`τ − ρ` per turn, under which a 0.9 deposit vanishes in ten turns. This project
+implements *geometric* decay, `(1 − ρ)·τ`, under which the same deposit retains
+`0.9 × 0.9¹⁰ = 0.314` after ten turns, falls below `0.01` only at turn 43, and
+is retired at turn 268 when the field's 12-digit rounding finally zeroes it. On
+a 35-move match a trace therefore **fades but never expires**, and nothing
+clears the field on a schedule. This is a real modelling divergence from the
+reference, not a rounding artifact, and it is recorded here, in the module
+docstring, in the GUI docstring, and in README §7 so no reader mistakes it for a
+bug. Read ρ = 0.10 as "loses a tenth of *what remains* each turn".
+
+**Consequence for the GUI.** The field is a *concentration*, not a normalised
+probability: overlapping kernels can exceed 1.0 (observed peak `2.41` on a real
+match), so the heatmap clamps its shading rather than claiming a probability it
+does not compute.
+
+### 4.2 Cop Belief & Action Selection (`strategy/qvalues.py`, `strategy/belief.py`)
+
+**Opponent-position belief** comes from a hybrid source, resolved in
+`AgentPolicy.hybrid_opponent_cell` (D2): use the opponent's *resolved* position
+when one was supplied for this turn, and otherwise fall back to
+`PheromoneField.strongest()` — the highest-concentration cell, i.e. the field's
+maximum-likelihood estimate of where the opponent is. The hybrid is resolved
+inside the policy, not by the caller, so no call site can silently skip the
+fallback.
+
+**Which branch runs, and where — the honest split.** These are two different
+regimes and the document does not pretend otherwise:
+
+| Regime | What supplies the opponent cell | Field's role |
+|--------|--------------------------------|--------------|
+| Offline training (`scripts/tournament_loop.py`) | Resolved cell from turn 1 on; **withheld on turn 0** | Supplies the turn-0 belief, carrying memory across the 2000-game series (§4.1) |
+| Live P2P match (`scripts/match_loop.py` → `PeerClient.prepare`) | Signed, revealed coordinate **every turn**, starting from the configured start cells | Never consulted; never deposited into |
+| Replay / GUI (`scripts/render_replay.py`) | — | Rebuilt from the signed log to render the heatmap |
+
+**Why live play coordinates directly rather than through the field.** A league
+match is a zero-trust, latency-bounded exchange: the commit-reveal protocol
+(§3) already delivers each peer a *signed, mutually verified* coordinate every
+turn, and both peers' independent engines are compared against it (§2). Routing
+that through a concentration field would substitute an estimate for a fact that
+has already been cryptographically established, and would widen the effective
+state space at exactly the moment the match is on a clock. Direct coordination
+over FastMCP therefore drives live play, and the field earns its keep offline
+and in the replay tooling. This is a deliberate trade, and the cost is stated
+in §10.4: the shipped policy has never had to act on a purely inferred
+position during a graded match.
+
+**Why the field, rather than a Bayesian posterior, where belief IS used.** A
+posterior over opponent position is a distribution across all 49 cells;
+carrying it into a tabular Q-learner means either discretising it into the
+state key — which multiplies the state space by the number of representable
+distributions and destroys any hope of visiting each state often enough to
+converge — or maintaining it alongside the table as a second, separately-tuned
+model. The concentration field already *is* a recursively-updated, decaying
+estimate of where the opponent has been, and `strongest()` collapses it to the
+single cell the Q-learner needs. One scalar per cell, one maximum, one relative
+displacement in the state key: the state space stays small enough to converge
+over 2000 training games, which a posterior-conditioned key would not.
+
+**Action selection** is tabular Q-learning, not a hand-written pursuit
+heuristic. The update rule is exact:
+
+$$Q(s,a) \leftarrow Q(s,a) + \alpha\bigl(r + \gamma \max_{a'} Q(s',a') - Q(s,a)\bigr)$$
+
+with the bootstrap term omitted on terminal transitions. The state key is
+`(relative_opponent, barrier_mask)`:
+
+- `relative_opponent` is the opponent cell **minus own cell** — a translation-
+  invariant displacement vector, which is what lets one learned entry generalise
+  across the board. It is `None` when no belief exists.
+- `barrier_mask` is a 4-bit adjacency mask over `N, S, W, E`; **off-board
+  neighbours count as blocked**, so walls and barriers are one concept to the
+  learner.
+- `move_count` is deliberately **excluded**: including it would make every turn a
+  distinct state and destroy generalisation entirely.
+
+Selection is ε-greedy (`exploration_rate = 0.1`, decayed by `0.999` per episode
+to a floor of `0.01`); `match_exploration_rate = 0.0` so competitive play is
+purely greedy. Ties resolve in `move_set` order, which keeps `best_action`
+deterministic. The table persists to `data/q_table_<role>.json` behind
+`STATE_LAYOUT_VERSION = 1`; a version mismatch raises rather than silently
+loading incompatible keys.
+
+**Reward signal — terminal-dominated, with two shaping terms.** The outcome
+reward comes from the shared `scoring` block — capture: cop `20`, thief `5`;
+survival: cop `5`, thief `10`; tie `2`; technical loss `0` — so both peers
+optimise against the same published payoff matrix, and it is paid on the
+terminating transition only. Terminal-*only* rewards, the original PLAN_05
+ruling, turned out to be degenerate: bumping the north wall and advancing
+toward the opponent were both worth exactly zero, so nothing in the signal
+distinguished a pursuing policy from one grinding into a boundary, and a
+"always N" policy survived training intact. Two configured terms in each peer's
+private `[strategy]` block close that gap, and only those two:
+
+| Term | Value | Fires when |
+|------|-------|-----------|
+| `invalid_move_penalty` | `-1.0` | a non-`STAY` move leaves the agent in the cell it started from — a barrier or the board edge refused it |
+| `step_cost` | `-0.01` | every turn that does not end in a capture, so the shortest pursuit is the most valuable one |
+
+Both stay orders of magnitude below the payoff matrix — a full 35-move match of
+`step_cost` is `-0.35` against a capture worth `20` — so the terminal signal
+still dominates and the reward is shaping, not a rewritten payoff. A per-turn
+*survival* reward is still refused for PLAN_05's original reason: it would pay
+an agent for merely existing. Distance shaping is still refused too; neither
+term looks at the opponent. The reported GAME SCORE is the engine payoff alone,
+so shaping cannot leak into results
+(`tests/scripts/test_shaped_rewards.py`, `test_shaping_terms.py`).
+
+**Honesty belief** (`BeliefTracker`) is a *separate* axis and must not be
+confused with position belief. It scores each revealed `intent` against the move
+actually played: `honest`, `dishonest`, or `unscorable`. An intent naming no
+direction is *absent* evidence, not negative evidence, and never moves the
+honesty rate. Matching is word-boundary aware — full direction words match as
+prefixes (so "northern" names north) while single letters must stand alone, which
+stops incidental text such as `SNOW` or `NEWS` from naming a direction. The rate
+is a frequentist ratio `honest / (honest + dishonest)` over scorable
+observations, falling back to the configured `honesty_prior = 0.5` when there is
+no evidence. The thief's policy inverts its stated intent by design
+(`AgentPolicy.intent_for_move`), so the tracker has a real signal to detect;
+intents are truncated to `hint_max_words = 15`.
+
+**Naming note.** The system uses no Bayesian posterior update and no
+Manhattan-distance target-routing heuristic. Manhattan distance appears as the
+*kernel falloff metric* in §4.1; belief is a decaying concentration field
+(rationale above), and routing is learned, not computed. This paragraph exists
+so the specification is not read as promising machinery that the implementation
+does not contain.
+
+## 5. Step-0 Declaration & Hardware Scan (`mcp_server/declaration.py`)
+
+At turn 0 each peer publishes a computational-fairness declaration so neither
+side can later claim it was outgunned. The payload is deterministic and
+`declaration_<game_id>.json` is written alongside the match artifacts:
+
+| Field | Source | Failure posture |
+|-------|--------|-----------------|
+| `group_name`, `members`, `repos`, `mcp_servers` | `config/declaration.json` | **Loud** — missing config raises |
+| `token_budget`, `num_games`                      | `config/game.json::network_and_league` | **Loud** |
+| `hardware.os`                                    | `platform.platform()` | sentinel `unknown` |
+| `hardware.cpu`                                   | `platform.processor()`, falling back to `/proc/cpuinfo` `model name` | sentinel `unknown` |
+| `hardware.ram`                                   | `SC_PAGE_SIZE × SC_PHYS_PAGES`, reported in GB | sentinel `unknown` |
+| `hardware.gpu_vram`                              | `nvidia-smi --query-gpu=memory.total` | sentinel `none` |
+| `github_commit_hash` / `github_commit`           | `git rev-parse HEAD` | sentinel `unknown` |
+| `timezone`                                       | local `tzname()` | sentinel `unknown` |
+
+The two postures are deliberate and opposite. **Declared** fields fail loudly:
+emitting `"unknown"` into an artifact submitted for grading is worse than
+crashing. **Probed** fields degrade to a sentinel: host inspection varies by OS
+and must never prevent an artifact from existing.
+
+**Limitation, stated plainly.** The declaration is an **unsigned, unenforced**
+record of what a peer *claims* to be running. It is not covered by the Ed25519
+submission signature of §3, and nothing in the system can detect a peer running
+a different commit than the hash it declared. It is provenance and good faith,
+not proof of fairness. Extending the Ed25519 signature to cover the declaration
+payload is the obvious hardening and is listed in §10.
+
+## 6. Observability & Verification
+
+### 6.1 Replay Verifier (`scripts/replay_match.py`, `scripts/log_checks.py`, `scripts/log_shape.py`)
+
+An independent third party — the grader — must be able to take a log file and
+the two public keys and confirm the match happened as recorded, with no access
+to either peer. `Verified OK` is printed **only** when all five checks pass:
+
+1. **Structure** — the log has the shape a match record must have.
+2. **Turn indices** — contiguous and ascending.
+3. **Commitments** — every digest re-derives from its revealed tuple.
+4. **Signatures** — every signature re-verifies against that peer's public key
+   *for the turn it claims*.
+5. **Replay** — replaying the logged moves reproduces **every recorded turn
+   result**, and the number of logged turns equals the number the replay reached.
+
+Anything less prints `TAMPERED!` and exits non-zero. Checks 3–5 encode audit
+findings that are worth preserving as design rationale: an earlier version
+compared only the *final* state, so a wholly fabricated match middle certified
+clean (V1); indices (V2) and turn counts (V3) went unchecked, so turns could be
+padded on after termination where `step()` is a no-op; and hostile field types
+crashed the verifier, letting an attacker trade a verdict for a traceback that
+CI might read as infrastructure failure (V4). Every check therefore **appends to
+a shared failures list rather than raising**, so one bad field cannot mask the
+rest of the report, and `verify_log` wraps everything in a blanket `except` —
+a verifier exists to *answer*.
+
+Cross-peer agreement is deliberately **not** re-checked here: it is enforced at
+match time by `play_match`, where both engines are compared every turn.
+
+### 6.2 Live GUIs — Tkinter and CLI (`gui/`, `scripts/render_replay.py`)
+
+Two rendering paths, deliberately: a windowed one for demonstration and a
+terminal one for headless machines and CI, both driven by the *same* frame
+reconstruction so they cannot disagree about what a log contains.
+
+**CLI.** `scripts.replay_match --render` draws each turn on an ASCII board
+before printing the verdict — additive, off by default, and it changes no
+verdict. `--render-delay` paces it and `--step` waits for Enter between turns.
+`scripts/heatmap.py` prints the belief field the same way. Colour is suppressed
+when the stream is not a TTY or when `NO_COLOR` is set, so piped and
+pytest-captured output stays byte-clean and escape sequences never leak into an
+assertion.
+
+**Tkinter.** Two windowed surfaces share one canvas and one palette:
+
+- **Replay Viewer** (`gui/replay.py`) — step-by-step, with a green `Verified OK`
+  badge on a clean log and a red `TAMPERED!` banner on an altered one. The badge
+  is driven by the *same* `verify_log` the headless CLI uses, so the window
+  cannot disagree with `scripts.replay_match`. Frames are reconstructed from the
+  logged **moves**, not the recorded positions, so a forged log is drawn as it
+  truly replays rather than as it claims to look.
+- **Live Heatmap** (`gui/live_heatmap.py`) — auto-advancing (`700 ms`), shading
+  each cell in proportion to its pheromone concentration, so the thief's trail
+  visibly builds and fades. The rendered board is the full 7×7; the 5×5 figure
+  is the scent *kernel* stamped onto it, not the display size.
+
+## 7. Automated Reporting
+
+### 7.1 Match artifacts (`scripts/match_log.py`)
+
+Four files per game, written under `logs/<group_id>/` with deterministic JSON
+(`indent=2`, `sort_keys=True`, trailing newline) so repeated runs are
+byte-identical:
+
+| Artifact | Contents |
+|----------|----------|
+| `declaration_<game_id>.json` | §5 payload, schema fixed by `PRD_03` FR6 |
+| `config_<game_id>_g<NN>.json` | Snapshot of the shared contract the match actually ran under, stamped with `game_uid` |
+| `log_<game_id>_g<NN>.json` | Per turn: both peers' `h_commit`, `signature`, `state`, `move`, `intent`, `nonce`, plus the outcome |
+| `result_<game_id>.json` | Series summary: commit hash, repos, `mutual_agreement`, per-game turns / capture / terminal reason / final positions |
+
+The log is written to be **sufficient for replay on its own** — a verifier needs
+nothing but the file and the peers' public keys. The config is *copied* rather
+than referenced so the artifact records what actually ran, and all four are
+stamped with the same identity so they tie together.
+
+`mutual_agreement.confirmed` is not a courtesy flag: `play_match` compared both
+peers' independent engines on every turn and would have raised
+`DivergenceError`, so a history that reached the writer *is* the evidence.
+
+**Schema caveat.** Appendix F of `police_thief_p2p.pdf` is not in this
+repository. Only the four *filenames* come from the specification; the field
+layout of the config/log/result payloads is this project's own design and must
+be reconciled with the real appendix before final submission.
+`declaration_<game_id>.json` is the exception — its schema is fixed by `PRD_03` FR6.
+
+### 7.2 Gmail API reporting (`reporting/`, Rulebook 34 / §9.3.3)
+
+Three modules, split by concern: `email_sender.py` holds **policy**,
+`mime_report.py` holds **message construction**, `gmail_transport.py` holds
+**delivery**.
+
+- **The result is an attachment, never body text.** The message is
+  `multipart/mixed` with exactly one `application/json` part, named
+  `result_<game_uid>.json` to match the on-disk artifact. This is a submission
+  requirement, and it is also the only form that survives the trip: a body is
+  reflowed, quoted and line-wrapped by every client between here and the grader,
+  whereas a base64 `application/json` part arrives byte-identical. The body is a
+  summary and is kept free of braces so the "no plaintext report" rule is
+  *mechanically* checkable (`tests/unit/test_email_attachment.py`).
+- **Mutual agreement is a precondition.** `send_game_report` refuses to report
+  a result whose `mutual_agreement.confirmed` is not literally `True`. Reporting
+  an unagreed result would launder a divergence into a submission.
+- **A missing credential must never break CI.** Modes are `auto` (send if
+  credentials exist, otherwise draft), `draft` (never contact Google), and
+  `send` (require real delivery and report failure rather than quietly
+  drafting). On fallback, `logs/email_draft_<uid>.txt` records the summary *and*
+  the decoded attachment, so there is always a file on disk stating exactly what
+  would have gone out — a draft that held only the body would record that a send
+  was attempted while losing the result it was attempting to send.
+
+**Recipient resolution — two sources, and the config wins.**
+`email_sender.DEFAULT_RECIPIENT` is the course address
+`rmisegal+uoh26finalgame@gmail.com`, and it is the value used whenever
+`send_game_report` is called without an explicit recipient (pinned by
+`tests/unit/test_email_sender.py`). The live match path does **not** take that
+default: `scripts/match_report.report_by_email` reads `[email]` from
+`config/<role>/game.toml` and passes `recipient=` explicitly, so the configured
+value overrides the constant. Both peers' `[email]` blocks are identical and the
+`police` block is the one read.
+
+**Shipped setting.** Both files now configure the course address
+`rmisegal+uoh26finalgame@gmail.com` with `mode = "auto"`, and
+`tests/unit/test_shipped_email_config.py` holds them there. `auto` is the only
+mode that survives a grader's machine: `send` requires a real delivery and
+reports failure rather than drafting, while `draft` never attempts one. Under
+`auto` the reporter sends when credentials exist and otherwise writes the local
+draft artifact and returns success, so a missing `token.json` degrades to
+evidence on disk rather than a crash.
+
+Delivery uses the Gmail API with the OAuth token at `token.json`.
+
+## 8. Data Flow (per turn, distributed)
+
+```
+each peer: tools.get_observation(role)              [WAITING_FOR_OPPONENT]
+  → PeerClient.prepare(turn, own_pos, opponent_pos, board)   [COMPUTING_MOVE]
+      → AgentPolicy.state_key()  → hybrid: resolved pos, else pheromones.strongest()
+      → qvalues.select_action()  → intent_for_move() → truncate to hint_max_words
+      → crypto.commit(state, move, intent) → (h_commit, nonce)
+      → identity.sign(key, role, turn, h_commit)
+  → broadcast submit_commitment(...) to BOTH peers            [COMMITTING]
+      → SubmissionGate: verify_signature → CommitmentBook.commit
+      → refuse reveal until len(commitments) == 2             [AWAITING_REVEAL]
+  → broadcast reveal_move(...) to BOTH peers                  [VERIFYING]
+      → CommitmentBook.reveal → crypto.verify(state, move, intent, nonce, h_commit)
+      → MatchState.submit under asyncio.Lock
+          → both slots filled → GameEpisode.step(cop_action, thief_action)
+              → resolver.resolve_turn()  [FR5 steps 1–3]
+          → buffer cleared, history appended, termination checked
+  → match_loop.divergence(): compare BOTH peers' results, field by field
+      → mismatch → DivergenceError (abort)                    [→ WAITING_FOR_OPPONENT]
+  → AgentPolicy.observe_opponent(): belief.record() + pheromones.advance()
+```
+
+## 9. Determinism Strategy (FR7)
+
+- The engine uses no randomness, wall-clock time, or other non-deterministic
+  source. All clocks in the protocol layer (`MatchState`, `CommitmentBook`,
+  `SubmissionGate`) are **injectable**, so timeout behaviour is testable without
+  sleeping.
+- Policy randomness is confined to explicitly-seeded `Random` instances derived
+  from one master seed in `run_local_mcp_match.build_clients`, and the seed is
+  printed with every match summary so any match reproduces exactly.
+- All state mutation happens inside `GameEpisode.step()`; `resolver.py` and
+  `player.py` are pure functions over their inputs.
+- Artifacts are written with sorted keys and fixed indentation, so a
+  reproduction is byte-comparable, not merely semantically equal.
+- `GameEpisode.history` records every `(cop_action, thief_action, TurnResult)`,
+  which is sufficient to reconstruct an episode via `replay()` — the property the
+  verifier's check 5 depends on.
+
+## 10. Known Limitations & Specification Deltas
+
+Recorded rather than hidden; each is a deliberate, documented position:
+
+1. **The Step-0 declaration is unsigned and unenforced** (§5). It records a
+   claim, not a proof. Covering it with the existing Ed25519 signature is the
+   natural hardening.
+2. **Commit payload has no field delimiters** (§3), because Rulebook 5.3
+   specifies positional concatenation. Interop-correct, cryptographically
+   weaker than a delimited encoding.
+3. **Scent decay is geometric, the reference simulator's is subtractive**
+   (§4.1). Traces fade but do not expire within a 35-move match.
+4. **The scent trail is an offline and observability substrate, not the live
+   belief input** (§4.1, §4.2). Live P2P play uses direct coordination over
+   FastMCP: the commit-reveal protocol delivers a signed, mutually verified
+   opponent coordinate every turn, so `hybrid_opponent_cell` never reaches its
+   fallback and a live peer's field is never deposited into. The field does
+   real work in two other places — it supplies the turn-0 belief in every
+   offline training episode, carrying decaying memory across the 2000-game
+   series, and it is rebuilt from the signed log to drive the replay heatmaps.
+   This is a **chosen trade**: substituting an estimate for a coordinate the
+   protocol has already established cryptographically would add state-space
+   width and latency to a clocked match and buy nothing. The cost is real and
+   is recorded here rather than argued away — the shipped policy has never had
+   to act on a purely inferred position under match conditions, so the
+   fallback branch is exercised by training and tests, not by graded play.
+   Relatedly, there is **no Bayesian posterior and no Manhattan
+   target-routing**: where belief *is* consulted it is the concentration field
+   collapsed to `strongest()`, because conditioning a tabular state key on a
+   49-cell distribution would explode the state space beyond what 2000 games
+   can visit. The cop therefore reasons about one most-likely cell and cannot
+   express uncertainty between two equally-plausible hiding places.
+5. **Artifact field layout is this project's own design** (§7.1), pending
+   reconciliation with Appendix F.
+6. **Peer traffic is authenticated but not encrypted** (§3). Signatures prevent
+   forgery and replay; they do not provide confidentiality on the wire.
+7. **League play against the opposing group has not been run.** The system is
+   validated by two *local* peers over a real streamable-HTTP transport with
+   commit-reveal and signatures fully in force, which removes the external
+   dependency but does not substitute for a cross-group match.
+8. **A clean checkout cannot both verify the shipped log and play live**
+   (§3, `mcp_server/keygen.py`). The tracked `.pub` files are the keys the
+   flagship log was signed under; `signing_key.pem` is gitignored. On an
+   untouched clone `ensure_keys` therefore refuses to republish public halves
+   it would otherwise overwrite, so `scripts.replay_match` still returns
+   `Verified OK` — at the price that the freshly generated private key does
+   not match the published public one, and live play is signature-rejected
+   until the operator restores the real `.pem` or deletes the shipped `.pub`
+   files. Verifiability of shipped evidence is treated as outranking live play
+   on a clone; the refusal is announced on stdout rather than inferred.
+9. **A stalled peer ends the match, it does not end the process** (§3). Every
+   wire call is fenced by the published `watchdog_timeout_sec` and raises
+   `TechnicalLossError` on expiry (`mcp_server/http_peer.py`). What is *not*
+   implemented is an automatic award of the technical win to the surviving
+   peer: the error is raised to the caller, which decides. The forfeit path
+   that the server already runs on its own commitment deadlines (§3) is
+   unaffected.
+
+## 11. Test Strategy
+
+Every module was built test-first per `CLAUDE.md`; `docs/TODO.md` records the
+sequencing and the evidence. The suite mirrors `src/` and currently stands at
+**702 passing tests**. The load-bearing cases, by layer:
+
+- **Engine** — the six FR5 scenarios (both unobstructed, bounds-blocked,
+  barrier-blocked, same-cell capture, swap capture, adjacent near-miss), plus
+  the case where a move first resolves to `STAY` and *then* collides, proving
+  capture is evaluated on resolved rather than intended positions.
+- **Protocol** — reveal-before-commit refusal, replayed and cross-turn
+  signatures, `broken_commitment`, stale/advancing turns, double submission, and
+  concurrent submission proving exactly one `step()` per turn under the lock.
+- **Strategy** — exact kernel values by Manhattan distance, the `max(0, …)`
+  clamp under signed deltas, edge clipping, exact TD-update arithmetic, state-key
+  generalisation, and Q-table round-tripping under the layout version.
+- **Verification** — a tampered middle turn, a padded turn count, a
+  non-contiguous index, a hostile field type, and a valid log, each asserted
+  against the exact verdict.
+- **Reporting** — multipart shape, single JSON part, filename, payload
+  round-trip, brace-free body, the mutual-agreement refusal, and the draft
+  fallback containing the whole report.
+- **Consistency** — `test_declaration_agrees_with_transport` (ports),
+  `test_readme_consistency` (self-checked figures), and the 150-line audit over
+  `git ls-files '*.py'`.

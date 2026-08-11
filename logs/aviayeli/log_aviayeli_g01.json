@@ -10,7 +10,7 @@
         "captured": false,
         "cop_position": [
           0,
-          0
+          1
         ],
         "is_terminated": false,
         "role": "thief",
@@ -24,19 +24,19 @@
       },
       "submissions": {
         "police": {
-          "h_commit": "6c421d4c7cf0d49262c99637494f4ea850c84b802e9472fe953ac83704365b79",
+          "h_commit": "810c3271f62a484bd2ca3035737ad53bb89b44a3dedaaa5f4ad378507e7e1dfe",
           "intent": "truth",
-          "move": "MOVE:N",
-          "nonce": "86ad17c514e4815bd8b138d2f8aaa1ee",
-          "signature": "512ea2d9a93795e0974989e9fa13e1a9d5092cbb30f2ee45835cb4bdd3af205c7afc11587d312c72d8fec7bf652abf15fdcdbf5f5a5f8789ece69114f3418f0e",
+          "move": "MOVE:E",
+          "nonce": "e19658d1b0f9bd8891d76ec5c513d589",
+          "signature": "3608646437a1ab0b6f3299b11a03d15726b23fc844a4e11e068721da9d3af328cd17b0651bee3286c6c09a1a095861e24e8ec294c56aaaceac10de35d7909106",
           "state": "0|(0, 0)|(3, 3)"
         },
         "thief": {
-          "h_commit": "6a075f383761d25a50571555e0ef48a509aa60ecdd0b4f59b58cc5919eac93dd",
+          "h_commit": "30257de6700a0904398114cdc4d61bed8215138931097123ec71127c7ee6a39a",
           "intent": "lie",
           "move": "MOVE:N",
-          "nonce": "da6f6e499ce8333b528df7bb5b6fe6a9",
-          "signature": "6341240fb4a94017e6b5bbd56d2dd49462fdbb3f859f75910eaf6b00cfe8827a4f4f7824131d6f739521752bf3c265826b977301f9f392a7d2e3dac4f56eae04",
+          "nonce": "ab665a0576a0dd2b19ce64debacb6585",
+          "signature": "7c2e2ba5edf63842b53b5133db38cb35d913aa2dd8883ac7b5a506322225c72a69fc30c8d462c03f7eda964ff4bf82a490b02c122c35871222304101769d8e08",
           "state": "0|(3, 3)|(0, 0)"
         }
       },
@@ -46,44 +46,7 @@
       "result": {
         "captured": false,
         "cop_position": [
-          0,
-          0
-        ],
-        "is_terminated": false,
-        "role": "thief",
-        "status": "resolved",
-        "terminal_reason": null,
-        "thief_position": [
           1,
-          3
-        ],
-        "turn_count": 2
-      },
-      "submissions": {
-        "police": {
-          "h_commit": "53c0e1d48f0ed57b3ee450bac664df4a694efb74f7bb1b8bbefaa82c9b1c7eb3",
-          "intent": "truth",
-          "move": "MOVE:N",
-          "nonce": "878cecefa35226e21e9cf1d4ebc0b7ff",
-          "signature": "3e3d05acbb15888ad448933cc65cb60ce17f15be1f934fd235a0320289042b0ca2c2251065a8c2b1b569aa99b946af8fceb525f07758a02cfe1f1756ee808306",
-          "state": "1|(0, 0)|(2, 3)"
-        },
-        "thief": {
-          "h_commit": "cca6a85898189afd3d941d558bb12f285e22881613be273233b79944e3842821",
-          "intent": "lie",
-          "move": "MOVE:N",
-          "nonce": "64b9e79e21a9b6b2ec1535719f028872",
-          "signature": "e86b98bbdd83548adde5b021dce94aad0bff7290e83ca2b4d7ba35738a6b757ea054caf73fe3d9221ac394873cb804dc3e13d7c61be8952327cd456de90c4f00",
-          "state": "1|(2, 3)|(0, 0)"
-        }
-      },
-      "turn": 1
-    },
-    {
-      "result": {
-        "captured": false,
-        "cop_position": [
-          0,
           1
         ],
         "is_terminated": false,
@@ -91,73 +54,36 @@
         "status": "resolved",
         "terminal_reason": null,
         "thief_position": [
-          0,
-          3
-        ],
-        "turn_count": 3
-      },
-      "submissions": {
-        "police": {
-          "h_commit": "c4e12b6ed9d1f4ba03f85a8954f4146fdffab818336971aae3e3cc6867dc5ba4",
-          "intent": "truth",
-          "move": "MOVE:E",
-          "nonce": "9967cca3561efffc92ce813e91c5ad30",
-          "signature": "314ad6a25e32741140ec2fe83b5dd45ce3de30bcfeb598de0973f66f8728e51fc1b86e6b2bef9531c4a9b8a201b5cd73d8ed846303396446d1f5d79b0a504906",
-          "state": "2|(0, 0)|(1, 3)"
-        },
-        "thief": {
-          "h_commit": "e7152f353ab1dfe1a394126622c95a13aebb045e499b483449f22ef89e04d915",
-          "intent": "lie",
-          "move": "MOVE:N",
-          "nonce": "52f699dd8cf0c8317e3cd972b81cde31",
-          "signature": "e1b89a411519cfc26d07bc8de6fc67bd6196d92dfd46f1eda70c35849da4b35706e945f55aa2f3cfc4e29ab63958b25b20670a30622059d5fbe88d5d11a5b804",
-          "state": "2|(1, 3)|(0, 0)"
-        }
-      },
-      "turn": 2
-    },
-    {
-      "result": {
-        "captured": false,
-        "cop_position": [
-          0,
+          2,
           2
         ],
-        "is_terminated": false,
-        "role": "thief",
-        "status": "resolved",
-        "terminal_reason": null,
-        "thief_position": [
-          0,
-          3
-        ],
-        "turn_count": 4
+        "turn_count": 2
       },
       "submissions": {
         "police": {
-          "h_commit": "d5fc5adcc4ae95aedb16fedaffedc3a757bcdd803465c0f7580556a4e462c53d",
+          "h_commit": "ea3a0ac3d53459199ce849b70051c7d00feb3b96809711c398ebc2600c825a6d",
           "intent": "truth",
-          "move": "MOVE:E",
-          "nonce": "674d924b7f254b633afab2fd4565e6e9",
-          "signature": "8d639b029acf8ad16e1b063734d90b45c7eb7c0ae8bc18ad5b25cc384ca6f730bdad8a8ba27e555d9b9409c3e3cabffca7acb7f14c72210894eb98d8769e5908",
-          "state": "3|(0, 1)|(0, 3)"
+          "move": "MOVE:S",
+          "nonce": "d5c7f5a4fa6e95ebef8697e8400365b3",
+          "signature": "577de6e2aa6b8eb3f13ed88d7fef9b08f3bb780f4eed6aace90f68cfa9999c1e2f9b089d3a36d49fd99a93d1d5a26e1a01534156cb517e777faaf8a4c9f6a307",
+          "state": "1|(0, 1)|(2, 3)"
         },
         "thief": {
-          "h_commit": "00231c3cfd0d8149fc0a213c604b461f9e8b9bec5afefb0723ecefda19c9d2cf",
+          "h_commit": "b870c48f6f7f234919840625b7b744fd09793cd83d3e66cef777525e5666c088",
           "intent": "lie",
-          "move": "MOVE:N",
-          "nonce": "d53840a91b56a510749c112affe0109a",
-          "signature": "48740dee61004e58afee3b9d401307d91f1eeb2656f95ac11497b084ea6472cfc2f14c999b038b4bb1750cd93c4abce78a6c0a19d61cb6d3643e9ddc01f0ec09",
-          "state": "3|(0, 3)|(0, 1)"
+          "move": "MOVE:W",
+          "nonce": "196586519f1ac3342d19b26cb5ab037a",
+          "signature": "0ec8ca2ef01b3ab52a0b30d77c4e8b36a247a9d3bb4658a23aff08b00181351b4e545d7f3182f260530c42abefdb36cdf0eaa75012ee282d9f96d0ad1e77c40a",
+          "state": "1|(2, 3)|(0, 1)"
         }
       },
-      "turn": 3
+      "turn": 1
     },
     {
       "result": {
         "captured": true,
         "cop_position": [
-          0,
+          1,
           2
         ],
         "is_terminated": true,
@@ -165,30 +91,30 @@
         "status": "resolved",
         "terminal_reason": "capture",
         "thief_position": [
-          0,
+          1,
           2
         ],
-        "turn_count": 5
+        "turn_count": 3
       },
       "submissions": {
         "police": {
-          "h_commit": "e38da6270d8b92bbf87de53924471a3e35f5f04501f25103fdd0bb5452d625e2",
+          "h_commit": "ba134ae69f72855889fe7777751fdb6ecd485ec8ac2b69559e26f504308780f6",
           "intent": "truth",
-          "move": "MOVE:N",
-          "nonce": "a98951ec4d4eac737be3fe2b5429625b",
-          "signature": "60f60c2a2d6389bef511f75007a8cdac0b4e2e4da60cbe899a12622f9b26073907066eba2332bd5aec1c26a75a4367e06d71a1868b4d0e4696d6b2bfab49f802",
-          "state": "4|(0, 2)|(0, 3)"
+          "move": "MOVE:E",
+          "nonce": "4e9387a092a75b063d83c60512c89d24",
+          "signature": "9fb16ca6e9a75224495281f9568e0586e391e2fec9f8cec4dafeeddc8884194f7e687646c271743fc0a9e406e31ed51422b75760dcaabfa5cb578f28c5cc3c05",
+          "state": "2|(1, 1)|(2, 2)"
         },
         "thief": {
-          "h_commit": "9bccd84815155d249fb030f72f49dec08248c516b07faf6a84a9da9b811d12d4",
+          "h_commit": "3331e261124c7cd99a64c6606024ebe96775c6950badd2cb18807a5bc477e288",
           "intent": "lie",
-          "move": "MOVE:W",
-          "nonce": "7936018e38a030d8b9f0344742644726",
-          "signature": "08b0ab8acf8cab9c12e46b14300036545835d4cdab71ba522724e55a83d0d762a5020c4fac681693f993ae22bdb5f9bfb207348a84809b003069e2b2d9db3601",
-          "state": "4|(0, 3)|(0, 2)"
+          "move": "MOVE:N",
+          "nonce": "1f65a5662ba0f9850677b77679c3cb64",
+          "signature": "81de961d0666544a76616ae8a2169afbc4e2220c0f0aedf2876717670150e5431f2f465eb4bf30830ac8627a49e41689a4dddb3a2551fb6177e6c6484c6ccf08",
+          "state": "2|(2, 2)|(1, 1)"
         }
       },
-      "turn": 4
+      "turn": 2
     }
   ]
 }

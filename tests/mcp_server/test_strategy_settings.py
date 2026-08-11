@@ -114,6 +114,7 @@ discount_factor = 0.9
 exploration_rate = 0.1
 initial_q_value = 0.0
 invalid_move_penalty = -1.0
+step_cost = -0.01
 honesty_prior = 0.5
 qtable_path = "custom-qtable.json"
 epsilon_decay_factor = 0.999

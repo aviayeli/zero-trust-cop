@@ -83,11 +83,17 @@ def test_a_missing_key_is_generated_without_disturbing_the_other(tmp_path):
     assert (tmp_path / "thief" / "signing_key.pem").read_bytes() == thief_before
 
 
-def test_a_regenerated_key_republishes_its_public_half(tmp_path):
-    """The stale .pub must not survive, or every signature would fail."""
+def test_a_regenerated_key_republishes_where_nothing_was_shipped(tmp_path):
+    """With no shipped public half to protect, a new key must publish itself.
+
+    The opposite case — a shipped ``.pub`` with no private key, i.e. a clean
+    checkout — is deliberately NOT republished; see ``test_keygen_protection``.
+    """
     ensure_keys(str(tmp_path))
     stale = (tmp_path / "police" / "peers" / "police.pub").read_text()
     (tmp_path / "police" / "signing_key.pem").unlink()
+    for own in PEER_ROLES:
+        (tmp_path / own / "peers" / "police.pub").unlink()
 
     ensure_keys(str(tmp_path))
 
