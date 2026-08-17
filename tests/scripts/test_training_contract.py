@@ -64,3 +64,16 @@ def test_disagreeing_series_lengths_fail_loudly(config, training_settings):
 
     with pytest.raises(ValueError):
         train_tournament(config, cop_settings, thief_settings, seed=1)
+
+
+def test_the_trained_table_carries_its_engine_role():
+    """The trainer must hand QValues the role its fallback needs."""
+    from engine.config import load_config
+    from scripts.run_tournament import build_policy
+    from strategy.settings import load_strategy_settings
+
+    config = load_config("config/game.json")
+    cop = build_policy("cop", config, load_strategy_settings("police"))
+    thief = build_policy("thief", config, load_strategy_settings("thief"))
+
+    assert (cop.qvalues.role, thief.qvalues.role) == ("cop", "thief")

@@ -3,28 +3,30 @@
 The update rule is ``Q(s,a) <- Q(s,a) + alpha * (r + gamma * max Q(s',a')
 - Q(s,a))``; terminal transitions omit the bootstrap term.  State keys are
 ``(relative_opponent, barrier_mask)``: off-board neighbours count as blocked,
-and ``move_count`` is excluded because it would make each turn a distinct state
-and prevent generalisation.  Persistence stores tuple keys as JSON records:
-``[[relative-row, relative-col] | null, mask, action, value]``.
+and ``move_count`` is excluded so turns generalise rather than each becoming its
+own state; unlearned states defer to ``strategy/fallback.py``.  Persistence stores
+tuple keys as ``[[relative-row, relative-col] | null, mask, action, value]``.
 """
 
 import json
 from pathlib import Path
 
 from engine.config import GameConfig
+from strategy.fallback import BARRIER_BIT_DIRECTIONS, tiebreak_action
 from strategy.settings import StrategySettings
 
 
 STATE_LAYOUT_VERSION = 1
-_DIRECTIONS = ((-1, 0), (1, 0), (0, -1), (0, 1))
 
 
 class QValues:
     """Learn and persist action values using injected game and strategy settings."""
 
-    def __init__(self, config: GameConfig, settings: StrategySettings) -> None:
+    def __init__(self, config: GameConfig, settings: StrategySettings,
+                 role: str | None = None) -> None:
         self.config = config
         self.settings = settings
+        self.role = role
         self._epsilon = settings.exploration_rate
         self.q_table: dict[tuple[tuple[tuple[int, int] | None, int], str], float] = {}
 
@@ -37,7 +39,7 @@ class QValues:
         """Return the relative opponent location and adjacent-blocker bit mask."""
         row, col = own_position
         mask = 0
-        for bit, (row_delta, col_delta) in enumerate(_DIRECTIONS):
+        for bit, (row_delta, col_delta) in enumerate(BARRIER_BIT_DIRECTIONS):
             neighbour = (row + row_delta, col + col_delta)
             off_board = not (
                 0 <= neighbour[0] < self.config.grid_size
@@ -103,7 +105,7 @@ class QValues:
             value = self.q_value(state, action)
             if value > best_value:
                 best, best_value = action, value
-        return best
+        return tiebreak_action(state, self.config.move_set, self.role, self.q_value) or best
 
     def decay_epsilon(self) -> None:
         """Apply one decay step, clamped at epsilon_floor."""

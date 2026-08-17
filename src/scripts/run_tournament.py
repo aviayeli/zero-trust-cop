@@ -37,7 +37,7 @@ def build_policy(role, config, settings):
         role,
         config,
         settings,
-        QValues(config, settings),
+        QValues(config, settings, role=role),
         PheromoneField(config),
         BeliefTracker(config, settings),
     )

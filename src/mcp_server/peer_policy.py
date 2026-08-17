@@ -37,7 +37,7 @@ def build_peer_policy(peer_role, engine_role, config, config_root=None):
         settings, exploration_rate=settings.match_exploration_rate
     )
 
-    qvalues = QValues(config, match_settings)
+    qvalues = QValues(config, match_settings, role=engine_role)
     qvalues.load()
     if not qvalues.q_table:
         raise ValueError(

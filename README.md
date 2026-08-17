@@ -442,8 +442,8 @@ never produces an artifact.)
 
 | Discipline | State |
 |---|---|
-| Test suite | **702 tests**, all passing (unit → live two-process HTTP) |
-| Line limit | every one of the **145** tracked Python files ≤ **150 lines** (max: 149) |
+| Test suite | **714 tests**, all passing (unit → live two-process HTTP) |
+| Line limit | every one of the **147** tracked Python files ≤ **150 lines** (max: 149) |
 | TDD | strict red→green: every implementation change preceded by a confirmed failing test |
 | Hyperparameters | zero tunables inlined in Python — all in `config/game.json` / per-peer `game.toml` |
 | Lifecycle | PRD → PLAN → TODO under `docs/`, per phase |
@@ -501,7 +501,7 @@ configured for pytest; standalone scripts take `PYTHONPATH=src`.
 
 ```bash
 .venv/bin/python -m pytest -q
-# expected: 702 passed
+# expected: 714 passed
 ```
 
 (Includes the live-transport tests: they spawn both peer processes on
@@ -808,7 +808,7 @@ src/agent/            the policy layer consuming both
 src/mcp_server/       crypto, identity, commitment book, gate, tools, server
 src/scripts/          trainer, match harness, log writer, replay verifier
 scripts/              ops tooling: sync_repos.sh, thief_readme.py
-tests/                80 test modules mirroring the source layout
+tests/                81 test modules mirroring the source layout
 ```
 
 ## Known limitations (stated, not hidden)
@@ -819,10 +819,18 @@ tests/                80 test modules mirroring the source layout
   7×7 board — **6.55%** and **5.33%** respectively. Only 40/177 and 32/144 of
   those states have all five actions valued. (Coverage roughly tripled when
   the shaping terms stopped the policies wall-bumping: an agent that moves
-  visits more of the board. It is still a small fraction.) In an unseen state `best_action` falls
-  back to `move_set[0]` (`N`) by tie order, and with match-time ε = 0 there is
-  no exploration to escape it, so an opponent that steers play off the trained
-  manifold meets a fixed-direction agent.
+  visits more of the board. It is still a small fraction.) An unseen state used
+  to fall through `best_action`'s tie order to `move_set[0]` (`N`) — with
+  match-time ε = 0 and no exploration to escape it, an opponent that steered
+  play off the trained manifold met a fixed-direction agent. Such states are
+  **58.2%** of decisions from random starts, so this was the dominant regime,
+  not an edge case. They now defer to a greedy Manhattan tie-break
+  (`strategy/fallback.py`), which lifts cop capture rate from 71.0% to 96.2%
+  against a random thief and 42.0% to 69.2% against the trained one — short of
+  the 100%/98.2% a pure heuristic scores, because the fallback only governs the
+  flat states and the learned values still drive the other 41.8%. Against a
+  *greedy* evader all three score 0.0%: one pursuer cannot corner a perfect
+  evader on a bare grid. Full protocol and table in `docs/PLAN.md` §10.10.
 
   This is characteristic of tabular Q-learning under **deterministic
   self-play**: once the cop wins reliably the trajectory distribution

@@ -88,3 +88,14 @@ def test_a_table_that_loads_but_is_EMPTY_is_rejected(secure_config_root):
 def test_the_peer_does_not_read_the_production_data_directory(app):
     """Tests must never depend on, or disturb, the committed deliverables."""
     assert "data/" not in app.policy.settings.qtable_path
+
+
+def test_the_peer_table_knows_its_engine_role_for_the_fallback(app):
+    """Without a role the off-manifold fallback silently disables itself."""
+    assert app.policy.qvalues.role == "cop"
+
+
+def test_the_thief_peer_table_knows_its_own_role(secure_config_root):
+    thief = create_app("thief", config_root=secure_config_root)
+
+    assert thief.policy.qvalues.role == "thief"

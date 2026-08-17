@@ -28,7 +28,7 @@ invariants; where it and a phase document disagree, this file wins.
   networking). `engine/config.py` and `strategy/settings.py` are the only
   modules permitted to know those paths.
 - **Strict TDD**: every module below was specified precisely enough that a
-  failing test could be written before it existed. Current state: **702 tests
+  failing test could be written before it existed. Current state: **714 tests
   passing**.
 
 ## FR5 Turn-Resolution & Tie-Break Rule (locked)
@@ -90,6 +90,7 @@ zero-trust-cop/
 │   │   └── repos.py             # repo + [email] settings loader
 │   ├── strategy/                # the AI brain (Phase 4)
 │   │   ├── qvalues.py           # tabular Q-learning + persistence
+│   │   ├── fallback.py          # greedy Manhattan tie-break for unlearned states
 │   │   ├── pheromones.py        # decaying scent-trail belief field
 │   │   ├── belief.py            # stated-intent honesty tracker
 │   │   └── settings.py          # [strategy] settings loader
@@ -97,7 +98,7 @@ zero-trust-cop/
 │   ├── gui/                     # replay viewer, live heatmap, canvas, palette
 │   ├── reporting/               # Gmail transport, MIME report, send policy
 │   └── scripts/                 # match loop, artifacts, reporting, verifier, tournaments
-└── tests/                       # 702 tests, mirroring the src/ layout
+└── tests/                       # 714 tests, mirroring the src/ layout
 ```
 
 ## 1. Engine Layer — Module Responsibilities & Interfaces
@@ -515,7 +516,13 @@ with the bootstrap term omitted on terminal transitions. The state key is
 Selection is ε-greedy (`exploration_rate = 0.1`, decayed by `0.999` per episode
 to a floor of `0.01`); `match_exploration_rate = 0.0` so competitive play is
 purely greedy. Ties resolve in `move_set` order, which keeps `best_action`
-deterministic. The table persists to `data/q_table_<role>.json` behind
+deterministic — except on a state where *every* action is still exactly `0.0`,
+which carries no preference to break. Those defer to the greedy Manhattan
+tie-break in `strategy/fallback.py` (§10.10): the cop takes the legal step that
+minimises the distance to `relative_opponent`, the thief the one that maximises
+it, still deterministically and still in `move_set` order on a tie. One learned
+value on the state, positive or negative, suppresses it entirely. The table
+persists to `data/q_table_<role>.json` behind
 `STATE_LAYOUT_VERSION = 1`; a version mismatch raises rather than silently
 loading incompatible keys.
 
@@ -824,11 +831,72 @@ Recorded rather than hidden; each is a deliberate, documented position:
    that the server already runs on its own commitment deadlines (§3) is
    unaffected.
 
+10. **Off-manifold generalisation and heuristic baselines** (§4.2,
+    `strategy/fallback.py`). Self-play converges to a 99.7% series capture
+    rate, but that is convergence *against one thief on one trajectory
+    manifold*. Probing the shipped cop table from 400 uniformly random,
+    distinct start pairs (seed `20260817`, bare 7x7 grid, epsilon = 0, the
+    opponent cell revealed every turn) finds **58.2% of decision states wholly
+    unvisited** — every action reading `initial_q_value`. The audit that
+    prompted this measurement reports 58.9% under its own protocol; the two
+    agree.
+
+    Before this phase a wholly flat state fell through `best_action`'s
+    move-set tie order to `move_set[0]` — a literal "always N", with match-time
+    epsilon = 0 leaving no exploration to escape it. The remedy is a greedy
+    Manhattan tie-break: the state key already carries the opponent's RELATIVE
+    cell, so each candidate step's resulting distance is arithmetic on the key
+    alone — no new observation, no wider state space — and the barrier mask in
+    that same key keeps the choice legal. The cop minimises the distance, the
+    thief maximises it, and STAY is always a legal candidate. It fires only
+    when EVERY action on the state is exactly `0.0`; one learned value,
+    positive or negative, means the table speaks for itself.
+
+    Cop capture rate / mean turns-to-capture over that same 400-start probe:
+
+    | Cop policy | vs. random thief | vs. trained thief |
+    | :--- | :---: | :---: |
+    | Trained Q-table, no fallback (pre-fix) | 71.0% / 11.47 | 42.0% / 4.65 |
+    | Greedy Manhattan heuristic alone | 100.0% / 6.10 | 98.2% / 11.00 |
+    | Trained Q-table + distance fallback | 96.2% / 10.03 | 69.2% / 9.83 |
+
+    Three readings, none of them flattering by omission:
+
+    * The fallback is a large real gain — +25.2 points against a random thief,
+      +27.2 against the trained one — and it does **not** reach the pure
+      heuristic. It cannot: it governs only the 58.2% of states that are flat,
+      and on the other 41.8% the badly-generalised learned values still drive.
+      Against the trained thief it recovers roughly half the gap to the
+      heuristic, not all of it. Any claim that it lifts the policy *to*
+      heuristic level is unsupported by this measurement.
+    * **Against a greedy Manhattan evader all three score 0.0%.** On a bare
+      7x7 grid under simultaneous moves a single pursuer cannot corner a
+      perfectly evading thief; this is structural, not a policy defect, and no
+      tie-break addresses it. It is the sharpest argument that `max_barriers:
+      14` is never populated (limitation above).
+    * The flagship trajectory is untouched. From the published starts (cop
+      `[0,0]`, thief `[3,3]`) both tables play the identical `E/N -> S/W ->
+      E/N` and capture on turn 3, pre-fix and post-fix, and
+      `scripts.replay_match` still returns `Verified OK` on the shipped log.
+
+    The external audit's own figures — 47.2% / 3.69 turns for the baseline and
+    93.5% / 6.04 for the heuristic — are recorded here as the prompt for this
+    work, not as this repository's evidence: its protocol is unpublished. The
+    heuristic's mean turns-to-capture (6.04 against 6.10 measured) and the
+    off-manifold rate (58.9% against 58.2%) reproduce closely; the baseline
+    capture rate does not, and the numbers above are the ones the claims rest
+    on.
+
+    What this does **not** buy is generalisation. The remedy is a legality-
+    and distance-aware default, not learning. The real fix remains opponent
+    diversity in training or a function approximator — a training phase in its
+    own right, as recorded under the self-play limitation above.
+
 ## 11. Test Strategy
 
 Every module was built test-first per `CLAUDE.md`; `docs/TODO.md` records the
 sequencing and the evidence. The suite mirrors `src/` and currently stands at
-**702 passing tests**. The load-bearing cases, by layer:
+**714 passing tests**. The load-bearing cases, by layer:
 
 - **Engine** — the six FR5 scenarios (both unobstructed, bounds-blocked,
   barrier-blocked, same-cell capture, swap capture, adjacent near-miss), plus
