@@ -8,8 +8,12 @@ exchanged. The opponent recomputes the digest to confirm the revealed move is
 the one that was committed.
 
 Scope: this proves a revealed move matches an earlier commitment by *whoever
-holds the nonce*. It does NOT authenticate who submitted it, and it does not
-encrypt anything in transit. Peer identity remains unauthenticated.
+holds the nonce*. It does not, on its own, establish WHO submitted it. That is
+layered on top by ``identity.py``, whose Ed25519 signature over
+``{role, turn, h_commit}`` is verified on BOTH the commit and the reveal
+(``submissions.py``), so peer identity IS authenticated at the gate. Nothing
+here encrypts anything in transit -- the wire is signed, not confidential
+(PLAN.md §10.6).
 """
 
 import hashlib

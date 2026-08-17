@@ -11,10 +11,11 @@ one: `sync_repos.sh` gates on pytest BEFORE it attempts the conversion, so a
 stale rule now fails before anything is pushed.
 
 Skipped on the derived thief branch, whose README is the OUTPUT of the
-conversion and therefore no longer carries the cop's anchors.
+conversion and therefore no longer carries the cop's anchors. The figures the
+conversion INSERTS are checked against the shipped Q-table by
+``test_thief_figures.py``, which is valid on either branch.
 """
 
-import importlib.util
 import re
 
 from pathlib import Path
@@ -33,26 +34,11 @@ pytestmark = pytest.mark.skipif(
 )
 
 
-def _load_regenerator():
-    """Load by path: root `scripts/` is not the importable `src/scripts`."""
-    spec = importlib.util.spec_from_file_location(
-        "thief_readme", ROOT / "scripts" / "thief_readme.py"
-    )
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
-
-
 def _block_rates(text):
     """The ten per-block percentages from the 200-game matrix."""
     matrix = _MATRIX.search(text)
     assert matrix, "the 200-game block matrix is no longer in the README"
     return [float(value) for value in _PERCENT.findall(matrix.group(0))]
-
-
-@pytest.fixture(scope="module")
-def regenerator():
-    return _load_regenerator()
 
 
 @pytest.fixture(scope="module")

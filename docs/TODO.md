@@ -540,6 +540,11 @@ ruling, the test that encoded the old ruling is named too.
 - [ ] Upload the PDF to **Moodle**.
 - [ ] Submit both repository URLs and the `v1.0-submission` tag reference on the
       Moodle form.
+- [x] Reporting **configuration** verified: recipient
+      `rmisegal+uoh26finalgame@gmail.com` and `mode = "auto"` are set in both
+      peers' private `[email]` blocks, and the send/draft policy is covered by
+      `tests/unit/test_shipped_email_config.py` and `test_email_fallback.py`.
+      This is the config, NOT the delivery — the item below remains open.
 - [ ] Confirm the graded email report was received at the course address. The
       regenerated flagship match (2026-08-11) reported under `mode = "auto"`
       with valid credentials on disk and printed `email_report=ok`, so a real
@@ -550,3 +555,60 @@ ruling, the test that encoded the old ruling is named too.
       (see `PLAN.md` §7.1 and §10.5).
 - [ ] Play a live **cross-group league match** against the opposing group's
       peers, replacing the local two-peer simulation (see `PLAN.md` §10.7).
+
+## Phase 8 — Off-manifold generalisation & repository sync — complete
+
+**Lifecycle note, recorded rather than hidden:** the work below was implemented
+BEFORE it was entered here, which inverts the `PRD -> PLAN -> TODO` order this
+project's `CLAUDE.md` mandates. `PLAN.md` §10.10 was likewise written after the
+code it describes. These entries are therefore a retroactive record, not
+evidence of a tracked design cycle, and are marked as such so the log does not
+overstate the process that produced them.
+
+### 8.1 Distance-tiebreak fallback — complete
+
+- [x] **Failing tests first** for a greedy Manhattan tie-break on states where
+      every action is exactly `0.0` (`tests/mcp_server/test_qvalues_fallback.py`,
+      9 cases): cop minimises distance, thief maximises, blocked moves refused,
+      `STAY` chosen when every direction is blocked.
+- [x] `strategy/fallback.py` added, owning `BARRIER_BIT_DIRECTIONS` so the
+      mask's writer and reader cannot drift apart. `qvalues.py` defers to it and
+      stays within the 150-line limit at 149.
+- [x] Role wired at BOTH production sites — `mcp_server/peer_policy.py` and
+      `scripts/run_tournament.py` — each pinned by a test, since a table built
+      without a role silently disables the fallback.
+- [x] Flagship trajectory proven unchanged: the published starts still play
+      `E/N -> S/W -> E/N` and capture on turn 3, and `scripts.replay_match`
+      still returns `Verified OK` on the shipped log.
+
+### 8.2 Reproducible off-manifold benchmark — complete
+
+- [x] `scripts/offmanifold_probe.py` (sampling, episodes, aggregation) and
+      `scripts/benchmark_offmanifold.py` (published run + CLI), split before
+      either reached the line limit.
+- [x] Sample size, seed and opponent set in `config/benchmark.json`, so no
+      benchmark tunable is inlined in Python.
+- [x] `PLAN.md` §10.10 published with the MEASURED result, including the
+      finding that the fallback does **not** reach heuristic parity (69.2% vs
+      98.2% against the trained thief) and that no cop catches a greedy evader.
+- [x] Every figure §10.10 prints is re-derived from a real run by
+      `tests/scripts/test_benchmark_plan_claims.py`, so a retrain fails the
+      suite rather than stranding the prose.
+
+### 8.3 Dual-repository sync and documentation integrity — complete
+
+- [x] `scripts/thief_readme.py` rule 6 realigned to the retrained 200-game
+      matrix. The stale anchor had been failing since 2026-08-11, which stopped
+      every sync and left both remotes byte-identical on `4b338c8`.
+- [x] Whole conversion moved into the suite (`tests/unit/test_thief_readme.py`),
+      turning a push-time failure into a test-time one — `sync_repos.sh` gates
+      on pytest before converting.
+- [x] `STRATEGY_BLOCK`'s thief-table figures corrected from 128 entries / 46
+      states / 4.9968 to the true 391 / 144 / 4.9999, and now verified against
+      `data/q_table_thief.json` at runtime (`tests/unit/test_thief_figures.py`)
+      — inserted content had no anchor, so nothing caught the drift.
+- [x] `mcp_server/crypto.py` docstring reconciled with the shipped system: it
+      claimed "peer identity remains unauthenticated" while `identity.py` has
+      signed both protocol phases since 2026-07-25, contradicting §10.6.
+- [x] Both remotes verified **distinct** and tag-aligned by the script's own
+      guards (cop `master` != thief `master`, each tag on its own head).
