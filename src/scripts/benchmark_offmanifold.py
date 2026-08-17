@@ -18,9 +18,11 @@ no table at all, which is the pure greedy-Manhattan heuristic.
 import argparse
 import json
 import os
+from dataclasses import replace
 
 from engine.config import load_config
 from scripts.offmanifold_probe import build_table, evaluate, start_pairs
+from strategy.fallback import MANHATTAN_PRIMARY, QTABLE_PRIMARY
 from strategy.settings import load_strategy_settings
 
 _DEFAULT_CONFIG_ROOT = "config"
@@ -50,10 +52,18 @@ def benchmark(config_root: str = _DEFAULT_CONFIG_ROOT, seed=None, count=None) ->
     burglar = load_strategy_settings("thief", config_root)
     pairs = start_pairs(config, count, seed)
 
+    table = police.qtable_path
+    as_mode = {mode: replace(police, policy_mode=mode)
+               for mode in (QTABLE_PRIMARY, MANHATTAN_PRIMARY)}
     cops = (
-        ("trained", build_table(config, police, None, police.qtable_path)),
-        ("heuristic", build_table(config, police, "cop")),
-        ("trained+fallback", build_table(config, police, "cop", police.qtable_path)),
+        # No role: the distance rule never runs. The original policy.
+        ("qtable-only", build_table(config, as_mode[QTABLE_PRIMARY], None, table)),
+        # Distance consulted only where the table is flat. Previously shipped.
+        ("qtable-primary", build_table(config, as_mode[QTABLE_PRIMARY], "cop", table)),
+        # Distance decides, the table breaks ties. Shipped now.
+        ("manhattan-primary", build_table(config, as_mode[MANHATTAN_PRIMARY], "cop", table)),
+        # Same distance rule, EMPTY table, so ties fall to move-set order.
+        ("heuristic", build_table(config, as_mode[MANHATTAN_PRIMARY], "cop")),
     )
     thieves = {
         "random": None,

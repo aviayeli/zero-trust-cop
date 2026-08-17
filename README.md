@@ -442,8 +442,8 @@ never produces an artifact.)
 
 | Discipline | State |
 |---|---|
-| Test suite | **743 tests**, all passing (unit → live two-process HTTP) |
-| Line limit | every one of the **154** tracked Python files ≤ **150 lines** (max: 149) |
+| Test suite | **757 tests**, all passing (unit → live two-process HTTP) |
+| Line limit | every one of the **155** tracked Python files ≤ **150 lines** (max: 149) |
 | TDD | strict red→green: every implementation change preceded by a confirmed failing test |
 | Hyperparameters | zero tunables inlined in Python — all in `config/game.json` / per-peer `game.toml` |
 | Lifecycle | PRD → PLAN → TODO under `docs/`, per phase |
@@ -501,7 +501,7 @@ configured for pytest; standalone scripts take `PYTHONPATH=src`.
 
 ```bash
 .venv/bin/python -m pytest -q
-# expected: 743 passed
+# expected: 757 passed
 ```
 
 (Includes the live-transport tests: they spawn both peer processes on
@@ -523,9 +523,10 @@ To probe those same tables from starts they never trained on — the benchmark
 
 ```bash
 PYTHONPATH=src .venv/bin/python -m scripts.benchmark_offmanifold
-# | trained          | random | 71.0% | 11.47 | 58.2% |
-# | heuristic        | random | 100.0% | 6.10 | 100.0% |
-# | trained+fallback | random | 96.2% | 10.03 | 29.8% |
+# | qtable-only       | trained | 42.0% | 4.65 | 63.6% |
+# | qtable-primary    | trained | 69.2% | 9.83 | 47.4% |
+# | manhattan-primary | trained | 84.8% | 9.74 | 43.5% |
+# | heuristic         | trained | 98.2% | 11.00 | 100.0% |
 ```
 
 Sample size, seed and opponent set come from `config/benchmark.json`;
@@ -822,7 +823,7 @@ src/agent/            the policy layer consuming both
 src/mcp_server/       crypto, identity, commitment book, gate, tools, server
 src/scripts/          trainer, match harness, log writer, replay verifier, probe
 scripts/              ops tooling: sync_repos.sh, thief_readme.py
-tests/                85 test modules mirroring the source layout
+tests/                86 test modules mirroring the source layout
 ```
 
 ## Known limitations (stated, not hidden)
@@ -838,13 +839,17 @@ tests/                85 test modules mirroring the source layout
   match-time ε = 0 and no exploration to escape it, an opponent that steered
   play off the trained manifold met a fixed-direction agent. Such states are
   **58.2%** of decisions from random starts, so this was the dominant regime,
-  not an edge case. They now defer to a greedy Manhattan tie-break
-  (`strategy/fallback.py`), which lifts cop capture rate from 71.0% to 96.2%
-  against a random thief and 42.0% to 69.2% against the trained one — short of
-  the 100%/98.2% a pure heuristic scores, because the fallback only governs the
-  flat states and the learned values still drive the other 41.8%. Against a
-  *greedy* evader all three score 0.0%: one pursuer cannot corner a perfect
-  evader on a bare grid. Full protocol and table in `docs/PLAN.md` §10.10.
+  not an edge case. The shipped cop now runs `policy_mode = "manhattan_primary"`:
+  the Manhattan distance rule narrows each turn to the distance-optimal legal
+  moves and the trained table ranks what is left, so both strategies stay live
+  on every decision. That lifts cop capture rate to **100.0%** against a random
+  thief and **84.8%** against the trained one, from 71.0% / 42.0% for the table
+  alone. It still trails the **98.2%** of the same rule with an EMPTY table —
+  the learned values cost 13.5 points as a tie-breaker, which is recorded
+  rather than argued away. Against a *greedy* evader all four score 0.0%: one
+  pursuer cannot corner a perfect evader on a bare grid. Full protocol, the
+  four-policy table and the shipped-log provenance note are in `docs/PLAN.md`
+  §10.10.
 
   This is characteristic of tabular Q-learning under **deterministic
   self-play**: once the cop wins reliably the trajectory distribution

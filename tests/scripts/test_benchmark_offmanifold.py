@@ -17,7 +17,7 @@ from scripts.benchmark_offmanifold import (
 from scripts.offmanifold_probe import build_table, evaluate, start_pairs
 
 METRICS = {"policy", "opponent", "capture_rate", "mean_turns", "flat_state_rate"}
-POLICIES = ("trained", "heuristic", "trained+fallback")
+POLICIES = ("qtable-only", "qtable-primary", "manhattan-primary", "heuristic")
 
 
 @pytest.fixture

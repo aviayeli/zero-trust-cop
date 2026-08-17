@@ -28,7 +28,7 @@ invariants; where it and a phase document disagree, this file wins.
   networking). `engine/config.py` and `strategy/settings.py` are the only
   modules permitted to know those paths.
 - **Strict TDD**: every module below was specified precisely enough that a
-  failing test could be written before it existed. Current state: **743 tests
+  failing test could be written before it existed. Current state: **757 tests
   passing**.
 
 ## FR5 Turn-Resolution & Tie-Break Rule (locked)
@@ -100,7 +100,7 @@ zero-trust-cop/
 │   ├── reporting/               # Gmail transport, MIME report, send policy
 │   └── scripts/                 # match loop, artifacts, reporting, verifier,
 │                                #   tournaments, §10.10 off-manifold probe
-└── tests/                       # 743 tests, mirroring the src/ layout
+└── tests/                       # 757 tests, mirroring the src/ layout
 ```
 
 ## 1. Engine Layer — Module Responsibilities & Interfaces
@@ -845,22 +845,30 @@ Recorded rather than hidden; each is a deliberate, documented position:
 
     Before this phase a wholly flat state fell through `best_action`'s
     move-set tie order to `move_set[0]` — a literal "always N", with match-time
-    epsilon = 0 leaving no exploration to escape it. The remedy is a greedy
-    Manhattan tie-break: the state key already carries the opponent's RELATIVE
-    cell, so each candidate step's resulting distance is arithmetic on the key
-    alone — no new observation, no wider state space — and the barrier mask in
-    that same key keeps the choice legal. The cop minimises the distance, the
-    thief maximises it, and STAY is always a legal candidate. It fires only
-    when EVERY action on the state is exactly `0.0`; one learned value,
-    positive or negative, means the table speaks for itself.
+    epsilon = 0 leaving no exploration to escape it. The distance rule that
+    replaced it is arithmetic on the state key alone: that key already carries
+    the opponent's RELATIVE cell, so each candidate step's resulting distance
+    needs no new observation and no wider state space, and the barrier mask in
+    the same key keeps the choice legal. The cop minimises the distance, the
+    thief maximises it, STAY is always a legal candidate.
 
-    Cop capture rate / mean turns-to-capture over that same 400-start probe:
+    **Which strategy leads is per-peer configuration** (`policy_mode` in each
+    private `game.toml`), not a role check in Python:
+
+    * `qtable_primary` — the table decides; the distance rule runs only where
+      every action on the state is exactly `0.0`. The **thief** ships this.
+    * `manhattan_primary` — the distance rule narrows the legal moves to the
+      distance-optimal set, and the table ranks what is left. A learned value
+      can never escape that set, however large. The **cop** ships this.
+
+    Cop capture rate / mean turns-to-capture over the 400-start probe:
 
     | Cop policy | vs. random thief | vs. trained thief |
     | :--- | :---: | :---: |
-    | Trained Q-table, no fallback (pre-fix) | 71.0% / 11.47 | 42.0% / 4.65 |
-    | Greedy Manhattan heuristic alone | 100.0% / 6.10 | 98.2% / 11.00 |
-    | Trained Q-table + distance fallback | 96.2% / 10.03 | 69.2% / 9.83 |
+    | `qtable-only` — no distance rule at all | 71.0% / 11.47 | 42.0% / 4.65 |
+    | `qtable-primary` — distance only on flat states | 96.2% / 10.03 | 69.2% / 9.83 |
+    | `manhattan-primary` — **shipped**, table breaks ties | 100.0% / 6.08 | 84.8% / 9.74 |
+    | `heuristic` — same rule, EMPTY table, ties by move-set order | 100.0% / 6.10 | 98.2% / 11.00 |
 
     Reproduce with `PYTHONPATH=src python -m scripts.benchmark_offmanifold`;
     the sample size, seed and opponent set are `config/benchmark.json`, not
@@ -869,24 +877,51 @@ Recorded rather than hidden; each is a deliberate, documented position:
     tables fails the suite rather than silently stranding the prose — the
     posture `test_readme_consistency.py` already takes toward the README.
 
-    Three readings, none of them flattering by omission:
+    Four readings, none of them flattering by omission:
 
-    * The fallback is a large real gain — +25.2 points against a random thief,
-      +27.2 against the trained one — and it does **not** reach the pure
-      heuristic. It cannot: it governs only the 58.2% of states that are flat,
-      and on the other 41.8% the badly-generalised learned values still drive.
-      Against the trained thief it recovers roughly half the gap to the
-      heuristic, not all of it. Any claim that it lifts the policy *to*
-      heuristic level is unsupported by this measurement.
-    * **Against a greedy Manhattan evader all three score 0.0%.** On a bare
+    * **The priority swap is the single largest gain in the project**: +15.5
+      points against the trained thief (69.2 -> 84.8) and +3.8 against the
+      random one (96.2 -> 100.0), for an inversion that adds no state and no
+      training. Distance was always the better first question.
+    * **The learned table is a NET NEGATIVE as a tie-breaker, and the last row
+      is what proves it.** `manhattan-primary` and `heuristic` run the
+      identical distance rule over the identical legal moves; they differ only
+      in how a tie is settled. (Both deltas here are computed from the raw
+      rates, not by subtracting the table's rounded cells, which would give
+      13.4 and 15.6; `test_benchmark_plan_claims.py` pins the raw form.) They
+      differ only in how a tie is settled — by learned Q-value, or by move-set order. The
+      learned values cost **13.5 points** against the trained thief (84.8 vs
+      98.2). This project's best-measured cop is the one carrying no learned
+      values at all, and that is recorded here rather than argued away. The
+      table is retained in the decision because it is the course's subject
+      matter and because the two modes keep both strategies live and tested;
+      it is not retained because it helps.
+    * **Against a greedy Manhattan evader all four score 0.0%.** On a bare
       7x7 grid under simultaneous moves a single pursuer cannot corner a
       perfectly evading thief; this is structural, not a policy defect, and no
       tie-break addresses it. It is the sharpest argument that `max_barriers:
       14` is never populated (limitation above).
-    * The flagship trajectory is untouched. From the published starts (cop
-      `[0,0]`, thief `[3,3]`) both tables play the identical `E/N -> S/W ->
-      E/N` and capture on turn 3, pre-fix and post-fix, and
+    * **The flagship trajectory is untouched by any of this.** From the
+      published starts (cop `[0,0]`, thief `[3,3]`) the pre-fallback table, the
+      `qtable_primary` policy and the shipped `manhattan_primary` policy all
+      play the identical `E/N -> S/W -> E/N` and capture on turn 3, and
       `scripts.replay_match` still returns `Verified OK` on the shipped log.
+
+    **Provenance of the shipped evidence.** The flagship artifacts under
+    `logs/aviayeli/` — the signed match log, its `result`, and
+    `declaration_aviayeli.json` — were recorded at commit `1d9d40e`, which
+    predates both `strategy/fallback.py` and this priority swap. That is stated
+    rather than hidden, and the artifacts are deliberately **not** regenerated:
+    they are signed evidence of a match that was actually played, and
+    re-sealing them to carry a newer commit hash would trade a genuine record
+    for a cosmetic one. The trajectory they record remains exactly what today's
+    policy produces, verified above and by
+    `tests/mcp_server/test_qvalues_fallback.py` — every state on that
+    trajectory is one the table has learned, so the distance rule and the
+    learned values agree on all three turns and no off-manifold decision
+    arises. What the artifacts therefore do NOT demonstrate is the behaviour
+    this section measures: off-manifold play is exercised by the benchmark and
+    the suite, not by the shipped log.
 
     The external audit's own figures — 47.2% / 3.69 turns for the baseline and
     93.5% / 6.04 for the heuristic — are recorded here as the prompt for this
@@ -896,8 +931,8 @@ Recorded rather than hidden; each is a deliberate, documented position:
     capture rate does not, and the numbers above are the ones the claims rest
     on.
 
-    What this does **not** buy is generalisation. The remedy is a legality-
-    and distance-aware default, not learning. The real fix remains opponent
+    What none of this buys is generalisation. The remedy is a legality- and
+    distance-aware ordering, not learning. The real fix remains opponent
     diversity in training or a function approximator — a training phase in its
     own right, as recorded under the self-play limitation above.
 
@@ -905,7 +940,7 @@ Recorded rather than hidden; each is a deliberate, documented position:
 
 Every module was built test-first per `CLAUDE.md`; `docs/TODO.md` records the
 sequencing and the evidence. The suite mirrors `src/` and currently stands at
-**743 passing tests**. The load-bearing cases, by layer:
+**757 passing tests**. The load-bearing cases, by layer:
 
 - **Engine** — the six FR5 scenarios (both unobstructed, bounds-blocked,
   barrier-blocked, same-cell capture, swap capture, adjacent near-miss), plus

@@ -21,6 +21,9 @@ from engine.actions import action_delta, parse_action
 
 BARRIER_BIT_DIRECTIONS = ((-1, 0), (1, 0), (0, -1), (0, 1))
 
+QTABLE_PRIMARY = "qtable_primary"
+MANHATTAN_PRIMARY = "manhattan_primary"
+
 _FLAT = 0.0
 # True where the role wants the gap CLOSED: the cop pursues, the thief flees.
 _ROLE_CLOSES = {"cop": True, "thief": False}
@@ -46,34 +49,54 @@ def _resulting_distance(relative: tuple[int, int], delta: tuple[int, int]) -> in
     return abs(relative[0] - delta[0]) + abs(relative[1] - delta[1])
 
 
+def _optimal_steps(state: tuple, move_set: list[str], role: str) -> list[str]:
+    """Every legal move that ties for the best resulting distance, in move-set order.
+
+    Raises:
+        ValueError: ``role`` is outside the engine's vocabulary.
+    """
+    if role not in _ROLE_CLOSES:
+        raise ValueError(f"unknown role for the distance rule: {role!r}")
+    relative, mask = state
+    if relative is None:
+        return []
+    steps = []
+    for action in move_set:
+        delta = action_delta(parse_action(action))
+        if not _is_blocked(delta, mask):
+            steps.append((action, _resulting_distance(relative, delta)))
+    if not steps:
+        return []
+    prefer = min if _ROLE_CLOSES[role] else max
+    target = prefer(distance for _, distance in steps)
+    return [action for action, distance in steps if distance == target]
+
+
 def greedy_distance_action(state: tuple, move_set: list[str], role: str) -> str | None:
     """Return the legal move that best serves the role, or None if undecidable.
 
     Ties keep ``move_set`` order, matching ``best_action``'s documented
     tie-break. Returns None only when the opponent's cell is unobserved,
     which leaves no distance to be greedy about.
-
-    Raises:
-        ValueError: ``role`` is outside the engine's vocabulary.
     """
-    if role not in _ROLE_CLOSES:
-        raise ValueError(f"unknown role for the distance fallback: {role!r}")
-    relative, mask = state
-    if relative is None:
-        return None
+    optimal = _optimal_steps(state, move_set, role)
+    return optimal[0] if optimal else None
 
-    closes = _ROLE_CLOSES[role]
-    chosen: str | None = None
-    chosen_distance = 0
-    for action in move_set:
-        delta = action_delta(parse_action(action))
-        if _is_blocked(delta, mask):
-            continue
-        distance = _resulting_distance(relative, delta)
-        better = distance < chosen_distance if closes else distance > chosen_distance
-        if chosen is None or better:
-            chosen, chosen_distance = action, distance
-    return chosen
+
+def manhattan_primary_action(
+    state: tuple, move_set: list[str], role: str, q_value
+) -> str | None:
+    """Distance decides; the learned table chooses among equally-good moves.
+
+    Both strategies stay live on every decision. The distance rule narrows the
+    legal moves to the distance-optimal set -- which a learned value can never
+    escape, however large -- and the table ranks what is left. ``max`` returns
+    the first maximum, so a flat tie still resolves in ``move_set`` order.
+    """
+    optimal = _optimal_steps(state, move_set, role)
+    if not optimal:
+        return None
+    return max(optimal, key=lambda action: q_value(state, action))
 
 
 def tiebreak_action(state: tuple, move_set: list[str], role, q_value) -> str | None:
@@ -87,3 +110,27 @@ def tiebreak_action(state: tuple, move_set: list[str], role, q_value) -> str | N
     if any(q_value(state, action) != _FLAT for action in move_set):
         return None
     return greedy_distance_action(state, move_set, role)
+
+
+def policy_action(values, state: tuple) -> str | None:
+    """Resolve one decision for a table's configured ``policy_mode``.
+
+    Returns None to defer to ``best_action``'s plain greedy read -- which is
+    what a role-less table and an unobserved opponent both do.
+
+    Takes the ``QValues`` instance rather than its parts deliberately:
+    ``strategy/qvalues.py`` sits on the project's 150-line limit, so this
+    dispatch is allowed to cost it exactly one line and no more.
+
+    Raises:
+        ValueError: ``policy_mode`` is not a mode this module implements.
+    """
+    if values.role is None:
+        return None
+    move_set = values.config.move_set
+    mode = values.settings.policy_mode
+    if mode == MANHATTAN_PRIMARY:
+        return manhattan_primary_action(state, move_set, values.role, values.q_value)
+    if mode != QTABLE_PRIMARY:
+        raise ValueError(f"unknown policy_mode: {mode!r}")
+    return tiebreak_action(state, move_set, values.role, values.q_value)

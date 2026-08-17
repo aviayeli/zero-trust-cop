@@ -28,6 +28,11 @@ def settings():
     return load_strategy_settings("police")
 
 
+def _qtable_primary(settings):
+    """The pre-swap mode, for the cases that assert its exact contract."""
+    return replace(settings, policy_mode="qtable_primary")
+
+
 def test_cop_pursues_by_minimising_manhattan_distance(config, settings):
     """Opponent three rows south: S closes to 2, N opens to 4."""
     cop = QValues(config, settings, role="cop")
@@ -55,9 +60,15 @@ def test_the_fallback_chooses_stay_when_every_direction_is_blocked(config, setti
     assert cop.best_action(((3, 0), 0b1111)) == "STAY"
 
 
-def test_a_learned_state_is_never_overridden_by_the_fallback(config, settings):
-    """One non-zero value means the state is on-manifold: greedy wins."""
-    cop = QValues(config, settings, role="cop")
+def test_a_learned_state_is_never_overridden_under_qtable_primary(config, settings):
+    """One non-zero value means the state is on-manifold: greedy wins.
+
+    Asserted against `qtable_primary` explicitly. The shipped cop now runs
+    `manhattan_primary`, where distance outranks a learned value -- that
+    inversion is covered by `test_policy_mode.py`. Both modes stay live and
+    both are exercised, so neither can rot untested.
+    """
+    cop = QValues(config, _qtable_primary(settings), role="cop")
     cop.q_table[(((3, 0), 0), "N")] = 1.0
 
     assert cop.best_action(((3, 0), 0)) == "N"
@@ -65,7 +76,7 @@ def test_a_learned_state_is_never_overridden_by_the_fallback(config, settings):
 
 def test_a_negative_learned_value_also_suppresses_the_fallback(config, settings):
     """Flatness is `all values == 0.0`, not `the maximum is 0.0`."""
-    cop = QValues(config, settings, role="cop")
+    cop = QValues(config, _qtable_primary(settings), role="cop")
     cop.q_table[(((3, 0), 0), "S")] = -1.0
 
     assert cop.best_action(((3, 0), 0)) == "N"

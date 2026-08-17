@@ -12,7 +12,7 @@ import json
 from pathlib import Path
 
 from engine.config import GameConfig
-from strategy.fallback import BARRIER_BIT_DIRECTIONS, tiebreak_action
+from strategy.fallback import BARRIER_BIT_DIRECTIONS, policy_action
 from strategy.settings import StrategySettings
 
 
@@ -105,7 +105,7 @@ class QValues:
             value = self.q_value(state, action)
             if value > best_value:
                 best, best_value = action, value
-        return tiebreak_action(state, self.config.move_set, self.role, self.q_value) or best
+        return policy_action(self, state) or best
 
     def decay_epsilon(self) -> None:
         """Apply one decay step, clamped at epsilon_floor."""

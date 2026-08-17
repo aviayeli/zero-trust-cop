@@ -15,6 +15,10 @@ epsilon_floor = 0.01
 num_games = 2000
 hint_max_words = 15
 match_exploration_rate = 0.0
+# The evader keeps the table primary: its distance rule is consulted
+# only where the table is flat. Changed independently of the cop,
+# which is why this is configuration rather than a role check.
+policy_mode = "qtable_primary"
 
 [network]
 host = "127.0.0.1"

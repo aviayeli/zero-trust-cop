@@ -15,6 +15,10 @@ epsilon_floor = 0.01
 num_games = 2000
 hint_max_words = 15
 match_exploration_rate = 0.0
+# Distance decides, the trained table breaks ties among equally-good
+# moves (PLAN.md §10.10). Measured against qtable_primary before the
+# swap; both modes stay live and both are exercised by the suite.
+policy_mode = "manhattan_primary"
 
 [network]
 host = "127.0.0.1"
