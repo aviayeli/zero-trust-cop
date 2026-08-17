@@ -442,8 +442,8 @@ never produces an artifact.)
 
 | Discipline | State |
 |---|---|
-| Test suite | **714 tests**, all passing (unit → live two-process HTTP) |
-| Line limit | every one of the **147** tracked Python files ≤ **150 lines** (max: 149) |
+| Test suite | **732 tests**, all passing (unit → live two-process HTTP) |
+| Line limit | every one of the **151** tracked Python files ≤ **150 lines** (max: 149) |
 | TDD | strict red→green: every implementation change preceded by a confirmed failing test |
 | Hyperparameters | zero tunables inlined in Python — all in `config/game.json` / per-peer `game.toml` |
 | Lifecycle | PRD → PLAN → TODO under `docs/`, per phase |
@@ -501,7 +501,7 @@ configured for pytest; standalone scripts take `PYTHONPATH=src`.
 
 ```bash
 .venv/bin/python -m pytest -q
-# expected: 714 passed
+# expected: 732 passed
 ```
 
 (Includes the live-transport tests: they spawn both peer processes on
@@ -517,6 +517,20 @@ PYTHONPATH=src .venv/bin/python -m scripts.run_tournament --seed 20260801
 
 Re-running with the same seed reproduces both tables byte-for-byte
 (`sha256sum data/q_table_*.json` before and after to confirm).
+
+To probe those same tables from starts they never trained on — the benchmark
+`docs/PLAN.md` §10.10 publishes:
+
+```bash
+PYTHONPATH=src .venv/bin/python -m scripts.benchmark_offmanifold
+# | trained          | random | 71.0% | 11.47 | 58.2% |
+# | heuristic        | random | 100.0% | 6.10 | 100.0% |
+# | trained+fallback | random | 96.2% | 10.03 | 29.8% |
+```
+
+Sample size, seed and opponent set come from `config/benchmark.json`;
+`tests/scripts/test_benchmark_plan_claims.py` re-derives every figure §10.10
+quotes, so the documented numbers cannot drift from the shipped tables.
 
 ### 3 — Generate peer keypairs (fresh checkout only)
 
@@ -806,9 +820,9 @@ src/engine/           deterministic game core — imports nothing above it
 src/strategy/         Q-learning, pheromones, belief, private settings
 src/agent/            the policy layer consuming both
 src/mcp_server/       crypto, identity, commitment book, gate, tools, server
-src/scripts/          trainer, match harness, log writer, replay verifier
+src/scripts/          trainer, match harness, log writer, replay verifier, probe
 scripts/              ops tooling: sync_repos.sh, thief_readme.py
-tests/                81 test modules mirroring the source layout
+tests/                83 test modules mirroring the source layout
 ```
 
 ## Known limitations (stated, not hidden)

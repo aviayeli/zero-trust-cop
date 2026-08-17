@@ -28,7 +28,7 @@ invariants; where it and a phase document disagree, this file wins.
   networking). `engine/config.py` and `strategy/settings.py` are the only
   modules permitted to know those paths.
 - **Strict TDD**: every module below was specified precisely enough that a
-  failing test could be written before it existed. Current state: **714 tests
+  failing test could be written before it existed. Current state: **732 tests
   passing**.
 
 ## FR5 Turn-Resolution & Tie-Break Rule (locked)
@@ -57,6 +57,7 @@ zero-trust-cop/
 ├── config/
 │   ├── game.json               # shared contract: board, scoring, pheromones, league
 │   ├── declaration.json         # Step-0 identity: group, members, repos, endpoints
+│   ├── benchmark.json           # off-manifold probe: sample size, seed, opponents
 │   ├── police/                  # peer workspace: game.json, game.toml, keys, peers/*.pub
 │   └── thief/                   # peer workspace: game.json, game.toml, keys, peers/*.pub
 ├── docs/                        # PRD → PLAN → TODO, per phase
@@ -97,8 +98,9 @@ zero-trust-cop/
 │   ├── agent/agent_core.py      # AgentPolicy: the policy layer over strategy/
 │   ├── gui/                     # replay viewer, live heatmap, canvas, palette
 │   ├── reporting/               # Gmail transport, MIME report, send policy
-│   └── scripts/                 # match loop, artifacts, reporting, verifier, tournaments
-└── tests/                       # 714 tests, mirroring the src/ layout
+│   └── scripts/                 # match loop, artifacts, reporting, verifier,
+│                                #   tournaments, §10.10 off-manifold probe
+└── tests/                       # 732 tests, mirroring the src/ layout
 ```
 
 ## 1. Engine Layer — Module Responsibilities & Interfaces
@@ -860,6 +862,13 @@ Recorded rather than hidden; each is a deliberate, documented position:
     | Greedy Manhattan heuristic alone | 100.0% / 6.10 | 98.2% / 11.00 |
     | Trained Q-table + distance fallback | 96.2% / 10.03 | 69.2% / 9.83 |
 
+    Reproduce with `PYTHONPATH=src python -m scripts.benchmark_offmanifold`;
+    the sample size, seed and opponent set are `config/benchmark.json`, not
+    literals in source. Every figure in this section is re-derived from a real
+    run by `tests/scripts/test_benchmark_plan_claims.py`, so retraining the
+    tables fails the suite rather than silently stranding the prose — the
+    posture `test_readme_consistency.py` already takes toward the README.
+
     Three readings, none of them flattering by omission:
 
     * The fallback is a large real gain — +25.2 points against a random thief,
@@ -896,7 +905,7 @@ Recorded rather than hidden; each is a deliberate, documented position:
 
 Every module was built test-first per `CLAUDE.md`; `docs/TODO.md` records the
 sequencing and the evidence. The suite mirrors `src/` and currently stands at
-**714 passing tests**. The load-bearing cases, by layer:
+**732 passing tests**. The load-bearing cases, by layer:
 
 - **Engine** — the six FR5 scenarios (both unobstructed, bounds-blocked,
   barrier-blocked, same-cell capture, swap capture, adjacent near-miss), plus

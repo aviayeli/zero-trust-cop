@@ -1,8 +1,10 @@
-"""Fixtures for the offline trainer tests.
+"""Fixtures for the offline trainer and the off-manifold probe.
 
-Every fixture redirects ``qtable_path`` under ``tmp_path``. A test run must
-never write into the production ``data/`` directory, whose contents are the
-committed Step 4 deliverables.
+Every TRAINING fixture redirects ``qtable_path`` under ``tmp_path``. A test run
+must never write into the production ``data/`` directory, whose contents are
+the committed Step 4 deliverables. The probe only ever READS those tables, so
+``benchmark_rows`` runs against them directly — and once per session, because
+both probe test modules assert against the same published run.
 """
 
 from dataclasses import replace
@@ -39,3 +41,23 @@ def training_settings(tmp_path):
         return cop, thief
 
     return build
+
+
+@pytest.fixture
+def police_settings():
+    """The cop's real private settings; the probe never writes through them."""
+    return load_strategy_settings("police")
+
+
+@pytest.fixture
+def thief_settings():
+    """The evader's real private settings, for probe tests that need a role."""
+    return load_strategy_settings("thief")
+
+
+@pytest.fixture(scope="session")
+def benchmark_rows():
+    """One full published off-manifold run (~1s), shared by every asserter."""
+    from scripts.benchmark_offmanifold import benchmark
+
+    return benchmark()
