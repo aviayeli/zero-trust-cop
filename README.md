@@ -442,8 +442,8 @@ never produces an artifact.)
 
 | Discipline | State |
 |---|---|
-| Test suite | **732 tests**, all passing (unit → live two-process HTTP) |
-| Line limit | every one of the **151** tracked Python files ≤ **150 lines** (max: 149) |
+| Test suite | **739 tests**, all passing (unit → live two-process HTTP) |
+| Line limit | every one of the **152** tracked Python files ≤ **150 lines** (max: 149) |
 | TDD | strict red→green: every implementation change preceded by a confirmed failing test |
 | Hyperparameters | zero tunables inlined in Python — all in `config/game.json` / per-peer `game.toml` |
 | Lifecycle | PRD → PLAN → TODO under `docs/`, per phase |
@@ -501,7 +501,7 @@ configured for pytest; standalone scripts take `PYTHONPATH=src`.
 
 ```bash
 .venv/bin/python -m pytest -q
-# expected: 732 passed
+# expected: 739 passed
 ```
 
 (Includes the live-transport tests: they spawn both peer processes on
@@ -822,7 +822,7 @@ src/agent/            the policy layer consuming both
 src/mcp_server/       crypto, identity, commitment book, gate, tools, server
 src/scripts/          trainer, match harness, log writer, replay verifier, probe
 scripts/              ops tooling: sync_repos.sh, thief_readme.py
-tests/                83 test modules mirroring the source layout
+tests/                84 test modules mirroring the source layout
 ```
 
 ## Known limitations (stated, not hidden)
