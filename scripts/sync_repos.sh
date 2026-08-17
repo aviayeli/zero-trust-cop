@@ -97,6 +97,10 @@ git push "$COP_REMOTE" master
 git push --force "$COP_REMOTE" "$TAG"
 git push --force "$THIEF_REMOTE" "$THIEF_BRANCH:master"
 git push --force "$THIEF_REMOTE" "$THIEF_TAG:refs/tags/$TAG"
+# ...and under its own name too, so the thief-edition tag cannot rot one sync
+# behind. It is deliberately NOT pushed to the cop remote, where the commit it
+# points at is unreachable from master and the tag is pure noise.
+git push --force "$THIEF_REMOTE" "$THIEF_TAG"
 
 # --- 6. verify the remotes actually agree ------------------------------------
 say "verifying remotes"
