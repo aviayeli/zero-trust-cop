@@ -34,6 +34,11 @@ def game_config():
         survival_thief=10,
         tie_score=2,
         technical_loss=0,
+        requests_per_minute=30,
+        concurrent_requests=2,
+        retry_backoff_sec=5,
+        max_retries=3,
+        queue_depth=100,
     )
 
 

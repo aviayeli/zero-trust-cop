@@ -29,6 +29,11 @@ class GameConfig:
     survival_thief: int
     tie_score: int
     technical_loss: int
+    requests_per_minute: int
+    concurrent_requests: int
+    retry_backoff_sec: float
+    max_retries: int
+    queue_depth: int
 
 
 # The convention this engine implements, in the contract's own vocabulary.
@@ -103,4 +108,9 @@ def load_config(path: str) -> GameConfig:
         survival_thief=data["scoring"]["survival_thief"],
         tie_score=data["scoring"]["tie_score"],
         technical_loss=data["scoring"]["technical_loss"],
+        requests_per_minute=data["rate_limiter_gatekeeper"]["requests_per_minute"],
+        concurrent_requests=data["rate_limiter_gatekeeper"]["concurrent_requests"],
+        retry_backoff_sec=data["rate_limiter_gatekeeper"]["retry_backoff_sec"],
+        max_retries=data["rate_limiter_gatekeeper"]["max_retries"],
+        queue_depth=data["rate_limiter_gatekeeper"]["queue_depth"],
     )

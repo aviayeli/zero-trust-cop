@@ -26,22 +26,31 @@ class TechnicalLossError(RuntimeError):
 class HttpPeer:
     """Adapter over an initialised MCP ClientSession."""
 
-    def __init__(self, session, timeout_seconds: float):
-        """Store an already-initialised session and its per-call deadline."""
+    def __init__(self, session, timeout_seconds: float, limiter=None):
+        """Store an already-initialised session, its deadline and its throttle.
+
+        ``limiter`` of None sends unthrottled, which is what the in-process
+        tests and the loopback simulation want; league play passes the agreed
+        `rate_limiter_gatekeeper` policy (``mcp_server/rate_limiter.py``).
+        """
         self._session = session
         self.timeout_seconds = timeout_seconds
+        self._limiter = limiter
 
     async def _call(self, name: str, arguments: dict) -> dict:
         """Invoke a remote tool under the watchdog and decode its payload."""
-        try:
-            result = await asyncio.wait_for(
-                self._session.call_tool(name, arguments), self.timeout_seconds
-            )
-        except (asyncio.TimeoutError, TimeoutError) as expiry:
-            raise TechnicalLossError(
-                f"peer did not answer {name!r} within "
-                f"{self.timeout_seconds} seconds"
-            ) from expiry
+        async def invoke():
+            try:
+                return await asyncio.wait_for(
+                    self._session.call_tool(name, arguments), self.timeout_seconds
+                )
+            except (asyncio.TimeoutError, TimeoutError) as expiry:
+                raise TechnicalLossError(
+                    f"peer did not answer {name!r} within "
+                    f"{self.timeout_seconds} seconds"
+                ) from expiry
+
+        result = await (invoke() if self._limiter is None else self._limiter.run(invoke))
         return json.loads(result.content[0].text)
 
     async def submit_commitment(self, role, turn, h_commit, signature) -> dict:

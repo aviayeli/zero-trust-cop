@@ -23,6 +23,7 @@ from mcp_server.identity import load_signing_key
 from mcp_server.keygen import ensure_keys
 from mcp_server.peer_client import PeerClient
 from mcp_server.peer_policy import build_peer_policy
+from mcp_server.rate_limiter import limiter_for
 from scripts.match_log import write_artifacts
 from scripts.match_loop import play_match
 from scripts.match_report import group_id, report_by_email
@@ -51,11 +52,13 @@ def build_clients(config, seed, config_root=None):
 
 
 @contextlib.asynccontextmanager
-async def connected_peers(bindings, timeout_seconds):
+async def connected_peers(bindings, timeout_seconds, config=None):
     """Open a live session to every peer, closing them all on the way out.
 
     ``timeout_seconds`` is the published ``watchdog_timeout_sec``: a peer that
     stops answering forfeits the match rather than hanging the tournament.
+    Each connection carries the agreed throttle when the peer is reachable
+    over a tunnel, and none on loopback (``mcp_server/rate_limiter.py``).
     """
     async with contextlib.AsyncExitStack() as stack:
         connections = []
@@ -65,7 +68,10 @@ async def connected_peers(bindings, timeout_seconds):
             )
             session = await stack.enter_async_context(ClientSession(read, write))
             await session.initialize()
-            connections.append(HttpPeer(session, timeout_seconds))
+            limiter = None if config is None else limiter_for(
+                config, bindings[role].public_url
+            )
+            connections.append(HttpPeer(session, timeout_seconds, limiter=limiter))
         yield connections
 
 
@@ -76,7 +82,9 @@ async def run_match(bindings, config, seed, config_root=None):
         TechnicalLossError: a peer stalled past ``watchdog_timeout_sec``.
     """
     clients = build_clients(config, seed, config_root)
-    async with connected_peers(bindings, config.watchdog_timeout_sec) as connections:
+    async with connected_peers(
+        bindings, config.watchdog_timeout_sec, config
+    ) as connections:
         return await play_match(
             clients, connections, populated_board(config), config
         )
