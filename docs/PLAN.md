@@ -28,7 +28,7 @@ invariants; where it and a phase document disagree, this file wins.
   networking). `engine/config.py` and `strategy/settings.py` are the only
   modules permitted to know those paths.
 - **Strict TDD**: every module below was specified precisely enough that a
-  failing test could be written before it existed. Current state: **883 tests
+  failing test could be written before it existed. Current state: **896 tests
   passing**.
 
 ## FR5 Turn-Resolution & Tie-Break Rule (locked)
@@ -106,7 +106,7 @@ zero-trust-cop/
 │       ├── board_agreement.py   # pre-match board/axis check (§2, audit T-1)
 │       ├── opponent_pool.py     # weighted per-episode opponent selection
 │       └── train_diverse.py     # the shipped opponent-diverse trainer
-└── tests/                       # 883 tests, mirroring the src/ layout
+└── tests/                       # 896 tests, mirroring the src/ layout
 ```
 
 ## 1. Engine Layer — Module Responsibilities & Interfaces
@@ -970,6 +970,26 @@ Decisions taken with the alternative understood, each stating what it costs.
       per role-pair rises from 14.96 to **16.10 points**: the cop's +11.7 is
       worth double the evader's -12.0. The evader remains the stronger agent
       in absolute terms, and it is still the one worth fewer points.
+    * **The learned edge DOES NOT TRANSFER to an unseen barrier layout, and
+      this was found by a multi-model debate rather than by any of the five
+      single-model sittings.** `barrier_mask` is part of the state key, so a
+      layout the table never trained on invalidates the learned states
+      directly. Measured over 8 layouts each:
+
+      | Layouts | trained table | EMPTY table | delta |
+      | :--- | :---: | :---: | :---: |
+      | seen in training (seeds 0-19) | 60.6% | 50.7% | **+9.9** |
+      | never trained on (seeds 1000+) | 55.1% | 57.4% | **-2.2** |
+
+      So the +11.3 point gap the shipped layout shows is a favourable draw,
+      not a transferable gain: the DISTANCE RULE generalises and the learned
+      increment on top of it does not. The first version of this measurement
+      was itself confounded — it probed seeds 0-19, which are inside the
+      64-layout training pool — and is recorded here because the corrected
+      result is the one that matters. Pinned by
+      `tests/scripts/test_layout_transfer.py`. The remedy is layout diversity
+      wider than the state key can memorise, or a function approximator;
+      neither is implemented.
     * **Generalisation was bought, not free.** The off-manifold rate ROSE to
       40.5%, both tables roughly doubled in size, and the shaping penalties had
       to be strengthened (step cost -0.1/-0.05, refused move -1.5) to teach
@@ -1076,7 +1096,7 @@ close it.
 
 Every module was built test-first per `CLAUDE.md`; `docs/TODO.md` records the
 sequencing and the evidence. The suite mirrors `src/` and currently stands at
-**883 passing tests**. The load-bearing cases, by layer:
+**896 passing tests**. The load-bearing cases, by layer:
 
 - **Engine** — the six FR5 scenarios (both unobstructed, bounds-blocked,
   barrier-blocked, same-cell capture, swap capture, adjacent near-miss), plus
