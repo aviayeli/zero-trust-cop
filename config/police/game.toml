@@ -13,7 +13,11 @@ invalid_move_penalty = -1.5
 step_cost = -0.1
 honesty_prior = 0.5
 qtable_path = "data/q_table_police.json"
-epsilon_decay_factor = 0.999
+# Tuned for the 10,000-episode diverse run: 0.1 * d^n reaches the
+# 0.01 floor at episode ~8994. The previous 0.999 was calibrated for
+# a 2,000-game series and floored at 2,302 here, leaving 77% of
+# training at minimum exploration against a POOL of opponents.
+epsilon_decay_factor = 0.999744
 epsilon_floor = 0.01
 num_games = 2000
 hint_max_words = 15

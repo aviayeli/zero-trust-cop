@@ -348,15 +348,17 @@ leaving the learner to discover it from a payoff 35 turns away. Under the
 legacy signal the series needed roughly 800 games to reach the rate the
 shaped run reaches inside its first block.
 
-The committed deliverables `data/q_table_police.json` (2,082 entries, all
-non-zero, max value 17.68 — short of `capture_cop` because a pool of
+The committed deliverables `data/q_table_police.json` (2,796 entries, all
+non-zero, max value 16.44 — short of `capture_cop` because a pool of
 opponents rarely leaves a state where capture is certain)
-and `data/q_table_thief.json` (2,418 entries, all non-zero) reproduce
+and `data/q_table_thief.json` (3,000 entries, all non-zero) reproduce
 **byte-for-byte** from the recorded seed; a different seed provably produces
 different tables. Both grew again under diverse-opponent training — the police
-table to 2,082 entries and the thief to 2,418 — because a learner facing a pool
+table to 2,796 entries and the thief to 3,000 — because a learner facing a pool
 of adversaries across 64 barrier layouts visits far more of the board than one
-facing a single mirror on a single board.
+facing a single mirror on a single board, and again when the exploration
+schedule was retuned to keep drawing random moves through 90% of the run
+instead of 23%.
 
 **Honest caveats, recorded rather than glossed:** the trainer places the
 configured 14 barriers as of Phase 9, so `barrier_mask` now varies — but from
@@ -462,8 +464,8 @@ never produces an artifact.)
 
 | Discipline | State |
 |---|---|
-| Test suite | **875 tests**, all passing (unit → live two-process HTTP) |
-| Line limit | every one of the **181** tracked Python files ≤ **150 lines** (max: 149) |
+| Test suite | **883 tests**, all passing (unit → live two-process HTTP) |
+| Line limit | every one of the **182** tracked Python files ≤ **150 lines** (max: 149) |
 | TDD | strict red→green: every implementation change preceded by a confirmed failing test |
 | Hyperparameters | zero tunables inlined in Python — all in `config/game.json` / per-peer `game.toml` |
 | Lifecycle | PRD → PLAN → TODO under `docs/`, per phase |
@@ -521,7 +523,7 @@ configured for pytest; standalone scripts take `PYTHONPATH=src`.
 
 ```bash
 .venv/bin/python -m pytest -q
-# expected: 875 passed
+# expected: 883 passed
 ```
 
 (Includes the live-transport tests: they spawn both peer processes on
@@ -530,10 +532,24 @@ configured for pytest; standalone scripts take `PYTHONPATH=src`.
 ### 2 — Train the agents offline (reproduces `data/q_table_*.json`)
 
 ```bash
-PYTHONPATH=src .venv/bin/python -m scripts.run_tournament --seed 20260801
-# seed=20260801  games=2000  captures=1994  survivals=6
-# cop_total=39910  thief_total=10030
+PYTHONPATH=src .venv/bin/python -m scripts.train_diverse --seed 20260818
+# seed=20260818  episodes=10000
+# faced_scripted=3916  faced_learning=4074  faced_random=2010
+# cop_entries=2796  thief_entries=3000
 ```
+
+This is the **opponent-diverse** trainer, and it is the one whose output the
+shipped `data/q_table_police.json` and `data/q_table_thief.json` actually are:
+10,000 episodes drawing each opponent from a pool (40% scripted, 40%
+co-evolving, 20% random) across 64 barrier layouts.
+
+> ⚠️ `scripts.run_tournament` is the SUPERSEDED self-play trainer. It still
+> works and its contract tests still run, but it writes to the same configured
+> `qtable_path`, so running it **replaces the shipped tables** with self-play
+> ones that measure far worse — the evader drops from 78% survival against a
+> heuristic pursuer to 2.2%. It is kept for the comparison in `PLAN.md` §10.10,
+> not as a reproduction step. `tests/test_readme_commands.py` now fails the
+> suite if this section ever names it again.
 
 Re-running with the same seed reproduces both tables byte-for-byte
 (`sha256sum data/q_table_*.json` before and after to confirm).
@@ -860,9 +876,9 @@ tests/                86 test modules mirroring the source layout
 ## Known limitations (stated, not hidden)
 
 - **The Q-tables cover ~9% of the representable state space.** Measured, not
-  estimated: the police table holds 988 distinct states and the thief 1,180,
+  estimated: the police table holds 1,122 distinct states and the thief 1,232,
   out of the 2,704 that `(relative_opponent, barrier_mask)` can express on a
-  7×7 board — **36.54%** and **43.64%** respectively. Only 92/988 and 100/1,180 of
+  7×7 board — **41.49%** and **45.56%** respectively. Only 196/1,122 and 191/1,232 of
   those states have all five actions valued, so most entries are a partial
   ranking rather than a full one. (Coverage has risen at every phase — 6.55% / 5.33% on the bare grid, ~16% once
   self-play became contested, and this once training drew opponents from a pool
@@ -871,13 +887,13 @@ tests/                86 test modules mirroring the source layout
   to fall through `best_action`'s tie order to `move_set[0]` (`N`) — with
   match-time ε = 0 and no exploration to escape it, an opponent that steered
   play off the trained manifold met a fixed-direction agent. Such states are
-  **40.5%** of decisions from random starts, so this was the dominant regime,
+  **37.2%** of decisions from random starts, so this was the dominant regime,
   not an edge case. The shipped cop runs `match_policy_mode =
   "manhattan_primary"`: the distance rule narrows each turn to the
   distance-optimal legal moves and the trained table ranks what is left, so
   both strategies stay live. Measured on the barriered board of §4.3, that
-  gives **100.0%** against a random thief, **29.8%** against a greedy evader
-  and **28.0%** against our own trained one.
+  gives **100.0%** against a random thief, **41.5%** against a greedy evader
+  and **36.8%** against our own trained one.
 
   The headline result is the one that **reversed**. Under self-play the learned
   tables were a liability against any opponent they had not trained against: an
@@ -885,11 +901,14 @@ tests/                86 test modules mirroring the source layout
   the shipped evader survived just 2.2% against a heuristic pursuer where an
   empty table survived 69.8%. Training against a POOL — 40% scripted, 40%
   co-evolving, 20% random, across 64 barrier layouts — inverted both: the cop
-  now scores 28.0% where an empty table scores 10.0%, and the evader survives
-  **90.0%** against that same heuristic pursuer. Two things are still not
-  flattering and are stated rather than omitted: against a *greedy* evader the
-  learned table adds nothing (29.8% against 30.2%, level inside the probe's
-  noise), and our evader is simply the stronger of our two agents. Full
+  now scores 36.8% where an empty table scores 22.0%, and the evader survives
+  **78.0%** against that same heuristic pursuer. Retuning the exploration
+  schedule then TRADED evader strength for cop strength — the evader fell from
+  90.0% while the cop rose from 29.8% to 41.5% against a greedy evader — a
+  trade taken on league arithmetic, since `capture_cop` pays double
+  `survival_thief`. Still not flattering and stated rather than omitted: our
+  evader remains the stronger of our two agents, and it is the one worth fewer
+  points. Full
   protocol, the four-policy table and the shipped-log provenance note are
   in `docs/PLAN.md` §10.10.
 

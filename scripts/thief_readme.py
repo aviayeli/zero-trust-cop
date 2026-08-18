@@ -83,13 +83,13 @@ anything. `STAY` is its own opposite (D4), so a thief that stays tells the
 truth that turn — documented, not patched.
 
 Evasion is framed on the **pursuer's relative bearing**, not absolute
-squares, so an escape generalises. The trained table holds 2418 entries across
-1180 states, topping out at **5.0000** — pinned almost exactly to
-`capture_thief` (5) rather than the survival payoff of 10, because a pool of
-adversaries means most reachable states still end in a capture against
-*someone*. The evasion strength is in the breadth of the table, not the height
-of its values: 90.0% survival against a heuristic pursuer it never trained
-against, where the self-play table managed 2.2%.
+squares, so an escape generalises. The trained table holds 3000 entries across
+1232 states, topping out at **5.7780** — above `capture_thief` (5) but far
+short of the survival payoff of 10, because a pool of adversaries means most
+reachable states still end in a capture against *someone*. The evasion strength
+is in the breadth of the table, not the height of its values: 78.0% survival
+against a heuristic pursuer it never trained against, where the self-play table
+managed 2.2%.
 
 ### Q-learning setup"""
 

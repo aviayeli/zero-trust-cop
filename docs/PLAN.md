@@ -28,7 +28,7 @@ invariants; where it and a phase document disagree, this file wins.
   networking). `engine/config.py` and `strategy/settings.py` are the only
   modules permitted to know those paths.
 - **Strict TDD**: every module below was specified precisely enough that a
-  failing test could be written before it existed. Current state: **875 tests
+  failing test could be written before it existed. Current state: **883 tests
   passing**.
 
 ## FR5 Turn-Resolution & Tie-Break Rule (locked)
@@ -66,6 +66,7 @@ zero-trust-cop/
 │   │   ├── config.py            # loads & validates config/game.json
 │   │   ├── actions.py           # Action enum/type + validity check
 │   │   ├── board.py             # grid bounds + barrier placement/lookup
+│   │   ├── barriers.py          # derives the layout from barrier_seed (§4.3)
 │   │   ├── player.py            # agent position state + intended-move computation
 │   │   ├── resolver.py          # FR5 algorithm: bounds/barrier resolution + capture
 │   │   ├── game_loop.py         # episode orchestration: init, step, termination, history
@@ -86,12 +87,14 @@ zero-trust-cop/
 │   │   ├── peer_client.py       # PeerClient: prepare() one signed submission
 │   │   ├── peer_policy.py       # builds a match-mode AgentPolicy for a peer
 │   │   ├── http_peer.py         # streamable-HTTP tool invocation
+│   │   ├── rate_limiter.py      # the agreed gatekeeper throttle + retry
 │   │   ├── transport.py         # [network] settings loader
 │   │   ├── tunnel.py            # public_url validation/normalisation
 │   │   └── repos.py             # repo + [email] settings loader
 │   ├── strategy/                # the AI brain (Phase 4)
 │   │   ├── qvalues.py           # tabular Q-learning + persistence
 │   │   ├── fallback.py          # greedy Manhattan tie-break for unlearned states
+│   │   ├── opponents.py         # scripted training opponents + `frozen`
 │   │   ├── pheromones.py        # decaying scent-trail belief field
 │   │   ├── belief.py            # stated-intent honesty tracker
 │   │   └── settings.py          # [strategy] settings loader
@@ -99,8 +102,11 @@ zero-trust-cop/
 │   ├── gui/                     # replay viewer, live heatmap, canvas, palette
 │   ├── reporting/               # Gmail transport, MIME report, send policy
 │   └── scripts/                 # match loop, artifacts, reporting, verifier,
-│                                #   tournaments, §10.10 off-manifold probe
-└── tests/                       # 875 tests, mirroring the src/ layout
+│       │                        #   tournaments, §10.10 off-manifold probe
+│       ├── board_agreement.py   # pre-match board/axis check (§2, audit T-1)
+│       ├── opponent_pool.py     # weighted per-episode opponent selection
+│       └── train_diverse.py     # the shipped opponent-diverse trainer
+└── tests/                       # 883 tests, mirroring the src/ layout
 ```
 
 ## 1. Engine Layer — Module Responsibilities & Interfaces
@@ -126,6 +132,11 @@ zero-trust-cop/
   `place_barrier(pos, occupied=())` (enforces the 14-barrier cap and the
   occupancy rule), `barrier_count`. Occupancy is supplied by the caller so the
   board stays decoupled from `player.py`.
+
+### `barriers.py`
+- **Owns**: deriving the barrier layout from `barrier_seed` and `max_barriers`,
+  and the connectivity invariant. Detail in §4.3.
+- **Exposes**: `barrier_layout(config)`, `populated_board(config)`.
 
 ### `player.py`
 - **Owns**: one agent's position state and the *pure* computation of an intended
@@ -880,13 +891,15 @@ Decisions taken with the alternative understood, each stating what it costs.
     manifold*. Probing the shipped cop table from 400 uniformly random,
     distinct start pairs (seed `20260817`, the barriered board of §4.3,
     epsilon = 0, the opponent cell revealed every turn) finds
-    **40.5% of decision states wholly unvisited** — every action reading
+    **37.2% of decision states wholly unvisited** — every action reading
     `initial_q_value`. The figure has moved with every regime and all of them
     are recorded: 58.2% on the bare grid, 66.3% once barriers were placed
     (more reachable states, same budget), 36.3% once self-play became
     contested, and 40.5% now that training draws from an opponent pool across
     varied layouts — a wider distribution to cover, over 10,000 episodes
-    instead of 2,000.
+    instead of 2,000, and 37.2% once the exploration schedule was retuned for
+    that longer run (the previous decay floored epsilon at episode 2,302,
+    leaving 77% of training at minimum exploration).
 
     Before this phase a wholly flat state fell through `best_action`'s
     move-set tie order to `move_set[0]` — a literal "always N", with match-time
@@ -911,10 +924,10 @@ Decisions taken with the alternative understood, each stating what it costs.
 
     | Cop policy | vs. random thief | vs. greedy evader | vs. trained thief |
     | :--- | :---: | :---: | :---: |
-    | `qtable-only` — no distance rule at all | 92.8% / 8.04 | 15.0% / 11.98 | 14.5% / 14.41 |
-    | `qtable-primary` — distance only on flat states | 99.5% / 7.61 | 20.0% / 12.20 | 24.5% / 15.33 |
-    | `manhattan-primary` — **shipped**, table breaks ties | 100.0% / 6.28 | 29.8% / 13.88 | 28.0% / 15.88 |
-    | `heuristic` — same rule, EMPTY table, ties by move-set order | 99.8% / 6.19 | 30.2% / 17.92 | 10.0% / 9.53 |
+    | `qtable-only` — no distance rule at all | 93.0% / 7.53 | 19.0% / 13.11 | 23.2% / 19.20 |
+    | `qtable-primary` — distance only on flat states | 99.2% / 7.22 | 20.2% / 13.00 | 26.8% / 20.16 |
+    | `manhattan-primary` — **shipped**, table breaks ties | 100.0% / 6.11 | 41.5% / 16.01 | 36.8% / 20.83 |
+    | `heuristic` — same rule, EMPTY table, ties by move-set order | 99.8% / 6.19 | 30.2% / 17.92 | 22.0% / 15.45 |
 
     Reproduce with `PYTHONPATH=src python -m scripts.benchmark_offmanifold`;
     the sample size, seed and opponent set are `config/benchmark.json`, not
@@ -931,16 +944,17 @@ Decisions taken with the alternative understood, each stating what it costs.
       its trained table against **69.8%** carrying an empty one. Under
       self-play the same measurement read **2.2%** against 69.8% — learning
       was a 30x liability. The cop shows the same reversal: against our own
-      trained evader the shipped policy scores 28.0% where an empty table
-      scores 10.0%, having previously LOST that comparison 53.5% to 92.0%.
+      trained evader the shipped policy scores 36.8% where an empty table
+      scores 22.0%, having previously LOST that comparison 53.5% to 92.0%.
       Opponent diversity was the whole of the fix.
-    * **The distance rule is still the larger effect, and against a greedy
-      evader the table adds nothing.** `manhattan-primary` and `heuristic`
-      differ only in how a tie is settled, and against the greedy evader they
-      are level (29.8% against 30.2%, inside the noise of a 400-start probe).
-      The learned values pay off against a *strong* opponent (28.0% against
-      10.0%) and are decoration against a simple one. A section reporting only
-      the second number would be true and misleading.
+    * **The learned table now pays off against EVERY opponent in the set, and
+      that is new.** Until the exploration schedule was retuned it was level
+      with an empty table against a greedy evader (29.8% against 30.2%) and
+      only helped against a strong one. Retuning `epsilon_decay_factor` for
+      the 10,000-episode run — it had been calibrated for a 2,000-game series
+      and floored at episode 2,302 — lifted the greedy column to **41.5%
+      against 30.2%**. The tie-break is no longer decoration against simple
+      opponents.
     * **Both roles now ship the same priority, and the split that made them
       differ is no longer needed.** Phase 11 had to separate training from
       match priority because a cop trained under `qtable_primary` against a
@@ -948,11 +962,14 @@ Decisions taken with the alternative understood, each stating what it costs.
       against a pool, distance-first is best in both phases for both peers.
       `match_policy_mode` is retained and still tested; it simply does not
       need to differ today.
-    * **The evader is the stronger of our two agents, and that is a league
-      asymmetry worth stating.** It survives 90.0% against a heuristic pursuer
-      and 72.0% against our own strongest cop. Our cop captures a greedy
-      evader 29.8% of the time. Against a competent opponent we are a better
-      thief than we are a police.
+    * **Retuning exploration TRADED evader strength for cop strength, and the
+      trade was taken on league arithmetic rather than on either number.** The
+      evader fell from 90.0% survival against a heuristic pursuer to **78.0%**
+      while the cop rose from 29.8% to 41.5% against a greedy evader. Because
+      `capture_cop` pays 20 and `survival_thief` pays 10, the expected return
+      per role-pair rises from 14.96 to **16.10 points**: the cop's +11.7 is
+      worth double the evader's -12.0. The evader remains the stronger agent
+      in absolute terms, and it is still the one worth fewer points.
     * **Generalisation was bought, not free.** The off-manifold rate ROSE to
       40.5%, both tables roughly doubled in size, and the shaping penalties had
       to be strengthened (step cost -0.1/-0.05, refused move -1.5) to teach
@@ -1059,7 +1076,7 @@ close it.
 
 Every module was built test-first per `CLAUDE.md`; `docs/TODO.md` records the
 sequencing and the evidence. The suite mirrors `src/` and currently stands at
-**875 passing tests**. The load-bearing cases, by layer:
+**883 passing tests**. The load-bearing cases, by layer:
 
 - **Engine** — the six FR5 scenarios (both unobstructed, bounds-blocked,
   barrier-blocked, same-cell capture, swap capture, adjacent near-miss), plus

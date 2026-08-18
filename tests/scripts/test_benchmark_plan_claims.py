@@ -82,19 +82,19 @@ def test_learning_now_beats_an_empty_table_against_a_strong_opponent(
     assert f"scores {empty:.1f}%" in plan
 
 
-def test_the_table_adds_nothing_against_a_GREEDY_evader_and_says_so(
-    benchmark_rows, plan
-):
-    """The unflattering half: against a simple opponent the table is decoration.
+def test_the_table_now_helps_against_a_GREEDY_evader_too(benchmark_rows, plan):
+    """This column was LEVEL until the exploration schedule was retuned.
 
-    Reported because a section quoting only the strong-opponent column would
-    be true and misleading.
+    Against a simple opponent the learned tie-break used to be decoration
+    (29.8% against an empty table's 30.2%). Retuning `epsilon_decay_factor`
+    for the 10,000-episode run lifted it clear. If it falls back to level,
+    §10.10's claim that the table pays off against every opponent is wrong.
     """
     shipped = rate(benchmark_rows, SHIPPED, "greedy")
     empty = rate(benchmark_rows, "heuristic", "greedy")
 
-    assert abs(shipped - empty) < 5.0, "the greedy column stopped being level"
-    assert f"({shipped:.1f}% against {empty:.1f}%" in plan
+    assert shipped > empty + 5.0, "the greedy column is level again"
+    assert f"**{shipped:.1f}%\n      against {empty:.1f}%**" in plan
 
 
 def test_the_self_play_era_figures_are_kept_as_the_comparison(plan):

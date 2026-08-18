@@ -87,3 +87,47 @@ def test_a_different_seed_produces_different_training(config, tmp_path):
     )
 
     assert first != second
+
+
+def test_scripted_opponents_are_built_once_not_per_episode(config, short, monkeypatch):
+    """Rebuilding an opponent every episode re-read its TOML from disk.
+
+    `scripted()` calls `load_strategy_settings`, so a 10,000-episode run opened
+    and parsed the same two files roughly 6,000 times. The pool is fixed for
+    the whole run; only its per-episode STATE is not.
+    """
+    import strategy.opponents as opponents
+
+    built = []
+    real = opponents.scripted
+    monkeypatch.setattr(
+        opponents, "scripted",
+        lambda cfg, role, root=None: built.append(role) or real(cfg, role, root),
+    )
+    monkeypatch.setattr(
+        "scripts.train_diverse.scripted", opponents.scripted, raising=False
+    )
+
+    train_diverse(config, seed=3, episodes=120, **short)
+
+    assert len(built) <= 4, f"scripted opponents rebuilt {len(built)} times"
+
+
+def test_a_reused_opponent_starts_each_episode_with_an_empty_scent_field(config):
+    """Caching must not leak state between episodes.
+
+    A policy's turn-0 state key falls back to `pheromones.strongest()`, so an
+    opponent carrying deposits from a previous episode would decide its first
+    move differently. Caching the object is an optimisation; carrying its
+    memory would be a behaviour change.
+    """
+    from scripts.train_diverse import fresh_opponent
+    from strategy.opponents import scripted
+
+    opponent = scripted(config, "thief")
+    opponent.pheromones.deposit((3, 3))
+    assert opponent.pheromones.strongest() is not None
+
+    reused = fresh_opponent(opponent, config)
+
+    assert reused.pheromones.strongest() is None

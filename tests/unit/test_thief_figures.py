@@ -80,5 +80,5 @@ def test_the_peak_matches_the_argument_the_block_makes(regenerator):
     _, _, peak = _shipped_table_facts()
 
     assert peak >= config_capture_thief(), "the peak fell BELOW capture_thief"
-    assert "pinned almost exactly to" in regenerator.STRATEGY_BLOCK
-    assert "90.0% survival" in regenerator.STRATEGY_BLOCK
+    assert "breadth of the table, not the height" in regenerator.STRATEGY_BLOCK
+    assert "78.0% survival" in regenerator.STRATEGY_BLOCK

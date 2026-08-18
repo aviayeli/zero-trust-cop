@@ -25,7 +25,7 @@ from engine.game_loop import GameEpisode
 from scripts.opponent_pool import load_training_settings, pick_bucket
 from scripts.run_tournament import build_policy
 from scripts.tournament_loop import play_episode
-from strategy.opponents import frozen, random_mover, scripted
+from strategy.opponents import build_pool, fresh_opponent, frozen
 from strategy.settings import load_strategy_settings
 
 _SHARED = "config/game.json"
@@ -41,12 +41,11 @@ def layout_seed_for(episode: int, settings) -> int:
     return episode % settings.layout_seeds
 
 
-def _opponent(bucket, learner, config, engine_role):
+def _opponent(bucket, learner, pool, config, engine_role):
     """The opposing policy for one episode, frozen unless it is the learner."""
     if bucket == "learning":
         return learner
-    builder = scripted if bucket == "scripted" else random_mover
-    return frozen(builder(config, engine_role))
+    return frozen(fresh_opponent(pool[(bucket, engine_role)], config))
 
 
 def train_diverse(config, seed, episodes, cop_path, thief_path, config_root=None):
@@ -60,6 +59,7 @@ def train_diverse(config, seed, episodes, cop_path, thief_path, config_root=None
     cop = build_policy("cop", config, _match(config_root, "cop"))
     thief = build_policy("thief", config, _match(config_root, "thief"))
     faced = {bucket: 0 for bucket in settings.opponent_mix}
+    pool = build_pool(config, config_root)
 
     for episode in range(episodes):
         board = replace(config, barrier_seed=layout_seed_for(episode, settings))
@@ -69,9 +69,9 @@ def train_diverse(config, seed, episodes, cop_path, thief_path, config_root=None
         # on even episodes and the roles swap on odd ones, so both tables meet
         # the full mix rather than one of them always facing the learner.
         if episode % 2:
-            learners = (cop, _opponent(bucket, thief, board, "thief"))
+            learners = (cop, _opponent(bucket, thief, pool, board, "thief"))
         else:
-            learners = (_opponent(bucket, cop, board, "cop"), thief)
+            learners = (_opponent(bucket, cop, pool, board, "cop"), thief)
         play_episode(GameEpisode(board), *learners, rng_cop, rng_thief)
         cop.qvalues.decay_epsilon()
         thief.qvalues.decay_epsilon()

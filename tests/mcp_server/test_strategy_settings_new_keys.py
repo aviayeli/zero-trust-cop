@@ -6,7 +6,7 @@ from strategy.settings import load_strategy_settings
 
 
 _EXPECTED = {
-    "epsilon_decay_factor": 0.999,
+    "epsilon_decay_factor": 0.999744,
     "epsilon_floor": 0.01,
     "num_games": 2000,
     "hint_max_words": 15,

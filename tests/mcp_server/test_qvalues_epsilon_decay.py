@@ -37,10 +37,23 @@ def test_decay_epsilon_multiplies_by_decay_factor(config, settings):
 
 
 def test_epsilon_never_falls_below_floor(config, settings):
-    """Repeated decay_epsilon() calls clamp at epsilon_floor."""
+    """Repeated decay_epsilon() calls clamp at epsilon_floor.
+
+    The iteration count is DERIVED from the configured schedule rather than
+    fixed: a hardcoded 2,500 silently stopped reaching the floor when
+    `epsilon_decay_factor` was retuned from 0.999 to 0.999744 for the
+    10,000-episode diverse run.
+    """
+    import math
+
     values = QValues(config, settings)
-    for _ in range(2500):
+    needed = math.ceil(
+        math.log(settings.epsilon_floor / settings.exploration_rate)
+        / math.log(settings.epsilon_decay_factor)
+    )
+    for _ in range(needed + 1):
         values.decay_epsilon()
+
     assert values.epsilon == settings.epsilon_floor
 
 

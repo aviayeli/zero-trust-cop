@@ -81,3 +81,31 @@ class frozen:
 
     def learn(self, state, action, reward, next_state, terminal) -> None:
         """Deliberately nothing: a fixed reference must stay fixed."""
+
+
+def fresh_opponent(policy, config):
+    """Clear one cached opponent's per-episode memory and return it.
+
+    Caching the OBJECT is an optimisation; carrying its memory would be a
+    behaviour change. A policy's turn-0 state key falls back to
+    ``pheromones.strongest()``, so deposits left by a previous episode would
+    change the first move it plays.
+    """
+    policy.pheromones = PheromoneField(config)
+    policy.belief = BeliefTracker(config, policy.settings)
+    return policy
+
+
+def build_pool(config, config_root=None) -> dict:
+    """Build every scripted opponent ONCE, keyed by (bucket, engine role).
+
+    ``scripted`` reads its peer's TOML, so rebuilding per episode parsed the
+    same two files thousands of times a run. The pool is fixed for the whole
+    run; only its per-episode state is not.
+    """
+    builders = {"scripted": scripted, "random": random_mover}
+    return {
+        (bucket, role): builder(config, role, config_root)
+        for bucket, builder in builders.items()
+        for role in ("cop", "thief")
+    }
