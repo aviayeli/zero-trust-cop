@@ -462,8 +462,8 @@ never produces an artifact.)
 
 | Discipline | State |
 |---|---|
-| Test suite | **850 tests**, all passing (unit → live two-process HTTP) |
-| Line limit | every one of the **174** tracked Python files ≤ **150 lines** (max: 149) |
+| Test suite | **856 tests**, all passing (unit → live two-process HTTP) |
+| Line limit | every one of the **175** tracked Python files ≤ **150 lines** (max: 149) |
 | TDD | strict red→green: every implementation change preceded by a confirmed failing test |
 | Hyperparameters | zero tunables inlined in Python — all in `config/game.json` / per-peer `game.toml` |
 | Lifecycle | PRD → PLAN → TODO under `docs/`, per phase |
@@ -521,7 +521,7 @@ configured for pytest; standalone scripts take `PYTHONPATH=src`.
 
 ```bash
 .venv/bin/python -m pytest -q
-# expected: 850 passed
+# expected: 856 passed
 ```
 
 (Includes the live-transport tests: they spawn both peer processes on
