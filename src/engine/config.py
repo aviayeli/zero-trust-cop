@@ -13,6 +13,8 @@ class GameConfig:
     thief_start: list
     move_set: list
     max_barriers: int
+    axis_origin_corner: str
+    axis_start_index: int
     barrier_seed: int | None
     max_moves: int
     survival_threshold: int
@@ -27,6 +29,35 @@ class GameConfig:
     survival_thief: int
     tie_score: int
     technical_loss: int
+
+
+# The convention this engine implements, in the contract's own vocabulary.
+# `actions.py` computes N as (-1, 0) and `board.py` indexes from 0; a peer on
+# any other convention plays a mirrored game that still looks plausible.
+SUPPORTED_AXIS_ORIGIN = "topleft"
+SUPPORTED_AXIS_START = 0
+
+
+def _validate_axis(board: dict) -> None:
+    """Refuse a coordinate convention this engine does not implement.
+
+    Raises:
+        ValueError: the contract names an origin or start index we would
+            silently disagree with rather than fail on.
+    """
+    if board["axis_origin_corner"] != SUPPORTED_AXIS_ORIGIN:
+        raise ValueError(
+            f"axis_origin_corner is {board['axis_origin_corner']!r}; this "
+            f"engine implements {SUPPORTED_AXIS_ORIGIN!r} only. Playing on a "
+            "different origin would mirror every move and produce a plausible "
+            "but wrong game rather than an error."
+        )
+    if board["axis_start_index"] != SUPPORTED_AXIS_START:
+        raise ValueError(
+            f"axis_start_index is {board['axis_start_index']!r}; this engine "
+            f"indexes from {SUPPORTED_AXIS_START}. Playing on a different "
+            "origin would mirror every coordinate rather than fail."
+        )
 
 
 def load_config(path: str) -> GameConfig:
@@ -45,12 +76,16 @@ def load_config(path: str) -> GameConfig:
     with open(path, "r") as f:
         data = json.load(f)
 
+    _validate_axis(data["board_and_agents"])
+
     return GameConfig(
         grid_size=data["board_and_agents"]["grid_size"],
         cop_start=data["board_and_agents"]["cop_start"],
         thief_start=data["board_and_agents"]["thief_start"],
         move_set=data["movement_and_barriers"]["move_set"],
         max_barriers=data["movement_and_barriers"]["max_barriers"],
+        axis_origin_corner=data["board_and_agents"]["axis_origin_corner"],
+        axis_start_index=data["board_and_agents"]["axis_start_index"],
         # OPTIONAL extension: absent means a bare board, which is what a
         # peer that never heard of it will play. Required would make the
         # agreed 1.2 schema unloadable and lose a match before turn 0.

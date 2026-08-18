@@ -19,6 +19,8 @@ def game_config():
         move_set=["N", "S", "E", "W", "STAY"],
         max_barriers=10,
         barrier_seed=None,
+        axis_origin_corner="topleft",
+        axis_start_index=0,
         max_moves=35,
         survival_threshold=30,
         response_timeout_sec=5,

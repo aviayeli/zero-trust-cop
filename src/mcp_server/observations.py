@@ -33,6 +33,10 @@ def build_observation(match_state, config, role: str) -> dict:
         "is_terminated": match_state.is_terminated,
         "grid_size": config.grid_size,
         "barrier_count": match_state.barrier_count,
+        # Stated so a peer can REFUSE a mirrored engine before turn 0 rather
+        # than play a plausible wrong game (scripts/board_agreement.py).
+        "axis_origin_corner": config.axis_origin_corner,
+        "axis_start_index": config.axis_start_index,
     }
 
 

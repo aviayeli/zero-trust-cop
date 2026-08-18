@@ -23,11 +23,12 @@ from scripts.board_agreement import BoardMismatchError, verify_board_agreement
 class _Peer:
     """A connection stub reporting a fixed barrier count."""
 
-    def __init__(self, barriers, own_role="cop"):
+    def __init__(self, barriers, own_role="cop", **extra):
         self.barriers = barriers
         self.own_role = own_role
         self.calls = 0
         self.asked = None
+        self.extra = extra
 
     def __init_subclass__(cls):  # pragma: no cover - documentation only
         raise TypeError("stub is final")
@@ -37,7 +38,10 @@ class _Peer:
         self.asked = role
         if role != self.own_role:
             return {"status": "error", "reason": "invalid_role"}
-        return {"role": role, "barrier_count": self.barriers, "grid_size": 7}
+        return dict(
+            {"role": role, "barrier_count": self.barriers, "grid_size": 7},
+            **self.extra,
+        )
 
 
 @pytest.fixture
@@ -87,3 +91,43 @@ def test_each_peer_is_asked_about_its_OWN_role():
     asyncio.run(verify_board_agreement(peers, 14))
 
     assert [peer.asked for peer in peers] == ["cop", "thief"]
+
+
+def test_a_peer_on_a_different_axis_origin_is_refused():
+    """A mirrored engine produces a plausible wrong game, not an error."""
+    peers = [
+        _Peer(14, axis_origin_corner="topleft"),
+        _Peer(14, "thief", axis_origin_corner="bottomleft"),
+    ]
+
+    with pytest.raises(BoardMismatchError, match="axis_origin_corner"):
+        asyncio.run(verify_board_agreement(peers, 14))
+
+
+def test_a_peer_on_a_different_start_index_is_refused():
+    peers = [_Peer(14, axis_start_index=0), _Peer(14, "thief", axis_start_index=1)]
+
+    with pytest.raises(BoardMismatchError, match="axis_start_index"):
+        asyncio.run(verify_board_agreement(peers, 14))
+
+
+def test_a_peer_that_does_not_REPORT_the_axis_is_allowed():
+    """Silence is not disagreement.
+
+    These fields are an extension to the observation payload. A peer built
+    before it existed reports no axis at all, and refusing it would repeat the
+    `barrier_seed` mistake: turning an optional addition into a match we
+    cannot play.
+    """
+    peers = [_Peer(14), _Peer(14, "thief")]
+
+    asyncio.run(verify_board_agreement(peers, 14))
+
+
+def test_matching_axis_fields_pass():
+    peers = [
+        _Peer(14, axis_origin_corner="topleft", axis_start_index=0),
+        _Peer(14, "thief", axis_origin_corner="topleft", axis_start_index=0),
+    ]
+
+    asyncio.run(verify_board_agreement(peers, 14))

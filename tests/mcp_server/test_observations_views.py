@@ -25,6 +25,9 @@ def test_build_observation_cop_own_view(make_match_state, make_config):
         "is_terminated": False,
         "grid_size": 7,
         "barrier_count": 3,
+        # Stated so a peer can refuse a mirrored engine before turn 0.
+        "axis_origin_corner": "topleft",
+        "axis_start_index": 0,
     }
 
 
@@ -47,6 +50,9 @@ def test_build_observation_thief_own_view(make_match_state, make_config):
         "is_terminated": False,
         "grid_size": 7,
         "barrier_count": 3,
+        # Stated so a peer can refuse a mirrored engine before turn 0.
+        "axis_origin_corner": "topleft",
+        "axis_start_index": 0,
     }
 
 
