@@ -10,7 +10,7 @@ This file is the top-level, cross-phase checklist. The per-phase TODOs
 `TODO_07.md`) retain the full assertion-by-assertion detail for their phases;
 items here are the milestone rollups, each carrying the evidence that closed it.
 
-**Gate status:** `pytest -q` → **760 passed**. Every `src/**/*.py` is ≤150 lines
+**Gate status:** `pytest -q` → **788 passed**. Every `src/**/*.py` is ≤150 lines
 (longest: `strategy/qvalues.py`, 146). `scripts.replay_match
 logs/aviayeli/log_aviayeli_g01.json` → `Verified OK`.
 
@@ -612,3 +612,91 @@ overstate the process that produced them.
       signed both protocol phases since 2026-07-25, contradicting §10.6.
 - [x] Both remotes verified **distinct** and tag-aligned by the script's own
       guards (cop `master` != thief `master`, each tag on its own head).
+
+## Phase 9 — Barrier activation (S-1 / S-2) — in progress
+
+`max_barriers: 14` has been configured since Phase 0 and populated never:
+every play path built a bare `Board`, so `place_barrier` had no caller outside
+its own tests. The measured cost is in `PLAN.md` §10.10 — **0.0% capture
+against a greedy Manhattan evader for all four policies**, because a bare 7x7
+grid under simultaneous moves gives a lone pursuer nothing to corner against.
+Architecture in `PLAN.md` §4.3.
+
+### 9.1 Deterministic layout generator — complete
+
+- [x] **Test first**: `tests/engine/test_barriers.py` — exactly `max_barriers`
+      cells; identical for one config and different across seeds; never on
+      `cop_start` or `thief_start`; every cell in bounds; `barrier_seed: null`
+      yields an empty layout; and the free space is connected with both starts
+      inside it.
+- [x] Confirm the tests **fail** (module does not exist).
+- [x] **Implement** `src/engine/barriers.py` — `barrier_layout(config)`,
+      resampling under a deterministic counter until connectivity holds.
+- [x] `barrier_seed` added to `movement_and_barriers` in all three
+      `game.json` copies and to `GameConfig`; no seed or count in Python.
+
+### 9.2 Wiring into the play and training paths — complete
+
+- [x] **Test first**: `GameEpisode.reset()` places the configured layout;
+      `reset()` is idempotent; a bare-seed config still yields `barrier_count`
+      of 0.
+- [x] `GameEpisode.reset()` populates its board from `barrier_layout`, which
+      makes the trainer, the server and the probe agree without any of them
+      knowing how a layout is built.
+- [x] `run_local_mcp_match.py`'s client-side `Board` populated from the same
+      function, so the policy's `barrier_mask` matches the engine that resolves
+      it — they were separate `Board` objects that only agreed while both were
+      empty.
+- [x] `offmanifold_probe.py` passes the episode's real barrier set to
+      `state_key` instead of the hardcoded `set()`.
+
+### 9.3 Replay compatibility for pre-Phase-9 evidence — complete
+
+- [x] **Test first**: a log carrying `barriers` replays against that layout; a
+      log without the key replays bare; the shipped flagship log still verifies.
+- [x] `build_log` records the layout; `check_replay` reconstructs from it and
+      falls back to a bare board when the key is absent.
+- [x] `scripts.replay_match logs/aviayeli/log_aviayeli_g01.json` →
+      `Verified OK`, with the artifact unmodified (`PLAN.md` §10.10,
+      *Provenance of the shipped evidence*).
+
+### 9.4 Retraining and re-measurement — complete
+
+- [x] Both tables retrained on the barriered board (`--seed 20260801`,
+      2000 games): 1997 captures, a 99.85% series rate.
+- [x] State-space coverage measurably enriched — the point of the phase:
+      thief 144 -> 230 states (391 -> 556 entries), cop 177 -> 233 states.
+      The cop's ENTRY count fell (508 -> 369) while its state count rose:
+      walls prune unreachable relative-offset/mask combinations faster than
+      they add new ones.
+- [x] `scripts.benchmark_offmanifold` re-run; `PLAN.md` §10.10's matrix and
+      every derived figure rewritten from that run.
+- [x] **Two published findings REVERSED and rewritten rather than quietly
+      dropped:** the greedy evader went 0.0% -> 47.2%, and the learned table
+      turned from a 13.5-point NET NEGATIVE tie-breaker into a +4.0 (trained)
+      / +17.0 (greedy) NET POSITIVE.
+- [x] The claim tests were rewritten to pin the new direction, including one
+      that reconstructs the bare board to prove the barriers are the cause.
+- [x] Live two-process match on the barriered board: capture on turn 4,
+      `peers_agreed=True` — the client board and both engines agree.
+- [x] `pytest -q` → **782 passed**; `scripts.replay_match` → `Verified OK`
+      on the unmodified flagship log.
+
+## Phase 10 — Protocol-surface hardening (T-1) — complete
+
+- [x] **Test first**: `tests/mcp_server/test_crypto_legacy_gate.py` — a
+      legacy-sealed digest is refused by default and accepted only under
+      `allow_legacy=True`; the positional form verifies either way; the flag
+      cannot be passed positionally; a wrong digest still fails with the gate
+      open; and `CommitmentBook.reveal` — the live protocol path — refuses a
+      legacy-sealed commitment outright.
+- [x] Confirm the tests **fail** (five of six; the sixth passed only because
+      the keyword did not exist yet).
+- [x] **Implement** the keyword-only `allow_legacy` gate in
+      `mcp_server/crypto.py`, defaulting to `False`.
+- [x] `scripts/log_checks.py` and `scripts/render_replay.py` — the two readers
+      of sealed history — opt in explicitly. No protocol-path caller does.
+- [x] The two pre-existing legacy tests rewritten to pin BOTH directions
+      rather than only that legacy still works.
+- [x] `scripts.replay_match logs/aviayeli/log_aviayeli_g01.json` →
+      `Verified OK`; the flagship artifact is unmodified.

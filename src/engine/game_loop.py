@@ -9,7 +9,7 @@ only manages episode-level state, history, and termination.
 from dataclasses import dataclass
 
 from engine.actions import Action, parse_action
-from engine.board import Board
+from engine.barriers import populated_board
 from engine.config import GameConfig
 from engine.player import PlayerState
 from engine.resolver import TurnResult, resolve_turn
@@ -44,7 +44,7 @@ class GameEpisode:
 
     def reset(self):
         """Reset the episode to its initial state (may be called to restart)."""
-        self.board = Board(self.config)
+        self.board = populated_board(self.config)
         self.cop_state = PlayerState(tuple(self.config.cop_start), "cop")
         self.thief_state = PlayerState(tuple(self.config.thief_start), "thief")
         self.turn_count = 0

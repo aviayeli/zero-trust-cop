@@ -12,6 +12,8 @@ import time
 from dataclasses import dataclass
 
 from engine.game_loop import GameEpisode
+
+from scripts.log_checks import replay_episode
 from mcp_server.crypto import verify
 from mcp_server.directions import decode
 from mcp_server.identity import verify_signature
@@ -73,7 +75,9 @@ def turn_checks(turn, public_keys) -> dict:
         checks[role] = {
             "commitment": verify(
                 entry["state"], entry["move"], entry["intent"],
-                entry["nonce"], entry["h_commit"],
+                # Reads sealed history, like the verifier it mirrors: the
+                # badge must not contradict `scripts.replay_match`.
+                entry["nonce"], entry["h_commit"], allow_legacy=True,
             ),
             "signature": bool(signed),
         }
@@ -87,7 +91,7 @@ def _barrier_cells(config, board) -> frozenset:
 
 def replay_frames(log, config, public_keys):
     """Yield one Frame per logged turn by stepping a fresh episode."""
-    episode = GameEpisode(config)
+    episode = replay_episode(log, config)
     field = PheromoneField(config)
     barriers = _barrier_cells(config, episode.board)
 

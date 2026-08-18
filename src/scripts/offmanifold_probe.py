@@ -12,18 +12,26 @@ here: the probe must measure the shipped rule, not a copy of it.
 import random
 from dataclasses import replace
 
+from engine.barriers import barrier_layout
 from engine.game_loop import GameEpisode
 from strategy.fallback import tiebreak_action
 from strategy.qvalues import QValues
 
 
 def start_pairs(config, count: int, seed: int) -> list:
-    """Draw `count` distinct on-board (cop, thief) start cells from `seed`."""
+    """Draw `count` distinct FREE (cop, thief) start cells from `seed`.
+
+    Barrier cells are excluded: an agent placed inside a wall is not a start
+    the engine could ever produce, and every move out of it would resolve to
+    STAY (PLAN.md §4.3).
+    """
     rng = random.Random(seed)
+    blocked = barrier_layout(config)
     cells = [
         (row, col)
         for row in range(config.grid_size)
         for col in range(config.grid_size)
+        if (row, col) not in blocked
     ]
     pairs = []
     while len(pairs) < count:
@@ -51,7 +59,8 @@ def _evader_move(thief, episode, config, rng) -> str:
     if thief is None:
         return rng.choice(config.move_set)
     state = thief.state_key(
-        episode.thief_state.position, episode.cop_state.position, set()
+        episode.thief_state.position, episode.cop_state.position,
+        barrier_layout(config),
     )
     return thief.best_action(state)
 
@@ -60,6 +69,7 @@ def play(config, cop, thief, cop_start, thief_start, seed) -> tuple:
     """Play one greedy episode; return (captured, turns, decisions, flat)."""
     episode = GameEpisode(config)
     episode.reset()
+    blocked = barrier_layout(config)
     episode.cop_state.position = cop_start
     episode.thief_state.position = thief_start
     rng = random.Random(seed)
@@ -67,7 +77,7 @@ def play(config, cop, thief, cop_start, thief_start, seed) -> tuple:
     result = None
     while not episode.is_terminated:
         state = cop.state_key(
-            episode.cop_state.position, episode.thief_state.position, set()
+            episode.cop_state.position, episode.thief_state.position, blocked
         )
         decisions += 1
         if tiebreak_action(state, config.move_set, "cop", cop.q_value) is not None:

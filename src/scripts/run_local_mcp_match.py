@@ -16,7 +16,7 @@ import anyio
 from mcp import ClientSession
 from mcp.client.streamable_http import streamable_http_client
 
-from engine.board import Board
+from engine.barriers import populated_board
 from engine.config import load_config
 from mcp_server.http_peer import HttpPeer
 from mcp_server.identity import load_signing_key
@@ -77,7 +77,9 @@ async def run_match(bindings, config, seed, config_root=None):
     """
     clients = build_clients(config, seed, config_root)
     async with connected_peers(bindings, config.watchdog_timeout_sec) as connections:
-        return await play_match(clients, connections, Board(config), config)
+        return await play_match(
+            clients, connections, populated_board(config), config
+        )
 
 
 def _report(seed, history):

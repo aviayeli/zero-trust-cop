@@ -69,14 +69,36 @@ def commit(state: str, move: str, intent: str) -> tuple[str, str]:
     return hashlib.sha256(payload).hexdigest(), nonce
 
 
-def verify(state: str, move: str, intent: str, nonce: str, h_commit: str) -> bool:
+def verify(
+    state: str,
+    move: str,
+    intent: str,
+    nonce: str,
+    h_commit: str,
+    *,
+    allow_legacy: bool = False,
+) -> bool:
     """True if the revealed values reproduce h_commit.
 
     Compares with secrets.compare_digest rather than ==, which would leak
     through timing how many leading characters matched and hand an opponent a
     search gradient toward a colliding reveal.
+
+    ``allow_legacy`` additionally accepts the superseded sorted-key JSON form
+    and DEFAULTS OFF. Nothing has emitted that form since the 5.3 alignment,
+    so on the live wire accepting it only widens what a peer may commit
+    under: two encodings of the same fields, one of which this project no
+    longer speaks. Its single legitimate reader is the verification of
+    artifacts sealed before the alignment, which must not become
+    unverifiable -- so the fallback is GATED rather than deleted.
+
+    The flag is keyword-only so that a sixth positional argument, at a call
+    site written years from now, cannot silently re-open the wire.
     """
-    for build in (positional_payload, _legacy_payload):
+    builders = [positional_payload]
+    if allow_legacy:
+        builders.append(_legacy_payload)
+    for build in builders:
         expected = hashlib.sha256(build(state, move, intent, nonce)).hexdigest()
         if compare_digest(expected, h_commit):
             return True

@@ -7,7 +7,7 @@ own suite could never catch the mismatch -- both peers share one
 implementation. Only an opposing team implementing 5.3 literally would have
 found it, at which point every cross-team reveal fails.
 
-verify() keeps a legacy fallback so artifacts sealed under the JSON form
+verify() keeps a GATED legacy fallback so artifacts sealed under the JSON form
 still verify; commit() only ever emits the canonical positional form.
 """
 
@@ -57,13 +57,18 @@ def test_changing_any_bound_field_breaks_the_digest(field, value):
                       fields["nonce"], digest)
 
 
-def test_a_legacy_json_sealed_digest_still_verifies():
-    """Artifacts sealed before 5.3 alignment must not become unverifiable."""
+def test_a_legacy_json_sealed_digest_verifies_only_behind_the_gate():
+    """Artifacts sealed before 5.3 must stay verifiable -- but on request only.
+
+    Accepting the superseded encoding unconditionally let a live peer commit
+    under a form this project no longer emits (audit T-1).
+    """
     legacy = hashlib.sha256(canonical_json(
         {"state": "S1", "move": "MOVE:W", "intent": "truth", "nonce": "ab"}
     )).hexdigest()
 
-    assert verify("S1", "MOVE:W", "truth", "ab", legacy)
+    assert not verify("S1", "MOVE:W", "truth", "ab", legacy)
+    assert verify("S1", "MOVE:W", "truth", "ab", legacy, allow_legacy=True)
 
 
 def test_a_wrong_digest_fails_under_both_forms():

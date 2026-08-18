@@ -49,13 +49,13 @@ def test_a_live_match_is_never_reported_forfeited(forfeit_app):
 
 from random import Random
 
-from engine.board import Board
+from engine.barriers import populated_board
 from mcp_server.peer_client import PeerClient
 
 
 def _stall(app, clock, keys):
     """Commit as police, then let the reveal deadline pass."""
-    board = Board(app.config)
+    board = populated_board(app.config)
     client = PeerClient("police", app.policy, keys["police"], Random(1))
     submission = client.prepare(0, (0, 0), (3, 3), board)
     asyncio.run(app.submit_commitment(

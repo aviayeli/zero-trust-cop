@@ -81,8 +81,8 @@ anything. `STAY` is its own opposite (D4), so a thief that stays tells the
 truth that turn — documented, not patched.
 
 Evasion is framed on the **pursuer's relative bearing**, not absolute
-squares, so an escape generalises. The trained table holds 391 entries across
-144 states, topping out at **4.9999** — converging on `capture_thief` (5)
+squares, so an escape generalises. The trained table holds 556 entries across
+230 states, topping out at **4.9999** — converging on `capture_thief` (5)
 rather than the survival payoff of 10, which is the table's own record that
 this thief is being caught.
 

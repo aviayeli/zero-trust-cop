@@ -64,11 +64,12 @@ def test_digest_matches_independently_computed_positional_concatenation():
     assert h_commit == expected
 
 
-def test_a_legacy_json_sealed_digest_is_still_accepted():
-    """Backwards compatibility: artifacts sealed before 5.3 must still verify."""
+def test_a_legacy_json_sealed_digest_is_accepted_only_when_allowed():
+    """Backwards compatibility, but opt-in: the wire speaks 5.3 only (T-1)."""
     nonce = "abc123"
     legacy = hashlib.sha256(_canonical(STATE, MOVE, INTENT, nonce)).hexdigest()
-    assert verify(STATE, MOVE, INTENT, nonce, legacy) is True
+    assert verify(STATE, MOVE, INTENT, nonce, legacy) is False
+    assert verify(STATE, MOVE, INTENT, nonce, legacy, allow_legacy=True) is True
 
 
 # --- verify: honest reveal --------------------------------------------------

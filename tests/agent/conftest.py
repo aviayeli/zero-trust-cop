@@ -18,6 +18,7 @@ def game_config():
         thief_start=[6, 6],
         move_set=["N", "S", "E", "W", "STAY"],
         max_barriers=10,
+        barrier_seed=None,
         max_moves=35,
         survival_threshold=30,
         response_timeout_sec=5,

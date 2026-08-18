@@ -11,7 +11,7 @@ from random import Random
 
 import pytest
 
-from engine.board import Board
+from engine.barriers import populated_board
 from mcp_server.peer_client import PeerClient
 from mcp_server.server import create_app
 from scripts.match_loop import (
@@ -39,7 +39,7 @@ def peers(secure_config_root, peer_keys):
 def test_every_commitment_precedes_every_reveal(peers):
     """Ordering is the anti-front-running property, so assert the ORDER."""
     apps, clients = peers
-    board = Board(apps["police"].config)
+    board = populated_board(apps["police"].config)
     calls = []
 
     class _Recorder:
@@ -67,7 +67,7 @@ def test_every_commitment_precedes_every_reveal(peers):
 
 def test_a_full_match_runs_to_termination_on_both_peers(peers):
     apps, clients = peers
-    board = Board(apps["police"].config)
+    board = populated_board(apps["police"].config)
     connections = [apps["police"], apps["thief"]]
 
     history = asyncio.run(play_match(clients, connections, board, apps["police"].config))
@@ -80,7 +80,7 @@ def test_a_full_match_runs_to_termination_on_both_peers(peers):
 
 def test_both_engines_agree_on_every_turn_of_a_real_match(peers):
     apps, clients = peers
-    board = Board(apps["police"].config)
+    board = populated_board(apps["police"].config)
 
     history = asyncio.run(
         play_match(clients, [apps["police"], apps["thief"]], board, apps["police"].config)
@@ -93,7 +93,7 @@ def test_both_engines_agree_on_every_turn_of_a_real_match(peers):
 def test_a_desynchronised_peer_is_DETECTED_not_absorbed(peers):
     """Mirrored local truth is only worth anything if divergence is caught."""
     apps, clients = peers
-    board = Board(apps["police"].config)
+    board = populated_board(apps["police"].config)
 
     async def desync_then_play():
         # Advance the thief's engine alone, behind the protocol's back.
@@ -115,7 +115,7 @@ def test_play_match_raises_when_two_peers_genuinely_disagree(peers):
     resolves normally but reports a different board.
     """
     apps, clients = peers
-    board = Board(apps["police"].config)
+    board = populated_board(apps["police"].config)
 
     class _LiesAboutPosition:
         def __init__(self, inner):

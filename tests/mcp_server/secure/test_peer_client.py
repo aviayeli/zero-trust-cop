@@ -10,7 +10,7 @@ from random import Random
 
 import pytest
 
-from engine.board import Board
+from engine.barriers import populated_board
 from mcp_server.crypto import verify
 from mcp_server.identity import verify_signature
 from mcp_server.peer_client import PeerClient, state_token
@@ -20,7 +20,7 @@ from mcp_server.peer_policy import build_peer_policy
 @pytest.fixture
 def board(app):
     """A real Board: state_key scans it for barriers."""
-    return Board(app.config)
+    return populated_board(app.config)
 
 
 @pytest.fixture

@@ -19,7 +19,7 @@ import pytest
 from mcp import ClientSession
 from mcp.client.streamable_http import streamable_http_client
 
-from engine.board import Board
+from engine.barriers import populated_board
 from engine.config import load_config
 from mcp_server.http_peer import HttpPeer
 from mcp_server.identity import load_signing_key
@@ -101,7 +101,7 @@ def test_a_tampered_reveal_is_refused_over_the_wire(isolated_root, match_config)
             async with ClientSession(read, write) as session:
                 await session.initialize()
                 peer = HttpPeer(session, match_config.watchdog_timeout_sec)
-                board = Board(match_config)
+                board = populated_board(match_config)
                 submissions = {
                     role: PeerClient(
                         role,

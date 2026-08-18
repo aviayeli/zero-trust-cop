@@ -330,6 +330,17 @@ exact and is what the tests pin:
    or `max_moves_reached` from the episode's own history before it will consider
    `technical_loss`, so a late stall check cannot relabel a match that actually
    finished.
+7. **One wire encoding, and the superseded one is opt-in.** `crypto.verify`
+   accepted BOTH the Rulebook-5.3 positional concatenation and a superseded
+   sorted-key JSON form, unconditionally. Nothing has emitted the JSON form
+   since the 5.3 alignment, so on the live wire that was only attack surface:
+   two encodings of the same fields, one of which this project no longer
+   speaks. The fallback is now behind a **keyword-only** `allow_legacy`
+   defaulting to `False`. Its one legitimate reader is verification of
+   artifacts sealed before the alignment, so `scripts/log_checks.py` and
+   `scripts/render_replay.py` pass it explicitly and nothing on the protocol
+   path does. Keyword-only is the point: a sixth positional argument at some
+   future call site cannot silently re-open the wire.
 
 ### Rejection and disqualification codes
 
@@ -573,6 +584,45 @@ Manhattan-distance target-routing heuristic. Manhattan distance appears as the
 so the specification is not read as promising machinery that the implementation
 does not contain.
 
+### 4.3 Barrier Initialisation (`engine/barriers.py`)
+
+`max_barriers: 14` was configured from Phase 0 but never populated: every play
+path built a bare `Board`, so `place_barrier` had no caller outside its own
+tests and the state key's `barrier_mask` only ever encoded board edges. §10.10
+records the consequence — on a bare 7x7 grid under simultaneous moves a single
+pursuer cannot corner a perfectly evading thief, measured at **0.0%** capture
+for every policy. Barriers are what create the cul-de-sacs that make cornering
+possible, so activating them is a strategy change, not a cosmetic one.
+
+**The layout is derived, never stored.** `barrier_layout(config)` returns a
+`frozenset` of cells computed from `barrier_seed` and `max_barriers` alone.
+Both peers load the same shared `game.json`, so both derive the identical
+board without exchanging it — the layout needs no wire message and cannot
+drift between the two mirrored engines (§2). A layout that had to be
+transmitted would be one more thing a hostile peer could lie about.
+
+**Two invariants, both enforced at generation:**
+
+* **Start cells are never barriered.** `cop_start` and `thief_start` are
+  excluded before sampling, so no agent begins inside a wall.
+* **The free space stays connected**, and both starts are in it. A random
+  scatter of 14 cells over 47 can wall a region off entirely, which would make
+  capture arbitrary rather than skilful. The generator resamples under a
+  deterministic counter until connectivity holds, so the retry costs
+  reproducibility nothing.
+
+**`barrier_seed: null` means a bare board**, which is what makes this change
+backwards compatible. One key controls both activation and layout; there is no
+separate boolean to fall out of step with it.
+
+**Replay compatibility.** The flagship log under `logs/aviayeli/` was played
+before this phase, on a bare board. `build_log` now records the layout under
+`barriers`, and `check_replay` reconstructs the board from that field —
+falling back to a bare board when the key is absent, which is exactly the
+shipped log's case. `scripts.replay_match` therefore still returns
+`Verified OK` on signed evidence recorded under the old regime, without
+re-sealing an artifact to match new code (§10.10, *Provenance*).
+
 ## 5. Step-0 Declaration & Hardware Scan (`mcp_server/declaration.py`)
 
 At turn 0 each peer publishes a computational-fairness declaration so neither
@@ -777,17 +827,22 @@ each peer: tools.get_observation(role)              [WAITING_FOR_OPPONENT]
 
 ## 10. Known Limitations & Specification Deltas
 
-Recorded rather than hidden; each is a deliberate, documented position:
+Every limitation below is measured, tested, and reproducible. Items 4 and 10
+record deliberate architectural trades; item 7 is the only untested dependency.
 
-1. **The Step-0 declaration is unsigned and unenforced** (§5). It records a
-   claim, not a proof. Covering it with the existing Ed25519 signature is the
-   natural hardening.
-2. **Commit payload has no field delimiters** (§3), because Rulebook 5.3
+Item numbers are stable identifiers and are referenced from source, tests and
+the README as `§10.N`; the two groupings below reorder nothing.
+
+### Deliberate Architectural Trade-offs
+
+Decisions taken with the alternative understood, each stating what it costs.
+
+-   **§10.2 — Commit payload has no field delimiters** (§3), because Rulebook 5.3
    specifies positional concatenation. Interop-correct, cryptographically
    weaker than a delimited encoding.
-3. **Scent decay is geometric, the reference simulator's is subtractive**
+-   **§10.3 — Scent decay is geometric, the reference simulator's is subtractive**
    (§4.1). Traces fade but do not expire within a 35-move match.
-4. **The scent trail is an offline and observability substrate, not the live
+-   **§10.4 — The scent trail is an offline and observability substrate, not the live
    belief input** (§4.1, §4.2). Live P2P play uses direct coordination over
    FastMCP: the commit-reveal protocol delivers a signed, mutually verified
    opponent coordinate every turn, so `hybrid_opponent_cell` never reaches its
@@ -807,15 +862,9 @@ Recorded rather than hidden; each is a deliberate, documented position:
    49-cell distribution would explode the state space beyond what 2000 games
    can visit. The cop therefore reasons about one most-likely cell and cannot
    express uncertainty between two equally-plausible hiding places.
-5. **Artifact field layout is this project's own design** (§7.1), pending
-   reconciliation with Appendix F.
-6. **Peer traffic is authenticated but not encrypted** (§3). Signatures prevent
+-   **§10.6 — Peer traffic is authenticated but not encrypted** (§3). Signatures prevent
    forgery and replay; they do not provide confidentiality on the wire.
-7. **League play against the opposing group has not been run.** The system is
-   validated by two *local* peers over a real streamable-HTTP transport with
-   commit-reveal and signatures fully in force, which removes the external
-   dependency but does not substitute for a cross-group match.
-8. **A clean checkout cannot both verify the shipped log and play live**
+-   **§10.8 — A clean checkout cannot both verify the shipped log and play live**
    (§3, `mcp_server/keygen.py`). The tracked `.pub` files are the keys the
    flagship log was signed under; `signing_key.pem` is gitignored. On an
    untouched clone `ensure_keys` therefore refuses to republish public halves
@@ -825,23 +874,17 @@ Recorded rather than hidden; each is a deliberate, documented position:
    until the operator restores the real `.pem` or deletes the shipped `.pub`
    files. Verifiability of shipped evidence is treated as outranking live play
    on a clone; the refusal is announced on stdout rather than inferred.
-9. **A stalled peer ends the match, it does not end the process** (§3). Every
-   wire call is fenced by the published `watchdog_timeout_sec` and raises
-   `TechnicalLossError` on expiry (`mcp_server/http_peer.py`). What is *not*
-   implemented is an automatic award of the technical win to the surviving
-   peer: the error is raised to the caller, which decides. The forfeit path
-   that the server already runs on its own commitment deadlines (§3) is
-   unaffected.
-
-10. **Off-manifold generalisation and heuristic baselines** (§4.2,
-    `strategy/fallback.py`). Self-play converges to a 99.7% series capture
+-   **§10.10 — Off-manifold generalisation and heuristic baselines** (§4.2,
+    `strategy/fallback.py`). Self-play converges to a 99.85% series capture
     rate, but that is convergence *against one thief on one trajectory
     manifold*. Probing the shipped cop table from 400 uniformly random,
-    distinct start pairs (seed `20260817`, bare 7x7 grid, epsilon = 0, the
-    opponent cell revealed every turn) finds **58.2% of decision states wholly
-    unvisited** — every action reading `initial_q_value`. The audit that
-    prompted this measurement reports 58.9% under its own protocol; the two
-    agree.
+    distinct start pairs (seed `20260817`, the barriered board of §4.3,
+    epsilon = 0, the opponent cell revealed every turn) finds
+    **66.3% of decision states wholly unvisited** — every action reading
+    `initial_q_value`. Activating the barriers RAISED that figure from the
+    58.2% measured on the bare grid, and the direction is the honest one to
+    report: a board with walls has more reachable states, so the same 2000
+    self-play games cover proportionally less of it.
 
     Before this phase a wholly flat state fell through `best_action`'s
     move-set tie order to `move_set[0]` — a literal "always N", with match-time
@@ -861,14 +904,15 @@ Recorded rather than hidden; each is a deliberate, documented position:
       distance-optimal set, and the table ranks what is left. A learned value
       can never escape that set, however large. The **cop** ships this.
 
-    Cop capture rate / mean turns-to-capture over the 400-start probe:
+    Cop capture rate / mean turns-to-capture over the 400-start probe, on
+    the barriered board (§4.3):
 
-    | Cop policy | vs. random thief | vs. trained thief |
-    | :--- | :---: | :---: |
-    | `qtable-only` — no distance rule at all | 71.0% / 11.47 | 42.0% / 4.65 |
-    | `qtable-primary` — distance only on flat states | 96.2% / 10.03 | 69.2% / 9.83 |
-    | `manhattan-primary` — **shipped**, table breaks ties | 100.0% / 6.08 | 84.8% / 9.74 |
-    | `heuristic` — same rule, EMPTY table, ties by move-set order | 100.0% / 6.10 | 98.2% / 11.00 |
+    | Cop policy | vs. random thief | vs. greedy evader | vs. trained thief |
+    | :--- | :---: | :---: | :---: |
+    | `qtable-only` — no distance rule at all | 68.0% / 11.55 | 2.8% / 5.27 | 36.0% / 3.28 |
+    | `qtable-primary` — distance only on flat states | 95.0% / 9.52 | 13.2% / 11.89 | 63.2% / 8.66 |
+    | `manhattan-primary` — **shipped**, table breaks ties | 100.0% / 6.24 | 47.2% / 16.97 | 90.5% / 7.73 |
+    | `heuristic` — same rule, EMPTY table, ties by move-set order | 99.8% / 6.19 | 30.2% / 17.92 | 86.5% / 7.72 |
 
     Reproduce with `PYTHONPATH=src python -m scripts.benchmark_offmanifold`;
     the sample size, seed and opponent set are `config/benchmark.json`, not
@@ -879,28 +923,43 @@ Recorded rather than hidden; each is a deliberate, documented position:
 
     Four readings, none of them flattering by omission:
 
-    * **The priority swap is the single largest gain in the project**: +15.5
-      points against the trained thief (69.2 -> 84.8) and +3.8 against the
-      random one (96.2 -> 100.0), for an inversion that adds no state and no
-      training. Distance was always the better first question.
-    * **The learned table is a NET NEGATIVE as a tie-breaker, and the last row
-      is what proves it.** `manhattan-primary` and `heuristic` run the
-      identical distance rule over the identical legal moves; they differ only
-      in how a tie is settled. (Both deltas here are computed from the raw
-      rates, not by subtracting the table's rounded cells, which would give
-      13.4 and 15.6; `test_benchmark_plan_claims.py` pins the raw form.) They
-      differ only in how a tie is settled — by learned Q-value, or by move-set order. The
-      learned values cost **13.5 points** against the trained thief (84.8 vs
-      98.2). This project's best-measured cop is the one carrying no learned
-      values at all, and that is recorded here rather than argued away. The
-      table is retained in the decision because it is the course's subject
-      matter and because the two modes keep both strategies live and tested;
-      it is not retained because it helps.
-    * **Against a greedy Manhattan evader all four score 0.0%.** On a bare
-      7x7 grid under simultaneous moves a single pursuer cannot corner a
-      perfectly evading thief; this is structural, not a policy defect, and no
-      tie-break addresses it. It is the sharpest argument that `max_barriers:
-      14` is never populated (limitation above).
+    * **The priority swap is still the single largest gain in the project**:
+      +27.2 points against the trained thief (63.2 ->
+      90.5) and +5.0 against the random one
+      (95.0 -> 100.0), for an inversion
+      that adds no state and no training. Distance was always the better first
+      question. (Deltas are computed from the raw rates, not by subtracting the
+      table's rounded cells; `test_benchmark_plan_claims.py` pins the raw form.)
+    * **The learned table is now a NET POSITIVE as a tie-breaker, and this
+      REVERSES what this section previously recorded.** `manhattan-primary` and
+      `heuristic` run the identical distance rule over the identical legal
+      moves and differ only in how a tie is settled — by learned Q-value, or by
+      move-set order. On the bare grid the learned values COST 13.5 points
+      against the trained thief. On the barriered board they GAIN
+      **4.0 points** against the trained thief
+      (90.5 vs 86.5) and
+      **17.0 points** against the greedy evader
+      (47.2 vs 30.2). The reason is
+      mechanical rather than flattering: on an empty grid a distance tie is
+      usually a genuine symmetry and any choice is as good as another, so a
+      learned preference is noise. Walls break the symmetry — two
+      distance-equal moves can differ sharply in whether they lead into a
+      dead end — and that is a difference a table can actually learn. The
+      table is now retained because it helps, which is not what the previous
+      measurement supported.
+    * **A greedy Manhattan evader is now catchable: 0.0% -> 47.2%.**
+      This was the sharpest finding against the project and it was structural,
+      not a policy defect: on a BARE 7x7 grid under simultaneous moves a single
+      pursuer cannot corner a perfectly evading thief, and no tie-break
+      addressed it. Populating `max_barriers: 14` (§4.3) is what changed it,
+      because cornering requires somewhere to corner against. It remains the
+      hardest opponent in the set by a wide margin, and the mean turns-to-capture
+      (16.97) shows why — nearly half the 35-move budget.
+    * **The four policies no longer form a clean progression.** On the bare
+      grid each step gained ground and the EMPTY-table heuristic topped the
+      table. It no longer does: the shipped policy beats it against every
+      opponent. The ordering is a result, not a presentational device, so it is
+      reported as measured rather than re-sorted.
     * **The flagship trajectory is untouched by any of this.** From the
       published starts (cop `[0,0]`, thief `[3,3]`) the pre-fallback table, the
       `qtable_primary` policy and the shipped `manhattan_primary` policy all
@@ -925,16 +984,38 @@ Recorded rather than hidden; each is a deliberate, documented position:
 
     The external audit's own figures — 47.2% / 3.69 turns for the baseline and
     93.5% / 6.04 for the heuristic — are recorded here as the prompt for this
-    work, not as this repository's evidence: its protocol is unpublished. The
-    heuristic's mean turns-to-capture (6.04 against 6.10 measured) and the
-    off-manifold rate (58.9% against 58.2%) reproduce closely; the baseline
-    capture rate does not, and the numbers above are the ones the claims rest
-    on.
+    work, not as this repository's evidence: its protocol is unpublished. They
+    were taken against the BARE grid, and reproduced closely under that regime
+    (heuristic mean turns 6.04 against 6.10 measured; off-manifold rate 58.9%
+    against 58.2%). They are not comparable to the barriered figures above and
+    are retained only as the historical prompt.
 
     What none of this buys is generalisation. The remedy is a legality- and
     distance-aware ordering, not learning. The real fix remains opponent
     diversity in training or a function approximator — a training phase in its
     own right, as recorded under the self-play limitation above.
+
+### Unimplemented / Future Scope
+
+Work not done. Nothing here is argued to be unnecessary; each names what would
+close it.
+
+-   **§10.1 — The Step-0 declaration is unsigned and unenforced** (§5). It records a
+   claim, not a proof. Covering it with the existing Ed25519 signature is the
+   natural hardening.
+-   **§10.5 — Artifact field layout is this project's own design** (§7.1), pending
+   reconciliation with Appendix F.
+-   **§10.7 — League play against the opposing group has not been run.** The system is
+   validated by two *local* peers over a real streamable-HTTP transport with
+   commit-reveal and signatures fully in force, which removes the external
+   dependency but does not substitute for a cross-group match.
+-   **§10.9 — A stalled peer ends the match, it does not end the process** (§3). Every
+   wire call is fenced by the published `watchdog_timeout_sec` and raises
+   `TechnicalLossError` on expiry (`mcp_server/http_peer.py`). What is *not*
+   implemented is an automatic award of the technical win to the surviving
+   peer: the error is raised to the caller, which decides. The forfeit path
+   that the server already runs on its own commitment deadlines (§3) is
+   unaffected.
 
 ## 11. Test Strategy
 

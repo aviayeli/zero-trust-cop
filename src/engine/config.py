@@ -13,6 +13,7 @@ class GameConfig:
     thief_start: list
     move_set: list
     max_barriers: int
+    barrier_seed: int | None
     max_moves: int
     survival_threshold: int
     response_timeout_sec: int
@@ -50,6 +51,7 @@ def load_config(path: str) -> GameConfig:
         thief_start=data["board_and_agents"]["thief_start"],
         move_set=data["movement_and_barriers"]["move_set"],
         max_barriers=data["movement_and_barriers"]["max_barriers"],
+        barrier_seed=data["movement_and_barriers"]["barrier_seed"],
         max_moves=data["movement_and_barriers"]["max_moves"],
         survival_threshold=data["movement_and_barriers"]["survival_threshold"],
         response_timeout_sec=data["network_and_league"]["response_timeout_sec"],

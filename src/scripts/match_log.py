@@ -15,6 +15,8 @@ but the file and the peers' public keys.
 import json
 import os
 
+from engine.barriers import barrier_layout
+from engine.config import load_config
 from mcp_server.declaration import github_commit, write_declaration
 from mcp_server.repos import load_repos
 
@@ -46,14 +48,20 @@ def _turn_record(entry) -> dict:
     }
 
 
-def build_log(game_id, game_number, history, group_id) -> dict:
-    """Assemble the replayable per-game log payload."""
+def build_log(game_id, game_number, history, group_id, barriers=()) -> dict:
+    """Assemble the replayable per-game log payload.
+
+    ``barriers`` is recorded because the log must be replayable on its own:
+    a verifier holding only this file and the peers' public keys cannot be
+    assumed to hold the seed that generated the board (PLAN.md §4.3).
+    """
     return {
         "artifact_version": ARTIFACT_VERSION,
         "game_uid": game_id,
         "game_id": game_id,
         "game_number": game_number,
         "group_id": group_id,
+        "barriers": [list(cell) for cell in sorted(barriers)],
         "turns": [_turn_record(entry) for entry in history],
     }
 
@@ -125,7 +133,12 @@ def write_artifacts(
         "config": _stamp_config(root, group_dir, suffix, game_id),
         "log": _dump(
             os.path.join(group_dir, f"log_{suffix}.json"),
-            build_log(game_id, game_number, history, group_id),
+            build_log(
+                game_id, game_number, history, group_id,
+                barriers=barrier_layout(
+                    load_config(os.path.join(root, "game.json"))
+                ),
+            ),
         ),
         "result": _dump(
             os.path.join(group_dir, f"result_{game_id}.json"),

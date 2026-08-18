@@ -6,6 +6,8 @@ instrument is sound: that starts stay on the board, that a seed reproduces a
 sample, and that a run returns structured rows rather than printed prose.
 """
 
+from dataclasses import replace
+
 import pytest
 
 from scripts.benchmark_offmanifold import (
@@ -76,12 +78,17 @@ def test_a_policy_that_never_captures_reports_no_mean_turns(
 ):
     """Averaging an empty sample to 0.0 would read as the fastest pursuit.
 
-    A greedy pursuer against a greedy evader on a bare grid never captures,
-    which makes it the one cell guaranteed to have no turns to average.
+    A greedy pursuer against a greedy evader used to be the cell guaranteed
+    to have nothing to average, because a bare grid made the evader
+    uncatchable. Barriers (PLAN.md §4.3) made it catchable, so the no-capture
+    case is reconstructed here by switching the barriers back OFF, which is
+    both the regime the None was discovered in and a live check that the
+    barriers are what made the difference.
     """
-    cop = build_table(config, police_settings, "cop")
-    evader = build_table(config, thief_settings, "thief")
-    cell = evaluate(config, cop, evader, start_pairs(config, 10, seed=3), seed=3)
+    bare = replace(config, barrier_seed=None)
+    cop = build_table(bare, police_settings, "cop")
+    evader = build_table(bare, thief_settings, "thief")
+    cell = evaluate(bare, cop, evader, start_pairs(bare, 10, seed=3), seed=3)
 
     assert cell["capture_rate"] == 0.0
     assert cell["mean_turns"] is None
@@ -120,11 +127,19 @@ def test_format_rows_emits_well_formed_markdown(benchmark_rows):
     assert "||" not in separator
 
 
-def test_format_rows_prints_no_turns_for_a_policy_that_never_won(benchmark_rows):
-    greedy = [row for row in benchmark_rows if row["opponent"] == "greedy"]
+def test_format_rows_prints_no_turns_for_a_policy_that_never_won():
+    """`n/a` rather than a number a reader would compare against real ones."""
+    never_won = [
+        {
+            "policy": "heuristic",
+            "opponent": "greedy",
+            "capture_rate": 0.0,
+            "mean_turns": None,
+            "flat_state_rate": 100.0,
+        }
+    ]
 
-    assert greedy, "the greedy evader is part of the published opponent set"
-    assert all("n/a" in line for line in format_rows(greedy).splitlines()[2:])
+    assert all("n/a" in line for line in format_rows(never_won).splitlines()[2:])
 
 
 def test_the_cli_prints_the_table_and_returns_the_rows(capsys, opponents):

@@ -17,6 +17,7 @@
 "movement_and_barriers": {
 "move_set": ["N", "S", "E", "W", "STAY"],
 "max_barriers": 14,
+"barrier_seed": 20260818,
 "max_moves": 35,
 "survival_threshold": 35
 },
