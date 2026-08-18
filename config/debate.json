@@ -2,9 +2,30 @@
   "rounds": 3,
   "timeout_sec": 240,
   "agents": [
-    {"role": "Trust-Engine", "connector": "claude", "model": "cli"},
-    {"role": "Thief", "connector": "gemini", "model": "gemini-3.6-flash"},
-    {"role": "Strategist", "connector": "ollama", "model": "llama3"}
+    {
+      "role": "Compliancer",
+      "connector": "ollama",
+      "model": "deepseek-r1:1.5b"
+    },
+    {
+      "role": "Trust-Engine",
+      "connector": "claude",
+      "model": "cli"
+    },
+    {
+      "role": "Strategist",
+      "connector": "gemini",
+      "model": "gemini-3.6-flash"
+    },
+    {
+      "role": "QA",
+      "connector": "ollama",
+      "model": "qwen:latest"
+    }
   ],
-  "aggregator": {"role": "Aggregator", "connector": "claude", "model": "cli"}
+  "aggregator": {
+    "role": "Aggregator",
+    "connector": "claude",
+    "model": "cli"
+  }
 }

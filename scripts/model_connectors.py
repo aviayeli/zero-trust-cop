@@ -18,26 +18,17 @@ dependency to a submission graded on its dependency list.
 import json
 import os
 import subprocess
-import urllib.error
-import urllib.request
+
+import cloud_connectors
+from http_post import BROWSER_AGENT, ConnectorError, post
 
 OLLAMA_URL = "http://localhost:11434/api/generate"
-GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
-
-
-class ConnectorError(RuntimeError):
-    """One model could not be reached, or refused."""
-
-
-def _post(url: str, payload: dict, timeout: float) -> dict:
-    request = urllib.request.Request(
-        url, data=json.dumps(payload).encode(), headers={"Content-Type": "application/json"}
-    )
-    try:
-        with urllib.request.urlopen(request, timeout=timeout) as response:
-            return json.load(response)
-    except (urllib.error.URLError, OSError, ValueError) as failure:
-        raise ConnectorError(f"{url.split('/')[2]}: {failure}") from failure
+# A cold local model can spend a minute loading weights before its first token.
+# The cloud figure was 30s on the theory that a slower reply is a dead one;
+# measured, Gemini times out at 30s while this host is paging in a 5GB local
+# model and answers fine on retry. The limit was describing our RAM, not their
+# latency.
+TIMEOUTS = {"ollama": 180.0, "cloud": 60.0}
 
 
 def claude(prompt: str, model: str, timeout: float) -> str:
@@ -53,34 +44,29 @@ def claude(prompt: str, model: str, timeout: float) -> str:
     return done.stdout.strip()
 
 
-def gemini(prompt: str, model: str, timeout: float) -> str:
-    """Google, through the public generateContent endpoint."""
-    key = os.environ.get("GEMINI_API_KEY")
-    if not key:
-        raise ConnectorError("GEMINI_API_KEY is not set")
-    payload = {"contents": [{"parts": [{"text": prompt}]}]}
-    body = _post(f"{GEMINI_URL.format(model=model)}?key={key}", payload, timeout)
-    if "error" in body:
-        raise ConnectorError(f"gemini: {body['error'].get('message', '')[:200]}")
-    try:
-        return body["candidates"][0]["content"]["parts"][0]["text"].strip()
-    except (KeyError, IndexError) as failure:
-        raise ConnectorError(f"gemini: unexpected response shape: {failure}") from failure
-
-
 def ollama(prompt: str, model: str, timeout: float) -> str:
     """A local model, through the Ollama daemon."""
     payload = {"model": model, "prompt": prompt, "stream": False}
-    body = _post(OLLAMA_URL, payload, timeout)
+    body = post(OLLAMA_URL, payload, timeout)
     if not body.get("response"):
         raise ConnectorError(f"ollama/{model}: empty response")
     return body["response"].strip()
 
 
-CONNECTORS = {"claude": claude, "gemini": gemini, "ollama": ollama}
+CONNECTORS = {
+    "claude": claude, "ollama": ollama, "gemini": cloud_connectors.gemini,
+    "anthropic": cloud_connectors.anthropic,
+    "groq": cloud_connectors.openai_style("groq"),
+    "deepseek": cloud_connectors.openai_style("deepseek"),
+}
 
 
-def probe(connector: str, model: str, timeout: float = 60.0) -> str | None:
+def timeout_for(connector: str) -> float:
+    """A cold local model gets 180s; a cloud API gets 30s."""
+    return TIMEOUTS["ollama" if connector == "ollama" else "cloud"]
+
+
+def probe(connector: str, model: str, timeout: float | None = None) -> str | None:
     """Return None if the model answers, else why it cannot be used.
 
     Called before the debate so an unreachable model is reported up front
@@ -88,7 +74,8 @@ def probe(connector: str, model: str, timeout: float = 60.0) -> str | None:
     """
     try:
         CONNECTORS[connector](
-            "Reply with exactly: OK", model, timeout
+            "Reply with exactly: OK", model,
+            timeout_for(connector) if timeout is None else timeout,
         )
     except ConnectorError as failure:
         return str(failure)

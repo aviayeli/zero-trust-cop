@@ -56,11 +56,21 @@ def build_prompt(agent: dict, question: str, transcript: list, evidence: str) ->
     return "\n\n".join(parts)
 
 
+# Local models are queried ONE at a time. Cloud calls stay parallel; two 5GB
+# local models will not fit in 7GB of RAM, and ollama answers the second by
+# closing the connection rather than by waiting.
+_LOCAL_SLOT = asyncio.Semaphore(1)
+
+
 async def _ask(agent: dict, prompt: str, timeout: float) -> tuple:
     """Query one model off the event loop; a failure never sinks the round."""
     call = CONNECTORS[agent["connector"]]
     try:
-        answer = await asyncio.to_thread(call, prompt, agent["model"], timeout)
+        if agent["connector"] == "ollama":
+            async with _LOCAL_SLOT:
+                answer = await asyncio.to_thread(call, prompt, agent["model"], timeout)
+        else:
+            answer = await asyncio.to_thread(call, prompt, agent["model"], timeout)
     except ConnectorError as failure:
         answer = f"[unavailable: {failure}]"
     return agent["role"], answer

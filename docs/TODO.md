@@ -10,7 +10,7 @@ This file is the top-level, cross-phase checklist. The per-phase TODOs
 `TODO_07.md`) retain the full assertion-by-assertion detail for their phases;
 items here are the milestone rollups, each carrying the evidence that closed it.
 
-**Gate status:** `pytest -q` → **896 passed**. Every `src/**/*.py` is ≤150 lines
+**Gate status:** `pytest -q` → **903 passed**. Every `src/**/*.py` is ≤150 lines
 (longest: `scripts/render_replay.py`, 148). `scripts.replay_match
 logs/aviayeli/log_aviayeli_g01.json` → `Verified OK`.
 

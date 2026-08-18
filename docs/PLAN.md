@@ -28,7 +28,7 @@ invariants; where it and a phase document disagree, this file wins.
   networking). `engine/config.py` and `strategy/settings.py` are the only
   modules permitted to know those paths.
 - **Strict TDD**: every module below was specified precisely enough that a
-  failing test could be written before it existed. Current state: **896 tests
+  failing test could be written before it existed. Current state: **903 tests
   passing**.
 
 ## FR5 Turn-Resolution & Tie-Break Rule (locked)
@@ -106,7 +106,7 @@ zero-trust-cop/
 │       ├── board_agreement.py   # pre-match board/axis check (§2, audit T-1)
 │       ├── opponent_pool.py     # weighted per-episode opponent selection
 │       └── train_diverse.py     # the shipped opponent-diverse trainer
-└── tests/                       # 896 tests, mirroring the src/ layout
+└── tests/                       # 903 tests, mirroring the src/ layout
 ```
 
 ## 1. Engine Layer — Module Responsibilities & Interfaces
@@ -983,7 +983,14 @@ Decisions taken with the alternative understood, each stating what it costs.
 
       So the +11.3 point gap the shipped layout shows is a favourable draw,
       not a transferable gain: the DISTANCE RULE generalises and the learned
-      increment on top of it does not. The first version of this measurement
+      increment on top of it does not. The -2.2 is **not** evidence that the
+      table actively hurts — a multi-model panel corrected that reading, and
+      the correction stands: the gap sits inside sampling error, so on an
+      unseen board the learned values are *inert*, not corrupting. They cannot
+      be corrupting, because `barrier_mask` in the key means an unseen layout
+      misses every entry and the composite falls through to the distance rule
+      by construction. The honest claim is "no measurable advantage off the
+      trained layouts", not "worse". The first version of this measurement
       was itself confounded — it probed seeds 0-19, which are inside the
       64-layout training pool — and is recorded here because the corrected
       result is the one that matters. Pinned by
@@ -1096,7 +1103,7 @@ close it.
 
 Every module was built test-first per `CLAUDE.md`; `docs/TODO.md` records the
 sequencing and the evidence. The suite mirrors `src/` and currently stands at
-**896 passing tests**. The load-bearing cases, by layer:
+**903 passing tests**. The load-bearing cases, by layer:
 
 - **Engine** — the six FR5 scenarios (both unobstructed, bounds-blocked,
   barrier-blocked, same-cell capture, swap capture, adjacent near-miss), plus
