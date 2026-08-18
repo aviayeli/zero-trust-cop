@@ -107,6 +107,8 @@ class CommitmentBook:
             return RevealOutcome("rejected", reason="invalid_role")
         if turn < self._turn:
             return RevealOutcome("rejected", reason="stale_turn")
+        if turn > self._turn:
+            return RevealOutcome("rejected", reason="future_turn")
         if len(self._commitments) != len(PEER_ROLES):
             return RevealOutcome("rejected", reason="reveal_before_commit")
         if role in self._moves:

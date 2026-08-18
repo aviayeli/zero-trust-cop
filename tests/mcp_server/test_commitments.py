@@ -120,3 +120,24 @@ def test_commitment_for_returns_the_stored_digest_for_a_role():
     assert book.commitment_for("police") is None
     book.commit("police", 0, h_commit)
     assert book.commitment_for("police") == h_commit
+
+
+def test_reveal_for_a_future_turn_is_rejected_rather_than_read_against_this_turn():
+    """A reveal must not be checked against a PREVIOUS turn's stored digest.
+
+    ``commit`` resets the book when the turn advances; ``reveal`` only guarded
+    the stale direction, so a future-turn reveal fell through to the current
+    turn's commitments. ``SubmissionGate`` rejects the mismatch first, so this
+    is defence in depth on a reusable primitive, not a live hole.
+    """
+    book = CommitmentBook()
+    police_hash, police_nonce = _commit("N")
+    thief_hash, _ = _commit("S")
+    book.commit("police", 0, police_hash)
+    book.commit("thief", 0, thief_hash)
+
+    outcome = book.reveal("police", 1, STATE, "N", INTENT, police_nonce)
+
+    assert outcome.status == "rejected"
+    assert outcome.reason == "future_turn"
+    assert book.state() == "both_committed"
