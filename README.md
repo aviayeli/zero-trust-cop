@@ -60,9 +60,12 @@ other half of the pair.
 > current tip. They are **signed evidence of a match that was actually played**
 > and are deliberately *not* regenerated: re-sealing them to carry a newer hash
 > would trade a genuine record for a cosmetic one. The trajectory they record is
-> still exactly what today's policy produces — `scripts.replay_match` returns
-> `Verified OK` on the shipped log, and `tests/mcp_server/test_qvalues_fallback.py`
-> pins every state on it. The reasoning is set out in full in `docs/PLAN.md`
+> **not** what today's policy produces: Phase 9 placed a barrier on the cop's
+> old turn-1 cell, so the shipped policy now captures on turn 4 rather than
+> turn 3. The artifacts stay valid signed evidence of a match that was really
+> played — `scripts.replay_match` returns `Verified OK`, because a replay is
+> checked against the board the log records — but they demonstrate the protocol
+> and the verifier, not the current policy. Set out in full in `docs/PLAN.md`
 > §10.10 under *Provenance of the shipped evidence*.
 
 ---
@@ -453,8 +456,8 @@ never produces an artifact.)
 
 | Discipline | State |
 |---|---|
-| Test suite | **788 tests**, all passing (unit → live two-process HTTP) |
-| Line limit | every one of the **160** tracked Python files ≤ **150 lines** (max: 149) |
+| Test suite | **791 tests**, all passing (unit → live two-process HTTP) |
+| Line limit | every one of the **161** tracked Python files ≤ **150 lines** (max: 149) |
 | TDD | strict red→green: every implementation change preceded by a confirmed failing test |
 | Hyperparameters | zero tunables inlined in Python — all in `config/game.json` / per-peer `game.toml` |
 | Lifecycle | PRD → PLAN → TODO under `docs/`, per phase |
@@ -512,7 +515,7 @@ configured for pytest; standalone scripts take `PYTHONPATH=src`.
 
 ```bash
 .venv/bin/python -m pytest -q
-# expected: 788 passed
+# expected: 791 passed
 ```
 
 (Includes the live-transport tests: they spawn both peer processes on

@@ -1,0 +1,85 @@
+"""PLAN.md §10.10's provenance claim must stay true (it did not).
+
+The section stated that the flagship log's trajectory "remains exactly what
+today's policy produces". That was true while the board was bare. Phase 9
+placed a barrier on `(1, 1)` — the cop's turn-1 cell in that log — so the
+shipped policy now plays a different, longer pursuit, and the sentence became
+false with nothing to catch it.
+
+The lesson is the one this repository already applies to the README and to
+§10.10's capture-rate table: a document making an exact claim gets a
+mechanical check, or it quietly rots. So the relationship between the sealed
+artifacts and the current policy is re-derived here rather than asserted in
+prose.
+"""
+
+import json
+from pathlib import Path
+from random import Random
+
+import pytest
+
+from engine.config import load_config
+from engine.game_loop import GameEpisode
+from mcp_server.peer_policy import build_peer_policy
+
+PLAN = Path("docs/PLAN.md")
+SHIPPED_LOG = Path("logs/aviayeli/log_aviayeli_g01.json")
+
+
+@pytest.fixture(scope="module")
+def todays_pursuit():
+    """Replay the shipped policy from the published starts, greedily."""
+    config = load_config("config/police/game.json")
+    cop = build_peer_policy("police", "cop", config)
+    thief = build_peer_policy("thief", "thief", config)
+    episode = GameEpisode(config)
+    rng = Random(0)
+    while not episode.is_terminated:
+        cop_move, _ = cop.decide(
+            cop.state_key(
+                episode.cop_state.position, episode.thief_state.position, episode.board
+            ),
+            rng,
+        )
+        thief_move, _ = thief.decide(
+            thief.state_key(
+                episode.thief_state.position, episode.cop_state.position, episode.board
+            ),
+            rng,
+        )
+        episode.step(cop_move, thief_move)
+    return episode
+
+
+def test_the_shipped_policy_no_longer_reproduces_the_flagship_trajectory(
+    todays_pursuit,
+):
+    """The divergence is real, and pinning it is what stops the prose drifting."""
+    log = json.loads(SHIPPED_LOG.read_text(encoding="utf-8"))
+    logged_turns = len(log["turns"])
+
+    assert todays_pursuit.turn_count != logged_turns, (
+        "the trajectories agree again — §10.10's provenance note must be "
+        "rewritten to say so"
+    )
+
+
+def test_the_plan_states_todays_capture_turn_and_cell(todays_pursuit):
+    """§10.10 must quote what today's policy actually does, not what it did."""
+    quoted = (
+        f"turn {todays_pursuit.turn_count} at "
+        f"{tuple(todays_pursuit.cop_state.position)}"
+    )
+
+    assert quoted in PLAN.read_text(encoding="utf-8"), (
+        f"§10.10 no longer states that today's policy captures on {quoted}"
+    )
+
+
+def test_the_sealed_artifacts_are_still_the_record_of_a_real_match():
+    """Divergence must not be read as the evidence being invalid."""
+    log = json.loads(SHIPPED_LOG.read_text(encoding="utf-8"))
+
+    assert log["turns"], "the flagship log is empty"
+    assert log["turns"][-1]["result"]["captured"] is True

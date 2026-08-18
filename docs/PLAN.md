@@ -969,14 +969,28 @@ Decisions taken with the alternative understood, each stating what it costs.
     rather than hidden, and the artifacts are deliberately **not** regenerated:
     they are signed evidence of a match that was actually played, and
     re-sealing them to carry a newer commit hash would trade a genuine record
-    for a cosmetic one. The trajectory they record remains exactly what today's
-    policy produces, verified above and by
-    `tests/mcp_server/test_qvalues_fallback.py` — every state on that
-    trajectory is one the table has learned, so the distance rule and the
-    learned values agree on all three turns and no off-manifold decision
-    arises. What the artifacts therefore do NOT demonstrate is the behaviour
-    this section measures: off-manifold play is exercised by the benchmark and
-    the suite, not by the shipped log.
+    for a cosmetic one.
+
+    **As of Phase 9 the trajectory they record is NO LONGER what today's
+    policy produces**, and this section previously claimed the opposite. The
+    log's cop steps South to `(1, 1)` on turn 1; §4.3 places a barrier on that
+    exact cell, so the move now resolves differently and the shipped policy
+    instead captures on turn 4 at (1, 3), against turn 3 at `(1, 2)` in the
+    log. The claim was true when written, was not pinned by any test, and went
+    stale silently the moment the board changed —
+    `tests/unit/test_flagship_provenance.py` now re-derives the relationship on
+    every run so it cannot drift again. (The sentence also cited
+    `tests/mcp_server/test_qvalues_fallback.py` as support; that file tests the
+    fallback rule generically and never asserted this trajectory, so the
+    citation was overstated independently of Phase 9.)
+
+    None of that invalidates the artifacts. They remain a signed, verifiable
+    record of a match that was really played, and `scripts.replay_match` still
+    returns `Verified OK` on them, because a replay is checked against the
+    board the log records (§4.3) rather than today's configuration. What they
+    demonstrate is the PROTOCOL and the verifier. What they do NOT demonstrate
+    is the current policy, nor the off-manifold behaviour this section
+    measures — both are exercised by the benchmark and the suite.
 
     The external audit's own figures — 47.2% / 3.69 turns for the baseline and
     93.5% / 6.04 for the heuristic — are recorded here as the prompt for this
