@@ -54,6 +54,17 @@ Both URLs are declared once in each peer's `config/<role>/game.toml` under
 `result_<game_id>.json`, so a marker holding either artifact can find the
 other half of the pair.
 
+> **Artifact provenance — the declared commit is deliberately not HEAD.** The
+> signed artifacts under `logs/aviayeli/` record
+> `github_commit: 1d9d40e8e80d09f0d0f32e04770fd60cbe80f685`, which predates the
+> current tip. They are **signed evidence of a match that was actually played**
+> and are deliberately *not* regenerated: re-sealing them to carry a newer hash
+> would trade a genuine record for a cosmetic one. The trajectory they record is
+> still exactly what today's policy produces — `scripts.replay_match` returns
+> `Verified OK` on the shipped log, and `tests/mcp_server/test_qvalues_fallback.py`
+> pins every state on it. The reasoning is set out in full in `docs/PLAN.md`
+> §10.10 under *Provenance of the shipped evidence*.
+
 ---
 
 ## 1. Project overview
@@ -442,7 +453,7 @@ never produces an artifact.)
 
 | Discipline | State |
 |---|---|
-| Test suite | **757 tests**, all passing (unit → live two-process HTTP) |
+| Test suite | **760 tests**, all passing (unit → live two-process HTTP) |
 | Line limit | every one of the **155** tracked Python files ≤ **150 lines** (max: 149) |
 | TDD | strict red→green: every implementation change preceded by a confirmed failing test |
 | Hyperparameters | zero tunables inlined in Python — all in `config/game.json` / per-peer `game.toml` |
@@ -501,7 +512,7 @@ configured for pytest; standalone scripts take `PYTHONPATH=src`.
 
 ```bash
 .venv/bin/python -m pytest -q
-# expected: 757 passed
+# expected: 760 passed
 ```
 
 (Includes the live-transport tests: they spawn both peer processes on
@@ -699,6 +710,17 @@ PYTHONPATH=src .venv/bin/python -m gui.live_heatmap logs/aviayeli/log_aviayeli_g
 # Replay viewer — steps turn by turn, stamps the verdict badge
 PYTHONPATH=src .venv/bin/python -m gui.replay logs/aviayeli/log_aviayeli_g01.json
 ```
+
+> **What the scent field is, and is not.** It is an **offline and
+> observability substrate — not the live belief input.** In live P2P play the
+> commit–reveal protocol (§2) delivers a signed, mutually verified opponent
+> coordinate every turn, so `AgentPolicy.hybrid_opponent_cell` never reaches its
+> pheromone fallback and a live peer's field is never deposited into. The field
+> does real work in two other places: it supplies the turn-0 belief in every
+> offline training episode, and it is rebuilt from the signed log to drive the
+> heatmaps below. There is **no Bayesian posterior** — where belief *is*
+> consulted it is the concentration field collapsed to `strongest()`. This is a
+> deliberate trade, argued in full in `docs/PLAN.md` §10.4.
 
 **Live Belief Heatmap** — renders the $7 \times 7$ **board** (49 cells); the
 $5 \times 5$ figure in the spec is the *scent kernel* stamped onto it, not the
