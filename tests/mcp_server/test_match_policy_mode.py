@@ -40,12 +40,18 @@ def test_the_cop_trains_on_one_priority_and_plays_on_another():
     assert police.match_policy_mode == "qtable_primary"
 
 
-def test_the_evader_uses_the_distance_rule_in_both_phases():
-    """The thief's swap is what made the series contested; it must not regress."""
+def test_the_evader_also_trains_and_plays_on_different_priorities():
+    """Distance-first made the SERIES contested; it plays worse in a match.
+
+    Measured against a heuristic cop — the likeliest opposing strategy, and
+    one the evader never trained against — distance-first survives 2.2% where
+    table-first survives 8.0%. Both are poor. The split is what lets the
+    better training regime and the better match regime coexist.
+    """
     thief = load_strategy_settings("thief")
 
     assert thief.policy_mode == "manhattan_primary"
-    assert thief.match_policy_mode == "manhattan_primary"
+    assert thief.match_policy_mode == "qtable_primary"
 
 
 def test_a_built_match_policy_uses_the_match_mode_not_the_training_one(config):

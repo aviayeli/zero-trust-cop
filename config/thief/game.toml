@@ -20,9 +20,12 @@ match_exploration_rate = 0.0
 # kept qtable_primary until the audit measured it: 9.5% survival against
 # our strongest cop, against 93.0% for this mode on the SAME table.
 policy_mode = "manhattan_primary"
-# The evader wants the distance rule in BOTH phases: it is what made the
-# self-play series contested and what it plays on.
-match_policy_mode = "manhattan_primary"
+# MATCH priority, measured separately and NOT the same as training. The
+# distance rule leading is what makes self-play contested, but at match
+# time it measures WORSE for the evader against an opponent it did not
+# train against: 2.2% survival vs a heuristic cop, against 8.0% here
+# (PLAN.md §10.10). Both figures are poor; this is the better one.
+match_policy_mode = "qtable_primary"
 
 [network]
 host = "127.0.0.1"

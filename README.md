@@ -462,8 +462,8 @@ never produces an artifact.)
 
 | Discipline | State |
 |---|---|
-| Test suite | **821 tests**, all passing (unit → live two-process HTTP) |
-| Line limit | every one of the **168** tracked Python files ≤ **150 lines** (max: 149) |
+| Test suite | **824 tests**, all passing (unit → live two-process HTTP) |
+| Line limit | every one of the **169** tracked Python files ≤ **150 lines** (max: 149) |
 | TDD | strict red→green: every implementation change preceded by a confirmed failing test |
 | Hyperparameters | zero tunables inlined in Python — all in `config/game.json` / per-peer `game.toml` |
 | Lifecycle | PRD → PLAN → TODO under `docs/`, per phase |
@@ -521,7 +521,7 @@ configured for pytest; standalone scripts take `PYTHONPATH=src`.
 
 ```bash
 .venv/bin/python -m pytest -q
-# expected: 821 passed
+# expected: 824 passed
 ```
 
 (Includes the live-transport tests: they spawn both peer processes on
@@ -875,8 +875,8 @@ tests/                86 test modules mirroring the source layout
   table decides, and the Manhattan distance rule runs only where the table is
   flat, so both strategies stay live. Measured on the barriered board of §4.3
   against the Phase 11 evader, that gives **98.2%** against a random thief,
-  **47.5%** against a greedy evader and **57.5%** against our own trained one,
-  from 91.5% / 9.0% / 35.0% for the table alone.
+  **47.5%** against a greedy evader and **53.5%** against our own trained one,
+  from 91.5% / 9.0% / 38.8% for the table alone.
 
   Two results here are deliberately not smoothed over. First, this **reverses**
   the priority swap shipped in Phase 8: `manhattan_primary` measured better
@@ -884,7 +884,7 @@ tests/                86 test modules mirroring the source layout
   one) once the evader is competent — the optimal priority is opponent-dependent,
   and the earlier conclusion did not survive a stronger opponent. Second,
   against our **own** trained thief an EMPTY table still beats the shipped cop
-  (97.8% against 57.5%): the learned values encode that thief's habits and are
+  (92.0% against 53.5%): the learned values encode that thief's habits and are
   exploited by it, which is what self-play against a single opponent produces.
   Against a greedy evader the learned table does help (47.5% against 30.2%). On
   a bare board every cop policy scores 0.0%, and across 20 independent barrier

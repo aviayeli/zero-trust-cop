@@ -28,7 +28,7 @@ invariants; where it and a phase document disagree, this file wins.
   networking). `engine/config.py` and `strategy/settings.py` are the only
   modules permitted to know those paths.
 - **Strict TDD**: every module below was specified precisely enough that a
-  failing test could be written before it existed. Current state: **821 tests
+  failing test could be written before it existed. Current state: **824 tests
   passing**.
 
 ## FR5 Turn-Resolution & Tie-Break Rule (locked)
@@ -100,7 +100,7 @@ zero-trust-cop/
 │   ├── reporting/               # Gmail transport, MIME report, send policy
 │   └── scripts/                 # match loop, artifacts, reporting, verifier,
 │                                #   tournaments, §10.10 off-manifold probe
-└── tests/                       # 821 tests, mirroring the src/ layout
+└── tests/                       # 824 tests, mirroring the src/ layout
 ```
 
 ## 1. Engine Layer — Module Responsibilities & Interfaces
@@ -910,10 +910,10 @@ Decisions taken with the alternative understood, each stating what it costs.
 
     | Cop policy | vs. random thief | vs. greedy evader | vs. trained thief |
     | :--- | :---: | :---: | :---: |
-    | `qtable-only` — no distance rule at all | 91.5% / 8.39 | 9.0% / 9.86 | 35.0% / 18.29 |
-    | `qtable-primary` — **shipped**, distance only on flat states | 98.2% / 7.75 | 47.5% / 20.43 | 57.5% / 18.61 |
-    | `manhattan-primary` — distance decides, table breaks ties | 99.8% / 6.15 | 21.0% / 13.20 | 68.8% / 17.86 |
-    | `heuristic` — same rule, EMPTY table, ties by move-set order | 99.8% / 6.19 | 30.2% / 17.92 | 97.8% / 22.49 |
+    | `qtable-only` — no distance rule at all | 91.5% / 8.39 | 9.0% / 9.86 | 38.8% / 12.92 |
+    | `qtable-primary` — **shipped**, distance only on flat states | 98.2% / 7.75 | 47.5% / 20.43 | 53.5% / 14.29 |
+    | `manhattan-primary` — distance decides, table breaks ties | 99.8% / 6.15 | 21.0% / 13.20 | 81.2% / 11.10 |
+    | `heuristic` — same rule, EMPTY table, ties by move-set order | 99.8% / 6.19 | 30.2% / 17.92 | 92.0% / 14.43 |
 
     Reproduce with `PYTHONPATH=src python -m scripts.benchmark_offmanifold`;
     the sample size, seed and opponent set are `config/benchmark.json`, not
@@ -943,7 +943,7 @@ Decisions taken with the alternative understood, each stating what it costs.
       table" would be false for one of the two agents whichever way it is
       written.
     * **The empty-table heuristic still wins against our own trained thief
-      (97.8% vs 57.5%), and that is not the flattering reading.** Against a
+      (92.0% vs 53.5%), and that is not the flattering reading.** Against a
       greedy evader the shipped cop wins; against our specific trained evader
       it does not. The learned values encode this thief's habits and are
       exploited by it, which is what self-play against one opponent produces.
@@ -956,6 +956,19 @@ Decisions taken with the alternative understood, each stating what it costs.
       59.0%. The shipped seed scores 47.5%, **above that mean** — our board is
       somewhat favourable and the effect is real regardless, which is the
       honest way to state both facts at once.
+    * **BOTH learned tables are a liability against an opponent they were
+      never trained against, and this is the project's central result.**
+      Measured against a heuristic greedy pursuer — no learned values, and the
+      likeliest strategy an opposing group will field — the shipped evader
+      survives **2.2%** carrying its trained table and **69.8%** carrying an
+      empty one. The cop shows the mirror image: an empty table beats the
+      shipped cop against our own trained thief, 92.0% against 53.5%. Self-play
+      against a single adversary produces values that encode THAT adversary's
+      habits, and anything else exploits them. A Phase 11 revision of this
+      section claimed a 93.0% evader survival for distance-first play; that was
+      measured against our own contemporaneous cop and did not generalise. The
+      remedy is opponent diversity in training, still unimplemented, and it is
+      the single largest piece of work this project has not done.
     * **Self-play is now genuinely contested.** The series capture rate fell
       from 99.85% to **52.3%** when the evader was strengthened. A 99.85% rate
       was never evidence of a strong cop; it was evidence of a weak thief.
@@ -1029,7 +1042,7 @@ close it.
 
 Every module was built test-first per `CLAUDE.md`; `docs/TODO.md` records the
 sequencing and the evidence. The suite mirrors `src/` and currently stands at
-**821 passing tests**. The load-bearing cases, by layer:
+**824 passing tests**. The load-bearing cases, by layer:
 
 - **Engine** — the six FR5 scenarios (both unobstructed, bounds-blocked,
   barrier-blocked, same-cell capture, swap capture, adjacent near-miss), plus

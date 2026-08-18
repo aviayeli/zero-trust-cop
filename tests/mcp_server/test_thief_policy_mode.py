@@ -5,11 +5,16 @@ single largest gain in the project. The thief kept `qtable_primary` — a
 decision taken before the cop's swap was validated, and never revisited after
 the Phase 9 retrain.
 
-Measured over the published 400-start probe against our own strongest cop, the
-shipped evader survived 9.5% of episodes. The same trained table under
-`manhattan_primary` survives 93.0%. The distance rule is what an evader most
-needs and the table was overriding it, so the swap is not a tuning tweak: it
-is the difference between an agent that loses and one that wins.
+Distance-first is what an evader most needs, and the table was overriding it,
+so the evader now TRAINS under `manhattan_primary` — which is also what makes
+the self-play series contested rather than a rout.
+
+The match-time story is less flattering and is recorded in
+`test_match_policy_mode.py`: measured against a cop it never trained against,
+distance-first survives 2.2% where table-first survives 8.0%, so the two
+phases use different priorities. An earlier revision of this docstring quoted
+93.0% survival for distance-first; that was measured against our own
+pre-Phase-11 cop and did not generalise to any other opponent.
 """
 
 from dataclasses import replace
