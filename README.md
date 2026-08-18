@@ -313,16 +313,16 @@ Offline self-play, 2,000 games, seed `20260801`, ε decayed once per game.
 | Benchmarked result | Value |
 |---|---|
 | Cop captures across the training series | **1,997 of 2,000 games — 99.85%** |
-| Capture rate, first 200 games | **97.5%** (legacy terminal-only signal: 10.5%) |
-| Capture rate, games 200–1,800 | **100.0%** in every block |
-| Games the thief survived to the move limit | 6 |
+| Capture rate, first 200 games | **99.0%** (legacy terminal-only signal: 10.5%) |
+| Capture rate, games 600–2,000 | **100.0%** in every block |
+| Games the thief survived to the move limit | 3 |
 
 Cop capture rate per 200-game block:
 
 ```
 capture rate, by 200-game block          seed 20260801
-100% ┤    ●───●───●───●───●───●───●───●───●
-     │●                                    ╲●
+100% ┤    ●───●   ●───●───●───●───●───●───●
+     │●       ╲──●
  75% ┤
      │
  50% ┤
@@ -332,14 +332,14 @@ capture rate, by 200-game block          seed 20260801
   0% ┼────┬───┬───┬───┬───┬───┬───┬───┬───┬───
      0   200 400 600 800 1k  1.2k 1.4k 1.6k 2k
 
-games    0– 200   97.5%      games 1000–1200  100.0%
+games    0– 200   99.0%      games 1000–1200  100.0%
 games  200– 400  100.0%      games 1200–1400  100.0%
-games  400– 600  100.0%      games 1400–1600  100.0%
+games  400– 600   99.5%      games 1400–1600  100.0%
 games  600– 800  100.0%      games 1600–1800  100.0%
-games  800–1000  100.0%      games 1800–2000   99.5%
+games  800–1000  100.0%      games 1800–2000  100.0%
 ```
 
-Convergence is now effectively immediate — 97.5% in the first block against
+Convergence is now effectively immediate — 99.0% in the first block against
 10.5% under the old terminal-only signal — because the shaping terms above
 make a refused move cost something the moment it is tried, rather than
 leaving the learner to discover it from a payoff 35 turns away. Under the
@@ -456,8 +456,8 @@ never produces an artifact.)
 
 | Discipline | State |
 |---|---|
-| Test suite | **791 tests**, all passing (unit → live two-process HTTP) |
-| Line limit | every one of the **161** tracked Python files ≤ **150 lines** (max: 149) |
+| Test suite | **800 tests**, all passing (unit → live two-process HTTP) |
+| Line limit | every one of the **162** tracked Python files ≤ **150 lines** (max: 149) |
 | TDD | strict red→green: every implementation change preceded by a confirmed failing test |
 | Hyperparameters | zero tunables inlined in Python — all in `config/game.json` / per-peer `game.toml` |
 | Lifecycle | PRD → PLAN → TODO under `docs/`, per phase |
@@ -515,7 +515,7 @@ configured for pytest; standalone scripts take `PYTHONPATH=src`.
 
 ```bash
 .venv/bin/python -m pytest -q
-# expected: 791 passed
+# expected: 800 passed
 ```
 
 (Includes the live-transport tests: they spawn both peer processes on
@@ -853,13 +853,14 @@ tests/                86 test modules mirroring the source layout
 
 ## Known limitations (stated, not hidden)
 
-- **The Q-tables cover ~6% of the representable state space.** Measured, not
-  estimated: the police table holds 177 distinct states and the thief 144,
+- **The Q-tables cover ~9% of the representable state space.** Measured, not
+  estimated: the police table holds 233 distinct states and the thief 230,
   out of the 2,704 that `(relative_opponent, barrier_mask)` can express on a
-  7×7 board — **6.55%** and **5.33%** respectively. Only 40/177 and 32/144 of
-  those states have all five actions valued. (Coverage roughly tripled when
-  the shaping terms stopped the policies wall-bumping: an agent that moves
-  visits more of the board. It is still a small fraction.) An unseen state used
+  7×7 board — **8.62%** and **8.51%** respectively. Only 5/233 and 35/230 of
+  those states have all five actions valued, so most entries are a partial
+  ranking rather than a full one. (Placing the barriers in Phase 9 raised
+  coverage from 6.55% / 5.33%: walls make `barrier_mask` vary, where before it
+  encoded board edges alone. It is still a small fraction.) An unseen state used
   to fall through `best_action`'s tie order to `move_set[0]` (`N`) — with
   match-time ε = 0 and no exploration to escape it, an opponent that steered
   play off the trained manifold met a fixed-direction agent. Such states are

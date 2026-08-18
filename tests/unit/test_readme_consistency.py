@@ -24,6 +24,7 @@ from pathlib import Path
 import pytest
 
 README = Path("README.md")
+PLAN = Path("docs/PLAN.md")
 _COLLECTED = re.compile(r"(\d+) tests? collected")
 
 # Each claim: a label, and the pattern that must still find it in the README.
@@ -106,3 +107,40 @@ def test_the_documented_longest_file_respects_the_line_limit(
 def test_every_checked_claim_is_still_present(readme, claim):
     """Deleting a figure must fail loudly, not silently disable its check."""
     assert documented(readme, claim) > 0
+
+
+# --- PLAN.md states the same two figures about itself -----------------------
+# It drifted to 757 tests and a 147-line longest module while the README stayed
+# correct, because only the README was checked. Same posture, same enforcement.
+PLAN_TEST_COUNT = (r"\*\*(\d+) tests\n  passing\*\*", "PLAN test-suite total")
+PLAN_TREE_COUNT = (r"# (\d+) tests, mirroring the src/ layout", "PLAN tree comment")
+PLAN_STRATEGY_TOTAL = (r"\*\*(\d+) passing tests\*\*", "PLAN §11 total")
+PLAN_LONGEST = (r"module is `[^`]+` at (\d+) lines", "PLAN longest-module length")
+
+
+@pytest.fixture(scope="module")
+def plan():
+    return PLAN.read_text(encoding="utf-8")
+
+
+@pytest.mark.parametrize(
+    "claim", [PLAN_TEST_COUNT, PLAN_TREE_COUNT, PLAN_STRATEGY_TOTAL]
+)
+def test_every_plan_test_total_matches_the_suite(plan, collected_tests, claim):
+    """PLAN states the total in three places; all three must move together."""
+    assert documented(plan, claim) == collected_tests
+
+
+def test_the_plan_names_the_longest_module_and_its_length(plan, tracked_python_files):
+    """The claim names a file AND a length, so both are re-derived."""
+    sources = [path for path in tracked_python_files if path.startswith("src/")]
+    lengths = {
+        path: len(Path(path).read_text(encoding="utf-8").splitlines())
+        for path in sources
+    }
+    longest = max(lengths, key=lambda path: lengths[path])
+
+    assert documented(plan, PLAN_LONGEST) == lengths[longest]
+    assert longest.removeprefix("src/") in plan, (
+        f"PLAN no longer names {longest} as the longest module"
+    )
