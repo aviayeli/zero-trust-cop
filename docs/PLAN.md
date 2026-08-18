@@ -28,7 +28,7 @@ invariants; where it and a phase document disagree, this file wins.
   networking). `engine/config.py` and `strategy/settings.py` are the only
   modules permitted to know those paths.
 - **Strict TDD**: every module below was specified precisely enough that a
-  failing test could be written before it existed. Current state: **800 tests
+  failing test could be written before it existed. Current state: **801 tests
   passing**.
 
 ## FR5 Turn-Resolution & Tie-Break Rule (locked)
@@ -100,7 +100,7 @@ zero-trust-cop/
 │   ├── reporting/               # Gmail transport, MIME report, send policy
 │   └── scripts/                 # match loop, artifacts, reporting, verifier,
 │                                #   tournaments, §10.10 off-manifold probe
-└── tests/                       # 800 tests, mirroring the src/ layout
+└── tests/                       # 801 tests, mirroring the src/ layout
 ```
 
 ## 1. Engine Layer — Module Responsibilities & Interfaces
@@ -956,11 +956,19 @@ Decisions taken with the alternative understood, each stating what it costs.
       table. It no longer does: the shipped policy beats it against every
       opponent. The ordering is a result, not a presentational device, so it
       is reported as measured rather than re-sorted.
-    * **The flagship trajectory is untouched by any of this.** From the
-      published starts (cop `[0,0]`, thief `[3,3]`) the pre-fallback table, the
-      `qtable_primary` policy and the shipped `manhattan_primary` policy all
-      play the identical `E/N -> S/W -> E/N` and capture on turn 3, and
-      `scripts.replay_match` still returns `Verified OK` on the shipped log.
+    * **The flagship trajectory IS touched, and by the RETRAIN rather than
+      by the barriers.** Before Phase 9 this bullet recorded that the
+      pre-fallback table, `qtable_primary` and the shipped `manhattan_primary`
+      all played the identical `E/N -> S/W -> E/N` from the published starts
+      (cop `[0,0]`, thief `[3,3]`) and captured on turn 3. The shipped policy
+      now plays `E/N -> E/N -> E/S -> S/N` and captures on turn 4 at (1, 3).
+      The obvious explanation — that §4.3 walls the cop's old turn-1 cell
+      `(1, 1)` — is measurably NOT the cause: replayed on a bare board, today's
+      tables produce that same turn-4 trajectory. It is the Phase 9 retrain
+      that moved it, and the wall is incidental. `scripts.replay_match` still
+      returns `Verified OK` on the shipped log, because a replay is checked
+      against the board the log records. The consequences for the sealed
+      artifacts are set out below.
 
     **Provenance of the shipped evidence.** The flagship artifacts under
     `logs/aviayeli/` — the signed match log, its `result`, and
@@ -973,11 +981,12 @@ Decisions taken with the alternative understood, each stating what it costs.
 
     **As of Phase 9 the trajectory they record is NO LONGER what today's
     policy produces**, and this section previously claimed the opposite. The
-    log's cop steps South to `(1, 1)` on turn 1; §4.3 places a barrier on that
-    exact cell, so the move now resolves differently and the shipped policy
-    instead captures on turn 4 at (1, 3), against turn 3 at `(1, 2)` in the
-    log. The claim was true when written, was not pinned by any test, and went
-    stale silently the moment the board changed —
+    shipped policy now captures on turn 4 at (1, 3), against turn 3 at
+    `(1, 2)` in the log. The cause is the Phase 9 RETRAIN, not the barriers:
+    replayed on a bare board, today's tables produce the same turn-4
+    trajectory, so walling the log's turn-1 cell `(1, 1)` is incidental. The
+    claim was true when written, was not pinned by any test, and went stale
+    silently the moment the tables moved —
     `tests/unit/test_flagship_provenance.py` now re-derives the relationship on
     every run so it cannot drift again. (The sentence also cited
     `tests/mcp_server/test_qvalues_fallback.py` as support; that file tests the
@@ -1031,7 +1040,7 @@ close it.
 
 Every module was built test-first per `CLAUDE.md`; `docs/TODO.md` records the
 sequencing and the evidence. The suite mirrors `src/` and currently stands at
-**800 passing tests**. The load-bearing cases, by layer:
+**801 passing tests**. The load-bearing cases, by layer:
 
 - **Engine** — the six FR5 scenarios (both unobstructed, bounds-blocked,
   barrier-blocked, same-cell capture, swap capture, adjacent near-miss), plus

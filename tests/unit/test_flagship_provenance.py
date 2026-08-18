@@ -14,6 +14,7 @@ prose.
 """
 
 import json
+from dataclasses import replace
 from pathlib import Path
 from random import Random
 
@@ -27,10 +28,8 @@ PLAN = Path("docs/PLAN.md")
 SHIPPED_LOG = Path("logs/aviayeli/log_aviayeli_g01.json")
 
 
-@pytest.fixture(scope="module")
-def todays_pursuit():
+def _pursue(config):
     """Replay the shipped policy from the published starts, greedily."""
-    config = load_config("config/police/game.json")
     cop = build_peer_policy("police", "cop", config)
     thief = build_peer_policy("thief", "thief", config)
     episode = GameEpisode(config)
@@ -50,6 +49,11 @@ def todays_pursuit():
         )
         episode.step(cop_move, thief_move)
     return episode
+
+
+@pytest.fixture(scope="module")
+def todays_pursuit():
+    return _pursue(load_config("config/police/game.json"))
 
 
 def test_the_shipped_policy_no_longer_reproduces_the_flagship_trajectory(
@@ -83,3 +87,21 @@ def test_the_sealed_artifacts_are_still_the_record_of_a_real_match():
 
     assert log["turns"], "the flagship log is empty"
     assert log["turns"][-1]["result"]["captured"] is True
+
+
+def test_the_divergence_is_caused_by_the_retrain_not_the_barriers(todays_pursuit):
+    """§10.10 attributes the drift to the retrain, and that was NOT obvious.
+
+    The intuitive reading is that §4.3 walls the log's turn-1 cell (1, 1) and
+    so forces a different route. Measurement says otherwise: replayed on a
+    BARE board, today's tables produce the same turn count, so the wall is
+    incidental and the learned values are the cause. The first draft of this
+    section asserted the intuitive version and was wrong, which is why the
+    claim is pinned rather than reasoned.
+    """
+    bare = replace(load_config("config/police/game.json"), barrier_seed=None)
+
+    assert _pursue(bare).turn_count == todays_pursuit.turn_count, (
+        "the bare and barriered boards now diverge — §10.10's causal claim "
+        "must be re-derived"
+    )

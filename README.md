@@ -347,17 +347,22 @@ legacy signal the series needed roughly 800 games to reach the rate the
 shaped run reaches inside its first block.
 
 The committed deliverables `data/q_table_police.json` (369 entries, all
-non-zero, max value 19.99 → `capture_cop` discounted by the living penalty)
+non-zero, max value 20.00 → `capture_cop`, reached on states where capture is
+immediate and the living penalty never applies)
 and `data/q_table_thief.json` (556 entries, all non-zero) reproduce
 **byte-for-byte** from the recorded seed; a different seed provably produces
-different tables. The tables are ~3× larger than the terminal-only ones for a
-good reason: a policy that stops wall-bumping actually visits the board, so
-many more states are reached often enough to carry a value.
+different tables. Their SHAPE moved with Phase 9: the police table holds fewer
+entries than the pre-barrier one (369 against 508) across more distinct states
+(233 against 177), because walls prune unreachable offset/mask combinations
+faster than they add new ones. The thief's grew on both counts (391 -> 556
+entries, 144 -> 230 states).
 
-**Honest caveats, recorded rather than glossed:** the trainer places no
-barriers, so the `barrier_mask` dimension has only ever encoded board edges;
-and the belief tracker's training data comes from our own deterministic
-deception baseline, so it measures our generator, not an adversary. These
+**Honest caveats, recorded rather than glossed:** the trainer places the
+configured 14 barriers as of Phase 9, so `barrier_mask` now varies — but from
+ONE deterministic layout, so the tables have seen a single wall configuration
+rather than a distribution of them; and the belief tracker's training data
+comes from our own deterministic deception baseline, so it measures our
+generator, not an adversary. These
 tables are evidence that learning ran and converged — protocol correctness is
 established separately (§4).
 
@@ -456,7 +461,7 @@ never produces an artifact.)
 
 | Discipline | State |
 |---|---|
-| Test suite | **800 tests**, all passing (unit → live two-process HTTP) |
+| Test suite | **801 tests**, all passing (unit → live two-process HTTP) |
 | Line limit | every one of the **162** tracked Python files ≤ **150 lines** (max: 149) |
 | TDD | strict red→green: every implementation change preceded by a confirmed failing test |
 | Hyperparameters | zero tunables inlined in Python — all in `config/game.json` / per-peer `game.toml` |
@@ -515,7 +520,7 @@ configured for pytest; standalone scripts take `PYTHONPATH=src`.
 
 ```bash
 .venv/bin/python -m pytest -q
-# expected: 800 passed
+# expected: 801 passed
 ```
 
 (Includes the live-transport tests: they spawn both peer processes on
