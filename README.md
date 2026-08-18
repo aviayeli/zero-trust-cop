@@ -464,8 +464,8 @@ never produces an artifact.)
 
 | Discipline | State |
 |---|---|
-| Test suite | **914 tests**, all passing (unit → live two-process HTTP) |
-| Line limit | every one of the **192** tracked Python files ≤ **150 lines** (max: 149) |
+| Test suite | **920 tests**, all passing (unit → live two-process HTTP) |
+| Line limit | every one of the **193** tracked Python files ≤ **150 lines** (max: 149) |
 | TDD | strict red→green: every implementation change preceded by a confirmed failing test |
 | Hyperparameters | zero tunables inlined in Python — all in `config/game.json` / per-peer `game.toml` |
 | Lifecycle | PRD → PLAN → TODO under `docs/`, per phase |
@@ -523,8 +523,8 @@ configured for pytest; standalone scripts take `PYTHONPATH=src`.
 
 ```bash
 .venv/bin/python -m pytest -q
-# expected: 914 passed
-# actually prints "913 passed, 1 skipped": one test in
+# expected: 920 passed
+# actually prints "919 passed, 1 skipped": one test in
 # tests/test_release_artifact.py asserts the submission TAG points at HEAD,
 # which is only meaningful during a release. Between a commit and a push the
 # tag legitimately lags, so it is gated behind ZTC_RELEASE_CHECK=1 and

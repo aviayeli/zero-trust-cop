@@ -6,6 +6,7 @@ module was at the 150-line limit.
 """
 
 from engine.config import SUPPORTED_AXIS_ORIGIN, SUPPORTED_AXIS_START
+from mcp_server.observations import scoring_block
 
 class BoardMismatchError(RuntimeError):
     """The peers are not playing the same board, so no match is possible.
@@ -24,7 +25,7 @@ AXIS_FIELDS = ("axis_origin_corner", "axis_start_index")
 
 
 async def verify_board_agreement(
-    connections, expected_barriers: int, roles=ENGINE_ROLES
+    connections, expected_barriers: int, config=None, roles=ENGINE_ROLES
 ) -> None:
     """Refuse to start unless every peer reports OUR board (audit T-1).
 
@@ -34,7 +35,7 @@ async def verify_board_agreement(
     positions for a mismatched contract.
 
     Raises:
-        BoardMismatchError: any peer reports a different barrier count.
+        BoardMismatchError: a peer reports a different board or rule set.
     """
     for index, (connection, role) in enumerate(zip(connections, roles)):
         # Each peer answers ONLY for its own engine role; asking the thief
@@ -43,6 +44,8 @@ async def verify_board_agreement(
         observed = await connection.get_observation(role)
         reported = observed.get("barrier_count")
         _check_axis(index, observed)
+        if config is not None:
+            _check_rules(index, observed, config)
         if reported != expected_barriers:
             raise BoardMismatchError(
                 f"peer {index} reports {reported} barriers, this engine has "
@@ -78,3 +81,45 @@ _OURS = {
     "axis_origin_corner": SUPPORTED_AXIS_ORIGIN,
     "axis_start_index": SUPPORTED_AXIS_START,
 }
+
+
+def _check_rules(index: int, observed: dict, config) -> None:
+    """Compare the RULES a peer states against ours, when it states them.
+
+    These two fail differently from a board mismatch and worse. A `max_moves`
+    disagreement produces identical play until the shorter limit fires, so it
+    surfaces as a DivergenceError about termination after 35 signed turns. A
+    `scoring` disagreement never diverges the engines at all: both peers play
+    the same match and report different results, which no downstream check
+    can catch.
+
+    Absent is not disagreement, as with the axis fields.
+
+    Raises:
+        BoardMismatchError: a stated rule differs from ours.
+    """
+    ours = {"max_moves": config.max_moves, "scoring": scoring_block(config)}
+    for field, mine in ours.items():
+        theirs = observed.get(field)
+        if theirs is None:
+            continue
+        if field == "scoring":
+            _check_scoring(index, theirs, mine)
+        elif theirs != mine:
+            raise BoardMismatchError(
+                f"peer {index} reports {field}={theirs!r}, this engine uses "
+                f"{mine!r}. The match would diverge only when the shorter "
+                "limit fires, blaming termination for a contract mismatch."
+            )
+
+
+def _check_scoring(index: int, theirs: dict, mine: dict) -> None:
+    """Compare the payoff table entry by entry, naming the first difference."""
+    for payoff, value in mine.items():
+        stated = theirs.get(payoff)
+        if stated is not None and stated != value:
+            raise BoardMismatchError(
+                f"peer {index} reports scoring.{payoff}={stated!r}, this "
+                f"engine uses {value!r}. Both peers would play the same match "
+                "and report different results."
+            )

@@ -61,3 +61,33 @@ def benchmark_rows():
     from scripts.benchmark_offmanifold import benchmark
 
     return benchmark()
+
+
+class PeerStub:
+    """A connection stub reporting a fixed barrier count."""
+
+    def __init__(self, barriers, own_role="cop", **extra):
+        self.barriers = barriers
+        self.own_role = own_role
+        self.calls = 0
+        self.asked = None
+        self.extra = extra
+
+    def __init_subclass__(cls):  # pragma: no cover - documentation only
+        raise TypeError("stub is final")
+
+    async def get_observation(self, role):
+        self.calls += 1
+        self.asked = role
+        if role != self.own_role:
+            return {"status": "error", "reason": "invalid_role"}
+        return dict(
+            {"role": role, "barrier_count": self.barriers, "grid_size": 7},
+            **self.extra,
+        )
+
+
+@pytest.fixture
+def peer_stub():
+    """The connection double the agreement tests drive."""
+    return PeerStub

@@ -28,6 +28,12 @@ def test_build_observation_cop_own_view(make_match_state, make_config):
         # Stated so a peer can refuse a mirrored engine before turn 0.
         "axis_origin_corner": "topleft",
         "axis_start_index": 0,
+        # ...and the rules it would otherwise disagree about silently.
+        "max_moves": 35,
+        "scoring": {
+            "capture_cop": 20, "capture_thief": 5, "survival_cop": 5,
+            "survival_thief": 10, "tie_score": 2, "technical_loss": 0,
+        },
     }
 
 
@@ -53,6 +59,12 @@ def test_build_observation_thief_own_view(make_match_state, make_config):
         # Stated so a peer can refuse a mirrored engine before turn 0.
         "axis_origin_corner": "topleft",
         "axis_start_index": 0,
+        # ...and the rules it would otherwise disagree about silently.
+        "max_moves": 35,
+        "scoring": {
+            "capture_cop": 20, "capture_thief": 5, "survival_cop": 5,
+            "survival_thief": 10, "tie_score": 2, "technical_loss": 0,
+        },
     }
 
 

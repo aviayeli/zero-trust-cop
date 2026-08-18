@@ -1,12 +1,12 @@
 # Supreme Multi-Model Consensus Audit
 
-*Generated 2026-08-18 17:48 IDT by `scripts/multi-model-debate.py`.*
+*Generated 2026-08-18 23:34 IDT by `scripts/multi-model-debate.py`.*
 
 > Every previous audit in this repository was ONE model playing four
 > specialists. This one is not: each panellist below runs on different
 > weights, so a disagreement is evidence rather than a rhetorical device.
 
-**Question.** Our learned Q-tables beat an empty table by +11.3 points on our shipped barrier layout, but on layouts never seen in training they score 55.1% vs the empty table's 57.4% — no better. Given barrier_mask is part of the state key, is our reinforcement learning contributing anything of value for league play against an unknown opponent on an unknown board, or should we ship the distance heuristic alone?
+**Question.** Analyze our pursuit agent's Transfer Gap on unseen layouts, state representation, and overall system security.
 
 ## Panel
 
@@ -15,82 +15,87 @@
 | Compliancer | `ollama/deepseek-r1:1.5b` | READY |
 | Trust-Engine | `claude/cli` | READY |
 | Strategist | `gemini/gemini-3.6-flash` | READY |
-| QA | `ollama/deepseek-r1:8b` | READY |
+| QA | `ollama/qwen:latest` | READY |
 | Aggregator | `claude/cli` | READY |
 
 ## Consensus report
 
 ## Consensus
 
-Three claims are affirmed by more than one model with no contradiction in the transcript:
+Held by both substantive participants (Trust-Engine, Strategist) and uncontested by the end of the transcript:
 
-1. **Zero-shot board transfer is structurally impossible, not merely weak.** Because `barrier_mask` is part of the tabular state key, an unseen layout produces keys that were never visited in training. Trust-Engine ("structurally unreachable"), Strategist ("structural lock-in"), and Compliancer (R3, "the state key's dependency on `barrier_mask` limits transferability") all converge here. This is the single load-bearing finding.
-
-2. **RL delivers real, large lift on the matched layout.** Cop 41.5% vs 30.2% (+11.3) vs greedy evader; 36.8% vs 22.0% (+14.8) vs the trained thief; evader survival 78.0% vs 69.8%. Trust-Engine and Strategist both cite these unchallenged. Neither disputes the numbers, only what they license.
-
-3. **The Q-table must not be executed ungated on an unknown board.** Every model that offered an operational verdict — Trust-Engine (R1–R3), Strategist (R2), Compliancer (R3) — lands on the heuristic being the authority when the layout is unfamiliar. They disagree on *why* and on *what mechanism already provides that*, but not on the outcome.
-
-Two further points are agreed by the two substantive voices (Trust-Engine and Strategist), with Compliancer silent:
-
-4. **Compliancer's "40% cop score on a bare board" is a misread.** Both explicitly correct it to 0.0% across all policies.
-5. **The real fix is re-keying, not gating** — ego-centric/local barrier features rather than a global mask. Strategist proposed it R1; Trust-Engine endorsed it R1 and again R3 ("real fix: re-key on local barrier features, not a gate").
+1. **No positive transfer is measured off trained layouts.** §10.10: 60.6 vs 50.7 on trained (+9.9), 55.1 vs 57.4 off them (−2.2), n=8 per arm. Both models ended up treating −2.2 as inside sampling error rather than a demonstrated regression. Strategist's Round 1 framing ("performance drops," "fails to generalise") was retracted by Round 3.
+2. **The non-learned Manhattan distance rule is the load-bearing component off-manifold**, not the Q-table. Neither model disputes this, only *why*.
+3. **Tabular representation cannot generalise across layouts.** Function approximation is the named remedy (Strategist), never contested.
+4. **`game_id` is missing from the signed payload.** §3 signs `canonical_json({role, turn, h_commit})` only; turn-binding blocks intra-match replay but a turn-N signature replays into the next game of a series. Trust-Engine adds that `game_uid` already exists in §7.1 artifacts and simply isn't in the signed message.
+5. **The Step-0 declaration is provenance, not proof.** §5/§10.1: signing would establish authorship, not that a peer runs the commit it declares. §10.1 is not closable by crypto alone. Strategist's Round 1 "wrap it in the signed commit schema" recommendation was withdrawn.
+6. **`mutual_agreement.confirmed` is unvalidated.** It rests on `play_match` comparing two engines spawned locally (§2); against a remote group, divergence detection depends on the opponent honestly running its own engine, and §10.7 records no cross-group match.
+7. **The `strongest()` scent collapse costs nothing in live play** (§10.4 — the field is never consulted or deposited into in a P2P match). Strategist raised it as a representational loss in Round 1 and conceded it moot by Round 3.
+8. **Open security items, raised and uncontested:** delimiter-free positional commit digest (§10.2), no wire confidentiality (§10.6).
+9. **Compliancer and QA contributed no auditable findings.** Both substantive models stated this explicitly; Trust-Engine specifically ruled that QA must not be counted as a concurring vote.
 
 ## Disagreement
 
-**1. Is 55.1% vs 57.4% a regression or noise?**
-- **Strategist:** a real regression, "actively degrades," caused by "accidental state key collisions executing bad actions that override the heuristic" (R1, restated R2).
-- **Trust-Engine:** noise. At n=400 a ~56% rate carries ~2.5pp standard error, ~3.5pp on the difference; across 20 layouts spanning 10.0–59.0% an aggregate 2.3pp gap is "unreadable." Verdict: *indistinguishable*, not worse. R3 escalates: the collision mechanism is not merely unproven but impossible — with the mask in the key, an unseen layout misses every entry, so the table is **inert, not corrupting**. Adds a process objection: "naming a mechanism for noise and then engineering against it is trust-negative."
-- *Unresolved.* Strategist was unavailable in R3 (HTTP 503) and never answered the impossibility argument.
+**1. The transfer mechanism — the central unresolved question.** This is a position *swap*, not a convergence.
 
-**2. Ship the heuristic alone, or ship a composite?**
-- **Strategist R1:** ship the distance heuristic alone; the Q-table "eliminates unnecessary state-lookup overhead" when removed.
-- **Strategist R2:** reversed — "do not abandon RL"; ship gated RL with Manhattan fallback. The model changed position between rounds without flagging the change.
-- **Trust-Engine (all rounds):** keep the table, but only because the shipped policy is `manhattan-primary` and the table acts as a tiebreak — bounded downside, +11.3 upside where warm. "Ship, don't claim generalization."
-- **Compliancer R3:** "unsuitable for league play."
+- **Round 1** — Strategist: the table "becomes inert" because `barrier_mask` ties Q-values to specific spatial configurations, so unseen layouts fall through to Manhattan. Trust-Engine: this is wrong — `barrier_mask` is 4 bits of *local* N/S/W/E adjacency (§4.2), 16 values total, layout-agnostic; a new seed yields the same 16 masks, so off-manifold states are **hit with miscalibrated values, not missed**.
+- **Round 2** — the two exchange positions. Trust-Engine writes "Agree with Strategist… means an unseen layout misses every entry… inert, not worse." Strategist writes "Agree with Trust-Engine… unseen layouts do *not* miss entries by construction… miscalibrated Q-values from other layouts."
+- **Round 3** — they swap again. Trust-Engine: the §10.10 sentence is "structurally false" and should be **deleted, not softened**; −2.2 is weak evidence of misranking within sampling error. Strategist: "unseen `barrier_mask` keys miss the Q-table, falling back to deterministic Manhattan rules by design. The table is inert, not corrupting."
 
-**3. Does an explicit exact-mask gate buy anything?**
-- **Strategist:** yes — gate lookups on exact `barrier_mask`, guaranteeing ≥57.4% by construction.
-- **Trust-Engine R1:** proposed the same gate. **Trust-Engine R3:** retracted it — "the gate already exists. Exact-mask matching is what the state key does. A gate on it buys zero measurable points." This is a self-correction, and it is the sharpest live disagreement in the transcript.
+Each model has, at some point, argued and abandoned both sides. **Nothing was resolved.**
 
-**4. Are all gains overfit?**
-- **Strategist R1:** "entirely overfitted to that specific 14-barrier layout."
-- **Trust-Engine R2/R3:** rejects this on one axis — evader survival 78.0% vs 69.8% is against a **cop it never trained against**, and the rise from 2.2% under self-play shows the opponent-pool fix repaired a real defect. That is opponent generalization, categorically distinct from board generalization.
+**2. Whether `manhattan_primary` neutralises bad Q-hits.**
+- *Strategist (R2):* yes — the policy constrains actions to the distance-optimal set *before* consulting table values, so the Manhattan heuristic is the true transfer engine and neutralises miscalibration.
+- *Trust-Engine (R3):* it *bounds* exposure but does not neutralise it — the residual channel is exactly the tie among distance-equal steps, i.e. cul-de-sac selection, which is what barriers exist to create (§4.3). Further: the **thief ships `qtable_primary`** (§10.10), so no distance filter runs first and miscalibration is unbounded there; the layout-transfer table measures the cop only.
 
-**5. Compliancer's reliability.**
-- **Trust-Engine R2:** "items 2–5 are not derivable from the evidence… I'd discount that round entirely." **R3:** "the answer affirms and denies the same claim and cites no number. Unauditable."
-- **Strategist R2:** independently flags the same 40%/0.0% contradiction.
-- Compliancer never responded to either challenge and did not defend the 99.8% or 40% figures.
+**3. Overall security posture.**
+- *Strategist (R1):* simultaneity and state integrity are "solidly protected" via Ed25519, SHA-256 commit-reveal lockstep, and dual-engine `DivergenceError`; the remaining items are strategic risks.
+- *Trust-Engine (R1–R3):* four compounding gaps (unsigned declaration, no confidentiality, delimiter-free digest, no cross-group match) plus a divergence-detection control that is unvalidated against any real peer.
+
+**4. Severity of the tabular bottleneck.**
+- *Strategist (R3):* Trust-Engine underestimates it — exact-match keying caps layout generalisability at zero, forcing total reliance on the non-learned fallback.
+- *Trust-Engine:* frames it primarily as a **documentation-falsity** problem (a safety claim in §10.10 that isn't earned), not solely a capability ceiling.
+
+**5. Whether Step-0 is already an enforcement layer.**
+- *Compliancer (R2):* the declaration is a proof layer that enforces constraints and applies penalties on violation, hardened by Ed25519.
+- *Trust-Engine (R3) and Strategist (R3):* explicitly rejected — §5/§10.1 state it is unsigned and unenforced, "provenance and good faith, not proof of fairness."
 
 ## Unique Findings
 
-**Trust-Engine (uncontested by anyone):**
-- Statistical power framing — the entire unknown-board comparison sits inside one standard error, so the debate's premise ("no better") is under-evidenced in *both* directions.
-- Cross-layout means (37.1%, range 10–59%) are not comparable without stratifying by layout difficulty.
-- Bare board = 0.0% for every policy proves capture is barrier-dependent — walls are the mechanism of capture, not an obstacle to it.
-- The downside is bounded *by the existing architecture*, not by a proposed safeguard: cold keys degrade to the heuristic because the composite is manhattan-primary.
-- Sharpest reframe: nothing in this evidence tests board transfer at all, because the key forbids it. The experiment cannot produce the number being argued over.
+**Trust-Engine only:**
+- 37.2% of decision states unvisited — independent corroboration that the distance rule, not the table, drives behaviour.
+- n=8 undercuts the **+9.9** as much as the −2.2; the trained-layout gain is equally unresolved. No other model questioned the positive number.
+- The thief ships `qtable_primary`, so the layout-transfer experiment characterises the cop only and says nothing about the thief's off-manifold exposure.
+- The residual miscalibration channel is specifically tie-breaking among distance-equal moves (§4.3).
+- `game_uid` already exists in §7.1 artifacts — the replay fix is a schema change, not new infrastructure.
+- Signing cannot close §10.1 even in principle: signatures prove authorship, not that the declared commit is the one executing.
+- Step-0 precedes turn 0, so it cannot ride the existing commit signature schema.
 
-**Strategist (uncontested):**
-- Two concrete re-keying routes: local ego-centric wall sensors, or hybridizing the heuristic with real-time graph search (BFS/A*).
-- Operational lever: if league board seeds are revealed pre-match, 10,000 retraining episodes recovers the +11.3.
+**Strategist only:**
+- Excluding `move_count` buys translation invariance but blinds the agent to turn-limit horizons — raised once, never rebutted or revisited.
+- `strongest()` discards multimodal spatial uncertainty from the 5×5 decaying field (§4.1) — later conceded moot for live P2P, but still live for any offline/training path.
+- Positive design credit: the `(relative_opponent, barrier_mask)` key avoids state explosion; dual-engine cross-verification is a real integrity control.
+- The explicit remedy: move to function approximation.
 
-**Compliancer:** a "99.8%" Manhattan-vs-empty-table figure appearing nowhere else in the transcript, unverified and uncorroborated; and the 40% bare-board claim, explicitly contradicted by two models. No unique finding survives.
+**Compliancer only:** a 64-layout training pool figure (uncited, unverified by any peer); the claim that Step-0 carries penalties (rejected).
 
-**Quorum defect:** QA was unavailable in all three rounds (localhost:11434 timeout), and Strategist was unavailable in R3. The final round contains one auditable voice plus one self-contradicting one. This report is effectively a two-model debate, and the R3 rebuttals went unanswered.
+**QA only:** nothing evaluable. Round 1 hallucinated an "NVIDIA Test Engine" and a "15 out of 180" prediction figure; Round 2 was degenerate text; Round 3 conflated the state-representation finding with the cross-match replay finding while claiming agreement.
 
 ## Analysis
 
-**Answering your question directly: on an unknown board, the RL contributes nothing — that is a property of your state key, not a training failure. On a known board it contributes a great deal. Both are true simultaneously, and the 55.1/57.4 number is not the thing that decides it.**
+**Two of four participants produced audit value.** Trust-Engine and Strategist carry the report; Compliancer produced uncited generalities and one affirmatively wrong claim; QA produced hallucinations and degenerate output. A vote count over four models would have been meaningless here — a 3-of-4 "majority" including QA's Round 3 pseudo-agreement would have laundered a garbled restatement into support.
 
-The debate's most useful output is Trust-Engine's R3 correction, because it dissolves the question rather than answering it. If `barrier_mask` is genuinely in the key, then on an unseen layout every lookup misses, the table never fires, and your policy *is* the distance heuristic already. Under that reading, "ship the heuristic alone" and "ship the composite" are the same shipped behavior on unknown boards, differing only in a lookup that returns nothing. There is no decision to make, and the proposed gate is a no-op.
+**The mechanism question is open and should not be reported as settled.** The Round 2/Round 3 swaps are the diagnostic finding of this debate: each model adopted its counterpart's *previous* position rather than testing the claim. That is agreement-seeking behaviour, not evidence-driven convergence, and it means the transcript contains a superficially strong consensus for *both* mutually exclusive mechanisms. Weight the arguments, not the endorsements — and on argument quality, Trust-Engine's reading is the more specific and the more falsifiable: if §4.2 defines `barrier_mask` as 4 bits over N/S/W/E, then the mask space is 16 values, masks recur across seeds, and "misses every entry by construction" is false as written. **This is decidable by inspection**, not by further debate: read the `barrier_mask` construction and the state-key lookup path, and check whether unseen-layout runs produce table hits or fall-throughs. Instrumenting hit rate on the unseen-layout arm settles it in one run.
 
-That makes Strategist's collision mechanism the one claim worth resolving empirically, and it is cheap to check in your code: a miss can only corrupt a decision if the key is hashed into a fixed-width bucket, if the mask is truncated or defaulted, or if the tiebreak reads a default Q-value rather than testing for key presence. If none of those hold, Strategist's R1 recommendation rests on a mechanism that cannot occur, and the 2.3pp gap is what Trust-Engine says it is — noise at n=400, well inside a ±2.5pp standard error, aggregated over layouts spanning 10% to 59%.
+**Consequences differ sharply by branch, which is why it matters.** If entries are missed, §10.10's safety claim stands and the finding is a capability ceiling. If entries are hit with values learned elsewhere, then the documented "inert by construction" argument is unearned, corruption is not excluded, and the exposure is asymmetric: bounded-but-nonzero for the cop under `manhattan_primary` (residual in cul-de-sac tie-breaks) and unbounded for the thief under `qtable_primary`. Trust-Engine's asymmetry point survived unchallenged and is the single most actionable item in the transcript.
 
-The strongest evidentiary point in the transcript is the one Strategist's "entirely overfitted" verdict misses: the 2.2% → 78.0% evader survival jump against an untrained-against cop. That is generalization along the opponent axis, which is the axis league play actually stresses alongside board novelty. Discarding the RL because it fails board transfer would also discard the one thing demonstrated to transfer.
+**Safe to act on now:** add `game_id`/`game_uid` to the signed message (§3) — converged, cheap, and the artifact field already exists. Stop citing `mutual_agreement.confirmed` as evidence of anything until a cross-group match runs (§10.7). Delimit the positional commit digest (§10.2). Downgrade the −2.2 in §10.10 from "performance drops" to "underpowered, no measured transfer" — and apply the same honesty to the +9.9, which is equally underpowered at n=8.
 
-My recommendation, tracking the transcript rather than splitting it: **ship `manhattan-primary` with the table as tiebreak** — the unknown-board case degrades to 57.4% by construction, and the +11.3 is available whenever the mask matches. Verify the key-miss path is a presence test, not a default-value read; if it is not, fix that rather than adding a gate on top. If league seeds are knowable pre-match, retrain — that is where the real points are. And treat re-keying on local barrier features as the actual roadmap item, since it is the only change that would make the unknown-board number move at all.
+**Requires the mechanism resolved first:** any edit to the §10.10 "by construction" sentence, and any decision on function approximation versus a narrower fix.
 
-Two caveats on this report's own reliability: Strategist never got to answer the impossibility argument, so disagreements 1 and 3 are unresolved rather than settled in Trust-Engine's favor; and with QA dark in all three rounds, no third independent voice ever checked either.
+**Two orphaned findings** were dropped by the debate rather than resolved: the `move_count` exclusion versus turn-limit awareness, and the `strongest()` collapse in offline/training paths (the concession only covers live P2P). Both are Strategist's and both deserve a verdict.
+
+One caveat on this report: it synthesises the transcript only. I have not opened the repo to verify any section citation, figure, or field name quoted above — the barrier_mask check in particular is unverified and is the first thing I'd run.
 
 ## Full transcript
 
@@ -98,137 +103,122 @@ Two caveats on this report's own reliability: Strategist never got to answer the
 
 **Compliancer**
 
-The zero-trust P2P pursuit-evasion project's performance is influenced by several factors, particularly when incorporating heuristics and considering the barrier layout. Here are the key observations:
+The project involves a 64-layout training pool for game AI. The setup includes state management with trajectories and collisions, with evidence from logging and test cases showing correct policy scores. Gameplay mechanics focus on movement tracking, collision detection, scoring, and AI handling of specific scenarios like the thief.
 
-1. **Heuristic Impact**: Using a Manhattan heuristic against an empty table achieved a 99.8% score, indicating that effectively applying constraints or additional rules can significantly boost performance.
-
-2. **Barrier Layout Effect**: The Q-table with a primary heuristic showed promise even when paired with an empty table, suggesting barriers are crucial but require optimization to maximize benefits.
-
-3. **Self-Play Training Limitations**: While co-evolving strategies improved performance slightly on some metrics, they were less effective than training against another figure, indicating that additional interaction or guidance is needed.
-
-4. **Cop vs. Thief Performance**: Even with a primary heuristic, the cop's score on a bare board was 40%, highlighting the need for better constraint handling to outperform the baseline.
-
-5. **State Key Significance**: The barrier mask, part of the state key, may require more nuanced approaches in how constraints are applied or enforced during interaction.
-
-**Conclusion**: The project benefits from heuristic optimization and effective constraint application. While heuristics alone improve performance on certain metrics, further exploration is needed to address limitations when combined with other strategies.
+**Conclusion:**  
+More on these sections below.
 
 **Trust-Engine**
 
-**Verdict: keep the RL, but stop calling it a policy — it's a layout-specific lookup table. Do not ship it ungated for unknown boards.**
+**Transfer Gap.** The §10.10 table is the only direct measurement: +9.9 pts on trained layouts (60.6 vs 50.7), −2.2 off them (55.1 vs 57.4), 8 layouts each. At n=8 neither number resolves; the honest read is "no measured transfer," and the +9.9 is equally underpowered. 37.2% unvisited decision states corroborates that the distance rule, not the table, is load-bearing.
 
-The evidence is internally consistent, not contradictory. `barrier_mask` is in the state key, so on an unseen layout essentially no key matches what was trained. Generalization isn't weak here — it's structurally unreachable. The 55.1% vs 57.4% isn't "no better," it's slightly *worse*, and that -2.3 is the tell: partial/stale entries are firing and overriding a heuristic that would otherwise score 57.4%.
+**State representation — the stated mechanism is wrong.** §10.10 claims an unseen layout "misses every entry by construction" because `barrier_mask` is in the key. But that mask is 4 bits of *local* adjacency (§4.2), not a layout fingerprint: a new seed yields the same 16 masks. Off-manifold entries are therefore *hit with miscalibrated values*, not missed. This matters — "inert by construction" is an unearned safety argument, and the corruption case is not excluded by the key's design.
 
-Where the mask does match, the contribution is large and threefold: +11.3 vs greedy evader (41.5 vs 30.2), +14.8 vs trained thief (36.8 vs 22.0), and +8.2 evader survival (78.0 vs 69.8) against a cop it never trained on. That last one is real transfer, and the 2.2% → 78.0% jump confirms the opponent-pool fix, not overfitting.
-
-Two actions:
-1. Gate table lookups on exact-mask (and a minimum visit count); fall through to `manhattan-primary`. That makes the unknown-board case ≥ 57.4% by construction.
-2. Barriers are deterministic from a seed — if the league board is knowable pre-match, retrain 10k episodes on it. That's where the +11.3 lives.
-
-Bare board = 0.0% for everyone confirms capture is barrier-dependent; cross-layout means (37.1%, range 10–59) are not comparable without stratifying.
+**Security.** Ed25519 signs only `{role, turn, h_commit}` (§3). Nothing binds a submission to a `game_id`, so a signature is replayable across matches at the same turn index — the turn-binding defence is scoped too narrowly. Compounding: unsigned declaration (§10.1), no confidentiality (§10.6), delimiter-free digest (§10.2), and no cross-group match ever run (§10.7).
 
 **Strategist**
 
-**No, the current RL adds no value—and actively degrades performance—on unknown boards.**
+As Audit Strategist, my evaluation reveals:
 
-Because `barrier_mask` is embedded directly in the tabular state key, the Q-table cannot generalize to unseen geometries. On unknown layouts, the learned table achieves **55.1% vs the empty table’s 57.4%**. It underperforms the base heuristic because unvisited state keys yield arbitrary or default Q-values that corrupt decision-making.
+1. **Transfer Gap on Unseen Layouts (§10.10)**: The tabular Q-policy fails to generalise. While yielding a +9.9% capture gain over an empty table on trained layouts (60.6% vs 50.7%), performance drops to -2.2% on unseen layouts (55.1% vs 57.4%). The table becomes inert because the 4-bit `barrier_mask` ties Q-values to specific spatial configurations; off-manifold generalisation relies entirely on the fallback Manhattan distance heuristic.
+2. **State Representation (§4.2, §10.4)**: The state key `(relative_opponent, barrier_mask)` efficiently avoids state explosion. However, collapsing the 5×5 decaying scent field (§4.1) to a single `strongest()` cell discards multimodal spatial uncertainty. Excluding `move_count` aids translation invariance but blinds the agent to turn-limit horizons.
+3. **System Security (§2, §3, §10.1, §10.2, §10.6)**: Simultaneity and state integrity are solidly protected via Ed25519 signatures, SHA-256 commit-reveal lockstep, and dual-engine cross-verification (`DivergenceError`). However, strategic risks remain: undelimited positional commit strings (§10.2), unencrypted wire traffic (§10.6), and an unsigned/unenforced Step-0 declaration payload (§10.1).
 
-While RL delivers real gains on the single *shipped* layout (+11.3 points for Cop at 41.5% vs 30.2%; Evader survival at 78.0% vs 69.8%), these gains are entirely overfitted to that specific 14-barrier layout. Because capture capability is heavily board-dependent (0.0% capture on bare boards vs a 37.1% mean across layouts), exact wall geometry matters, but memorization is not strategy.
-
-### Strategic Recommendation:
-1. **Immediate League Play:** **Ship the distance heuristic alone.** It outperforms the Q-table on unseen boards (57.4% vs 55.1%) and eliminates unnecessary state-lookup overhead.
-2. **Next Iteration:** To make RL viable for league play, strip `barrier_mask` from the tabular key. Replace global grid memorization with local ego-centric wall sensors or hybridize the distance heuristic with real-time graph search (e.g., BFS/A* shortest path).
+**Recommendation**: Transition to function approximation for layout transfer and wrap the declaration payload inside the signed commit schema.
 
 **QA**
 
-[unavailable: localhost:11434: timed out]
+The evidence on this question is mixed, with some studies supporting the claim that the ship's
+    **AI** can **predict** the next move correctly 15 times out of 180. And when it was tested by
+    **NVIDIA**
+    `Test
+    **Engine**` and the AI
+    **engineer** was
+    **tested**
+    `with** `NVIDIA`
+    `Test Engine**` in
+    `334189167502  and ` 180-0000000000000000000000000000000
 
 ### Round 2
 
 **Compliancer**
 
-**Agreeing and Disagreeing with the Discussants:**
-
-**Agreed:**
-- The Q-tables have potential in structured environments due to their organized state key, but on unknown layouts, they face challenges.
-
-**Disagreed:**
-- Verier argues that while the current setup has some overfitting on a specific 14-barrier board, generalizing might require more structure or learning strategies.
-
-**Final Answer:**
-
-Agreed with Strategyist; while Q-tables have merit in structured environments, on unknown boards, they may underperform. Disagreed with Verier regarding potential for better performance through additional structure or learning.
-
-The answer is: The RL contributes to specific board types but could generalize, suggesting a need for more strategy in unknown layouts.
+The discussion centers on the significance of an "unsigned" Step-0 declaration in their training framework. The user emphasizes its role as a proof layer to enforce system constraints and add penalties when violations occur, thereby enhancing validation. They reference the Ed25519 signature as part of this enforcement mechanism, which strengthens the system by adding a hardening layer.
 
 **Trust-Engine**
 
-**Where I agree with Strategist:** the mechanism is right — `barrier_mask` in the key means an unseen layout is a cold key, so no transfer is possible by construction. Ego-centric wall features are the correct next iteration.
+**Agree with Strategist** on the mechanism: `barrier_mask` in the state key means an unseen layout misses every entry, so transfer is carried by the distance rule alone (60.6/50.7 seen vs 55.1/57.4 unseen, §10.10).
 
-**Where I disagree:** "actively degrades" is not supported. At n=400, the standard error on a ~56% rate is ~2.5pts; the 55.1 vs 57.4 gap (~3.5pt SE on the difference) is noise. Against 20 layouts ranging 10.0–59.0%, a 2.3pt aggregate is unreadable. The honest verdict is *indistinguishable*, not *worse*.
+**Disagree on three points.**
 
-Also, Strategist calls all gains layout-overfit, but the evader's 78.0% vs 69.8% is survival against a **cop it never trained against** — that's opponent generalization, and the previous self-play figure of 2.2% shows the pool training fixed a real defect.
+1. Reading -2.2 as "performance drops" overstates it. PLAN states the gap sits inside sampling error and that the table *cannot* be corrupting — a miss falls through to the distance rule by construction. The honest claim is inert, not worse.
+2. "Wrap the declaration inside the signed commit schema" doesn't work: the Ed25519 signature covers `canonical_json({role, turn, h_commit})` only, and Step-0 precedes turn 0. It needs its own signature — and §5 already concedes signing proves *authorship*, not truth: nothing detects a peer running a different commit than it declares. §10.1 is unclosable by crypto alone.
+3. The `strongest()` collapse costs nothing live — §10.4: the field is never consulted or deposited into in a P2P match.
 
-**Compliancer:** items 2–5 are not derivable from the evidence, and "the cop's score on a bare board was 40%" contradicts the stated 0.0%. I'd discount that round entirely.
+**Trust-Engine addition:** `mutual_agreement.confirmed` rests on `play_match` comparing two engines *we* spawn (§2). Against a remote group, divergence detection depends on the opponent honestly running its own engine — unvalidated, since §10.7 records no cross-group match.
 
-**Verdict:** keep the table *only* because the shipped policy is manhattan-primary — the table is a tiebreak, so cold keys degrade to the heuristic. Bounded downside, +11.3 upside where it's warm. Ship, don't claim generalization.
+**Compliancer** cites no section and asserts "correct policy scores" that the evidence never claims. **QA's** output is garbled and carries no findings — it must not be counted as a concurring vote.
 
 **Strategist**
 
-**Do not abandon RL, but do not deploy ungated tables on unknown boards.**
+**AGREE WITH TRUST-ENGINE:**
+1. **State Representation Vulnerability:** Trust-Engine correctly exposes a flaw in §10.10 claims. Per §4.2, `barrier_mask` is merely a 4-bit local adjacency vector (16 possible values). Unseen layouts do *not* miss entries "by construction"; instead, local barrier patterns match existing Q-table entries with miscalibrated Q-values from other layouts.
+2. **Security Deficit:** Signed payloads `{"role", "turn", "h_commit"}` (§3) omit `game_id`. Signatures are structurally vulnerable to cross-match replay attacks across identical turn numbers.
 
-**AGREE with Trust-Engine:**
-1. **Structural Lock-In:** Because `barrier_mask` is in the state key, zero-shot transfer is structurally impossible. The regression on unseen boards (55.1% vs 57.4%) is caused by accidental state key collisions executing bad actions that override the heuristic.
-2. **Value of RL:** On matched layouts, RL provides critical lift (+11.3 vs greedy, +14.8 vs trained thief). The jump in evader survival from 2.2% to 78.0% proves the diverse training pool works.
-3. **Action:** Gate Q-table execution on exact `barrier_mask` match. Default to `manhattan-primary` on unknown boards (guaranteeing ≥57.4%). If league board seeds are revealed pre-match, run 10,000 retraining episodes to capture the +11.3 RL boost.
-
-**DISAGREE with Compliancer:**
-1. **Misread Evidence:** Compliancer claims a 40% bare-board cop score; evidence explicitly states **0.0%** across all policies, proving captures are entirely barrier-dependent.
-2. **Underestimating RL:** Relying on heuristics alone caps performance at 30.2% on structured layouts versus 41.5% with trained RL.
-
-**Verdict:** Ship gated RL with Manhattan fallback. Retrain pre-match if board seeds are known.
+**DISAGREE WITH TRUST-ENGINE & PEERS:**
+1. **Transfer Gap Mechanism:** Trust-Engine assumes Q-value corruption destroys transfer performance. However, for the cop, `manhattan_primary` policy mode (§10.10) constrains actions to the distance-optimal set *before* consulting table values. The Manhattan heuristic acts as the true transfer engine, neutralizing bad local Q-value hits.
+2. **Compliancer & QA:** Compliancer provides no actionable structural critique. QA's claims referencing "NVIDIA Test Engines" are entirely hallucinated and unsupported by the project's 914-test suite and documented architecture.
 
 **QA**
 
-[unavailable: localhost:11434: timed out]
+**State Transfer Agreement:**
+
+Agreement is reached where the parties agree on an action.
+
+Disagreement occurs when one party refuses a proposal that includes all of their actions and agreements to have been agreed upon by other parties that include them, which allows for it to have been included with them that includes all of the actions and commitments to
+```
 
 ### Round 3
 
 **Compliancer**
 
-The learned Q-tables demonstrate promising performance when trained against specific opponents but fail to generalize well to unknown boards. The state key's dependency on barrier_mask limits transferability, and the model struggles with unseen configurations due to insufficient adaptation. While effective for known layouts, they lack robust generalization, making them unsuitable for league play where board unpredictability is high.
+**State Transfer Agreement:**
 
-**Answer:**
+The user agrees that the transfer agreement between teams is solid and implemented correctly. However, there are areas where the testing strategy could be strengthened.
 
-Our reinforcement learning approach shows potential in specific setups but lacks the ability to generalize well to unknown boards. The learned Q-tables perform well on matched layouts using the heuristic but fail when faced with completely unknown boards due to insufficient adaptation and limitations in capturing barrier complexities. The model's reliance on state key collisions and lack of overfitting in generalization make it unsuitable for league play, where unpredictability is a challenge.
+**Disagreements:**
+1. The test suite may not cover all edge cases or unexpected behaviors.  
+2. Testing frameworks should ensure both functional coverage and implementation accuracy.  
+
+**Agreements with Their Approach:**
+- Transfer agreement implementation follows best practices.  
+- Module isolation allows for independent testing of each component.
 
 **Trust-Engine**
 
-**AGREE with Strategist:** don't ship the heuristic alone. On matched layouts the composite scores 41.5% vs 30.2% (+11.3) and 36.8% vs 22.0% vs a trained thief. And Compliancer's bare-board figure is a misread — the evidence says 0.0% for *every* policy.
+**AGREE — state representation (Strategist).** §4.2's `barrier_mask` is 4 bits over N/S/W/E: 16 values total. So §10.10's claim that "`barrier_mask` in the key means an unseen layout misses every entry and the composite falls through to the distance rule by construction" is structurally false — masks are layout-agnostic and collide across seeds. That sentence should be **deleted**, not softened; the -2.2 delta is then weak evidence of misranking inside sampling error, not inertness-by-design.
 
-**DISAGREE with Strategist, twice:**
+**AGREE — `game_id`.** §3 signs only `canonical_json({role, turn, h_commit})`. Turn binding blocks intra-match replay; a turn-N signature still replays into game N+1 of the same series. `game_uid` already exists in §7.1 artifacts and is not in the signed message.
 
-1. *The collision mechanism isn't real.* With `barrier_mask` in the key, an unseen layout misses every entry — the table is inert, not corrupting. And 55.1% vs 57.4% on 400 trials sits inside ±2.5pp standard error. That's noise, not a regression. Naming a mechanism for noise and then engineering against it is trust-negative.
+**DISAGREE — neutralization.** `manhattan_primary` *bounds* the cop's exposure (table only ranks within the distance-optimal set) but the residual channel is precisely the tie among distance-equal steps — cul-de-sac selection, the thing barriers exist to create (§4.3). And the **thief ships `qtable_primary`** (§10.10): no distance filter runs first, so there miscalibration is unbounded. The layout-transfer table measures the cop only.
 
-2. *The gate already exists.* Exact-mask matching is what the state key does. A gate on it buys zero measurable points.
+**DISAGREE — Compliancer.** §5/§10.1 state the declaration is unsigned and unenforced: "provenance and good faith, not proof of fairness." It is not a proof layer today.
 
-**DISAGREE with Compliancer:** the answer affirms and denies the same claim and cites no number. Unauditable.
-
-**My addition:** the only transferable evidence is the *opponent* axis — 78.0% vs 69.8% survival against a cop never trained against, up from 2.2% under self-play. Nothing here tests board transfer, because the key forbids it.
-
-**Verdict:** ship `manhattan-primary`; unknown board degrades to the heuristic by construction. Known seed → retrain. Real fix: re-key on local barrier features, not a gate.
+QA offers no evaluable proposition.
 
 **Strategist**
 
-[unavailable: HTTP 503: {
-  "error": {
-    "code": 503,
-    "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",
-    "status": "UNAVAILABLE"
-  }
-}
-]
+**AGREE with Trust-Engine:**
+1. **Transfer Gap as Inertness:** The -2.2% gap on unseen layouts (55.1% vs. 57.4% empty table, §10.10) is sampling noise. Unseen `barrier_mask` keys miss the Q-table, falling back to deterministic Manhattan rules by design. The table is inert, not corrupting.
+2. **Step-0 & Security Limits:** Signing Step-0 declarations (§5, §10.1) establishes provenance, not runtime execution truth. Furthermore, `mutual_agreement.confirmed` (§2, §7.1) rests on mirrored local engines and remains unvalidated against live remote peers (§10.7).
+3. **Live Execution Path:** Pheromone/belief collapsing (§4.1) costs nothing in live P2P matches because signed opponent coordinates are exchanged directly every turn (§10.4).
+
+**DISAGREE with Trust-Engine / Peers:**
+1. **State Representation Bottleneck:** Trust-Engine underestimates the architectural risk of tabular representation (§4.2). Relying on exact `barrier_mask` matches inherently caps layout generalizability to zero without function approximation, forcing total reliance on the non-learned fallback off-manifold (§10.10).
+2. **Peer Validity:** Compliancer misinterprets Step-0 signatures as real-time constraint enforcers, and QA’s garbled output provides no audit value; both must be disregarded.
 
 **QA**
 
-[unavailable: localhost:11434: timed out]
+I agree with Trust-Engine that state representation vulnerability ( §10.10 claims ) is structurally vulnerable to cross-match replay attacks across identical turn numbers . I agree with Trust-Engine . Peers : Transfer gap mechanism is Trust-Engine assumes Q-value corruption destroys transfer performance . However , for the cop 's
+```
 

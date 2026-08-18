@@ -91,7 +91,7 @@ async def play_match(clients, connections, board, config):
     history = []
     turn = 0
 
-    await verify_board_agreement(connections, board.barrier_count)
+    await verify_board_agreement(connections, board.barrier_count, config)
 
     while True:
         submissions = [

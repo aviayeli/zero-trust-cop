@@ -37,6 +37,24 @@ def build_observation(match_state, config, role: str) -> dict:
         # than play a plausible wrong game (scripts/board_agreement.py).
         "axis_origin_corner": config.axis_origin_corner,
         "axis_start_index": config.axis_start_index,
+        # The rules a peer would otherwise disagree about SILENTLY: a
+        # max_moves mismatch surfaces only when the shorter limit fires, and
+        # a scoring mismatch never diverges the engines at all — the two
+        # peers play the same match and report different outcomes.
+        "max_moves": config.max_moves,
+        "scoring": scoring_block(config),
+    }
+
+
+def scoring_block(config) -> dict:
+    """The agreed payoff table, as a peer states it for comparison."""
+    return {
+        "capture_cop": config.capture_cop,
+        "capture_thief": config.capture_thief,
+        "survival_cop": config.survival_cop,
+        "survival_thief": config.survival_thief,
+        "tie_score": config.tie_score,
+        "technical_loss": config.technical_loss,
     }
 
 
