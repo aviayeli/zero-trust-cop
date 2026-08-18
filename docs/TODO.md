@@ -10,8 +10,8 @@ This file is the top-level, cross-phase checklist. The per-phase TODOs
 `TODO_07.md`) retain the full assertion-by-assertion detail for their phases;
 items here are the milestone rollups, each carrying the evidence that closed it.
 
-**Gate status:** `pytest -q` → **702 passed**. Every `src/**/*.py` is ≤150 lines
-(longest: `strategy/qvalues.py`, 147). `scripts.replay_match
+**Gate status:** `pytest -q` → **760 passed**. Every `src/**/*.py` is ≤150 lines
+(longest: `strategy/qvalues.py`, 146). `scripts.replay_match
 logs/aviayeli/log_aviayeli_g01.json` → `Verified OK`.
 
 ---
@@ -448,7 +448,7 @@ integration and replay.
 
 ### 5.2 Repository gates — complete
 
-- [x] `pytest -q` → **673 passed**; no previously passing test regressed.
+- [x] `pytest -q` → **673 passed** *(as of Phase 5.2; the suite has grown since — see `PLAN.md` §11 and README §9 for the current total)*; no previously passing test regressed.
 - [x] README self-checked figures (test total ×2, tracked file count,
       longest-file line count) updated and proven by
       `tests/unit/test_readme_consistency.py`.
