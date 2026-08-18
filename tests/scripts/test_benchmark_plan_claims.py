@@ -3,11 +3,12 @@
 A document quoting exact capture rates either gets a mechanical check or
 quietly becomes wrong — the posture ``tests/unit/test_readme_consistency.py``
 already takes toward the README. §10.10 is the section an audit will read
-hardest, so every number in it is re-derived here from
-``scripts.benchmark_offmanifold`` rather than trusted.
+hardest, so every number in it is re-derived here rather than trusted.
 
-Retraining the tables is therefore expected to fail these tests. That is the
-point: the numbers move together with the policy or not at all.
+This file has now been rewritten twice, because the CONCLUSIONS inverted
+twice: once when barriers were placed, and once when the evader was given the
+distance rule. Both times the tests failed first and the prose followed. That
+is the intended order.
 """
 
 import json
@@ -17,14 +18,13 @@ import pytest
 
 PLAN = Path("docs/PLAN.md")
 README = Path("README.md")
-# How §10.10's published table labels each policy the probe reports.
 DOC_LABELS = {
     "qtable-only": "`qtable-only` — no distance rule at all",
-    "qtable-primary": "`qtable-primary` — distance only on flat states",
-    "manhattan-primary": "`manhattan-primary` — **shipped**, table breaks ties",
+    "qtable-primary": "`qtable-primary` — **shipped**, distance only on flat states",
+    "manhattan-primary": "`manhattan-primary` — distance decides, table breaks ties",
     "heuristic": "`heuristic` — same rule, EMPTY table, ties by move-set order",
 }
-SHIPPED = "manhattan-primary"
+SHIPPED = "qtable-primary"
 PUBLISHED_OPPONENTS = ("random", "greedy", "trained")
 
 
@@ -37,6 +37,10 @@ def cell(rows, policy, opponent):
     return next(
         row for row in rows if row["policy"] == policy and row["opponent"] == opponent
     )
+
+
+def rate(rows, policy, opponent):
+    return cell(rows, policy, opponent)["capture_rate"]
 
 
 def test_the_published_table_still_reproduces(benchmark_rows, plan):
@@ -54,82 +58,60 @@ def test_the_published_table_still_reproduces(benchmark_rows, plan):
 
 
 def test_the_published_off_manifold_rate_still_reproduces(benchmark_rows, plan):
-    """The off-manifold rate is §10.10's headline and is repeated in the README."""
-    rate = cell(benchmark_rows, "qtable-only", "random")["flat_state_rate"]
+    """The headline of §10.10, repeated in the README."""
+    flat = cell(benchmark_rows, "qtable-only", "random")["flat_state_rate"]
 
-    assert f"**{rate:.1f}% of decision states" in plan
-    assert f"**{rate:.1f}%** of decisions" in README.read_text(encoding="utf-8")
+    assert f"**{flat:.1f}% of decision states" in plan
+    assert f"**{flat:.1f}%** of decisions" in README.read_text(encoding="utf-8")
 
 
-def test_the_greedy_evader_is_catchable_now_that_barriers_are_placed(
+def test_the_priority_inversion_is_real_and_published(benchmark_rows, plan):
+    """§10.10's most important claim: the optimal priority is opponent-dependent.
+
+    Phase 8 shipped `manhattan_primary` on a measurement against a weak
+    evader. Against a competent one the ordering reverses. If it ever reverses
+    back, the section's central methodological lesson is wrong.
+    """
+    shipped = rate(benchmark_rows, SHIPPED, "greedy")
+    superseded = rate(benchmark_rows, "manhattan-primary", "greedy")
+
+    assert shipped > superseded, "the priority inversion no longer holds"
+    assert f"**{shipped:.1f}%** where `manhattan_primary` scores" in plan
+    assert f"**{superseded:.1f}%**" in plan
+
+
+def test_the_learned_table_helps_the_cop_against_a_greedy_evader(
     benchmark_rows, plan
 ):
-    """The 0.0% result was structural to a BARE grid, and Phase 9 removed it.
+    """The cop-side NET POSITIVE claim, stated for the greedy evader only."""
+    shipped = rate(benchmark_rows, SHIPPED, "greedy")
+    empty = rate(benchmark_rows, "heuristic", "greedy")
 
-    Barriers give a lone pursuer somewhere to corner against. If this ever
-    returns to zero, §4.3 stopped populating the board and §10.10's headline
-    claim is wrong.
-    """
-    greedy = [row for row in benchmark_rows if row["opponent"] == "greedy"]
-
-    assert greedy, "the greedy evader is part of the published opponent set"
-    shipped = cell(benchmark_rows, SHIPPED, "greedy")["capture_rate"]
-    assert shipped > 0.0, "the greedy evader is uncatchable again"
-    assert f"0.0% -> {shipped:.1f}%" in plan
+    assert shipped > empty, "the learned tie-break stopped helping the cop"
+    assert f"({shipped:.1f}% vs {empty:.1f}%)" in plan
 
 
-def test_each_priority_step_gains_ground(benchmark_rows):
-    """The three TABLE-bearing policies are a progression and must stay ordered.
-
-    ``heuristic`` is deliberately excluded: it carries no learned values, so
-    it is a baseline rather than a step, and on the barriered board it no
-    longer tops the table (§10.10).
-    """
-    for opponent in {row["opponent"] for row in benchmark_rows}:
-        rates = [
-            cell(benchmark_rows, policy, opponent)["capture_rate"]
-            for policy in ("qtable-only", "qtable-primary", SHIPPED)
-        ]
-
-        assert rates == sorted(rates), f"the progression inverted vs {opponent}"
-
-
-def test_the_learned_tie_break_now_gains_ground_over_the_heuristic(
+def test_the_unflattering_result_against_our_own_thief_stays_published(
     benchmark_rows, plan
 ):
-    """§10.10's headline REVERSED at Phase 9, so it must stay measured.
+    """The empty table still beats the shipped cop against our trained evader.
 
-    `manhattan-primary` and `heuristic` run the SAME distance rule and differ
-    only in how a tie is settled. On the bare grid the learned values cost
-    13.5 points; on the barriered board they gain. If that inverts again the
-    section is wrong and must be rewritten a second time.
+    This is the least flattering cell in the matrix. §10.10 must keep saying
+    so; a section that published only the greedy column would be true and
+    misleading.
     """
-    for opponent in ("trained", "greedy"):
-        shipped = cell(benchmark_rows, SHIPPED, opponent)["capture_rate"]
-        heuristic = cell(benchmark_rows, "heuristic", opponent)["capture_rate"]
+    shipped = rate(benchmark_rows, SHIPPED, "trained")
+    empty = rate(benchmark_rows, "heuristic", "trained")
 
-        assert shipped > heuristic, f"the learned tie-break lost ground vs {opponent}"
-        assert f"**{shipped - heuristic:.1f} points**" in plan
-    assert "NET POSITIVE as a tie-breaker" in plan
+    assert empty > shipped, "the result changed; §10.10 must be rewritten"
+    assert f"({empty:.1f}% vs {shipped:.1f}%)" in plan
 
 
-def test_the_published_swap_gain_is_computed_from_raw_rates(benchmark_rows, plan):
-    """Subtracting the table's ROUNDED cells gives a different, wrong number."""
-    before = cell(benchmark_rows, "qtable-primary", "trained")["capture_rate"]
-    after = cell(benchmark_rows, SHIPPED, "trained")["capture_rate"]
-
-    assert f"project**:\n      +{after - before:.1f} points" in plan
-
-
-def test_the_shipped_policy_is_never_beaten_by_the_empty_table_baseline(
-    benchmark_rows,
-):
-    """The baseline outscored the shipped policy before Phase 9; it must not now."""
-    for opponent in ("random", "greedy", "trained"):
-        shipped = cell(benchmark_rows, SHIPPED, opponent)["capture_rate"]
-        baseline = cell(benchmark_rows, "heuristic", opponent)["capture_rate"]
-
-        assert shipped >= baseline, f"the empty-table baseline wins vs {opponent}"
+def test_a_bare_board_makes_the_greedy_evader_uncatchable(benchmark_rows, plan):
+    """The baseline the whole barrier argument rests on (see also
+    tests/scripts/test_layout_generality.py, which checks it across layouts)."""
+    assert "On a bare board every cop policy scores 0.0%" in plan
+    assert benchmark_rows, "the probe produced no rows"
 
 
 def test_the_provenance_note_names_the_commit_the_artifacts_carry(plan):

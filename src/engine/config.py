@@ -51,7 +51,10 @@ def load_config(path: str) -> GameConfig:
         thief_start=data["board_and_agents"]["thief_start"],
         move_set=data["movement_and_barriers"]["move_set"],
         max_barriers=data["movement_and_barriers"]["max_barriers"],
-        barrier_seed=data["movement_and_barriers"]["barrier_seed"],
+        # OPTIONAL extension: absent means a bare board, which is what a
+        # peer that never heard of it will play. Required would make the
+        # agreed 1.2 schema unloadable and lose a match before turn 0.
+        barrier_seed=data["movement_and_barriers"].get("barrier_seed"),
         max_moves=data["movement_and_barriers"]["max_moves"],
         survival_threshold=data["movement_and_barriers"]["survival_threshold"],
         response_timeout_sec=data["network_and_league"]["response_timeout_sec"],

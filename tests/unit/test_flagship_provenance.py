@@ -69,16 +69,19 @@ def test_the_shipped_policy_no_longer_reproduces_the_flagship_trajectory(
     )
 
 
-def test_the_plan_states_todays_capture_turn_and_cell(todays_pursuit):
-    """§10.10 must quote what today's policy actually does, not what it did."""
-    quoted = (
-        f"turn {todays_pursuit.turn_count} at "
-        f"{tuple(todays_pursuit.cop_state.position)}"
-    )
+def test_the_plan_states_todays_actual_outcome(todays_pursuit):
+    """§10.10 must quote what today's policy does, not what it used to do.
 
-    assert quoted in PLAN.read_text(encoding="utf-8"), (
-        f"§10.10 no longer states that today's policy captures on {quoted}"
-    )
+    The log records a capture on turn 3. Phase 11 strengthened the evader,
+    and from the SAME published starts the shipped cop no longer captures at
+    all — the episode runs to the move limit. Quoting a "capture turn" here
+    would itself be the stale claim this file exists to prevent.
+    """
+    captured = todays_pursuit.history[-1].result.captured
+    plan = PLAN.read_text(encoding="utf-8")
+
+    assert not captured, "the shipped cop captures again; §10.10 must be rewritten"
+    assert f"runs to the {todays_pursuit.turn_count}-move limit" in plan
 
 
 def test_the_sealed_artifacts_are_still_the_record_of_a_real_match():

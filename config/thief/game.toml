@@ -15,10 +15,14 @@ epsilon_floor = 0.01
 num_games = 2000
 hint_max_words = 15
 match_exploration_rate = 0.0
-# The evader keeps the table primary: its distance rule is consulted
-# only where the table is flat. Changed independently of the cop,
-# which is why this is configuration rather than a role check.
-policy_mode = "qtable_primary"
+# Distance decides, the trained table breaks ties among equally-evasive
+# moves — the same priority the cop ships (PLAN.md §10.10). The evader
+# kept qtable_primary until the audit measured it: 9.5% survival against
+# our strongest cop, against 93.0% for this mode on the SAME table.
+policy_mode = "manhattan_primary"
+# The evader wants the distance rule in BOTH phases: it is what made the
+# self-play series contested and what it plays on.
+match_policy_mode = "manhattan_primary"
 
 [network]
 host = "127.0.0.1"

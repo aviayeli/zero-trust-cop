@@ -62,13 +62,18 @@ def test_the_documented_peak_q_value_matches_the_table(regenerator):
     assert documented == round(_shipped_table_facts()[2], 4)
 
 
-def test_the_peak_still_converges_on_the_capture_payoff(regenerator):
-    """The block's ARGUMENT — the thief is being caught — must stay true.
+def test_the_peak_records_an_evader_that_now_escapes(regenerator):
+    """The block's ARGUMENT must stay true, and it INVERTED at Phase 11.
 
-    A retrain that pushed the peak toward `survival_thief` (10) would leave
-    every number above correct and the surrounding prose wrong.
+    The peak used to sit just under `capture_thief` (5) and the prose said so:
+    the table's own record that this thief was being caught. Giving the evader
+    the distance rule pushed the peak past 5 and toward `survival_thief` (10),
+    so the argument is now the opposite one. This test guards the claim, not
+    the number — a retrain that dropped the peak back under 5 would leave the
+    figures correct and the surrounding prose wrong.
     """
     _, _, peak = _shipped_table_facts()
 
-    assert 4.0 < peak < 5.0, "the peak no longer converges on capture_thief (5)"
-    assert "converging on `capture_thief` (5)" in regenerator.STRATEGY_BLOCK
+    assert peak > 5.0, "the peak fell back toward capture_thief; the prose is stale"
+    assert "climbing" in regenerator.STRATEGY_BLOCK
+    assert "escapes more often than it is caught" in regenerator.STRATEGY_BLOCK

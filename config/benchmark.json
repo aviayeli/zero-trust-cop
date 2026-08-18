@@ -1,5 +1,13 @@
 {
   "start_pairs": 400,
   "seed": 20260817,
-  "opponents": ["random", "greedy", "trained"]
+  "opponents": [
+    "random",
+    "greedy",
+    "trained"
+  ],
+  "layout_validation": {
+    "seeds": 8,
+    "start_pairs": 40
+  }
 }

@@ -12,6 +12,8 @@ the other's engine. A disagreement is raised, never absorbed.
 
 from mcp_server.directions import stated_hint
 
+from scripts.board_agreement import verify_board_agreement
+
 _OTHER = {"police": "thief", "thief": "police"}
 _COMPARED = (
     "turn_count",
@@ -88,6 +90,8 @@ async def play_match(clients, connections, board, config):
     }
     history = []
     turn = 0
+
+    await verify_board_agreement(connections, board.barrier_count)
 
     while True:
         submissions = [

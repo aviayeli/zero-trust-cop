@@ -50,16 +50,16 @@ RULES = [
         "thief SURVIVAL rate (100% − capture)     seed 20260801",
     ),
     (
-        """games    0– 200   99.0%      games 1000–1200  100.0%
-games  200– 400  100.0%      games 1200–1400  100.0%
-games  400– 600   99.5%      games 1400–1600  100.0%
-games  600– 800  100.0%      games 1600–1800  100.0%
-games  800–1000  100.0%      games 1800–2000  100.0%""",
-        """games    0– 200    1.0%      games 1000–1200    0.0%
-games  200– 400    0.0%      games 1200–1400    0.0%
-games  400– 600    0.5%      games 1400–1600    0.0%
-games  600– 800    0.0%      games 1600–1800    0.0%
-games  800–1000    0.0%      games 1800–2000    0.0%""",
+        """games    0– 200   68.5%      games 1000–1200   46.0%
+games  200– 400   69.5%      games 1200–1400   47.5%
+games  400– 600   70.5%      games 1400–1600   37.5%
+games  600– 800   64.5%      games 1600–1800   28.0%
+games  800–1000   56.0%      games 1800–2000   35.0%""",
+        """games    0– 200   31.5%      games 1000–1200   54.0%
+games  200– 400   30.5%      games 1200–1400   52.5%
+games  400– 600   29.5%      games 1400–1600   62.5%
+games  600– 800   35.5%      games 1600–1800   72.0%
+games  800–1000   44.0%      games 1800–2000   65.0%""",
     ),
 ]
 
@@ -73,25 +73,27 @@ a **deterministic inversion** — it claims the opposite of what it plays:
 police  move=MOVE:N  intent='truth'    thief  move=MOVE:N  intent='lie'
 ```
 
-**The baseline is deliberately weak, and saying why matters more than the
-number:** a 100 %-deterministic liar is exactly as predictable as an honest
-peer. Once the cop's `BeliefTracker` drives the honesty rate to 0, inverting
+**The deception baseline is deliberately weak, and saying why matters more
+than the number:** a 100 %-deterministic liar is exactly as predictable as an
+honest peer. The EVASION, by contrast, is no longer weak: giving the thief the
+distance rule as its primary took it from 9.5% survival to 93.0% against our
+own strongest cop. Once the cop's `BeliefTracker` drives the honesty rate to 0, inverting
 the claim recovers the true move perfectly. Only a *mixed* strategy conceals
 anything. `STAY` is its own opposite (D4), so a thief that stays tells the
 truth that turn — documented, not patched.
 
 Evasion is framed on the **pursuer's relative bearing**, not absolute
-squares, so an escape generalises. The trained table holds 556 entries across
-230 states, topping out at **4.9999** — converging on `capture_thief` (5)
-rather than the survival payoff of 10, which is the table's own record that
-this thief is being caught.
+squares, so an escape generalises. The trained table holds 1035 entries across
+453 states, topping out at **6.1098** — above `capture_thief` (5) and climbing
+toward the survival payoff of 10, which is the table's own record that this
+thief now escapes more often than it is caught.
 
 ### Q-learning setup"""
 
 SURVIVAL_NOTE = """Offline self-play, 2,000 games, seed `20260801`, ε decayed once per game.
-Read from the **thief's** side this is a *survival* curve, and it runs the
-wrong way: **this thief loses** — it evades 89.5 % of early games and is
-caught in essentially all of them once the cop converges."""
+Read from the **thief's** side this is a *survival* curve, and it now runs the
+RIGHT way: this thief starts by surviving 31.5 % of games and ends surviving
+65.0 %, because the evader out-learns the pursuer over the series."""
 
 
 def convert(text: str) -> str:

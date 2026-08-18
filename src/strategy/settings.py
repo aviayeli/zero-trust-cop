@@ -29,6 +29,7 @@ class StrategySettings:
     hint_max_words: int
     match_exploration_rate: float
     policy_mode: str
+    match_policy_mode: str
 
 
 def strategy_settings_path(role: str, config_root: str | None = None) -> str:
@@ -59,4 +60,5 @@ def load_strategy_settings(
         hint_max_words=strategy["hint_max_words"],
         match_exploration_rate=strategy["match_exploration_rate"],
         policy_mode=strategy["policy_mode"],
+        match_policy_mode=strategy["match_policy_mode"],
     )

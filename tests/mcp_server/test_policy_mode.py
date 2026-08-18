@@ -39,9 +39,10 @@ def qtable_first(config):
     return QValues(config, settings, role="cop")
 
 
-def test_the_shipped_cop_is_configured_manhattan_primary():
-    """The swap must be real configuration, not a test-only construction."""
-    assert load_strategy_settings("police").policy_mode == "manhattan_primary"
+def test_the_shipped_cop_is_configured_qtable_primary():
+    """Re-measured: Phase 11 gave the evader the distance rule and the cop's
+    optimal priority INVERTED (PLAN.md §10.10). Both modes stay live below."""
+    assert load_strategy_settings("police").match_policy_mode == "qtable_primary"
 
 
 def test_distance_now_outranks_a_learned_value(manhattan):

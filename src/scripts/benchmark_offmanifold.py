@@ -65,10 +65,13 @@ def benchmark(config_root: str = _DEFAULT_CONFIG_ROOT, seed=None, count=None) ->
         # Same distance rule, EMPTY table, so ties fall to move-set order.
         ("heuristic", build_table(config, as_mode[MANHATTAN_PRIMARY], "cop")),
     )
+    # The opponent must be the evader that actually PLAYS, not the one that
+    # trains: the two priorities are separate settings (peer_policy.py).
+    evader = replace(burglar, policy_mode=burglar.match_policy_mode)
     thieves = {
         "random": None,
-        "greedy": build_table(config, burglar, "thief"),
-        "trained": build_table(config, burglar, "thief", burglar.qtable_path),
+        "greedy": build_table(config, evader, "thief"),
+        "trained": build_table(config, evader, "thief", evader.qtable_path),
     }
     return [
         dict(policy=policy, opponent=opponent,

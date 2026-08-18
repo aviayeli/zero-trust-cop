@@ -15,10 +15,14 @@ epsilon_floor = 0.01
 num_games = 2000
 hint_max_words = 15
 match_exploration_rate = 0.0
-# Distance decides, the trained table breaks ties among equally-good
-# moves (PLAN.md §10.10). Measured against qtable_primary before the
-# swap; both modes stay live and both are exercised by the suite.
+# TRAINING priority. Distance leads so the cop can actually compete with
+# the Phase 11 evader: under qtable_primary the series collapses to 0.05%
+# capture and every learned value records a loss.
 policy_mode = "manhattan_primary"
+# MATCH priority, measured separately (PLAN.md §10.10). The table trained
+# above plays best when it leads and distance covers only its flat states:
+# 47.5% against a greedy evader, where manhattan_primary scores 21.0%.
+match_policy_mode = "qtable_primary"
 
 [network]
 host = "127.0.0.1"

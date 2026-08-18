@@ -86,6 +86,6 @@ def test_the_documented_entry_counts_match(readme, facts):
     for role in ("police", "thief"):
         entries, _, _ = facts[role]
 
-        assert f"({entries} entries, all" in readme, (
+        assert f"({entries:,} entries, all" in readme, (
             f"the README no longer states {entries} entries for {role}"
         )

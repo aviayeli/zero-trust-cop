@@ -34,7 +34,9 @@ def build_peer_policy(peer_role, engine_role, config, config_root=None):
     """
     settings = load_strategy_settings(peer_role, config_root)
     match_settings = replace(
-        settings, exploration_rate=settings.match_exploration_rate
+        settings,
+        exploration_rate=settings.match_exploration_rate,
+        policy_mode=settings.match_policy_mode,
     )
 
     qvalues = QValues(config, match_settings, role=engine_role)

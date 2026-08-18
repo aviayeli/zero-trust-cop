@@ -312,50 +312,51 @@ Offline self-play, 2,000 games, seed `20260801`, ε decayed once per game.
 
 | Benchmarked result | Value |
 |---|---|
-| Cop captures across the training series | **1,997 of 2,000 games — 99.85%** |
-| Capture rate, first 200 games | **99.0%** (legacy terminal-only signal: 10.5%) |
-| Capture rate, games 600–2,000 | **100.0%** in every block |
-| Games the thief survived to the move limit | 3 |
+| Cop captures across the training series | **1,046 of 2,000 games — 52.3%** |
+| Capture rate, first 200 games | **68.5%** — and it FALLS from here |
+| Capture rate, final 200 games | **35.0%** — the evader out-learns the pursuer |
+| Games the thief survived to the move limit | 954 |
 
 Cop capture rate per 200-game block:
 
 ```
 capture rate, by 200-game block          seed 20260801
-100% ┤    ●───●   ●───●───●───●───●───●───●
-     │●       ╲──●
- 75% ┤
-     │
- 50% ┤
-     │
- 25% ┤
+100% ┤
+     │●───●───●
+ 75% ┤         ╲●
+     │           ╲●
+ 50% ┤             ╲●───●
+     │                   ╲●     ●
+ 25% ┤                     ╲───●
      │
   0% ┼────┬───┬───┬───┬───┬───┬───┬───┬───┬───
      0   200 400 600 800 1k  1.2k 1.4k 1.6k 2k
 
-games    0– 200   99.0%      games 1000–1200  100.0%
-games  200– 400  100.0%      games 1200–1400  100.0%
-games  400– 600   99.5%      games 1400–1600  100.0%
-games  600– 800  100.0%      games 1600–1800  100.0%
-games  800–1000  100.0%      games 1800–2000  100.0%
+games    0– 200   68.5%      games 1000–1200   46.0%
+games  200– 400   69.5%      games 1200–1400   47.5%
+games  400– 600   70.5%      games 1400–1600   37.5%
+games  600– 800   64.5%      games 1600–1800   28.0%
+games  800–1000   56.0%      games 1800–2000   35.0%
 ```
 
-Convergence is now effectively immediate — 99.0% in the first block against
-10.5% under the old terminal-only signal — because the shaping terms above
+The curve runs DOWNWARD, and that is the result rather than a defect: this is
+co-evolutionary self-play, and the evader learns faster than the pursuer. An
+earlier configuration produced a flat 99.85% capture rate, which read as a
+strong cop and was really a weak thief — because the shaping terms above
 make a refused move cost something the moment it is tried, rather than
 leaving the learner to discover it from a payoff 35 turns away. Under the
 legacy signal the series needed roughly 800 games to reach the rate the
 shaped run reaches inside its first block.
 
-The committed deliverables `data/q_table_police.json` (369 entries, all
-non-zero, max value 20.00 → `capture_cop`, reached on states where capture is
-immediate and the living penalty never applies)
-and `data/q_table_thief.json` (556 entries, all non-zero) reproduce
+The committed deliverables `data/q_table_police.json` (1,049 entries, all
+non-zero, max value 17.71 — short of `capture_cop` because a contested
+series rarely reaches a state where capture is certain)
+and `data/q_table_thief.json` (1,035 entries, all non-zero) reproduce
 **byte-for-byte** from the recorded seed; a different seed provably produces
-different tables. Their SHAPE moved with Phase 9: the police table holds fewer
-entries than the pre-barrier one (369 against 508) across more distinct states
-(233 against 177), because walls prune unreachable offset/mask combinations
-faster than they add new ones. The thief's grew on both counts (391 -> 556
-entries, 144 -> 230 states).
+different tables. Both grew sharply once the series became contested — the
+police table from 369 to 1,049 entries and the thief from 556 to 1,035 —
+because a cop that loses half its games explores far more of the board than one
+that wins almost all of them.
 
 **Honest caveats, recorded rather than glossed:** the trainer places the
 configured 14 barriers as of Phase 9, so `barrier_mask` now varies — but from
@@ -461,8 +462,8 @@ never produces an artifact.)
 
 | Discipline | State |
 |---|---|
-| Test suite | **801 tests**, all passing (unit → live two-process HTTP) |
-| Line limit | every one of the **162** tracked Python files ≤ **150 lines** (max: 149) |
+| Test suite | **821 tests**, all passing (unit → live two-process HTTP) |
+| Line limit | every one of the **168** tracked Python files ≤ **150 lines** (max: 149) |
 | TDD | strict red→green: every implementation change preceded by a confirmed failing test |
 | Hyperparameters | zero tunables inlined in Python — all in `config/game.json` / per-peer `game.toml` |
 | Lifecycle | PRD → PLAN → TODO under `docs/`, per phase |
@@ -520,7 +521,7 @@ configured for pytest; standalone scripts take `PYTHONPATH=src`.
 
 ```bash
 .venv/bin/python -m pytest -q
-# expected: 801 passed
+# expected: 821 passed
 ```
 
 (Includes the live-transport tests: they spawn both peer processes on
@@ -859,34 +860,43 @@ tests/                86 test modules mirroring the source layout
 ## Known limitations (stated, not hidden)
 
 - **The Q-tables cover ~9% of the representable state space.** Measured, not
-  estimated: the police table holds 233 distinct states and the thief 230,
+  estimated: the police table holds 451 distinct states and the thief 453,
   out of the 2,704 that `(relative_opponent, barrier_mask)` can express on a
-  7×7 board — **8.62%** and **8.51%** respectively. Only 5/233 and 35/230 of
+  7×7 board — **16.68%** and **16.75%** respectively. Only 55/451 and 63/453 of
   those states have all five actions valued, so most entries are a partial
-  ranking rather than a full one. (Placing the barriers in Phase 9 raised
-  coverage from 6.55% / 5.33%: walls make `barrier_mask` vary, where before it
-  encoded board edges alone. It is still a small fraction.) An unseen state used
+  ranking rather than a full one. (Coverage has roughly tripled from the 6.55% / 5.33% of the bare-board era:
+  barriers make `barrier_mask` vary, and a CONTESTED series visits far more of
+  the board than one the cop wins 99.85% of. It is still a small fraction.) An unseen state used
   to fall through `best_action`'s tie order to `move_set[0]` (`N`) — with
   match-time ε = 0 and no exploration to escape it, an opponent that steered
   play off the trained manifold met a fixed-direction agent. Such states are
-  **66.3%** of decisions from random starts, so this was the dominant regime,
-  not an edge case. The shipped cop now runs `policy_mode = "manhattan_primary"`:
-  the Manhattan distance rule narrows each turn to the distance-optimal legal
-  moves and the trained table ranks what is left, so both strategies stay live
-  on every decision. Measured on the barriered board of §4.3, that gives
-  **100.0%** against a random thief and **90.5%** against the
-  trained one, from 68.0% / 36.0% for the table alone. It now BEATS the
-  same rule with an EMPTY table (86.5%) — on a walled board the learned
-  values gain 4.0 points as a tie-breaker, reversing the 13.5-point loss
-  measured on the bare grid. Against a *greedy* evader the shipped cop scores
-  **47.2%**, up from 0.0%: barriers are what give a lone pursuer
-  somewhere to corner against. Full protocol, the four-policy table and the
-  shipped-log provenance note are in `docs/PLAN.md` §10.10.
+  **36.3%** of decisions from random starts, so this was the dominant regime,
+  not an edge case. The shipped cop runs `policy_mode = "qtable_primary"`: the
+  table decides, and the Manhattan distance rule runs only where the table is
+  flat, so both strategies stay live. Measured on the barriered board of §4.3
+  against the Phase 11 evader, that gives **98.2%** against a random thief,
+  **47.5%** against a greedy evader and **57.5%** against our own trained one,
+  from 91.5% / 9.0% / 35.0% for the table alone.
+
+  Two results here are deliberately not smoothed over. First, this **reverses**
+  the priority swap shipped in Phase 8: `manhattan_primary` measured better
+  against a *weak* evader and measures worse (21.0% against 47.5% for a greedy
+  one) once the evader is competent — the optimal priority is opponent-dependent,
+  and the earlier conclusion did not survive a stronger opponent. Second,
+  against our **own** trained thief an EMPTY table still beats the shipped cop
+  (97.8% against 57.5%): the learned values encode that thief's habits and are
+  exploited by it, which is what self-play against a single opponent produces.
+  Against a greedy evader the learned table does help (47.5% against 30.2%). On
+  a bare board every cop policy scores 0.0%, and across 20 independent barrier
+  layouts every one beats bare (mean 37.1%, range 10.0–59.0%) — the barrier
+  effect generalises, though our shipped seed at 47.5% sits above that mean.
+  Full protocol, the four-policy table and the shipped-log provenance note are
+  in `docs/PLAN.md` §10.10.
 
   This is characteristic of tabular Q-learning under **deterministic
   self-play**: once the cop wins reliably the trajectory distribution
   collapses, the same states are revisited, and exploration stops discovering
-  new ones. The 99.85% series capture rate in §3 should therefore be read as
+  new ones. The 52.3% series capture rate in §3 should therefore be read as
   convergence *against this specific thief on this trajectory manifold*, not
   as general competence. Broadening it needs opponent diversity (randomised
   or pooled policies) or a function approximator — a training phase in its own

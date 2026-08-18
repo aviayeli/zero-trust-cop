@@ -28,7 +28,7 @@ invariants; where it and a phase document disagree, this file wins.
   networking). `engine/config.py` and `strategy/settings.py` are the only
   modules permitted to know those paths.
 - **Strict TDD**: every module below was specified precisely enough that a
-  failing test could be written before it existed. Current state: **801 tests
+  failing test could be written before it existed. Current state: **821 tests
   passing**.
 
 ## FR5 Turn-Resolution & Tie-Break Rule (locked)
@@ -100,7 +100,7 @@ zero-trust-cop/
 │   ├── reporting/               # Gmail transport, MIME report, send policy
 │   └── scripts/                 # match loop, artifacts, reporting, verifier,
 │                                #   tournaments, §10.10 off-manifold probe
-└── tests/                       # 801 tests, mirroring the src/ layout
+└── tests/                       # 821 tests, mirroring the src/ layout
 ```
 
 ## 1. Engine Layer — Module Responsibilities & Interfaces
@@ -880,11 +880,12 @@ Decisions taken with the alternative understood, each stating what it costs.
     manifold*. Probing the shipped cop table from 400 uniformly random,
     distinct start pairs (seed `20260817`, the barriered board of §4.3,
     epsilon = 0, the opponent cell revealed every turn) finds
-    **66.3% of decision states wholly unvisited** — every action reading
-    `initial_q_value`. Activating the barriers RAISED that figure from the
-    58.2% measured on the bare grid, and the direction is the honest one to
-    report: a board with walls has more reachable states, so the same 2000
-    self-play games cover proportionally less of it.
+    **36.3% of decision states wholly unvisited** — every action reading
+    `initial_q_value`. This figure has moved twice and both directions are
+    recorded: barriers RAISED it from 58.2% to 66.3% (more reachable states,
+    same 2000 games), and strengthening the evader in Phase 11 then LOWERED
+    it to 36.3% — a self-play series that is genuinely contested visits far
+    more of the board than one the cop wins 99.85% of.
 
     Before this phase a wholly flat state fell through `best_action`'s
     move-set tie order to `move_set[0]` — a literal "always N", with match-time
@@ -905,14 +906,14 @@ Decisions taken with the alternative understood, each stating what it costs.
       can never escape that set, however large. The **cop** ships this.
 
     Cop capture rate / mean turns-to-capture over the 400-start probe, on
-    the barriered board (§4.3):
+    the barriered board (§4.3), against the Phase 11 evader:
 
     | Cop policy | vs. random thief | vs. greedy evader | vs. trained thief |
     | :--- | :---: | :---: | :---: |
-    | `qtable-only` — no distance rule at all | 68.0% / 11.55 | 2.8% / 5.27 | 36.0% / 3.28 |
-    | `qtable-primary` — distance only on flat states | 95.0% / 9.52 | 13.2% / 11.89 | 63.2% / 8.66 |
-    | `manhattan-primary` — **shipped**, table breaks ties | 100.0% / 6.24 | 47.2% / 16.97 | 90.5% / 7.73 |
-    | `heuristic` — same rule, EMPTY table, ties by move-set order | 99.8% / 6.19 | 30.2% / 17.92 | 86.5% / 7.72 |
+    | `qtable-only` — no distance rule at all | 91.5% / 8.39 | 9.0% / 9.86 | 35.0% / 18.29 |
+    | `qtable-primary` — **shipped**, distance only on flat states | 98.2% / 7.75 | 47.5% / 20.43 | 57.5% / 18.61 |
+    | `manhattan-primary` — distance decides, table breaks ties | 99.8% / 6.15 | 21.0% / 13.20 | 68.8% / 17.86 |
+    | `heuristic` — same rule, EMPTY table, ties by move-set order | 99.8% / 6.19 | 30.2% / 17.92 | 97.8% / 22.49 |
 
     Reproduce with `PYTHONPATH=src python -m scripts.benchmark_offmanifold`;
     the sample size, seed and opponent set are `config/benchmark.json`, not
@@ -921,54 +922,43 @@ Decisions taken with the alternative understood, each stating what it costs.
     tables fails the suite rather than silently stranding the prose — the
     posture `test_readme_consistency.py` already takes toward the README.
 
-    Four readings, none of them flattering by omission:
+    Five readings, none of them flattering by omission:
 
-    * **The priority swap is still the single largest gain in the project**:
-      +27.2 points against the trained thief (63.2 -> 90.5) and +5.0 against
-      the random one (95.0 -> 100.0), for an inversion that adds no state and
-      no training. Distance was always the better first question. (Deltas are
-      computed from the raw rates, not by subtracting the table's rounded
-      cells; `test_benchmark_plan_claims.py` pins the raw form.)
-    * **The learned table is now a NET POSITIVE as a tie-breaker, and this
-      REVERSES what this section previously recorded.** `manhattan-primary`
-      and `heuristic` run the identical distance rule over the identical legal
-      moves, and differ only in how a tie is settled — by learned Q-value, or
-      by move-set order. On the bare grid the learned values COST 13.5 points
-      against the trained thief. On the barriered board they GAIN
-      **4.0 points** against it (90.5 vs 86.5) and **17.0 points** against
-      the greedy evader (47.2 vs 30.2). The reason is mechanical rather than flattering:
-      on an empty grid a distance tie is usually a genuine symmetry, so any
-      choice is as good as another and a learned preference is noise. Walls
-      break the symmetry — two distance-equal moves can differ sharply in
-      whether they lead into a dead end — and that is a difference a table can
-      actually learn. The table is now retained because it helps, which is not
-      what the previous measurement supported.
-    * **A greedy Manhattan evader is now catchable: 0.0% -> 47.2%.** This was
-      the sharpest finding against the project, and it was structural rather
-      than a policy defect: on a BARE 7x7 grid under simultaneous moves a
-      single pursuer cannot corner a perfectly evading thief, and no tie-break
-      addressed it. Populating `max_barriers: 14` (§4.3) is what changed it,
-      because cornering requires somewhere to corner against. It remains the
-      hardest opponent in the set by a wide margin, and the mean
-      turns-to-capture (16.97) shows why — nearly half the 35-move budget.
-    * **The four policies no longer form a clean progression.** On the bare
-      grid each step gained ground and the EMPTY-table heuristic topped the
-      table. It no longer does: the shipped policy beats it against every
-      opponent. The ordering is a result, not a presentational device, so it
-      is reported as measured rather than re-sorted.
-    * **The flagship trajectory IS touched, and by the RETRAIN rather than
-      by the barriers.** Before Phase 9 this bullet recorded that the
-      pre-fallback table, `qtable_primary` and the shipped `manhattan_primary`
-      all played the identical `E/N -> S/W -> E/N` from the published starts
-      (cop `[0,0]`, thief `[3,3]`) and captured on turn 3. The shipped policy
-      now plays `E/N -> E/N -> E/S -> S/N` and captures on turn 4 at (1, 3).
-      The obvious explanation — that §4.3 walls the cop's old turn-1 cell
-      `(1, 1)` — is measurably NOT the cause: replayed on a bare board, today's
-      tables produce that same turn-4 trajectory. It is the Phase 9 retrain
-      that moved it, and the wall is incidental. `scripts.replay_match` still
-      returns `Verified OK` on the shipped log, because a replay is checked
-      against the board the log records. The consequences for the sealed
-      artifacts are set out below.
+    * **The optimal priority is OPPONENT-DEPENDENT, and this reverses Phase
+      8's headline.** Phase 8 measured `manhattan_primary` as the single
+      largest gain in the project and shipped it. That measurement was taken
+      against an evader that kept its table primary and survived 9.5% of
+      episodes. Phase 11 gave the evader the distance rule too, and the
+      ordering inverted: against a greedy evader the shipped `qtable_primary`
+      now scores **47.5%** where `manhattan_primary` scores **21.0%**. Neither
+      mode is "correct"; the earlier conclusion was drawn against a weak
+      opponent and did not survive a strong one. That is the most important
+      methodological lesson in this document.
+    * **The learned table is a NET POSITIVE for the COP and the reverse of
+      that is true for the EVADER — the two must not be quoted together.**
+      As the cop's tie-break the table beats the empty-table heuristic against
+      a greedy evader (47.5% vs 30.2%). As the evader's PRIMARY it was
+      catastrophic: the shipped thief survived 9.5% where the same table under
+      `manhattan_primary` survives 93.0%. A single sentence about "the learned
+      table" would be false for one of the two agents whichever way it is
+      written.
+    * **The empty-table heuristic still wins against our own trained thief
+      (97.8% vs 57.5%), and that is not the flattering reading.** Against a
+      greedy evader the shipped cop wins; against our specific trained evader
+      it does not. The learned values encode this thief's habits and are
+      exploited by it, which is what self-play against one opponent produces.
+      The remedy is opponent diversity in training, still unimplemented.
+    * **Barriers make a greedy evader catchable, and that generalises.**
+      On a bare board every cop policy scores 0.0%. Across **8 independent
+      layouts** (`config/benchmark.json::layout_validation`,
+      `tests/scripts/test_layout_generality.py`) every single one beats the
+      bare board; over 20 layouts the mean is 37.1% with a range of 10.0% to
+      59.0%. The shipped seed scores 47.5%, **above that mean** — our board is
+      somewhat favourable and the effect is real regardless, which is the
+      honest way to state both facts at once.
+    * **Self-play is now genuinely contested.** The series capture rate fell
+      from 99.85% to **52.3%** when the evader was strengthened. A 99.85% rate
+      was never evidence of a strong cop; it was evidence of a weak thief.
 
     **Provenance of the shipped evidence.** The flagship artifacts under
     `logs/aviayeli/` — the signed match log, its `result`, and
@@ -979,14 +969,13 @@ Decisions taken with the alternative understood, each stating what it costs.
     re-sealing them to carry a newer commit hash would trade a genuine record
     for a cosmetic one.
 
-    **As of Phase 9 the trajectory they record is NO LONGER what today's
-    policy produces**, and this section previously claimed the opposite. The
-    shipped policy now captures on turn 4 at (1, 3), against turn 3 at
-    `(1, 2)` in the log. The cause is the Phase 9 RETRAIN, not the barriers:
-    replayed on a bare board, today's tables produce the same turn-4
-    trajectory, so walling the log's turn-1 cell `(1, 1)` is incidental. The
-    claim was true when written, was not pinned by any test, and went stale
-    silently the moment the tables moved —
+    **The trajectory they record is NO LONGER what today's policy produces**,
+    and this section once claimed the opposite. The log records a capture on
+    turn 3 at `(1, 2)`. From the same published starts the shipped cop now
+    does not capture at all: the episode runs to the 35-move limit, because
+    Phase 11 gave the evader the distance rule and our own thief escapes our
+    own cop. The claim was true when written, was not pinned by any test, and
+    went stale silently the moment the policies moved —
     `tests/unit/test_flagship_provenance.py` now re-derives the relationship on
     every run so it cannot drift again. (The sentence also cited
     `tests/mcp_server/test_qvalues_fallback.py` as support; that file tests the
@@ -1040,7 +1029,7 @@ close it.
 
 Every module was built test-first per `CLAUDE.md`; `docs/TODO.md` records the
 sequencing and the evidence. The suite mirrors `src/` and currently stands at
-**801 passing tests**. The load-bearing cases, by layer:
+**821 passing tests**. The load-bearing cases, by layer:
 
 - **Engine** — the six FR5 scenarios (both unobstructed, bounds-blocked,
   barrier-blocked, same-cell capture, swap capture, adjacent near-miss), plus

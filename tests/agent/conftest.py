@@ -53,6 +53,7 @@ def strategy_settings(game_config):
         hint_max_words=15,
         match_exploration_rate=0.0,
         policy_mode="qtable_primary",
+        match_policy_mode="qtable_primary",
     )
 
 

@@ -121,6 +121,12 @@ def test_play_match_raises_when_two_peers_genuinely_disagree(peers):
         def __init__(self, inner):
             self._inner = inner
 
+        async def get_observation(self, role):
+            # Passed through: this peer lies about POSITIONS mid-match, not
+            # about the board, so it must clear the pre-match board check
+            # (scripts/board_agreement.py) to reach the divergence it tests.
+            return await self._inner.get_observation(role)
+
         async def submit_commitment(self, *args):
             return await self._inner.submit_commitment(*args)
 
