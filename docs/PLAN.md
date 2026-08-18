@@ -1030,6 +1030,32 @@ close it.
    validated by two *local* peers over a real streamable-HTTP transport with
    commit-reveal and signatures fully in force, which removes the external
    dependency but does not substitute for a cross-group match.
+-   **§10.11 — Unimplemented contract obligations, and the pattern behind
+    them.** Three keys of the contract stamped
+    `agreed_between: ["aviayeli", "groupb"]` were found ASSUMED rather than
+    read, each long after it shipped: `max_barriers` (configured Phase 0,
+    populated by nothing until Phase 9, and measured at a 0.0% capture rate
+    against a greedy evader), `barrier_seed` (added as REQUIRED, which made
+    the agreed schema unloadable — a technical loss before turn 0), and
+    `axis_origin_corner` (stated in an `actions.py` docstring and never
+    compared against the negotiated value, so a peer on `bottomleft` would
+    have mirrored every move and produced a plausible WRONG game rather than
+    an error). The `rate_limiter_gatekeeper` block — five agreed tunables —
+    was likewise declared and unread, which is a forfeit path rather than a
+    discourtesy: a peer that enforces the limit drops us, and `http_peer`
+    turns a dropped call into `TechnicalLossError`.
+
+    All four are now implemented (§2, §4.3, `mcp_server/rate_limiter.py`), but
+    the finding is the PATTERN and not any one instance: each was caught by a
+    human rereading months apart, never by a check.
+    `tests/mcp_server/test_contract_coverage.py` now fails the suite when a
+    contract key is neither read in `src/` nor whitelisted with the reason it
+    never will be. What remains deliberately unimplemented is listed there
+    rather than here, and is confined to league SCORING the organiser awards
+    (`diversity_reward`, `min_games_to_pass`, `max_games_per_team`) plus
+    genuinely inert fields (`map_area`, `num_agents`, `schema_version`,
+    `agreed_between`). Nothing behavioural is now declared and unread.
+
 -   **§10.9 — A stalled peer ends the match, it does not end the process** (§3). Every
    wire call is fenced by the published `watchdog_timeout_sec` and raises
    `TechnicalLossError` on expiry (`mcp_server/http_peer.py`). What is *not*
