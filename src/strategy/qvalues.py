@@ -96,16 +96,13 @@ class QValues:
             raise ValueError(f"unknown role or outcome: {role!r}, {outcome!r}") from error
 
     def best_action(self, state: tuple) -> str:
-        """Choose the highest-valued configured move, retaining move-set tie order."""
+        """Return the policy's move; the plain greedy read is only its fallback."""
         if not self.config.move_set:
             raise ValueError("move_set must contain at least one action")
-        best = self.config.move_set[0]
-        best_value = self.q_value(state, best)
-        for action in self.config.move_set[1:]:
-            value = self.q_value(state, action)
-            if value > best_value:
-                best, best_value = action, value
-        return policy_action(self, state) or best
+        chosen = policy_action(self, state)
+        if chosen is not None:
+            return chosen
+        return max(self.config.move_set, key=lambda action: self.q_value(state, action))
 
     def decay_epsilon(self) -> None:
         """Apply one decay step, clamped at epsilon_floor."""

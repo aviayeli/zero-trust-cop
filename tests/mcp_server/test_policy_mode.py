@@ -114,3 +114,34 @@ def test_an_unknown_policy_mode_fails_loudly(config):
 
     with pytest.raises(ValueError, match="policy_mode"):
         values.best_action(((3, 0), 0))
+
+
+def test_manhattan_primary_does_not_run_the_greedy_scan_it_would_discard(manhattan):
+    """The plain greedy read is a FALLBACK, so it must not run when unused.
+
+    ``best_action`` scanned the whole move set to build a value it then threw
+    away on every manhattan_primary decision, because ``policy_action``
+    answers whenever the opponent is observed. The scan is still required
+    where the fallback declines (role-less tables, unobserved opponents), so
+    it is deferred rather than deleted.
+    """
+    manhattan.q_table[(((3, 0), 0), "S")] = 5.0
+    reads = []
+    unscanned = QValues(manhattan.config, manhattan.settings, role="cop")
+    unscanned.q_table = manhattan.q_table
+    plain_q_value = unscanned.q_value
+    unscanned.q_value = lambda state, action: (
+        reads.append(action) or plain_q_value(state, action)
+    )
+
+    chosen = unscanned.best_action(((3, 0), 0))
+
+    assert chosen == "S"
+    assert sorted(reads) == sorted(set(reads)), f"duplicate reads: {reads}"
+
+
+def test_an_unobserved_opponent_still_falls_back_to_the_plain_greedy_read(manhattan):
+    """The deferred scan must still happen where the distance rule declines."""
+    manhattan.q_table[((None, 0), "W")] = 7.0
+
+    assert manhattan.best_action((None, 0)) == "W"
