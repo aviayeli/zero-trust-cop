@@ -924,42 +924,38 @@ Decisions taken with the alternative understood, each stating what it costs.
     Four readings, none of them flattering by omission:
 
     * **The priority swap is still the single largest gain in the project**:
-      +27.2 points against the trained thief (63.2 ->
-      90.5) and +5.0 against the random one
-      (95.0 -> 100.0), for an inversion
-      that adds no state and no training. Distance was always the better first
-      question. (Deltas are computed from the raw rates, not by subtracting the
-      table's rounded cells; `test_benchmark_plan_claims.py` pins the raw form.)
+      +27.2 points against the trained thief (63.2 -> 90.5) and +5.0 against
+      the random one (95.0 -> 100.0), for an inversion that adds no state and
+      no training. Distance was always the better first question. (Deltas are
+      computed from the raw rates, not by subtracting the table's rounded
+      cells; `test_benchmark_plan_claims.py` pins the raw form.)
     * **The learned table is now a NET POSITIVE as a tie-breaker, and this
-      REVERSES what this section previously recorded.** `manhattan-primary` and
-      `heuristic` run the identical distance rule over the identical legal
-      moves and differ only in how a tie is settled — by learned Q-value, or by
-      move-set order. On the bare grid the learned values COST 13.5 points
+      REVERSES what this section previously recorded.** `manhattan-primary`
+      and `heuristic` run the identical distance rule over the identical legal
+      moves, and differ only in how a tie is settled — by learned Q-value, or
+      by move-set order. On the bare grid the learned values COST 13.5 points
       against the trained thief. On the barriered board they GAIN
-      **4.0 points** against the trained thief
-      (90.5 vs 86.5) and
-      **17.0 points** against the greedy evader
-      (47.2 vs 30.2). The reason is
-      mechanical rather than flattering: on an empty grid a distance tie is
-      usually a genuine symmetry and any choice is as good as another, so a
-      learned preference is noise. Walls break the symmetry — two
-      distance-equal moves can differ sharply in whether they lead into a
-      dead end — and that is a difference a table can actually learn. The
-      table is now retained because it helps, which is not what the previous
-      measurement supported.
-    * **A greedy Manhattan evader is now catchable: 0.0% -> 47.2%.**
-      This was the sharpest finding against the project and it was structural,
-      not a policy defect: on a BARE 7x7 grid under simultaneous moves a single
-      pursuer cannot corner a perfectly evading thief, and no tie-break
+      **4.0 points** against it (90.5 vs 86.5) and **17.0 points** against
+      the greedy evader (47.2 vs 30.2). The reason is mechanical rather than flattering:
+      on an empty grid a distance tie is usually a genuine symmetry, so any
+      choice is as good as another and a learned preference is noise. Walls
+      break the symmetry — two distance-equal moves can differ sharply in
+      whether they lead into a dead end — and that is a difference a table can
+      actually learn. The table is now retained because it helps, which is not
+      what the previous measurement supported.
+    * **A greedy Manhattan evader is now catchable: 0.0% -> 47.2%.** This was
+      the sharpest finding against the project, and it was structural rather
+      than a policy defect: on a BARE 7x7 grid under simultaneous moves a
+      single pursuer cannot corner a perfectly evading thief, and no tie-break
       addressed it. Populating `max_barriers: 14` (§4.3) is what changed it,
       because cornering requires somewhere to corner against. It remains the
-      hardest opponent in the set by a wide margin, and the mean turns-to-capture
-      (16.97) shows why — nearly half the 35-move budget.
+      hardest opponent in the set by a wide margin, and the mean
+      turns-to-capture (16.97) shows why — nearly half the 35-move budget.
     * **The four policies no longer form a clean progression.** On the bare
       grid each step gained ground and the EMPTY-table heuristic topped the
       table. It no longer does: the shipped policy beats it against every
-      opponent. The ordering is a result, not a presentational device, so it is
-      reported as measured rather than re-sorted.
+      opponent. The ordering is a result, not a presentational device, so it
+      is reported as measured rather than re-sorted.
     * **The flagship trajectory is untouched by any of this.** From the
       published starts (cop `[0,0]`, thief `[3,3]`) the pre-fallback table, the
       `qtable_primary` policy and the shipped `manhattan_primary` policy all
