@@ -86,6 +86,14 @@ echo "ok: $TAG -> $(git rev-list -n1 "$TAG" | cut -c1-7), $THIEF_TAG -> $(git re
 
 git checkout -q master
 
+# --- 4b. the tag now points at master; assert it ------------------------------
+# Run HERE and not in the gate above: before this step the tag legitimately
+# lags master, so a tag-alignment test in the pytest gate would fail on every
+# release and deadlock the push. This is the check that would have caught
+# v1.0-submission shipping one commit behind its own fix.
+say "release check (tag alignment)"
+ZTC_RELEASE_CHECK=1 $PYTEST tests/test_release_artifact.py -q | tail -2
+
 # --- 5. push (opt-in) --------------------------------------------------------
 if [ "$PUSH" -eq 0 ]; then
   say "DRY RUN — nothing pushed. Re-run with --push to update both remotes."
