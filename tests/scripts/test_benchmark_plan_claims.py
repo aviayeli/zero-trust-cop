@@ -20,11 +20,11 @@ PLAN = Path("docs/PLAN.md")
 README = Path("README.md")
 DOC_LABELS = {
     "qtable-only": "`qtable-only` — no distance rule at all",
-    "qtable-primary": "`qtable-primary` — **shipped**, distance only on flat states",
-    "manhattan-primary": "`manhattan-primary` — distance decides, table breaks ties",
+    "qtable-primary": "`qtable-primary` — distance only on flat states",
+    "manhattan-primary": "`manhattan-primary` — **shipped**, table breaks ties",
     "heuristic": "`heuristic` — same rule, EMPTY table, ties by move-set order",
 }
-SHIPPED = "qtable-primary"
+SHIPPED = "manhattan-primary"
 PUBLISHED_OPPONENTS = ("random", "greedy", "trained")
 
 
@@ -65,46 +65,42 @@ def test_the_published_off_manifold_rate_still_reproduces(benchmark_rows, plan):
     assert f"**{flat:.1f}%** of decisions" in README.read_text(encoding="utf-8")
 
 
-def test_the_priority_inversion_is_real_and_published(benchmark_rows, plan):
-    """§10.10's most important claim: the optimal priority is opponent-dependent.
-
-    Phase 8 shipped `manhattan_primary` on a measurement against a weak
-    evader. Against a competent one the ordering reverses. If it ever reverses
-    back, the section's central methodological lesson is wrong.
-    """
-    shipped = rate(benchmark_rows, SHIPPED, "greedy")
-    superseded = rate(benchmark_rows, "manhattan-primary", "greedy")
-
-    assert shipped > superseded, "the priority inversion no longer holds"
-    assert f"**{shipped:.1f}%** where `manhattan_primary` scores" in plan
-    assert f"**{superseded:.1f}%**" in plan
-
-
-def test_the_learned_table_helps_the_cop_against_a_greedy_evader(
+def test_learning_now_beats_an_empty_table_against_a_strong_opponent(
     benchmark_rows, plan
 ):
-    """The cop-side NET POSITIVE claim, stated for the greedy evader only."""
-    shipped = rate(benchmark_rows, SHIPPED, "greedy")
-    empty = rate(benchmark_rows, "heuristic", "greedy")
+    """The claim the whole diverse-opponent phase exists to support.
 
-    assert shipped > empty, "the learned tie-break stopped helping the cop"
-    assert f"({shipped:.1f}% vs {empty:.1f}%)" in plan
-
-
-def test_the_unflattering_result_against_our_own_thief_stays_published(
-    benchmark_rows, plan
-):
-    """The empty table still beats the shipped cop against our trained evader.
-
-    This is the least flattering cell in the matrix. §10.10 must keep saying
-    so; a section that published only the greedy column would be true and
-    misleading.
+    Under self-play an EMPTY table beat the shipped cop against our own
+    trained evader, 92.0% to 53.5%. If that ever returns, the phase has
+    regressed and §10.10 is wrong.
     """
     shipped = rate(benchmark_rows, SHIPPED, "trained")
     empty = rate(benchmark_rows, "heuristic", "trained")
 
-    assert empty > shipped, "the result changed; §10.10 must be rewritten"
-    assert f"({empty:.1f}% vs {shipped:.1f}%)" in plan
+    assert shipped > empty, "an empty table beats the trained cop again"
+    assert f"scores {shipped:.1f}% where an empty table" in plan
+    assert f"scores {empty:.1f}%" in plan
+
+
+def test_the_table_adds_nothing_against_a_GREEDY_evader_and_says_so(
+    benchmark_rows, plan
+):
+    """The unflattering half: against a simple opponent the table is decoration.
+
+    Reported because a section quoting only the strong-opponent column would
+    be true and misleading.
+    """
+    shipped = rate(benchmark_rows, SHIPPED, "greedy")
+    empty = rate(benchmark_rows, "heuristic", "greedy")
+
+    assert abs(shipped - empty) < 5.0, "the greedy column stopped being level"
+    assert f"({shipped:.1f}% against {empty:.1f}%" in plan
+
+
+def test_the_self_play_era_figures_are_kept_as_the_comparison(plan):
+    """The reversal must be published AS a reversal, not quietly swapped in."""
+    assert "2.2%" in plan and "69.8%" in plan, "§10.10 dropped what self-play measured"
+    assert "53.5%" in plan and "92.0%" in plan
 
 
 def test_a_bare_board_makes_the_greedy_evader_uncatchable(benchmark_rows, plan):

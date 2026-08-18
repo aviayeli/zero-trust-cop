@@ -62,18 +62,23 @@ def test_the_documented_peak_q_value_matches_the_table(regenerator):
     assert documented == round(_shipped_table_facts()[2], 4)
 
 
-def test_the_peak_records_an_evader_that_now_escapes(regenerator):
-    """The block's ARGUMENT must stay true, and it INVERTED at Phase 11.
+def config_capture_thief():
+    from engine.config import load_config
 
-    The peak used to sit just under `capture_thief` (5) and the prose said so:
-    the table's own record that this thief was being caught. Giving the evader
-    the distance rule pushed the peak past 5 and toward `survival_thief` (10),
-    so the argument is now the opposite one. This test guards the claim, not
-    the number — a retrain that dropped the peak back under 5 would leave the
-    figures correct and the surrounding prose wrong.
+    return load_config(str(PROJECT_ROOT / "config" / "game.json")).capture_thief
+
+
+def test_the_peak_matches_the_argument_the_block_makes(regenerator):
+    """The block's ARGUMENT must stay true; it has now moved twice.
+
+    Self-play left the peak just under `capture_thief` and the prose said the
+    thief was being caught. Phase 11 pushed it past 5. Diverse training pins it
+    AT 5 while the evader became genuinely strong — so the strength argument
+    now rests on the table's breadth, not its height, and the prose says that.
+    This guards the claim rather than the number.
     """
     _, _, peak = _shipped_table_facts()
 
-    assert peak > 5.0, "the peak fell back toward capture_thief; the prose is stale"
-    assert "climbing" in regenerator.STRATEGY_BLOCK
-    assert "escapes more often than it is caught" in regenerator.STRATEGY_BLOCK
+    assert peak >= config_capture_thief(), "the peak fell BELOW capture_thief"
+    assert "pinned almost exactly to" in regenerator.STRATEGY_BLOCK
+    assert "90.0% survival" in regenerator.STRATEGY_BLOCK

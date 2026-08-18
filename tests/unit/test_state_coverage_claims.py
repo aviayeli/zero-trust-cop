@@ -59,7 +59,10 @@ def test_the_documented_state_counts_match_the_shipped_tables(readme, facts):
     _, police_states, _ = facts["police"]
     _, thief_states, _ = facts["thief"]
 
-    assert f"holds {police_states} distinct states and the thief {thief_states}" in readme
+    assert (
+        f"holds {police_states:,} distinct states and the thief "
+        f"{thief_states:,}" in readme
+    )
 
 
 def test_the_documented_coverage_percentages_match(readme, facts):
@@ -78,7 +81,8 @@ def test_the_fully_valued_state_counts_match(readme, facts):
     _, thief_states, thief_full = facts["thief"]
 
     assert (
-        f"{police_full}/{police_states} and {thief_full}/{thief_states}" in readme
+        f"{police_full:,}/{police_states:,} and {thief_full:,}/{thief_states:,}"
+        in readme
     )
 
 

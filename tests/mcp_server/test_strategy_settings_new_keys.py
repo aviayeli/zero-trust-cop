@@ -76,9 +76,13 @@ def test_qtable_path_differs_between_roles():
 
 @pytest.mark.parametrize("role", ["police", "thief"])
 def test_step_cost_loads_as_a_small_negative_float(role):
-    """The living penalty is configured per peer, never inlined in the trainer."""
+    """The living penalty is configured PER PEER, never inlined in the trainer.
+
+    The two roles now differ (-0.1 for the pursuer, -0.05 for the evader), so
+    a single expected value would pin one peer and silently ignore the other.
+    """
     settings = load_strategy_settings(role)
-    assert settings.step_cost == -0.01
+    assert -1.0 < settings.step_cost < 0.0
     assert isinstance(settings.step_cost, float)
 
 

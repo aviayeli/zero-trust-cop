@@ -10,7 +10,7 @@ This file is the top-level, cross-phase checklist. The per-phase TODOs
 `TODO_07.md`) retain the full assertion-by-assertion detail for their phases;
 items here are the milestone rollups, each carrying the evidence that closed it.
 
-**Gate status:** `pytest -q` → **856 passed**. Every `src/**/*.py` is ≤150 lines
+**Gate status:** `pytest -q` → **875 passed**. Every `src/**/*.py` is ≤150 lines
 (longest: `scripts/render_replay.py`, 148). `scripts.replay_match
 logs/aviayeli/log_aviayeli_g01.json` → `Verified OK`.
 
@@ -700,3 +700,54 @@ Architecture in `PLAN.md` §4.3.
       rather than only that legacy still works.
 - [x] `scripts.replay_match logs/aviayeli/log_aviayeli_g01.json` →
       `Verified OK`; the flagship artifact is unmodified.
+
+## Phase 12 — Opponent-diverse training (Elephant #1) — complete
+
+Self-play against a single adversary made learning a LIABILITY: measured
+against a heuristic pursuer it never trained against, the shipped evader
+survived 2.2% where an EMPTY table survived 69.8%. Architecture in
+`PLAN.md` §10.10.
+
+### 12.1 Scripted opponents — complete
+
+- [x] **Test first**: `tests/strategy/test_opponents.py` — a scripted evader
+      maximises distance, an interceptor minimises it, a random mover varies,
+      and a `frozen` policy decides and observes but NEVER updates its table.
+- [x] Confirm the tests **fail** (module does not exist).
+- [x] **Implement** `src/strategy/opponents.py`. No new movement algorithm:
+      each opponent is an `AgentPolicy` with an empty table under
+      `manhattan_primary`, so the rules cannot drift from `strategy/fallback.py`.
+
+### 12.2 Weighted opponent pool — complete
+
+- [x] **Test first**: the mix is read from config, the weights sum to 1, every
+      bucket is reachable, the realised proportions match within tolerance,
+      and the boundaries land where declared.
+- [x] **Implement** `src/scripts/opponent_pool.py`; weights in
+      `config/training.json` (ours, not the negotiated contract).
+
+### 12.3 The trainer — complete
+
+- [x] **Test first**: both learners end non-empty, all three buckets are
+      actually faced, the layout varies across episodes, and a run is
+      reproducible from its seed.
+- [x] **Implement** `src/scripts/train_diverse.py`, reusing
+      `tournament_loop.play_episode` so there is still one definition of a
+      training episode. Roles alternate so BOTH tables meet the full mix.
+- [x] 10,000 episodes, 64 barrier layouts, seed `20260818`: faced 3,916
+      scripted / 4,074 learning / 2,010 random.
+
+### 12.4 Result — the finding reversed — complete
+
+- [x] Evader survival against a heuristic cop it never trained against:
+      **2.2% -> 90.0%**, against 69.8% for an empty table. Learning is now an
+      asset by +20.2 points where it was a 30x liability.
+- [x] Cop against our own trained evader: **28.0% against an empty table's
+      10.0%**, having previously LOST that comparison 53.5% to 92.0%.
+- [x] Both peers re-measured onto `manhattan_primary` at match time; the
+      training/match split is retained and tested but no longer needs to differ.
+- [x] Stated rather than omitted: against a *greedy* evader the learned table
+      adds nothing (29.8% against 30.2%), and our evader is the stronger of
+      our two agents.
+- [x] Every downstream figure re-derived; `test_unseen_opponent.py` and
+      `test_thief_figures.py` inverted to guard the new claims.

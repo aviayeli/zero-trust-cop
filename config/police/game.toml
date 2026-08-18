@@ -3,11 +3,14 @@ learning_rate = 0.1
 discount_factor = 0.9
 exploration_rate = 0.1
 initial_q_value = 0.0
-invalid_move_penalty = -1.0
+# Refused move (barrier or edge). Raised from -1.0 for the
+# diverse-opponent phase: spatial awareness is the thing a
+# varied barrier layout is meant to teach.
+invalid_move_penalty = -1.5
 # Living penalty applied on every turn that is not a capture, so a
 # shorter pursuit is worth more than a longer one. Kept two orders of
 # magnitude below the terminal payoffs: the outcome still dominates.
-step_cost = -0.01
+step_cost = -0.1
 honesty_prior = 0.5
 qtable_path = "data/q_table_police.json"
 epsilon_decay_factor = 0.999
@@ -19,10 +22,12 @@ match_exploration_rate = 0.0
 # the Phase 11 evader: under qtable_primary the series collapses to 0.05%
 # capture and every learned value records a loss.
 policy_mode = "manhattan_primary"
-# MATCH priority, measured separately (PLAN.md §10.10). The table trained
-# above plays best when it leads and distance covers only its flat states:
-# 47.5% against a greedy evader, where manhattan_primary scores 21.0%.
-match_policy_mode = "qtable_primary"
+# MATCH priority, re-measured after diverse-opponent training (PLAN.md
+# §10.10). Distance-first is now better on every opponent: 100.0 / 29.8 /
+# 45.5 against random / greedy / trained, where qtable_primary scores
+# 99.5 / 20.0 / 40.2. The self-play-era inversion did not survive a table
+# trained against a pool.
+match_policy_mode = "manhattan_primary"
 
 [network]
 host = "127.0.0.1"

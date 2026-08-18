@@ -1,0 +1,9 @@
+{
+  "episodes": 10000,
+  "layout_seeds": 64,
+  "opponent_mix": {
+    "scripted": 0.4,
+    "learning": 0.4,
+    "random": 0.2
+  }
+}

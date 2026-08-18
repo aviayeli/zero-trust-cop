@@ -32,33 +32,58 @@ def test_both_peers_declare_a_match_policy_mode():
         assert load_strategy_settings(role).match_policy_mode
 
 
-def test_the_cop_trains_on_one_priority_and_plays_on_another():
-    """The whole point: a contested trainer, a competitive player."""
+def test_the_cop_trains_and_plays_on_the_same_priority_again():
+    """The split still EXISTS; after diverse training it is not needed.
+
+    Under self-play the two phases wanted different priorities, because a cop
+    that trained under qtable_primary against a strong evader never won and
+    learned nothing. Training against a POOL removed that: distance-first now
+    measures best in both phases (100.0 / 29.8 / 28.0 against random / greedy
+    / trained, where qtable_primary scores 99.5 / 20.0 / 24.5). The setting is
+    retained because the phases are genuinely separable and the suite proves
+    it; it simply does not need to differ today.
+    """
     police = load_strategy_settings("police")
 
     assert police.policy_mode == "manhattan_primary"
-    assert police.match_policy_mode == "qtable_primary"
+    assert police.match_policy_mode == "manhattan_primary"
 
 
-def test_the_evader_also_trains_and_plays_on_different_priorities():
-    """Distance-first made the SERIES contested; it plays worse in a match.
+def test_the_evader_also_trains_and_plays_on_the_same_priority():
+    """Diverse training reversed the evader's match-time preference too.
 
-    Measured against a heuristic cop — the likeliest opposing strategy, and
-    one the evader never trained against — distance-first survives 2.2% where
-    table-first survives 8.0%. Both are poor. The split is what lets the
-    better training regime and the better match regime coexist.
+    Against a heuristic cop it never trained against, the evader now survives
+    90.0% under distance-first against 83.8% table-first — and 69.8% carrying
+    no table at all. Under self-play those figures were 2.2% and 8.0%, both
+    far WORSE than the empty table.
     """
     thief = load_strategy_settings("thief")
 
     assert thief.policy_mode == "manhattan_primary"
-    assert thief.match_policy_mode == "qtable_primary"
+    assert thief.match_policy_mode == "manhattan_primary"
 
 
-def test_a_built_match_policy_uses_the_match_mode_not_the_training_one(config):
-    """Loudly, at the composition root — a silent fallback would lose points."""
+def test_a_built_match_policy_uses_the_match_mode_not_the_training_one(
+    config, monkeypatch
+):
+    """Prove the WIRING, not the value.
+
+    Both keys currently hold the same mode, so comparing against a literal
+    would pass even if `build_peer_policy` read the training key. The two are
+    forced apart here so only the correct read can satisfy it.
+    """
+    real = load_strategy_settings("police")
+    monkeypatch.setattr(
+        "mcp_server.peer_policy.load_strategy_settings",
+        lambda role, root=None: replace(
+            real, policy_mode="qtable_primary",
+            match_policy_mode="manhattan_primary",
+        ),
+    )
+
     policy = build_peer_policy("police", "cop", config)
 
-    assert policy.qvalues.settings.policy_mode == "qtable_primary"
+    assert policy.qvalues.settings.policy_mode == "manhattan_primary"
 
 
 def test_the_match_mode_is_still_required_configuration():

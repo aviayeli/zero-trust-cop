@@ -3,11 +3,14 @@ learning_rate = 0.1
 discount_factor = 0.9
 exploration_rate = 0.1
 initial_q_value = 0.0
-invalid_move_penalty = -1.0
+# Refused move (barrier or edge). Raised from -1.0 for the
+# diverse-opponent phase: spatial awareness is the thing a
+# varied barrier layout is meant to teach.
+invalid_move_penalty = -1.5
 # Living penalty applied on every turn that is not a capture, so a
 # shorter pursuit is worth more than a longer one. Kept two orders of
 # magnitude below the terminal payoffs: the outcome still dominates.
-step_cost = -0.01
+step_cost = -0.05
 honesty_prior = 0.5
 qtable_path = "data/q_table_thief.json"
 epsilon_decay_factor = 0.999
@@ -20,12 +23,11 @@ match_exploration_rate = 0.0
 # kept qtable_primary until the audit measured it: 9.5% survival against
 # our strongest cop, against 93.0% for this mode on the SAME table.
 policy_mode = "manhattan_primary"
-# MATCH priority, measured separately and NOT the same as training. The
-# distance rule leading is what makes self-play contested, but at match
-# time it measures WORSE for the evader against an opponent it did not
-# train against: 2.2% survival vs a heuristic cop, against 8.0% here
-# (PLAN.md §10.10). Both figures are poor; this is the better one.
-match_policy_mode = "qtable_primary"
+# MATCH priority, re-measured after diverse-opponent training. Against a
+# heuristic cop it never trained against, the evader now survives 90.0%
+# here against 83.8% under qtable_primary — and 69.8% carrying no table at
+# all, so the learned values are finally an ASSET (PLAN.md §10.10).
+match_policy_mode = "manhattan_primary"
 
 [network]
 host = "127.0.0.1"

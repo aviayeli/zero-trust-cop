@@ -1,15 +1,15 @@
-"""Both learned tables are NET NEGATIVE against an opponent they never met.
+"""The learned tables now BEAT an empty one against an opponent never met.
 
-This is the project's central empirical result and its least flattering one.
-Self-play against a single adversary produces values that encode THAT
-adversary's habits, and anything else exploits them. Measured against a
-heuristic greedy pursuer — no learned values at all, and the likeliest
-strategy an opposing group will field — the shipped evader survives a fraction
-of what the SAME policy survives carrying an empty table.
+This assertion is the inverse of the one it replaces, and the reversal is the
+entire justification for the diverse-opponent phase. Under self-play the
+shipped evader survived 2.2% against a heuristic pursuer where an EMPTY table
+survived 69.8% — learning was a 30x liability, because values trained against
+one adversary encode that adversary's habits and anything else exploits them.
 
-It is pinned because it has already been got wrong once: a Phase 11 claim of
-93.0% evader survival was measured against our own contemporaneous cop and did
-not survive contact with any other opponent.
+Trained against a POOL (scripted, co-evolving, random, over varied barrier
+layouts) the same measurement now reads 90.0% against 69.8%. The direction is
+what is pinned here, not the magnitude: if an empty table ever beats the
+trained one again, the phase has regressed and §10.10 must say so.
 """
 
 from dataclasses import replace
@@ -44,20 +44,21 @@ def survival():
     return {"trained": rate(burglar.qtable_path), "empty": rate(None)}
 
 
-def test_an_empty_evader_table_outperforms_the_trained_one(survival):
-    """The result the documentation must keep stating."""
-    assert survival["empty"] > survival["trained"], (
-        "the learned evader table stopped being a liability — §10.10 must be "
-        "rewritten to say so"
+def test_the_trained_evader_table_outperforms_an_empty_one(survival):
+    """The result the diverse-opponent phase exists to produce."""
+    assert survival["trained"] > survival["empty"], (
+        "the learned evader table is a liability again — diverse training has "
+        "regressed and §10.10 must be rewritten to say so"
     )
 
 
 def test_the_gap_is_large_enough_to_be_a_finding_not_noise(survival):
-    assert survival["empty"] - survival["trained"] > 20.0
+    assert survival["trained"] - survival["empty"] > 10.0
 
 
 def test_the_plan_publishes_this_result():
-    """A finding this unflattering is exactly the one that quietly vanishes."""
+    """The reversal must be documented as a reversal, not quietly swapped."""
     plan = open("docs/PLAN.md", encoding="utf-8").read()
 
     assert "never trained against" in plan
+    assert "2.2%" in plan, "§10.10 must keep stating what self-play measured"

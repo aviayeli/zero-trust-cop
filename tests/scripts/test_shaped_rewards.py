@@ -55,9 +55,15 @@ def test_non_terminal_transitions_carry_only_shaping(
 
     train_tournament(config, cop_settings, thief_settings, seed=7)
 
+    # BOTH peers' terms: the shaping magnitudes are per-role, so building this
+    # from the cop alone would ignore every thief transition.
     allowed = {
-        round(cop_settings.step_cost, 6),
-        round(cop_settings.step_cost + cop_settings.invalid_move_penalty, 6),
+        round(value, 6)
+        for settings in (cop_settings, thief_settings)
+        for value in (
+            settings.step_cost,
+            settings.step_cost + settings.invalid_move_penalty,
+        )
     }
     non_terminal = [round(reward, 6) for _, reward, terminal in seen if not terminal]
     assert non_terminal, "expected the episodes to contain non-terminal turns"

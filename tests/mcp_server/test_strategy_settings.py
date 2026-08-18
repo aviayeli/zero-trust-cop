@@ -36,7 +36,7 @@ def test_loads_real_police_settings():
     assert settings.discount_factor == 0.9
     assert settings.exploration_rate == 0.1
     assert settings.initial_q_value == 0.0
-    assert settings.invalid_move_penalty == -1.0
+    assert settings.invalid_move_penalty == -1.5
     assert settings.qtable_path
 
 
