@@ -87,23 +87,32 @@ def _spawn(role: str, config_root: str | None) -> subprocess.Popen:
 
 
 @contextlib.contextmanager
-def running_peers(config_root: str | None = None, startup_timeout: float = 30.0):
-    """Run both peers for the duration of the block, then stop them.
+def running_peers(
+    config_root: str | None = None,
+    startup_timeout: float = 30.0,
+    roles=PEER_ROLES,
+):
+    """Run the named peers for the duration of the block, then stop them.
+
+    ``roles`` defaults to BOTH, which is the local simulation. A league
+    match passes only our own: the opposing peer is the other group's
+    process, and starting a local stand-in would bind the port their
+    tunnel is dialling and quietly play a second local game instead.
 
     Yields:
         {role: TransportSettings} once every peer is accepting connections.
     """
     bindings = {
-        role: load_network_settings(role, config_root) for role in PEER_ROLES
+        role: load_network_settings(role, config_root) for role in roles
     }
     processes = []
     try:
-        for role in PEER_ROLES:
+        for role in roles:
             processes.append(_spawn(role, config_root))
-        for role, process in zip(PEER_ROLES, processes):
+        for role, process in zip(roles, processes):
             wait_for_port(
-                bindings[role].host, bindings[role].my_port, startup_timeout,
-                process,
+                bindings[role].dial_host, bindings[role].my_port,
+                startup_timeout, process,
             )
         yield bindings
     finally:

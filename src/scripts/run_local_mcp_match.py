@@ -33,8 +33,12 @@ _ENGINE_ROLE = {"police": "cop", "thief": "thief"}
 
 
 def peer_url(binding) -> str:
-    """Streamable-HTTP endpoint for one peer."""
-    return f"http://{binding.host}:{binding.my_port}/mcp"
+    """Streamable-HTTP endpoint for one peer.
+
+    Built from ``dial_host``, not the bind host: a peer exposed for league
+    play binds ``0.0.0.0``, which is not an address a client can connect to.
+    """
+    return f"http://{binding.dial_host}:{binding.my_port}/mcp"
 
 
 def build_clients(config, seed, config_root=None):

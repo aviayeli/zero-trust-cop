@@ -31,7 +31,7 @@ def test_payload_nested_objects_have_exact_schema_keys():
 def test_budget_and_game_count_are_integer_values_from_game_config():
     payload = declaration.build_declaration()
     assert payload["token_budget"] == 200000
-    assert payload["num_games"] == 1
+    assert payload["num_games"] == 6
     assert isinstance(payload["token_budget"], int)
     assert not isinstance(payload["token_budget"], str)
     assert isinstance(payload["num_games"], int)

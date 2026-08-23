@@ -46,11 +46,13 @@ def test_a_different_private_series_length_is_honoured(config, training_settings
     assert len(scores) == 7
 
 
-def test_the_shared_config_still_declares_a_single_game():
-    """D3: game.json is the Step-0 contract and stays untouched at 1."""
+def test_the_shared_config_declares_the_league_series_length():
+    """D3: game.json is the Step-0 contract, and it declares the LEAGUE
+    series length (6 games) — not the private training length, which each
+    peer sets to 2000 in its own game.toml. The two must never be conflated."""
     shared = json.loads(Path("config/game.json").read_text())
 
-    assert shared["network_and_league"]["num_games"] == 1
+    assert shared["network_and_league"]["num_games"] == 6
 
 
 def test_both_peers_privately_declare_the_training_series_length():

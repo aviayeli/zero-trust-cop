@@ -5,6 +5,8 @@ while the peers bound police(cop) 8801 and thief 8802, so any external peer
 following our own Step-0 artifact would have talked to the wrong role.
 """
 
+from urllib.parse import urlsplit
+
 import pytest
 
 from mcp_server.declaration import build_declaration
@@ -15,10 +17,17 @@ _ENGINE_ROLE = {"police": "cop", "thief": "thief"}
 
 @pytest.mark.parametrize("peer_role", ["police", "thief"])
 def test_the_declaration_advertises_the_port_the_peer_binds(peer_role):
+    """The PORT is the claim under test, deliberately not the host.
+
+    A peer exposed for league play binds ``0.0.0.0`` and is advertised at a
+    tunnel URL, so pinning the host here would fail the moment the thing it
+    describes actually happens. The role/port swap this file exists to catch
+    is visible in the port alone.
+    """
     binding = load_network_settings(peer_role)
     advertised = build_declaration()["mcp_servers"][_ENGINE_ROLE[peer_role]]
 
-    assert advertised == f"http://{binding.host}:{binding.my_port}/mcp"
+    assert urlsplit(advertised).port == binding.my_port
 
 
 def test_the_two_advertised_endpoints_differ():

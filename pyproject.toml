@@ -19,7 +19,10 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
-pythonpath = ["src"]
+# `tests/_support` holds importable test doubles. It is NOT a package and
+# is named so it cannot collide with anything under `src` the way a
+# `tests/scripts` package would collide with `scripts`.
+pythonpath = ["src", "tests/_support"]
 # importlib mode + no __init__.py in tests/ avoids the src-layout name clash
 # between the source package `engine` and the test dir (both would be `engine`).
 addopts = ["--import-mode=importlib"]

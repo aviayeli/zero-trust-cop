@@ -34,9 +34,13 @@ policy_mode = "manhattan_primary"
 match_policy_mode = "manhattan_primary"
 
 [network]
-host = "127.0.0.1"
+host = "0.0.0.0"
 my_port = 8801
 opponent_url = "http://127.0.0.1:8802/mcp"
+# How often a remote match asks a peer whether the turn resolved yet.
+# Only used against a REMOTE opponent, where our reveal may land first
+# and the gate answers "waiting" instead of the turn result.
+poll_interval_sec = 0.5
 # Public tunnel (ngrok / Localtonet) for league matches. Empty means
 # loopback only; set host = "0.0.0.0" to expose this peer.
 public_url = ""

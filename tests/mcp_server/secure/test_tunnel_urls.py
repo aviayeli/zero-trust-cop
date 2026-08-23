@@ -98,6 +98,7 @@ def test_a_configured_tunnel_url_is_validated_at_load(tmp_path):
     (role_dir / "game.toml").write_text(
         '[network]\nhost = "127.0.0.1"\nmy_port = 8802\n'
         'opponent_url = "http://127.0.0.1:8801/mcp"\n'
+        'poll_interval_sec = 0.5\n'
         'public_url = "tcp://0.tcp.ngrok.io:12345"\n'
     )
 
@@ -112,6 +113,7 @@ def test_a_valid_configured_tunnel_url_survives_loading(tmp_path):
         '[network]\nhost = "0.0.0.0"\nmy_port = 8801\n'
         'opponent_url = "http://127.0.0.1:8802/mcp"\n'
         'public_url = "https://avi-thief.ngrok-free.app/"\n'
+        'poll_interval_sec = 0.5\n'
     )
 
     settings = load_network_settings("thief", config_root=str(tmp_path))

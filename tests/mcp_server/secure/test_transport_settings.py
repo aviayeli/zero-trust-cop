@@ -4,6 +4,8 @@ The canonical block is ``[network]``: ``my_port`` is where this peer
 listens and ``opponent_url`` is where it reaches the other half.
 """
 
+from urllib.parse import urlsplit
+
 import pytest
 
 from mcp_server.transport import load_network_settings
@@ -36,19 +38,31 @@ def test_the_configured_ports_are_the_ruled_ones():
     assert load_network_settings("thief").my_port == 8801
 
 
-def test_peers_stay_on_the_loopback_interface():
-    """A local simulation must not expose a peer to the network."""
+def test_peers_bind_every_interface_so_a_tunnel_can_reach_them():
+    """Blocker A: ngrok forwards to the listener, and a loopback-only peer
+    is unreachable from outside. Exposure is deliberate — the wire is
+    authenticated but not encrypted — and `dial_host` keeps our OWN client
+    on loopback regardless (`test_dial_host.py`)."""
     for role in ("police", "thief"):
-        assert load_network_settings(role).host == "127.0.0.1"
+        assert load_network_settings(role).host == "0.0.0.0"
 
 
-def test_each_peer_points_at_the_other_ones_port():
-    """The opponent URL must name the port the opponent actually binds."""
-    police = load_network_settings("police")
-    thief = load_network_settings("thief")
+@pytest.mark.parametrize("role,opponent", [("police", "thief"), ("thief", "police")])
+def test_a_loopback_opponent_url_names_the_port_the_opponent_binds(role, opponent):
+    """Guards a port swap in the LOCAL pairing without pinning league play.
 
-    assert police.opponent_url == f"http://{thief.host}:{thief.my_port}/mcp"
-    assert thief.opponent_url == f"http://{police.host}:{police.my_port}/mcp"
+    Once `opponent_url` is repointed at the other group's tunnel it names
+    their host, not ours, so the check applies only while it stays on
+    loopback. The URL is required to be dialable either way.
+    """
+    mine = load_network_settings(role)
+    theirs = load_network_settings(opponent)
+    parts = urlsplit(mine.opponent_url)
+
+    assert parts.scheme in ("http", "https")
+    assert parts.hostname
+    if parts.hostname in ("127.0.0.1", "localhost", "::1"):
+        assert parts.port == theirs.my_port
 
 
 def test_a_public_tunnel_url_is_available_and_empty_by_default():
