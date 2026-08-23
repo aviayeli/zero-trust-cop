@@ -22,13 +22,13 @@ invariants; where it and a phase document disagree, this file wins.
   and `log_shape.py` out of `replay_match.py`, `mime_report.py` out of
   `email_sender.py`, `action_buffer.py` out of `match_state.py`,
   `match_report.py` out of `run_local_mcp_match.py`. The longest tracked
-  module is `scripts/render_replay.py` at 148 lines.
+  module is `scripts/setup_league_match.py` at 149 lines.
 - **No hardcoded hyperparameters**: every tunable lives in `config/game.json`
   (shared contract) or `config/<role>/game.toml` (per-peer strategy and
   networking). `engine/config.py` and `strategy/settings.py` are the only
   modules permitted to know those paths.
 - **Strict TDD**: every module below was specified precisely enough that a
-  failing test could be written before it existed. Current state: **957 tests
+  failing test could be written before it existed. Current state: **968 tests
   passing**.
 
 ## FR5 Turn-Resolution & Tie-Break Rule (locked)
@@ -106,7 +106,7 @@ zero-trust-cop/
 │       ├── board_agreement.py   # pre-match board/axis check (§2, audit T-1)
 │       ├── opponent_pool.py     # weighted per-episode opponent selection
 │       └── train_diverse.py     # the shipped opponent-diverse trainer
-└── tests/                       # 957 tests, mirroring the src/ layout
+└── tests/                       # 968 tests, mirroring the src/ layout
 ```
 
 ## 1. Engine Layer — Module Responsibilities & Interfaces
@@ -1103,7 +1103,7 @@ close it.
 
 Every module was built test-first per `CLAUDE.md`; `docs/TODO.md` records the
 sequencing and the evidence. The suite mirrors `src/` and currently stands at
-**957 passing tests**. The load-bearing cases, by layer:
+**968 passing tests**. The load-bearing cases, by layer:
 
 - **Engine** — the six FR5 scenarios (both unobstructed, bounds-blocked,
   barrier-blocked, same-cell capture, swap capture, adjacent near-miss), plus
@@ -1124,3 +1124,104 @@ sequencing and the evidence. The suite mirrors `src/` and currently stands at
 - **Consistency** — `test_declaration_agrees_with_transport` (ports),
   `test_readme_consistency` (self-checked figures), and the 150-line audit over
   `git ls-files '*.py'`.
+
+## 12. Real-world P2P Remote Networking & Async Commit-Reveal Resolution
+
+*Work phase 12, fully completed.* Numbered 12 to match this document's
+section sequence — `## 9` is already Determinism Strategy, and work-phase 9
+was barrier initialisation (§4.3), so "Phase 9" would name two other things.
+
+Everything before this phase proved our two peers agree **with each other**.
+This phase makes a match against *another group* possible at all. The gap was
+not a missing feature but an unread field: `opponent_url` was loaded into
+`NetworkSettings` from the first phase and read nowhere in `src/`. Every
+runner built both endpoints out of our own bindings and spawned both peers
+locally, so the loopback simulation passed whether or not remote play worked.
+
+### 12.1 Host-agnostic binding, with loopback translation
+
+Peers now bind `0.0.0.0` so a tunnel (ngrok / Localtonet) can forward to them.
+Exposure is a deliberate opt-in: the wire is authenticated but not encrypted.
+
+That change alone would have broken local play. `run_local_mcp_match.peer_url`
+and `peer_processes.wait_for_port` both reused the **bind** host to **dial**,
+and `0.0.0.0` is "every interface I listen on" — not a destination. It happens
+to work on Linux and is a category error everywhere. `transport.dial_host`
+maps the wildcards (`0.0.0.0` → `127.0.0.1`, `::` → `::1`) and is used at both
+call sites, so exposing a peer never redirects our own client.
+
+### 12.2 We own one half of the game
+
+`match_loop.play_match` prepares **both** peers' submissions and broadcasts
+them to both servers. Correct for a simulation, wrong for league play: the
+opposing group produces its own signed moves and we must not invent them.
+
+`scripts/remote_match.py` prepares, signs and pushes **only our own role** —
+to both servers, so mirrored local truth (D2) survives with the half we are
+entitled to produce. The two engines are still cross-examined every turn.
+
+### 12.3 Asynchronous resolution: the turn nobody told us about
+
+`SubmissionGate.reveal_move` returns `resolved` only to the **second**
+revealer; the first is told `waiting` and learns nothing. Locally this never
+surfaces because one process performs both reveals. Remotely, whenever our
+reveal lands first the turn settles out of band and no tool exists to fetch
+that reply afterwards.
+
+`scripts/remote_sync.py` recovers it from what every peer will still state:
+
+- `await_turn_count` polls until each peer reports the target turn or
+  terminates, bounded by the agreed `watchdog_timeout_sec` — a peer that never
+  advances is a rulebook forfeit (`TechnicalLossError`), not an endless wait.
+- `observed_result` reassembles the turn. Positions come from **both** peers
+  because each states only its own (FR3), and `captured` is derived from
+  `terminal_reason` rather than read, since no status field carries it.
+- `status_divergence` compares `turn_count`, `is_terminated` and
+  `terminal_reason` across peers before any reconstructed turn is believed.
+
+### 12.4 The turn-6 forfeit: reveal before commit
+
+The first real two-sided run forfeited on turn 6. The cause was not the
+polling path but `CommitmentBook.reveal` (§3): a peer refuses **every** reveal
+until **both** commitments are in — the anti-front-running rule. The local
+runner pushes both itself and never trips it. Remotely the other commitment
+arrives on the opponent's schedule, so `reveal_before_commit` means *not yet*.
+
+`remote_sync.reveal_when_accepted` waits it out under the watchdog and raises
+`RemoteMatchError` on any other refusal. Every other rejection still aborts:
+playing on after a refusal would append turns only our own server ever saw.
+
+### 12.5 Genuinely independent peer execution
+
+`scripts/run_remote_mcp_match.py` starts **one** peer — ours — and dials the
+opponent at their published `opponent_url`. `running_peers` gained a `roles`
+argument (defaulting to both, so the local runner is untouched); starting a
+local stand-in would bind the port the opponent's tunnel is dialling and
+quietly play a second local game. `remote_peers.opponent_limiter` always
+applies the agreed `rate_limiter_gatekeeper` throttle, because unlike loopback
+there is a real group's server on the other end.
+
+Verified by running two runners against each other over real sockets: 35
+turns, each driving only its own role, both agreeing on the final state. That
+run is the regression test the in-process fakes could not be — it is what
+found §12.4.
+
+### 12.6 Pre-game setup automation
+
+`scripts/setup_league_match.py` automates the two steps with no local symptom:
+advertising our tunnel in `config/declaration.json`, and installing the
+opponent's public key at `config/police/peers/thief.pub`. Both inputs are
+validated *before* anything is written, and a bad key aborts the run before
+the declaration is touched — half-applied setup looks done and is not.
+
+### 12.7 Known limitations of remote play
+
+- **The match log is one-sided.** We hold only our own signed submissions, so
+  `log_*.json` records one per turn. The opponent's half is not
+  replay-verifiable: no tool reads a reveal back out of the commitment book.
+- **Interop remains assumed.** The protocol requires the opposing group's
+  client to *push* its submissions to both servers, as ours does. A pull-model
+  implementation would not connect. This is §10's "local simulation ≠ interop"
+  caveat, now narrowed to one concrete assumption.
+- **Throttled matches are slow.** At the agreed 30 requests/minute, a 35-turn
+  remote match takes several minutes of wall clock.
