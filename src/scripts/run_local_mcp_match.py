@@ -111,8 +111,11 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description="Local P2P MCP match.")
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--config-root", default=None)
-    parser.add_argument("--game-id", default=None,
-                        help="artifact game id; omit to skip writing artifacts")
+    parser.add_argument("--write-artifacts", action="store_true",
+                        help="write the four submission artifacts")
+    parser.add_argument("--opponent-id", default=None,
+                        help="opposing group id; match ids derive from it and "
+                             "ours, SORTED. Defaults to the contract's pair.")
     parser.add_argument("--game-number", type=int, default=1)
     parser.add_argument("--logs-dir", default="logs")
     args = parser.parse_args(argv)
@@ -129,10 +132,11 @@ def main(argv=None):
 
     _report(args.seed, history)
 
-    if args.game_id:
+    if args.write_artifacts:
         paths = write_artifacts(
-            args.logs_dir, args.game_id, args.game_number, history,
+            args.logs_dir, args.game_number, history,
             group_id=group_id(args.config_root), config_root=args.config_root,
+            opponent_id=args.opponent_id,
         )
         for kind, path in sorted(paths.items()):
             print(f"{kind}={path}")

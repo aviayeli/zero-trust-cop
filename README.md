@@ -184,8 +184,18 @@ Every one of these is closed by a specific mechanism with a specific test.
 Each turn is two-phase. Both peers first publish a **commitment**:
 
 ```
-h_commit = SHA256( State || Move || Intent || Nonce )   # Rulebook 5.3
+h_commit = SHA256( canonical_json({state, move, intent}) | nonce )
 ```
+
+That is the **league reference form** (`mcp_server/interop.py`). The book
+publishes three inconsistent commit constructions; this is the one the
+lecturer's tooling runs, the one the community interop kit pins with shared
+vectors, and the only one that binds the whole record. Canonical JSON means
+`sort_keys=True, ensure_ascii=False, separators=(",", ":")` — `ensure_ascii`
+is load-bearing, because the opponent re-hashes our revealed payloads at audit
+and an escaped Hebrew `hint` would read as tampering. The superseded
+positional form `SHA256(State || Move || Intent || Nonce)` still verifies
+behind `verify(..., allow_legacy=True)` so older artifacts stay checkable.
 
 The payload states a **direction** and an **honesty flag** separately
 (payload v3.0.0):
@@ -427,6 +437,8 @@ A completed series writes four deterministic (byte-reproducible) JSON
 artifacts under `logs/<group_id>/`:
 
 ```
+# <game_id> is "-vs-".join(sorted([us, them])) — SORTED, so both peers derive
+# the same four filenames with no round-trip and no convention to agree.
 declaration_<game_id>.json      # Step-0 declaration (schema fixed by PRD_03 FR6)
 config_<game_id>_g<NN>.json     # snapshot of the shared game contract
 log_<game_id>_g<NN>.json        # per-turn commitments, signatures, reveals, results
@@ -464,8 +476,8 @@ never produces an artifact.)
 
 | Discipline | State |
 |---|---|
-| Test suite | **968 tests**, all passing (unit → live two-process HTTP) |
-| Line limit | every one of the **206** tracked Python files ≤ **150 lines** (max: 149) |
+| Test suite | **1035 tests**, all passing (unit → live two-process HTTP) |
+| Line limit | every one of the **215** tracked Python files ≤ **150 lines** (max: 149) |
 | TDD | strict red→green: every implementation change preceded by a confirmed failing test |
 | Hyperparameters | zero tunables inlined in Python — all in `config/game.json` / per-peer `game.toml` |
 | Lifecycle | PRD → PLAN → TODO under `docs/`, per phase |
@@ -523,7 +535,7 @@ configured for pytest; standalone scripts take `PYTHONPATH=src`.
 
 ```bash
 .venv/bin/python -m pytest -q
-# expected: 968 passed
+# expected: 1035 passed
 # actually prints "919 passed, 1 skipped": one test in
 # tests/test_release_artifact.py asserts the submission TAG points at HEAD,
 # which is only meaningful during a release. Between a commit and a push the
@@ -608,7 +620,7 @@ The match harness also does this automatically at startup.
 
 ```bash
 PYTHONPATH=src .venv/bin/python -m scripts.run_local_mcp_match \
-    --seed 20260801 --game-id aviayeli --game-number 1
+    --seed 20260801 --write-artifacts --game-number 1
 # seed=20260801  turns=3  terminal_reason=capture  peers_agreed=True
 # → logs/aviayeli/{declaration_aviayeli,config_aviayeli_g01,log_aviayeli_g01,result_aviayeli}.json
 ```
@@ -792,7 +804,7 @@ After the artifacts are written, the harness reports the series:
 
 ```bash
 PYTHONPATH=src .venv/bin/python -m scripts.run_local_mcp_match \
-    --seed 20260801 --game-id aviayeli --game-number 1
+    --seed 20260801 --write-artifacts --game-number 1
 # … result=logs/aviayeli/result_aviayeli.json
 # email_report=ok mode=auto
 ```

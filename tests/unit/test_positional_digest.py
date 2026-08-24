@@ -1,14 +1,19 @@
-"""R1: the reveal digest is positional concatenation, per Rulebook 5.3.
+"""Superseded commit encodings stay VERIFIABLE, and stay un-emitted.
 
-    H = SHA256( State || Move || Intent || Nonce )
+Three forms have been the emitted one at different times:
 
-The previous form hashed sorted-key canonical JSON. Both self-verify, so our
-own suite could never catch the mismatch -- both peers share one
-implementation. Only an opposing team implementing 5.3 literally would have
-found it, at which point every cross-team reveal fails.
+1. the book ch.5 listing -- nonce sealed inside the canonical object;
+2. Rulebook 5.3 positional concatenation, ``State || Move || Intent || Nonce``;
+3. the league reference form, ``canonical({state,move,intent}) | nonce`` (now).
 
-verify() keeps a GATED legacy fallback so artifacts sealed under the JSON form
-still verify; commit() only ever emits the canonical positional form.
+Each supersession leaves sealed artifacts behind, and evidence that stops
+verifying is evidence destroyed -- so ``verify`` keeps 1 and 2 behind the
+``allow_legacy`` gate. The gate is what stops them being a live-wire
+liability: three encodings of the same fields, two the project no longer
+speaks, all three accepted, is a peer's choice of which to commit under.
+
+The emitted form itself is pinned in ``mcp_server/test_crypto_reference_form.py``
+and against the shared league vectors in ``mcp_server/test_interop_vectors.py``.
 """
 
 import hashlib
@@ -17,59 +22,60 @@ import pytest
 
 from mcp_server.crypto import canonical_json, commit, positional_payload, verify
 
+FIELDS = {"state": "S1", "move": "MOVE:W", "intent": "truth", "nonce": "ab"}
 
-def test_the_payload_is_literal_positional_concatenation():
+
+def _positional(**fields) -> str:
+    return hashlib.sha256(positional_payload(**fields)).hexdigest()
+
+
+def _nonce_sealed(**fields) -> str:
+    return hashlib.sha256(canonical_json(fields)).hexdigest()
+
+
+def test_the_positional_payload_is_literal_concatenation():
     assert positional_payload("S0", "MOVE:N", "truth", "ab") == b"S0MOVE:Ntruthab"
 
 
-def test_the_digest_is_sha256_of_that_exact_string():
-    expected = hashlib.sha256(b"S0MOVE:Ntruthab").hexdigest()
-
-    assert verify("S0", "MOVE:N", "truth", "ab", expected)
-
-
-def test_commit_emits_the_positional_form(monkeypatch):
-    monkeypatch.setattr("mcp_server.crypto.token_hex", lambda _: "cafe")
-
-    digest, nonce = commit("S0", "MOVE:N", "truth")
-
-    assert nonce == "cafe"
-    assert digest == hashlib.sha256(b"S0MOVE:Ntruthcafe").hexdigest()
+def test_concatenation_ran_adjacent_fields_together():
+    """Why form 2 was superseded: no delimiters, so two distinct reveals share
+    one preimage. Kept as a test because it is the reason, not a trivium."""
+    assert positional_payload("ab", "c", "truth", "n") == \
+        positional_payload("a", "bc", "truth", "n")
 
 
-def test_a_genuine_reveal_round_trips():
-    digest, nonce = commit("S1", "MOVE:W", "lie")
+@pytest.mark.parametrize("seal", [_positional, _nonce_sealed],
+                         ids=["positional-5.3", "ch5-nonce-sealed"])
+def test_a_superseded_digest_is_refused_by_default(seal):
+    """The live wire speaks the reference form only (audit T-1)."""
+    assert verify(**FIELDS, h_commit=seal(**FIELDS)) is False
 
-    assert verify("S1", "MOVE:W", "lie", nonce, digest)
+
+@pytest.mark.parametrize("seal", [_positional, _nonce_sealed],
+                         ids=["positional-5.3", "ch5-nonce-sealed"])
+def test_a_superseded_digest_verifies_behind_the_gate(seal):
+    """Artifacts sealed under an earlier form must not become unverifiable."""
+    assert verify(**FIELDS, h_commit=seal(**FIELDS), allow_legacy=True) is True
 
 
+@pytest.mark.parametrize("seal", [_positional, _nonce_sealed],
+                         ids=["positional-5.3", "ch5-nonce-sealed"])
 @pytest.mark.parametrize("field, value", [
     ("state", "S9"), ("move", "MOVE:S"), ("intent", "lie"), ("nonce", "beef"),
 ])
-def test_changing_any_bound_field_breaks_the_digest(field, value):
-    fields = {"state": "S1", "move": "MOVE:W", "intent": "truth", "nonce": "ab"}
-    digest = hashlib.sha256(
-        positional_payload(**fields)
-    ).hexdigest()
-    fields[field] = value
+def test_the_gate_still_binds_every_field(seal, field, value):
+    """Opening the gate widens which ENCODINGS are accepted, never which
+    values -- a legacy digest must not verify against a rewritten record."""
+    tampered = {**FIELDS, field: value}
 
-    assert not verify(fields["state"], fields["move"], fields["intent"],
-                      fields["nonce"], digest)
+    assert verify(**tampered, h_commit=seal(**FIELDS), allow_legacy=True) is False
 
 
-def test_a_legacy_json_sealed_digest_verifies_only_behind_the_gate():
-    """Artifacts sealed before 5.3 must stay verifiable -- but on request only.
-
-    Accepting the superseded encoding unconditionally let a live peer commit
-    under a form this project no longer emits (audit T-1).
-    """
-    legacy = hashlib.sha256(canonical_json(
-        {"state": "S1", "move": "MOVE:W", "intent": "truth", "nonce": "ab"}
-    )).hexdigest()
-
-    assert not verify("S1", "MOVE:W", "truth", "ab", legacy)
-    assert verify("S1", "MOVE:W", "truth", "ab", legacy, allow_legacy=True)
+def test_a_wrong_digest_fails_under_every_form():
+    assert verify(**FIELDS, h_commit="00" * 32, allow_legacy=True) is False
 
 
-def test_a_wrong_digest_fails_under_both_forms():
-    assert not verify("S1", "MOVE:W", "truth", "ab", "00" * 32)
+def test_the_emitted_form_needs_no_gate():
+    h_commit, nonce = commit("S1", "MOVE:W", "truth")
+
+    assert verify("S1", "MOVE:W", "truth", nonce, h_commit) is True

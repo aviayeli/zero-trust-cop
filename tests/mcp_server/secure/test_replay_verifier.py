@@ -20,7 +20,11 @@ from mcp_server.identity import sign
 from mcp_server.peer_client import PeerClient
 from mcp_server.peer_keys import load_public_keys
 from mcp_server.server import create_app
-from scripts.match_log import build_log
+from scripts.match_payloads import build_log
+
+# The two derived match ids; this suite only needs them present.
+IDS = {"game_id": "aviayeli-vs-groupb",
+       "game_uid": "1e73c318-5b29-4a7b-1c60-ecb8286265f0"}
 from scripts.match_loop import play_match
 from scripts.replay_match import TAMPERED, VERIFIED, verify_log
 
@@ -40,7 +44,7 @@ def played(secure_config_root, peer_keys):
     history = asyncio.run(
         play_match(clients, [apps["police"], apps["thief"]], populated_board(config), config)
     )
-    log = build_log("t1", 1, history, group_id="aviayeli",
+    log = build_log(IDS, 1, history, group_id="aviayeli",
                     barriers=barrier_layout(config))
     keys = load_public_keys("police", secure_config_root)
     return log, config, keys

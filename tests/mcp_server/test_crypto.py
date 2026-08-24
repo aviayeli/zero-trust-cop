@@ -1,5 +1,9 @@
 """Strict-TDD tests for mcp_server.crypto — the commit-reveal primitive.
 
+The emitted digest's exact construction is pinned in
+``test_crypto_reference_form.py`` and against the shared league vectors in
+``test_interop_vectors.py``; this file covers the primitive's behaviour.
+
 Commit-reveal gives simultaneous-move integrity between two peers with no
 trusted arbiter: each peer publishes h_commit first and reveals (move, intent,
 nonce) only after both commitments are exchanged, so neither can adapt its move
@@ -19,8 +23,9 @@ INTENT = "cut off the northern exit"
 
 
 def _canonical(state, move, intent, nonce):
-    """The exact wire serialization both peers must agree on, recomputed here
-    independently of the implementation."""
+    """The superseded ch.5 listing form (nonce sealed INSIDE the object),
+    recomputed independently of the implementation. Verifiable behind the
+    legacy gate; nothing emits it."""
     return json.dumps(
         {"state": state, "move": move, "intent": intent, "nonce": nonce},
         sort_keys=True,
@@ -51,17 +56,6 @@ def test_commit_hides_the_move_across_calls():
     first, _ = commit(STATE, MOVE, INTENT)
     second, _ = commit(STATE, MOVE, INTENT)
     assert first != second
-
-
-def test_digest_matches_independently_computed_positional_concatenation():
-    """Pins the wire format (Rulebook 5.3): the other group must agree byte
-    for byte. Computed here from a literal f-string rather than by calling the
-    module's own helper, so the test cannot drift along with the code."""
-    h_commit, nonce = commit(STATE, MOVE, INTENT)
-    expected = hashlib.sha256(
-        f"{STATE}{MOVE}{INTENT}{nonce}".encode()
-    ).hexdigest()
-    assert h_commit == expected
 
 
 def test_a_legacy_json_sealed_digest_is_accepted_only_when_allowed():

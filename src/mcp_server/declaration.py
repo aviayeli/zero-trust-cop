@@ -131,12 +131,18 @@ def build_declaration(config_root: str | None = None) -> dict:
 
 
 def write_declaration(
-    game_id: str, output_dir: str = ".", config_root: str | None = None
+    game_id: str, output_dir: str = ".", config_root: str | None = None,
+    game_uid: str | None = None,
 ) -> str:
-    """Write and return ``declaration_<game_id>.json`` in ``output_dir``."""
+    """Write and return ``declaration_<game_id>.json`` in ``output_dir``.
+
+    ``game_id`` names the FILE, ``game_uid`` is stamped INSIDE it; it falls
+    back to ``game_id``.
+    """
     os.makedirs(output_dir, exist_ok=True)
     path = os.path.join(output_dir, f"declaration_{game_id}.json")
-    payload = dict(build_declaration(config_root), game_uid=game_id)
+    payload = dict(build_declaration(config_root),
+                   game_uid=game_uid if game_uid is not None else game_id)
     with open(path, "w", encoding="utf-8", newline="\n") as artifact:
         json.dump(payload, artifact, indent=2, sort_keys=True)
         artifact.write("\n")

@@ -66,8 +66,13 @@ def _parse(argv):
     parser.add_argument("--role", required=True, choices=("police", "thief"))
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--config-root", default=None)
-    parser.add_argument("--game-id", default=None,
-                        help="artifact game id; omit to skip writing artifacts")
+    parser.add_argument("--write-artifacts", action="store_true",
+                        help="write the four submission artifacts")
+    parser.add_argument("--opponent-id", default=None,
+                        help="opposing group id; the match ids derive from it "
+                             "and ours, SORTED, so both peers name the "
+                             "artifacts alike. Defaults to the other party in "
+                             "the contract's agreed_between pair.")
     parser.add_argument("--game-number", type=int, default=1)
     parser.add_argument("--logs-dir", default="logs")
     parser.add_argument(
@@ -100,10 +105,11 @@ def main(argv=None):
 
     _report(args.role, history, remote_url)
 
-    if args.game_id:
+    if args.write_artifacts:
         paths = write_artifacts(
-            args.logs_dir, args.game_id, args.game_number, history,
+            args.logs_dir, args.game_number, history,
             group_id=group_id(args.config_root), config_root=args.config_root,
+            opponent_id=args.opponent_id, our_role=args.role,
         )
         for kind, path in sorted(paths.items()):
             print(f"{kind}={path}")

@@ -15,7 +15,11 @@ from pathlib import Path
 import pytest
 
 from mcp_server.declaration import github_commit
-from scripts.match_log import build_result, write_artifacts
+from scripts.match_log import write_artifacts
+from scripts.match_payloads import build_result
+
+# Derived from the agreed contract now, not passed in (match_log.derive_ids).
+IDS = {"game_id": "aviayeli-vs-groupb", "game_uid": "uid-under-test"}
 from scripts.replay_match import TAMPERED, VERIFIED, colourise
 
 
@@ -35,13 +39,13 @@ def test_the_probe_returns_a_git_sha():
 
 
 def test_the_result_summary_carries_the_commit_hash(history):
-    result = build_result("g1", 1, history, group_id="aviayeli")
+    result = build_result(IDS, 1, history, group_id="aviayeli")
 
     assert result["github_commit"] == github_commit()
 
 
 def test_the_written_result_artifact_carries_it_too(tmp_path, history):
-    paths = write_artifacts(tmp_path, "g1", 1, history,
+    paths = write_artifacts(tmp_path, 1, history,
                             group_id="aviayeli", config_root="config")
 
     written = json.loads(Path(paths["result"]).read_text())
@@ -50,7 +54,7 @@ def test_the_written_result_artifact_carries_it_too(tmp_path, history):
 
 def test_the_declaration_and_the_result_agree_on_provenance(tmp_path, history):
     """Both artifacts must name the SAME commit, or the pair is incoherent."""
-    paths = write_artifacts(tmp_path, "g1", 1, history,
+    paths = write_artifacts(tmp_path, 1, history,
                             group_id="aviayeli", config_root="config")
 
     declaration = json.loads(Path(paths["declaration"]).read_text())

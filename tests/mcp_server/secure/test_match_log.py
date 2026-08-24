@@ -13,7 +13,14 @@ from pathlib import Path
 
 import pytest
 
-from scripts.match_log import ARTIFACT_VERSION, build_log, write_artifacts
+from scripts.match_log import write_artifacts
+from scripts.match_payloads import ARTIFACT_VERSION, build_log
+
+# The match ids are now DERIVED from the agreed contract, not passed in
+# (scripts.match_log.derive_ids). The shipped contract pairs us with "groupb",
+# so every artifact this suite writes is named after that sorted pair.
+GAME_ID = "aviayeli-vs-groupb"
+IDS = {"game_id": GAME_ID, "game_uid": "uid-under-test"}
 
 
 @pytest.fixture
@@ -46,7 +53,7 @@ class _Sub:
 
 
 def test_the_log_records_every_field_a_verifier_needs(history):
-    log = build_log("g1", 1, history, group_id="aviayeli")
+    log = build_log(IDS, 1, history, group_id="aviayeli")
 
     turn = log["turns"][0]
     for role in ("police", "thief"):
@@ -57,7 +64,7 @@ def test_the_log_records_every_field_a_verifier_needs(history):
 
 
 def test_the_log_records_the_resolved_outcome(history):
-    log = build_log("g1", 1, history, group_id="aviayeli")
+    log = build_log(IDS, 1, history, group_id="aviayeli")
 
     result = log["turns"][0]["result"]
     assert result["cop_position"] == [0, 1]
@@ -66,22 +73,23 @@ def test_the_log_records_the_resolved_outcome(history):
 
 
 def test_the_log_is_self_describing(history):
-    log = build_log("g1", 1, history, group_id="aviayeli")
+    log = build_log(IDS, 1, history, group_id="aviayeli")
 
     assert log["artifact_version"] == ARTIFACT_VERSION
-    assert log["game_id"] == "g1"
+    assert log["game_id"] == GAME_ID
+    assert log["game_uid"] == IDS["game_uid"]
     assert log["game_number"] == 1
     assert log["group_id"] == "aviayeli"
 
 
 def test_the_log_is_json_serialisable(history):
     """Positions arrive as tuples and must not reach json.dump raw."""
-    json.dumps(build_log("g1", 1, history, group_id="aviayeli"))
+    json.dumps(build_log(IDS, 1, history, group_id="aviayeli"))
 
 
 def test_all_four_artifacts_land_under_the_group_directory(tmp_path, history):
     paths = write_artifacts(
-        tmp_path, "g1", 1, history, group_id="aviayeli", config_root="config"
+        tmp_path, 1, history, group_id="aviayeli", config_root="config"
     )
 
     assert set(paths) == {"declaration", "config", "log", "result"}
@@ -92,18 +100,18 @@ def test_all_four_artifacts_land_under_the_group_directory(tmp_path, history):
 
 def test_the_filenames_follow_the_required_pattern(tmp_path, history):
     paths = write_artifacts(
-        tmp_path, "abc", 7, history, group_id="aviayeli", config_root="config"
+        tmp_path, 7, history, group_id="aviayeli", config_root="config"
     )
 
-    assert Path(paths["declaration"]).name == "declaration_abc.json"
-    assert Path(paths["config"]).name == "config_abc_g07.json"
-    assert Path(paths["log"]).name == "log_abc_g07.json"
-    assert Path(paths["result"]).name == "result_abc.json"
+    assert Path(paths["declaration"]).name == f"declaration_{GAME_ID}.json"
+    assert Path(paths["config"]).name == f"config_{GAME_ID}_g07.json"
+    assert Path(paths["log"]).name == f"log_{GAME_ID}_g07.json"
+    assert Path(paths["result"]).name == f"result_{GAME_ID}.json"
 
 
 def test_the_config_artifact_snapshots_the_shared_contract(tmp_path, history):
     paths = write_artifacts(
-        tmp_path, "abc", 1, history, group_id="aviayeli", config_root="config"
+        tmp_path, 1, history, group_id="aviayeli", config_root="config"
     )
 
     snapshot = json.loads(Path(paths["config"]).read_text())
@@ -114,23 +122,23 @@ def test_the_config_artifact_snapshots_the_shared_contract(tmp_path, history):
 
 def test_the_result_artifact_reports_the_outcome(tmp_path, history):
     paths = write_artifacts(
-        tmp_path, "abc", 1, history, group_id="aviayeli", config_root="config"
+        tmp_path, 1, history, group_id="aviayeli", config_root="config"
     )
 
     result = json.loads(Path(paths["result"]).read_text())
 
     assert result["games"][0]["terminal_reason"] == "max_moves_reached"
     assert result["games"][0]["turns"] == 1
-    assert result["game_id"] == "abc"
+    assert result["game_id"] == GAME_ID
 
 
 def test_writing_twice_is_byte_identical(tmp_path, history):
     """An artifact that shifts between runs cannot be defended."""
     first = write_artifacts(
-        tmp_path / "a", "abc", 1, history, group_id="aviayeli", config_root="config"
+        tmp_path / "a", 1, history, group_id="aviayeli", config_root="config"
     )
     second = write_artifacts(
-        tmp_path / "b", "abc", 1, history, group_id="aviayeli", config_root="config"
+        tmp_path / "b", 1, history, group_id="aviayeli", config_root="config"
     )
 
     assert Path(first["log"]).read_text() == Path(second["log"]).read_text()

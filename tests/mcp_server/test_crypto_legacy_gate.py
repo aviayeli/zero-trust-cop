@@ -1,10 +1,11 @@
 """The superseded JSON payload form must be opt-in (audit T-1).
 
-``verify`` accepted BOTH the Rulebook-5.3 positional concatenation and a
-superseded sorted-key JSON encoding, unconditionally. Nothing has emitted the
-JSON form since the 5.3 alignment, so on the live wire it was pure attack
-surface: a peer could commit under an encoding this project no longer speaks
-and still be honoured, and the two forms hash the same fields differently.
+``verify`` accepted BOTH the then-current encoding and a superseded sorted-key
+JSON one, unconditionally. On the live wire that was pure attack surface: a
+peer could commit under an encoding this project no longer speaks and still be
+honoured, and the forms hash the same fields differently. (The wire has since
+moved on again, to the league reference form; Rulebook-5.3 positional
+concatenation is now itself behind this same gate.)
 
 The fallback still has one legitimate reader — artifacts sealed before the
 alignment must stay verifiable — so it is gated rather than deleted, and the
@@ -45,7 +46,8 @@ def test_a_legacy_digest_verifies_when_explicitly_allowed():
     ) is True
 
 
-def test_the_positional_form_verifies_under_either_setting():
+def test_the_emitted_form_verifies_under_either_setting():
+    """Opening the gate must not disturb what commit() actually emits."""
     h_commit, nonce = commit(STATE, MOVE, INTENT)
 
     assert verify(STATE, MOVE, INTENT, nonce, h_commit) is True

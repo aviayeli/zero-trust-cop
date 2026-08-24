@@ -18,6 +18,9 @@ from engine.barriers import barrier_layout
 from engine.config import load_config
 from scripts.log_checks import replay_episode
 
+# The two derived match ids; these tests only need them present.
+_IDS = {"game_id": "aviayeli-vs-groupb", "game_uid": "uid-0"}
+
 SHIPPED_LOG = Path("logs/aviayeli/log_aviayeli_g01.json")
 
 
@@ -62,27 +65,27 @@ def test_the_shipped_flagship_log_carries_no_layout():
 
 def test_build_log_records_the_layout_the_match_was_played_on(config):
     """The log must be replayable on its own; a seed the reader lacks is not."""
-    from scripts.match_log import build_log
+    from scripts.match_payloads import build_log
 
     layout = barrier_layout(config)
-    log = build_log("g1", 1, [], "aviayeli", barriers=layout)
+    log = build_log(_IDS, 1, [], "aviayeli", barriers=layout)
 
     assert log["barriers"] == [list(cell) for cell in sorted(layout)]
 
 
 def test_build_log_defaults_to_a_bare_board(config):
-    from scripts.match_log import build_log
+    from scripts.match_payloads import build_log
 
-    assert build_log("g1", 1, [], "aviayeli")["barriers"] == []
+    assert build_log(_IDS, 1, [], "aviayeli")["barriers"] == []
 
 
 def test_a_written_log_round_trips_through_the_replay_board(config, tmp_path):
     """Record, re-read, reconstruct: the layout must survive JSON."""
-    from scripts.match_log import build_log
+    from scripts.match_payloads import build_log
 
     layout = barrier_layout(config)
     written = tmp_path / "log.json"
-    written.write_text(json.dumps(build_log("g1", 1, [], "aviayeli", barriers=layout)))
+    written.write_text(json.dumps(build_log(_IDS, 1, [], "aviayeli", barriers=layout)))
 
     episode = replay_episode(json.loads(written.read_text()), config)
 

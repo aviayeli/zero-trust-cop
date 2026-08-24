@@ -10,6 +10,12 @@ long after it shipped:
 * `axis_origin_corner` — hardcoded in an `actions.py` docstring, never compared
   against the value both groups agreed on.
 
+Two keys have since MOVED the other way, off the whitelist: `agreed_between`
+(now the source of the opponent id both peers derive the match ids from) and
+`world.map_area` (now the `setting` term inside the agreed-terms hash). Both
+were declared informational and both turned out to be load-bearing, which is
+the same finding from the opposite direction.
+
 The pattern is the finding, not any one instance, so it gets a mechanical check
 rather than another round of review. A key must be READ somewhere in `src/`, or
 be listed below with the reason it never will be. Adding a key to the contract
@@ -28,8 +34,6 @@ CONTRACT = PROJECT_ROOT / "config" / "game.json"
 # Keys no implementation should read, each with the reason.
 INFORMATIONAL = {
     "schema_version": "identifies the contract revision; read by humans and diffs",
-    "agreed_between": "records WHO agreed; carries no runtime behaviour",
-    "world.map_area": "flavour text for the scenario; the engine is grid-only",
     "board_and_agents.num_agents": "structurally fixed at 2 by the cop/thief roles",
     "network_and_league.diversity_reward": "league SCORING, awarded by the organiser",
     "network_and_league.min_games_to_pass": "league scoring, not a peer behaviour",

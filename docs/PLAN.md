@@ -22,13 +22,13 @@ invariants; where it and a phase document disagree, this file wins.
   and `log_shape.py` out of `replay_match.py`, `mime_report.py` out of
   `email_sender.py`, `action_buffer.py` out of `match_state.py`,
   `match_report.py` out of `run_local_mcp_match.py`. The longest tracked
-  module is `scripts/setup_league_match.py` at 149 lines.
+  module is `mcp_server/declaration.py` at 149 lines.
 - **No hardcoded hyperparameters**: every tunable lives in `config/game.json`
   (shared contract) or `config/<role>/game.toml` (per-peer strategy and
   networking). `engine/config.py` and `strategy/settings.py` are the only
   modules permitted to know those paths.
 - **Strict TDD**: every module below was specified precisely enough that a
-  failing test could be written before it existed. Current state: **968 tests
+  failing test could be written before it existed. Current state: **1035 tests
   passing**.
 
 ## FR5 Turn-Resolution & Tie-Break Rule (locked)
@@ -106,7 +106,7 @@ zero-trust-cop/
 │       ├── board_agreement.py   # pre-match board/axis check (§2, audit T-1)
 │       ├── opponent_pool.py     # weighted per-episode opponent selection
 │       └── train_diverse.py     # the shipped opponent-diverse trainer
-└── tests/                       # 968 tests, mirroring the src/ layout
+└── tests/                       # 1035 tests, mirroring the src/ layout
 ```
 
 ## 1. Engine Layer — Module Responsibilities & Interfaces
@@ -262,17 +262,41 @@ that option.
 ### The commitment primitive (`mcp_server/crypto.py`)
 
 ```
-h_commit = SHA256( State || Move || Intent || Nonce )
+h_commit = SHA256( canonical_json({state, move, intent}) | nonce )
 ```
 
-- **Positional concatenation, no delimiters** — Rulebook 5.3 specifies literal
-  concatenation, so that is what is emitted. This is an interoperability
-  contract with the opposing group: any divergence silently breaks cross-group
-  play and *cannot be detected by either group alone*, since each verifies
-  against its own serialisation. Documented caveat: field boundaries are
-  positional only; the fixed-length trailing nonce and the two-word `intent`
-  vocabulary bound the ambiguity in practice, but a delimited form would be
-  strictly safer.
+- **The league reference form** (`mcp_server/interop.py`) — the book publishes
+  *three* mutually inconsistent commit constructions: its ch.5 listing seals
+  the nonce **inside** the canonical object, an audit-chapter snippet re-hashes
+  only `nonce|move`, and the lecturer's own reference implementation computes
+  the form above. The book's clarification page makes printed listings
+  illustrative, and the binding-rules layer mandates the *mechanism*
+  (commit-reveal over SHA-256 per step), not the preimage — so the choice is
+  formally open, and it is settled here by three things: it is what the
+  lecturer's tooling runs, what the community interop kit pins with shared
+  vectors, and the only one of the three that binds the whole record (the
+  audit-snippet form consumes only `nonce` and `move`, leaving `state` and
+  `intent` rewritable after the fact).
+- **Canonical form** — `sort_keys=True, ensure_ascii=False,
+  separators=(",", ":")`. `ensure_ascii=False` is load-bearing: a Hebrew or
+  emoji `hint` escaped to `\uXXXX` hashes differently, and since the opponent
+  re-hashes our revealed payloads at audit, that mismatch reads as tampering
+  and voids the sub-game for BOTH sides.
+- **A single pipe** (U+007C) separates the canonical string from the nonce —
+  not a bare concatenation, not `||`. All three read plausibly in prose, only
+  one reproduces the shared vectors, and the wrong ones fail every handshake
+  with nothing to go on but "digest mismatch".
+- **This closes §10.2.** The superseded positional form
+  `SHA256(State || Move || Intent || Nonce)` had no field delimiters, so
+  `("ab", "c")` and `("a", "bc")` shared one preimage; the canonical form
+  separates them. Both superseded encodings remain verifiable behind
+  `verify(..., allow_legacy=True)` so artifacts sealed under them do not become
+  unverifiable, and nothing emits either.
+- **Conformance is fixture-bound, not self-checked.** Both forms self-verify —
+  one implementation sits on both sides of every local test — so a divergence
+  is invisible to us and shows up only as the opponent's audit failing. The
+  league's shared vectors are vendored at `tests/fixtures/interop/` and checked
+  by `tests/mcp_server/test_interop_vectors.py`.
 - **Nonce** — 16 bytes (128 bits) from `secrets.token_hex`, fresh per
   commitment. The nonce is what hides the move: without it, a five-element move
   set is brute-forced instantly.
@@ -848,8 +872,10 @@ the README as `§10.N`; the two groupings below reorder nothing.
 
 Decisions taken with the alternative understood, each stating what it costs.
 
--   **§10.2 — Commit payload has no field delimiters** (§3), because Rulebook 5.3
-   specifies positional concatenation. Interop-correct, cryptographically
+-   **§10.2 — CLOSED.** The commit payload is now canonical JSON with a pipe-
+   delimited nonce (the league reference form), so fields are delimited. The
+   note below records the superseded position: positional concatenation was
+   interop-correct against Rulebook 5.3, cryptographically
    weaker than a delimited encoding.
 -   **§10.3 — Scent decay is geometric, the reference simulator's is subtractive**
    (§4.1). Traces fade but do not expire within a 35-move match.
@@ -1103,7 +1129,7 @@ close it.
 
 Every module was built test-first per `CLAUDE.md`; `docs/TODO.md` records the
 sequencing and the evidence. The suite mirrors `src/` and currently stands at
-**968 passing tests**. The load-bearing cases, by layer:
+**1035 passing tests**. The load-bearing cases, by layer:
 
 - **Engine** — the six FR5 scenarios (both unobstructed, bounds-blocked,
   barrier-blocked, same-cell capture, swap capture, adjacent near-miss), plus
