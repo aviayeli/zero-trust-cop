@@ -30,6 +30,14 @@ def identity_block(role: str, config_root: str | None = None) -> dict:
     """
     declared = build_declaration(config_root)
     return {
+        # BOTH spellings, same value. ZeroOne0 refused our handshake for want
+        # of `group_id`; we sent only `group_name`. The SPEC requires an
+        # identity block and pins no field name, so neither side was wrong
+        # and both were stuck. Our own `_uid_for` reads `group_id` too, so
+        # the uid cross-check never ran in either direction.
+        # `identity` is a negotiate EXTRA, outside the flat signed terms:
+        # carrying both changes no hash and breaks no signature.
+        "group_id": declared["group_name"],
         "group_name": declared["group_name"],
         "members": declared["members"],
         "wire_shape": WIRE_SHAPE,

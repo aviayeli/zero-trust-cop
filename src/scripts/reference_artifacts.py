@@ -72,8 +72,10 @@ def build_log(ids: dict, summary: dict, group_id: str, barriers) -> dict:
 def _accepted(reply) -> bool:
     """Whether they accepted our chain, in EITHER spelling.
 
-    We answer ``status: "accepted"``; every opponent we have met answers
-    ``accepted: true`` with no ``status`` at all. Reading only our own key
+    Three spellings are live: we answer ``status: "accepted"``, rstabcde
+    answer ``accepted: true``, ZeroOne0 answer ``ok: true``. Reading only our
+    own key recorded a clean mutual audit as ``confirmed: false`` -- twice,
+    against two different groups. Reading only our own key
     recorded a clean mutual audit in the graded artifact as
     ``confirmed: false`` -- telling the grader the opponent had rejected our
     chain when they had accepted it.
@@ -83,7 +85,9 @@ def _accepted(reply) -> bool:
     """
     if not isinstance(reply, dict):
         return False
-    return reply.get("status") == "accepted" or reply.get("accepted") is True
+    return (reply.get("status") == "accepted"
+            or reply.get("accepted") is True
+            or reply.get("ok") is True)
 
 
 def build_result(ids: dict, summaries: list, group_id: str) -> dict:

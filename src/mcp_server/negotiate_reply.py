@@ -25,6 +25,12 @@ def _require_acceptance(reply) -> None:
         raise RuntimeError(f"negotiate returned {type(reply).__name__}, not a reply")
 
     status, accepted = reply.get("status"), reply.get("accepted")
+    # A THIRD spelling. We say `status: "accepted"`, rstabcde say
+    # `accepted: true`, ZeroOne0 say `ok: true`. Refusing an unfamiliar word
+    # for yes cost a live window that looked exactly like a dead peer: their
+    # endpoint answered 200 throughout while our retry swallowed the refusal.
+    if accepted is None:
+        accepted = reply.get("ok")
     if status is not None:
         if status != "accepted":
             raise RuntimeError(
@@ -39,8 +45,9 @@ def _require_acceptance(reply) -> None:
             f"opponent refused the handshake: {reply.get('reason', accepted)}"
         )
     raise RuntimeError(
-        f"negotiate answered with neither 'status' nor 'accepted': {sorted(reply)}. "
-        "That is not a handshake, whatever the HTTP code was."
+        f"negotiate answered yes in no spelling we know -- not 'status', "
+        f"'accepted' or 'ok': {sorted(reply)}. That is not a handshake, "
+        "whatever the HTTP code was."
     )
 
 

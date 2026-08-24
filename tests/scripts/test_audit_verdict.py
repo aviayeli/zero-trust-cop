@@ -71,3 +71,14 @@ def test_a_TAMPERED_verdict_is_never_read_as_confirmation():
 def test_no_answer_at_all_is_not_confirmation():
     assert _audited(None)["mutual_agreement"]["confirmed"] is False
     assert _audited({})["mutual_agreement"]["confirmed"] is False
+
+
+def test_a_bare_ok_true_is_recognised_too():
+    """ZeroOne0's third spelling. We recorded their clean audit of a game we
+    WON as `confirmed: false` — the same mistake as with rstabcde, one
+    vocabulary later."""
+    assert _audited({"ok": True})["mutual_agreement"]["confirmed"] is True
+
+
+def test_ok_false_is_still_not_confirmation():
+    assert _audited({"ok": False})["mutual_agreement"]["confirmed"] is False

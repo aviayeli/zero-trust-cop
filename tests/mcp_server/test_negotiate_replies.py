@@ -97,7 +97,7 @@ def test_a_reply_whose_signature_does_not_verify_is_raised():
 
 def test_a_reply_that_is_not_a_negotiate_at_all_is_raised():
     """A peer answering 200 with something else is not a handshake."""
-    with pytest.raises(RuntimeError, match="neither 'status' nor 'accepted'"):
+    with pytest.raises(RuntimeError, match="no spelling we know"):
         _negotiate(FakePeer({"hello": "there"}))
 
 
@@ -113,3 +113,26 @@ def test_the_pairing_check_survives_a_reply_that_signs_nothing():
     since both engines play a mispairing through coherently."""
     with pytest.raises(RuntimeError, match="both peers declare role"):
         _negotiate(FakePeer({"accepted": True, "role": "police"}), role="police")
+
+
+def test_a_bare_ok_true_is_an_acceptance():
+    """ZeroOne0's server answers `{"ok": true}` — a THIRD spelling, after our
+    `status` and rstabcde's `accepted`. We refused it, `connect_and_play`
+    swallowed the refusal and retried silently, and a live window looked
+    exactly like a peer that was down: their endpoint answered 200 the whole
+    time and our log stayed empty.
+    """
+    outcome = _negotiate(FakePeer({"ok": True}))
+
+    assert outcome["reply"] == {"ok": True}
+    assert outcome["counter_signed"] is False
+
+
+def test_ok_false_is_a_refusal():
+    with pytest.raises(RuntimeError, match="refused"):
+        _negotiate(FakePeer({"ok": False}))
+
+
+def test_a_reply_with_no_yes_in_any_spelling_is_still_raised():
+    with pytest.raises(RuntimeError, match="no spelling we know"):
+        _negotiate(FakePeer({"hello": "there"}))
