@@ -57,7 +57,7 @@ def _run(max_steps=3, their_moves=None, terminate_at=None):
     def choose(step):
         return f"MOVE:N", f"hint {step}", "truth"
 
-    def advance(step, ours, theirs):
+    async def advance(step, ours, theirs):
         seen.append((step, ours, theirs))
         return {"terminated": terminate_at is not None and step >= terminate_at,
                 "terminal_reason": "capture" if terminate_at else None}

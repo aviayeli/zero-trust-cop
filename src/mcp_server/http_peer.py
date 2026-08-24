@@ -53,6 +53,14 @@ class HttpPeer:
         result = await (invoke() if self._limiter is None else self._limiter.run(invoke))
         return json.loads(result.content[0].text)
 
+    async def call(self, name: str, **arguments) -> dict:
+        """Invoke any tool by name, under the same watchdog and limiter.
+
+        The named wrappers below cover our own dialect; a second dialect
+        needs the generic form rather than a private call from outside.
+        """
+        return await self._call(name, arguments)
+
     async def submit_commitment(self, role, turn, h_commit, signature) -> dict:
         return await self._call(
             "submit_commitment",

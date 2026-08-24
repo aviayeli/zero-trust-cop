@@ -42,6 +42,10 @@ def _scripted_opponent(store, moves):
     return wait
 
 
+async def _never_terminates(step, ours, theirs):
+    return {"terminated": False}
+
+
 def _run(max_steps=3, their_moves=None, terminate_at=None):
     peer = FakePeer()
     store = PushStore()
@@ -52,7 +56,7 @@ def _run(max_steps=3, their_moves=None, terminate_at=None):
     def choose(step):
         return f"MOVE:N", f"hint {step}", "truth"
 
-    def advance(step, ours, theirs):
+    async def advance(step, ours, theirs):
         seen.append((step, ours, theirs))
         return {"terminated": terminate_at is not None and step >= terminate_at,
                 "terminal_reason": "capture" if terminate_at else None}
@@ -109,7 +113,7 @@ def test_a_stalled_opponent_does_not_hang_forever():
     with pytest.raises(TimeoutError, match="step 1"):
         asyncio.run(play_sub_game(
             client, store, choose=lambda s: ("MOVE:N", "", "truth"),
-            advance=lambda s, a, b: {"terminated": False},
+            advance=_never_terminates,
             max_steps=2, wait=never, max_polls=3,
         ))
 

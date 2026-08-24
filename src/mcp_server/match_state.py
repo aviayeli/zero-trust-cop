@@ -72,6 +72,18 @@ class MatchState:
                 return SubmitOutcome("resolved", result=result)
             return SubmitOutcome("waiting")
 
+    def reset(self) -> None:
+        """Start the next sub-game clean: board, buffer and forfeits.
+
+        The buffer matters as much as the board. A slot left half filled
+        across a sub-game boundary would resolve the next sub-game's first
+        turn against a move submitted for the previous one -- and both peers
+        would have signed something the other never saw.
+        """
+        self._episode.reset()
+        self._buffer.clear()
+        self._forfeited_by = []
+
     def forfeit(self, roles) -> None:
         """End the match against every non-responsive peer (D7 / V5).
 

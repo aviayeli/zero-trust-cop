@@ -62,8 +62,11 @@ async def play_sub_game(
         client: a ``PushClient`` pointed at the opponent.
         store: our ``PushStore``, filled by their inbound pushes.
         choose: ``(step) -> (move, hint, intent)`` -- our policy.
-        advance: ``(step, our_move, their_move) -> dict`` -- our engine. A
-            truthy ``terminated`` ends the sub-game.
+        advance: async ``(step, our_move, their_move) -> dict`` -- our
+            engine. Awaited because ``MatchState.submit`` resolves a turn
+            behind an asyncio.Lock, which is what guarantees exactly one
+            engine step per turn (FR8). A truthy ``terminated`` ends the
+            sub-game.
         max_steps: our own step budget, moves by US.
         wait: awaited between polls while their step is outstanding.
 
@@ -81,7 +84,7 @@ async def play_sub_game(
         await client.reveal(step, move=move, hint=hint, intent=intent)
 
         theirs = await _await_step(store, step, wait, max_polls)
-        outcome = advance(step, move, theirs["move"])
+        outcome = await advance(step, move, theirs["move"])
         steps_played = step
 
         if outcome.get("terminated"):

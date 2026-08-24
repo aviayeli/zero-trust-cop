@@ -75,3 +75,31 @@ def test_double_submission_rejected_and_does_not_overwrite(fresh):
     assert c.status == "resolved"
     # cop's FIRST action ("S": (0,0)->(1,0)) was kept, not overwritten by "N"
     assert c.result.cop_position == (1, 0)
+
+
+# --- sub-game boundary ------------------------------------------------------
+
+
+def test_reset_clears_the_board_and_the_half_filled_buffer():
+    """A sub-game boundary must not leave one peer's action buffered.
+
+    Carrying a slot across the boundary would resolve the next sub-game's
+    first turn against a move submitted for the previous one.
+    """
+    import asyncio
+
+    from engine.config import load_config
+    from engine.game_loop import GameEpisode
+
+    config = load_config("config/game.json")
+    state = MatchState(GameEpisode(config), config.response_timeout_sec)
+
+    asyncio.run(state.submit("cop", "N"))
+    assert state.pending_roles() != []
+
+    state.reset()
+
+    assert state.pending_roles() == []
+    assert state.turn_count == 0
+    assert state.is_terminated is False
+    assert state.forfeited_by == []
