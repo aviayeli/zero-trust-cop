@@ -28,11 +28,11 @@ Note: adding required dataclass fields means every `GameConfig(...)` constructio
 
 This section configures a GLOBAL, OS-level multi-agent routing environment with LLM-Blender-style ensembling of `gemini` and `codex-agent` CLI wrappers. This is a MACHINE-LEVEL change applied by the user outside this repository — no part of it is committed here.
 
-- [ ] Anthropic/Claude access continues via the existing Ubuntu CLI login (`claude_cli`) and requires NO API key in the environment.
-- [ ] Provide (in a later execution step, not now) a setup script or `~/.bashrc`/`~/.zshrc` block that exports ONLY the placeholder env-var names `OPENAI_API_KEY` and `GEMINI_API_KEY`, whose actual values live in a machine-level location the user controls (their shell profile or a git-ignored `.env`), NEVER in a tracked repo file.
-- [ ] Establish global shell aliases `gemini` and `codex-agent` that wrap the respective CLI tools and read their credentials from the environment variables above (never from inline literals).
-- [ ] If a `.env` approach is used, keep it git-ignored (the repo already ignores `.env`) and commit only a `.env.example` containing blank placeholders (`OPENAI_API_KEY=` / `GEMINI_API_KEY=`), never real values.
-- [ ] Verification — confirm `git status` shows no secret-bearing file staged, and grep the repo to confirm no literal key/token string is ever committed.
+- [x] Anthropic/Claude access continues via the existing Ubuntu CLI login (`claude_cli`) and requires NO API key in the environment.
+- [x] Provide (in a later execution step, not now) a setup script or `~/.bashrc`/`~/.zshrc` block that exports ONLY the placeholder env-var names `OPENAI_API_KEY` and `GEMINI_API_KEY`, whose actual values live in a machine-level location the user controls (their shell profile or a git-ignored `.env`), NEVER in a tracked repo file.
+- [x] Establish global shell aliases `gemini` and `codex-agent` that wrap the respective CLI tools and read their credentials from the environment variables above (never from inline literals).
+- [x] If a `.env` approach is used, keep it git-ignored (the repo already ignores `.env`) and commit only a `.env.example` containing blank placeholders (`OPENAI_API_KEY=` / `GEMINI_API_KEY=`), never real values.
+- [x] Verification — confirm `git status` shows no secret-bearing file staged, and grep the repo to confirm no literal key/token string is ever committed.
 
 **Security invariant:** No literal API keys, tokens, or secrets are ever written to any file tracked by this repository. Only placeholder env-var names appear here; real values live only in the user's machine-level environment.
 
@@ -75,24 +75,24 @@ Dependency nuance: `observations.py`'s functions reference a `MatchState` (which
 
 ## 4. `server.py` (FastMCP wiring; depends on `match_state.py` + `observations.py`)
 
-- [ ] Test first: write `tests/mcp_server/test_server.py` as a thin smoke test asserting:
-  - [ ] The `FastMCP` instance registers exactly 3 tools, named `get_observation`, `make_move`, `get_match_status`.
-  - [ ] Startup config-loading wires `GameConfig.response_timeout_sec` / `watchdog_timeout_sec` (from Task 0) into the constructed `MatchState`.
-  - [ ] Tool wrapper functions are thin — they delegate to `match_state`/`observations` and contain no buffering, locking, or schema-shaping logic themselves.
+- [x] Test first: write `tests/mcp_server/test_server.py` as a thin smoke test asserting:
+  - [x] The `FastMCP` instance registers exactly 3 tools, named `get_observation`, `make_move`, `get_match_status`.
+  - [x] Startup config-loading wires `GameConfig.response_timeout_sec` / `watchdog_timeout_sec` (from Task 0) into the constructed `MatchState`.
+  - [x] Tool wrapper functions are thin — they delegate to `match_state`/`observations` and contain no buffering, locking, or schema-shaping logic themselves.
   - (Full stdio integration is a manual check, noted under Task 5, not a unit test here.)
-- [ ] Run tests, confirm they **FAIL** — RED.
-- [ ] Implement `src/mcp_server/server.py` — single module-level `FastMCP` instance (`mcp`), config load at startup (`engine.config.load_config`, now including timeouts per Task 0), one `GameEpisode` + one `MatchState` constructed for the server's lifetime, the three `@tool`-registered async wrapper functions, and a `stdio` entrypoint (`mcp.run(transport="stdio")` or equivalent). No buffering/locking/shaping logic lives in this module.
-- [ ] Run tests, confirm **GREEN**; confirm full suite green.
-- [ ] Confirm `server.py` is under 150 lines.
+- [x] Run tests, confirm they **FAIL** — RED.
+- [x] Implement `src/mcp_server/server.py` — single module-level `FastMCP` instance (`mcp`), config load at startup (`engine.config.load_config`, now including timeouts per Task 0), one `GameEpisode` + one `MatchState` constructed for the server's lifetime, the three `@tool`-registered async wrapper functions, and a `stdio` entrypoint (`mcp.run(transport="stdio")` or equivalent). No buffering/locking/shaping logic lives in this module.
+- [x] Run tests, confirm **GREEN**; confirm full suite green.
+- [x] Confirm `server.py` is under 150 lines.
 
 ## 5. Cross-Module Verification (Phase 2 closeout)
 
-- [ ] Run the full `tests/` suite (`engine/` + `mcp_server/`) together and confirm all tests pass with no interaction/order-dependence issues.
-- [ ] Confirm every file under `src/mcp_server/` is under 150 lines (re-check as a batch, not just per-module).
-- [ ] Grep `src/mcp_server/` for hardcoded hyperparameters (timeout literals `30`/`60`, move tokens, grid size) and confirm none exist outside config-sourced reads (`GameConfig` fields from Task 0).
-- [ ] Confirm no `time.sleep` call exists anywhere in `src/mcp_server/`; confirm the concurrency test in Task 3 drives real `asyncio` (`asyncio.gather` or equivalent) and asserts exactly-one-`step`.
-- [ ] Confirm the lazy-deadline forfeit path is exercised via an injected clock with zero real waiting anywhere in the test suite.
-- [ ] Confirm no file under `src/engine/` changed beyond Task 0's authorized additive `config.py` / `tests/engine/test_config.py` edit.
+- [x] Run the full `tests/` suite (`engine/` + `mcp_server/`) together and confirm all tests pass with no interaction/order-dependence issues.
+- [x] Confirm every file under `src/mcp_server/` is under 150 lines (re-check as a batch, not just per-module).
+- [x] Grep `src/mcp_server/` for hardcoded hyperparameters (timeout literals `30`/`60`, move tokens, grid size) and confirm none exist outside config-sourced reads (`GameConfig` fields from Task 0).
+- [x] Confirm no `time.sleep` call exists anywhere in `src/mcp_server/`; confirm the concurrency test in Task 3 drives real `asyncio` (`asyncio.gather` or equivalent) and asserts exactly-one-`step`.
+- [x] Confirm the lazy-deadline forfeit path is exercised via an injected clock with zero real waiting anywhere in the test suite.
+- [x] Confirm no file under `src/engine/` changed beyond Task 0's authorized additive `config.py` / `tests/engine/test_config.py` edit.
 
 ## Explicitly Out of Scope for This TODO
 

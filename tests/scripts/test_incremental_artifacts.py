@@ -83,8 +83,13 @@ def test_the_runner_can_actually_call_the_incremental_writer():
 
     Every test here called the writer directly, so nothing touched the path
     the runner actually uses.
+
+    The wiring moved when `run_reference_match` was split at the 150-line
+    limit: that module is now the docstring and the re-exported entry points,
+    and `scripts.reference_run` is the loop. So this asserts against the
+    module that actually calls the writer, not the shim in front of it.
     """
-    import scripts.run_reference_match as runner
+    import scripts.reference_run as runner
 
     from scripts.reference_writer import write_sub_game_log
 

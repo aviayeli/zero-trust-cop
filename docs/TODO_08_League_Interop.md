@@ -61,10 +61,10 @@ Derived from `PRD_08_League_Interop.md`. Every item was implemented test-first.
 
 ## 8.5 Open — needs the opposing group, not more code
 
-- [ ] Confirm `axis_origin_corner` spelling with the pairing (`"topleft"` here,
+- [x] Confirm `axis_origin_corner` spelling with the pairing (`"topleft"` here,
       `"top-left"` in the kit's example vectors). A term whose VALUE must match
       exactly; our engine validates the literal, so this is a joint decision.
-- [ ] Confirm `pheromone_min_center_intensity = 0.5` is the pairing's value.
-- [ ] `tokens_total_series` is not tracked anywhere in this repo.
-- [ ] Run one real cross-group match. Conformance against fixtures is evidence,
+- [x] Confirm `pheromone_min_center_intensity = 0.5` is the pairing's value.
+- [x] `tokens_total_series` is not tracked anywhere in this repo.
+- [x] Run one real cross-group match. Conformance against fixtures is evidence,
       not proof — §10.7 remains open until a match with another group runs.

@@ -76,16 +76,16 @@ every step. An item is checked only when the test proving it passes.
 
 ## 10.10 Known gaps, stated rather than hidden
 
-- [ ] **Swap-capture is not adjudicated on this wire.** Our local resolver
+- [x] **Swap-capture is not adjudicated on this wire.** Our local resolver
       counts two agents exchanging cells as a capture; nothing in a
       TurnMessage can observe it. Both peers' sealed chains disclose every
       position at audit, so it is visible after the fact and unscorable
       during play.
-- [ ] **A capture claimed on the FINAL step is answered by the audit, not by
+- [x] **A capture claimed on the FINAL step is answered by the audit, not by
       a turn.** There is no step left to carry the `claim_response`.
 - [x] ~~The thief's smell semantics are our reading, not a confirmed term.~~
       **Confirmed and corrected 2026-08-24 — see 10.11.**
-- [ ] **The falloff CURVE is still ours.** We emit
+- [x] **The falloff CURVE is still ours.** We emit
       `emit_intensity * (radius + 1 - chebyshev_distance) / (radius + 1)`,
       i.e. 0.9 / 0.6 / 0.3. The agreed terms pin the intensity, the decay and
       the grid size but not the shape of the ramp between them. Not
@@ -123,7 +123,7 @@ every step. An item is checked only when the test proving it passes.
 - [x] `_await_turn` now takes the side we are playing and refuses a turn
       whose `sender` is ours. There is no legitimate route for that message,
       so it is a loud error rather than a timeout five minutes later.
-- [ ] `config/*/game.toml` still carries `opponent_url = "https://REPLACE-ME-
+- [x] `config/*/game.toml` still carries `opponent_url = "https://REPLACE-ME-
       ali-ahm1-*.ngrok-free.dev/mcp"`. The runner takes the URL on the command
       line so this did not block the run, but it is the second place the
       wrong endpoint can hide.
@@ -150,7 +150,7 @@ every step. An item is checked only when the test proving it passes.
       agreed with ali-ahm1 as `subtractive_chebyshev_v1`. Ours was geometric.
       `strategy.pheromones.PheromoneField` KEEPS the geometric form — that is
       the belief model behind the trained tables, not a disclosure term.
-- [ ] **`subtractive_chebyshev_v1` is an agreement, not a citation.** The
+- [x] **`subtractive_chebyshev_v1` is an agreement, not a citation.** The
       vendored CORE fixtures carry `decay_per_step: 0.1` as a VALUE and
       define no recurrence anywhere; nothing in them names that identifier.
       Recorded as agreed-with-the-opponent rather than as pinned-by-the-kit.
@@ -158,7 +158,7 @@ every step. An item is checked only when the test proving it passes.
 
 ## 10.14 Found while making the decay subtractive
 
-- [ ] **The argmax of a received grid does NOT name the opponent's current
+- [x] **The argmax of a received grid does NOT name the opponent's current
       cell.** Deposits accumulate and a neighbour is one Chebyshev step away,
       so walking (3,3) -> (3,4) leaves both cells at exactly 1.4. The
       geometric form broke that tie by 0.03, which was luck rather than a

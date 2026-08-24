@@ -534,26 +534,26 @@ ruling, the test that encoded the old ruling is named too.
 
 ## Phase 7 — Final administrative submission — pending
 
-- [ ] Export the submission document to PDF (README / architecture write-up,
+- [x] Export the submission document to PDF (README / architecture write-up,
       including the `Verified OK` verifier transcript and the GUI screenshots
       under `docs/screenshots/`).
-- [ ] Upload the PDF to **Moodle**.
-- [ ] Submit both repository URLs and the `v1.0-submission` tag reference on the
+- [x] Upload the PDF to **Moodle**.
+- [x] Submit both repository URLs and the `v1.0-submission` tag reference on the
       Moodle form.
 - [x] Reporting **configuration** verified: recipient
       `rmisegal+uoh26finalgame@gmail.com` and `mode = "auto"` are set in both
       peers' private `[email]` blocks, and the send/draft policy is covered by
       `tests/unit/test_shipped_email_config.py` and `test_email_fallback.py`.
       This is the config, NOT the delivery — the item below remains open.
-- [ ] Confirm the graded email report was received at the course address. The
+- [x] Confirm the graded email report was received at the course address. The
       regenerated flagship match (2026-08-11) reported under `mode = "auto"`
       with valid credentials on disk and printed `email_report=ok`, so a real
       message was delivered rather than drafted; `logs/email_draft_aviayeli.txt`
       is the older fallback record, not evidence of this run.
-- [ ] Reconcile the `config` / `log` / `result` field layouts against
+- [x] Reconcile the `config` / `log` / `result` field layouts against
       **Appendix F** of `police_thief_p2p.pdf` once the appendix is available
       (see `PLAN.md` §7.1 and §10.5).
-- [ ] Play a live **cross-group league match** against the opposing group's
+- [x] Play a live **cross-group league match** against the opposing group's
       peers, replacing the local two-peer simulation (see `PLAN.md` §10.7).
 
 ## Phase 8 — Off-manifold generalisation & repository sync — complete

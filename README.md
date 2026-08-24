@@ -17,6 +17,31 @@ $ python -m scripts.replay_match logs/aviayeli/log_aviayeli_g01.json
 Verified OK
 ```
 
+### Abstract
+
+This project implements a **zero-trust, cryptographically verifiable
+pursuit–evasion game** between two reinforcement-learning agents that share no
+code, no process, no memory and no trust. A cop and a thief, each a standalone
+FastMCP peer with its own configuration, Ed25519 identity and independently
+trained Q-table, play a simultaneous-move Dec-POMDP on a 7×7 grid over a real
+authenticated wire.
+
+The central claim is that **correctness survives a dishonest opponent**. No
+peer accepts the other's word for anything: every move is sealed by a SHA-256
+commit–reveal exchange before either engine advances, every message is signed
+and bound to its turn so a captured one cannot be replayed, both peers keep
+independent ground truth that is cross-checked each turn, and each sub-game
+closes with a mutual `submit_audit` in which the opponent re-hashes our sealed
+chain against the digest we published while playing. The artifacts a match
+leaves behind are re-verifiable offline by a standalone replay verifier that
+certifies (`Verified OK`) or rejects (`TAMPERED!`) the record — cryptographically,
+not by trust.
+
+The system is evidenced rather than asserted: **1385 tests**, a mechanically
+enforced 150-line ceiling on every one of the **303** tracked Python files, and
+figures in this document that are re-derived from the tree by the suite itself
+(`tests/unit/test_readme_consistency.py`), so a stale number fails the build.
+
 ### Academic submission index
 
 | Required topic | Where |
@@ -30,6 +55,22 @@ Verified OK
 
 Two viewers ship: a Tkinter **Live Belief Heatmap** and a Tkinter **Replay
 App** (§7), plus a terminal ASCII renderer (§6 step 6) for headless use.
+
+### Academic report structure
+
+The six report sections map onto this README as follows. The numbering below is
+the report's; the `§` numbers are this document's own sections, which are left
+in place because `scripts/thief_readme.py` derives the thief repo's README from
+them by literal anchor.
+
+| # | Report section | Where in this README |
+|---|---|---|
+| **1** | Abstract — system overview | [§Abstract](#abstract) |
+| **2** | Introduction & problem formulation — state space, POMDP constraints, scent trail | [§1](#1-project-overview), esp. [Formal Dec-POMDP model](#formal-dec-pomdp-model) |
+| **3** | System architecture — unified orchestration, MCP servers/clients, in-app inbox | [§4](#4-wire-protocol-and-local-p2p-simulation) |
+| **4** | Game design & claims algorithm — claims-based step sequence, sealed commitments, audit cross-checks | [§2](#2-zero-trust-security-architecture) + [§4](#4-wire-protocol-and-local-p2p-simulation) |
+| **5** | Experimental evaluation & strategy — Q-learning, trail balance | [§3](#3-reinforcement-learning-and-convergence) |
+| **6** | Security audit & supply-chain defense | [§2 — Supply-chain integrity and rollback audit](#supply-chain-integrity-and-rollback-audit) |
 
 ---
 
@@ -259,6 +300,62 @@ The original plaintext `make_move(role, direction)` tool was **removed, not
 deprecated**. A move reaches either engine only through
 `submit_commitment` → `reveal_move`. A test asserts the tool is absent from
 the registered surface, and a mutation that re-registers it fails the suite.
+
+### Supply-chain integrity and rollback audit
+
+Zero trust does not stop at the opponent. The same posture is applied to what
+this repository *ships* and what it *depends on*, because a match is only as
+trustworthy as the tree that played it.
+
+**Rollback audit — the record is re-derivable, not merely stored.**
+`scripts/replay_match` reads a finished match log and rebuilds the entire game
+from the sealed chain, offline and after the fact: every signature is
+re-checked, every reveal is re-hashed against the commitment that preceded it,
+and both peers' independent logs are compared turn by turn. It emits
+`Verified OK` or `TAMPERED!` (`src/scripts/log_checks.py`). The suite proves
+the *rejections*, not just the acceptance — a flipped move, a forged signature,
+a reveal edited to break its commitment, and two peer logs that disagree each
+have a test asserting the verdict flips.
+
+**Live cross-check with the opponent.** Under the reference-v3 dialect each
+sub-game closes with `submit_audit`: the opponent re-hashes our disclosed
+records against the digest we pushed while playing, and we do the same to
+theirs. The agreed SHA-256 is written into the match result
+(`mutual_agreement.sha256`), so a series that was never mutually audited is
+visibly distinguishable from one that was — `confirmed: false` in the artifact,
+not a silent pass.
+
+**Untrusted input from the wire.** The only free-text field an opponent can put
+on the wire is the ≤15-word `hint`. It is truncated to `hint_max_words` *before*
+it is sealed or returned, it is never evaluated or executed, and it reaches only
+the belief model as an observation feature — an adversarial peer can lie in it
+(ours deliberately does), but it cannot widen the attack surface. Digest
+construction pins its encoding explicitly, since a hint escaped to `\uXXXX`
+would otherwise hash differently on the two peers (`src/mcp_server/crypto.py`).
+
+**Dependencies and key material.** The full dependency graph is pinned in a
+tracked `uv.lock`. The Google client libraries are an *optional* import: if they
+are missing, the reporter degrades to writing a local draft rather than failing
+or reaching for a substitute (`src/reporting/gmail_transport.py`). Private keys
+are never regenerated over an existing pair — `ensure_keys` refuses, because
+silently rotating a key would invalidate every published public half and make an
+honest peer's history read as `TAMPERED` on a grader's machine
+(`src/mcp_server/keygen.py`). A pre-push audit confirms no parseable private key
+is ever tracked.
+
+**The artifact is gated, not the working tree.** `tests/test_release_artifact.py`
+clones HEAD into a clean checkout and runs the live-transport tests there, and —
+under `ZTC_RELEASE_CHECK=1`, set by `scripts/sync_repos.sh` after it moves the
+tags — asserts the submission tag points at the commit that was gated. This
+exists because the opposite once shipped: `v1.0-submission` sat one commit
+behind master, a clean clone of the tag failed 4 tests while the working tree
+passed everything.
+
+> **Scope note, stated rather than implied.** The defenses above are the ones
+> present in this tree and covered by tests. This project does not implement an
+> agentic prompt-injection shield, and no such claim is made for it: no
+> opponent-supplied text is ever routed to a language model at match time —
+> moves come from the trained tables and the deterministic policy layer.
 
 ---
 
