@@ -1,0 +1,1604 @@
+{
+  "artifact_version": 1,
+  "barriers": [],
+  "game_id": "ZeroOne0-vs-aviayeli",
+  "game_number": 1,
+  "game_uid": "ff90bd18-f873-981a-e1ca-0b89e6f9f03c",
+  "group_id": "aviayeli",
+  "handshake_counter_signed": false,
+  "our_role": "thief",
+  "result_claim": {
+    "outcome": "capture",
+    "steps": 32
+  },
+  "their_audit_response": {
+    "ok": true
+  },
+  "turns": [
+    {
+      "ours": {
+        "commit": "0c36ea079c5db7a78b5f89184e9e806850dc63d0f1ff74a4fc4333a649100827",
+        "nonce": "2d60b6943561193f91db34bf47b5aba3",
+        "payload": {
+          "hint": "south",
+          "intent": "lie",
+          "move": "MOVE:N",
+          "position": [
+            2,
+            3
+          ],
+          "state": "grid=7x7;self=[2, 3];barriers=[]",
+          "step": 1
+        }
+      },
+      "step": 1,
+      "theirs": {
+        "commit": "5bcb0f0c46df8145ee9c5c7e491dc9cdf616e05df64e39b8a4a616018fb21dab",
+        "hint": "The Bronx doesn't hide the truth, it lives it.",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.8,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.5,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.2,
+          "2,1": 0.2,
+          "2,2": 0.2
+        },
+        "timestamp": "2026-08-24T20:26:37.195022+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "4c1837b711895aec2cf4242d4365d4bbca393e6a04c9b7e7d5be263ec6ded5de",
+        "nonce": "caafde43f7a2d39850e45272c3016259",
+        "payload": {
+          "hint": "west",
+          "intent": "lie",
+          "move": "MOVE:E",
+          "position": [
+            2,
+            4
+          ],
+          "state": "grid=7x7;self=[2, 4];barriers=[]",
+          "step": 2
+        }
+      },
+      "step": 2,
+      "theirs": {
+        "capture_claim": [
+          0,
+          1
+        ],
+        "commit": "18c5307efd3bfc9812994ec33cd8064dc9a5f4ac2c063fc5bc55872f29d2e8c0",
+        "hint": "I found no evidence of a lie near the east landmark.",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.7,
+          "0,1": 0.8,
+          "0,2": 0.5,
+          "0,3": 0.2,
+          "1,0": 0.5,
+          "1,1": 0.5,
+          "1,2": 0.5,
+          "1,3": 0.2,
+          "2,0": 0.2,
+          "2,1": 0.2,
+          "2,2": 0.2,
+          "2,3": 0.2
+        },
+        "timestamp": "2026-08-24T20:26:39.045283+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "2d5dae1d3b9cffb24eb94bacfcf7f44a38d52f287e808838b9ee527659801dfc",
+        "nonce": "8118e54ed1de23b23ff60f83851b3061",
+        "payload": {
+          "hint": "west",
+          "intent": "lie",
+          "move": "MOVE:E",
+          "position": [
+            2,
+            5
+          ],
+          "state": "grid=7x7;self=[2, 5];barriers=[]",
+          "step": 3
+        }
+      },
+      "step": 3,
+      "theirs": {
+        "capture_claim": [
+          0,
+          2
+        ],
+        "commit": "996fc86227889015f57df23bb18a6a50df2d174d037ace1c2e430f03c358cc84",
+        "hint": "Central Park is a crime scene, and I need the truth.",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.6,
+          "0,1": 0.7,
+          "0,2": 0.8,
+          "0,3": 0.5,
+          "0,4": 0.2,
+          "1,0": 0.4,
+          "1,1": 0.5,
+          "1,2": 0.5,
+          "1,3": 0.5,
+          "1,4": 0.2,
+          "2,0": 0.2,
+          "2,1": 0.2,
+          "2,2": 0.2,
+          "2,3": 0.2,
+          "2,4": 0.2
+        },
+        "timestamp": "2026-08-24T20:26:41.197591+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "be4bd11577b22a052be346e4c372a4b682e2b7158f5e1cec037cb34257d9c864",
+        "nonce": "5150b00761c7f56a0530421326558161",
+        "payload": {
+          "hint": "north",
+          "intent": "lie",
+          "move": "MOVE:S",
+          "position": [
+            3,
+            5
+          ],
+          "state": "grid=7x7;self=[3, 5];barriers=[]",
+          "step": 4
+        }
+      },
+      "step": 4,
+      "theirs": {
+        "capture_claim": [
+          1,
+          2
+        ],
+        "commit": "2421fbe82819b745212093cb3a83c2a3666c1f6a0998cb484dac502f5e243f5a",
+        "hint": "I was in Brooklyn, but that's a lie.",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.5,
+          "0,1": 0.6,
+          "0,2": 0.7,
+          "0,3": 0.5,
+          "0,4": 0.2,
+          "1,0": 0.3,
+          "1,1": 0.5,
+          "1,2": 0.8,
+          "1,3": 0.5,
+          "1,4": 0.2,
+          "2,0": 0.2,
+          "2,1": 0.5,
+          "2,2": 0.5,
+          "2,3": 0.5,
+          "2,4": 0.2,
+          "3,0": 0.2,
+          "3,1": 0.2,
+          "3,2": 0.2,
+          "3,3": 0.2,
+          "3,4": 0.2
+        },
+        "timestamp": "2026-08-24T20:26:42.558180+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "b2460440fc53d1d732051b5acfb8f63ae73d00aee700094bb76d2f8fb207da14",
+        "nonce": "fbcb8d4a8340b5f0dbec9debb0c20e73",
+        "payload": {
+          "hint": "west",
+          "intent": "lie",
+          "move": "MOVE:E",
+          "position": [
+            3,
+            6
+          ],
+          "state": "grid=7x7;self=[3, 6];barriers=[]",
+          "step": 5
+        }
+      },
+      "step": 5,
+      "theirs": {
+        "capture_claim": [
+          1,
+          3
+        ],
+        "commit": "8d5d76cfffd2c14974b296d57f44707f470a634b2c423e92761671458f7382e7",
+        "hint": "I found the lie at the center of New York.",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.4,
+          "0,1": 0.5,
+          "0,2": 0.6,
+          "0,3": 0.5,
+          "0,4": 0.5,
+          "0,5": 0.2,
+          "1,0": 0.2,
+          "1,1": 0.4,
+          "1,2": 0.7,
+          "1,3": 0.8,
+          "1,4": 0.5,
+          "1,5": 0.2,
+          "2,0": 0.1,
+          "2,1": 0.4,
+          "2,2": 0.5,
+          "2,3": 0.5,
+          "2,4": 0.5,
+          "2,5": 0.2,
+          "3,0": 0.1,
+          "3,1": 0.2,
+          "3,2": 0.2,
+          "3,3": 0.2,
+          "3,4": 0.2,
+          "3,5": 0.2
+        },
+        "timestamp": "2026-08-24T20:26:44.577297+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "615863604c44cce78edc15349d98e02dc660e3ad646a967db08ef163b26ff902",
+        "nonce": "4239bcef2fe534eca7763c55179b4b72",
+        "payload": {
+          "hint": "north",
+          "intent": "lie",
+          "move": "MOVE:S",
+          "position": [
+            4,
+            6
+          ],
+          "state": "grid=7x7;self=[4, 6];barriers=[]",
+          "step": 6
+        }
+      },
+      "step": 6,
+      "theirs": {
+        "capture_claim": [
+          2,
+          3
+        ],
+        "commit": "ded7a19fc2066825a3a9b2474b1983f398bf188724801ddfd9454de2154752e5",
+        "hint": "Times Square is the crossroads of truth in New York.",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.3,
+          "0,1": 0.4,
+          "0,2": 0.5,
+          "0,3": 0.4,
+          "0,4": 0.4,
+          "0,5": 0.2,
+          "1,0": 0.1,
+          "1,1": 0.3,
+          "1,2": 0.6,
+          "1,3": 0.7,
+          "1,4": 0.5,
+          "1,5": 0.2,
+          "2,1": 0.3,
+          "2,2": 0.5,
+          "2,3": 0.8,
+          "2,4": 0.5,
+          "2,5": 0.2,
+          "3,1": 0.2,
+          "3,2": 0.5,
+          "3,3": 0.5,
+          "3,4": 0.5,
+          "3,5": 0.2,
+          "4,1": 0.2,
+          "4,2": 0.2,
+          "4,3": 0.2,
+          "4,4": 0.2,
+          "4,5": 0.2
+        },
+        "timestamp": "2026-08-24T20:26:46.311606+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "c778c273f28ae525905bbd4575233e7f319e39ffddb60ca2cc1eecbbddf0ce5e",
+        "nonce": "e75114918c389a4b6b373032404e5311",
+        "payload": {
+          "hint": "north",
+          "intent": "lie",
+          "move": "MOVE:S",
+          "position": [
+            5,
+            6
+          ],
+          "state": "grid=7x7;self=[5, 6];barriers=[]",
+          "step": 7
+        }
+      },
+      "step": 7,
+      "theirs": {
+        "capture_claim": [
+          2,
+          4
+        ],
+        "commit": "bd0c12dd0ba314766981c54892685359c284ba6ea62e8d3e8a8c59807b4772e6",
+        "hint": "I found no evidence of a lie near the east landmark.",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.2,
+          "0,1": 0.3,
+          "0,2": 0.4,
+          "0,3": 0.3,
+          "0,4": 0.3,
+          "0,5": 0.2,
+          "0,6": 0.2,
+          "1,1": 0.2,
+          "1,2": 0.5,
+          "1,3": 0.6,
+          "1,4": 0.5,
+          "1,5": 0.5,
+          "1,6": 0.2,
+          "2,1": 0.2,
+          "2,2": 0.4,
+          "2,3": 0.7,
+          "2,4": 0.8,
+          "2,5": 0.5,
+          "2,6": 0.2,
+          "3,1": 0.1,
+          "3,2": 0.4,
+          "3,3": 0.5,
+          "3,4": 0.5,
+          "3,5": 0.5,
+          "3,6": 0.2,
+          "4,1": 0.1,
+          "4,2": 0.2,
+          "4,3": 0.2,
+          "4,4": 0.2,
+          "4,5": 0.2,
+          "4,6": 0.2
+        },
+        "timestamp": "2026-08-24T20:26:48.046713+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "e9d9e7797a2193bbee69f7e8dd04f70ed79175e7e3d49bf5a9e94b98a3607eb4",
+        "nonce": "451bd3d379bb29965da928532978f595",
+        "payload": {
+          "hint": "north",
+          "intent": "lie",
+          "move": "MOVE:S",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 8
+        }
+      },
+      "step": 8,
+      "theirs": {
+        "capture_claim": [
+          2,
+          5
+        ],
+        "commit": "cede28e1c4b262176eec96db2a157154e5cf5acb3799c3f9c8f9d63d1ef3444f",
+        "hint": "The truth is east of the landmark.",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.1,
+          "0,1": 0.2,
+          "0,2": 0.3,
+          "0,3": 0.2,
+          "0,4": 0.2,
+          "0,5": 0.2,
+          "0,6": 0.2,
+          "1,1": 0.1,
+          "1,2": 0.4,
+          "1,3": 0.5,
+          "1,4": 0.5,
+          "1,5": 0.5,
+          "1,6": 0.5,
+          "2,1": 0.1,
+          "2,2": 0.3,
+          "2,3": 0.6,
+          "2,4": 0.7,
+          "2,5": 0.8,
+          "2,6": 0.5,
+          "3,2": 0.3,
+          "3,3": 0.4,
+          "3,4": 0.5,
+          "3,5": 0.5,
+          "3,6": 0.5,
+          "4,2": 0.1,
+          "4,3": 0.2,
+          "4,4": 0.2,
+          "4,5": 0.2,
+          "4,6": 0.2
+        },
+        "timestamp": "2026-08-24T20:26:49.666456+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "dac2d14e6b4fd372b15afa6c6220dc9dcbc3ac62cc03cb970dff48819b5fda38",
+        "nonce": "7bd4903e7760013e3a3b529da26000d7",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 9
+        }
+      },
+      "step": 9,
+      "theirs": {
+        "capture_claim": [
+          3,
+          5
+        ],
+        "commit": "01cf0a6ef4cfc5e152b0eb0590c06613fa80f2876986001cbb1025900fa2611e",
+        "hint": "Times Square is the crossroads of truth in New York.",
+        "sender": "police",
+        "smell_grid": {
+          "0,1": 0.1,
+          "0,2": 0.2,
+          "0,3": 0.1,
+          "0,4": 0.1,
+          "0,5": 0.1,
+          "0,6": 0.1,
+          "1,2": 0.3,
+          "1,3": 0.4,
+          "1,4": 0.4,
+          "1,5": 0.4,
+          "1,6": 0.4,
+          "2,2": 0.2,
+          "2,3": 0.5,
+          "2,4": 0.6,
+          "2,5": 0.7,
+          "2,6": 0.5,
+          "3,2": 0.2,
+          "3,3": 0.3,
+          "3,4": 0.5,
+          "3,5": 0.8,
+          "3,6": 0.5,
+          "4,3": 0.2,
+          "4,4": 0.5,
+          "4,5": 0.5,
+          "4,6": 0.5,
+          "5,3": 0.2,
+          "5,4": 0.2,
+          "5,5": 0.2,
+          "5,6": 0.2
+        },
+        "timestamp": "2026-08-24T20:26:51.720703+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "33a3c0ff52deab826f0de038c1eadf236d8e5bdd46f1ba6049bc70b81fdac975",
+        "nonce": "fc690699095fa1d2e18440d8f43e050f",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 10
+        }
+      },
+      "step": 10,
+      "theirs": {
+        "capture_claim": [
+          3,
+          6
+        ],
+        "commit": "548ab16f27c5d03f26249e1ae6070ffc1ed2046ad83b3b7e5c37d3dc5c4dd41f",
+        "hint": "The truth is east of the landmark.",
+        "sender": "police",
+        "smell_grid": {
+          "0,2": 0.1,
+          "1,2": 0.2,
+          "1,3": 0.3,
+          "1,4": 0.3,
+          "1,5": 0.3,
+          "1,6": 0.3,
+          "2,2": 0.1,
+          "2,3": 0.4,
+          "2,4": 0.5,
+          "2,5": 0.6,
+          "2,6": 0.5,
+          "3,2": 0.1,
+          "3,3": 0.2,
+          "3,4": 0.4,
+          "3,5": 0.7,
+          "3,6": 0.8,
+          "4,3": 0.1,
+          "4,4": 0.4,
+          "4,5": 0.5,
+          "4,6": 0.5,
+          "5,3": 0.1,
+          "5,4": 0.2,
+          "5,5": 0.2,
+          "5,6": 0.2
+        },
+        "timestamp": "2026-08-24T20:26:53.329345+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "f95e12955761d0728e1a8a981c2691d83f896af9a2ea36c71d040edc15994ba2",
+        "nonce": "27c257588a4fa6cc8598dea2bf19a398",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 11
+        }
+      },
+      "step": 11,
+      "theirs": {
+        "capture_claim": [
+          4,
+          6
+        ],
+        "commit": "34427e68695048c7145c9563cbb86507ef82b9a08c9a6382d9bd5c9a28e05eae",
+        "hint": "The truth is east, in New York.",
+        "sender": "police",
+        "smell_grid": {
+          "1,2": 0.1,
+          "1,3": 0.2,
+          "1,4": 0.2,
+          "1,5": 0.2,
+          "1,6": 0.2,
+          "2,3": 0.3,
+          "2,4": 0.4,
+          "2,5": 0.5,
+          "2,6": 0.4,
+          "3,3": 0.1,
+          "3,4": 0.3,
+          "3,5": 0.6,
+          "3,6": 0.7,
+          "4,4": 0.3,
+          "4,5": 0.5,
+          "4,6": 0.8,
+          "5,4": 0.2,
+          "5,5": 0.5,
+          "5,6": 0.5,
+          "6,4": 0.2,
+          "6,5": 0.2,
+          "6,6": 0.2
+        },
+        "timestamp": "2026-08-24T20:26:55.186168+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "a113e2b35ce9a7e5e9b5b25db0997f4cb6d7fdd0af46337a947e812cfe00cd9f",
+        "nonce": "339db4f862f559ba7bb7a34abd237987",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 12
+        }
+      },
+      "step": 12,
+      "theirs": {
+        "capture_claim": [
+          5,
+          6
+        ],
+        "commit": "d618f14591f52e498ad2381987ebfa3dfafa11587bd31f2bb279592898b4c6ee",
+        "hint": "I patrol Brooklyn to enforce the truth.",
+        "sender": "police",
+        "smell_grid": {
+          "1,3": 0.1,
+          "1,4": 0.1,
+          "1,5": 0.1,
+          "1,6": 0.1,
+          "2,3": 0.2,
+          "2,4": 0.3,
+          "2,5": 0.4,
+          "2,6": 0.3,
+          "3,4": 0.2,
+          "3,5": 0.5,
+          "3,6": 0.6,
+          "4,4": 0.2,
+          "4,5": 0.5,
+          "4,6": 0.7,
+          "5,4": 0.2,
+          "5,5": 0.5,
+          "5,6": 0.8,
+          "6,4": 0.2,
+          "6,5": 0.5,
+          "6,6": 0.5
+        },
+        "timestamp": "2026-08-24T20:26:57.097082+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "5b30ab27d4e1aa0dd250fcd39eb2522499cc08d18842b31170daaed0d0a6b40e",
+        "nonce": "71cad566bf36aa9e1f3c7664ddde1017",
+        "payload": {
+          "hint": "east",
+          "intent": "lie",
+          "move": "MOVE:W",
+          "position": [
+            6,
+            5
+          ],
+          "state": "grid=7x7;self=[6, 5];barriers=[]",
+          "step": 13
+        }
+      },
+      "step": 13,
+      "theirs": {
+        "commit": "a0774f439d2b4418e481e4fb2daea868cb999b4043d20a80dbcb7476a82ef291",
+        "hint": "The truth is east of here, in New York.",
+        "sender": "police",
+        "smell_grid": {
+          "2,3": 0.1,
+          "2,4": 0.2,
+          "2,5": 0.3,
+          "2,6": 0.2,
+          "3,4": 0.2,
+          "3,5": 0.4,
+          "3,6": 0.5,
+          "4,4": 0.2,
+          "4,5": 0.5,
+          "4,6": 0.6,
+          "5,4": 0.2,
+          "5,5": 0.5,
+          "5,6": 0.8,
+          "6,4": 0.2,
+          "6,5": 0.5,
+          "6,6": 0.5
+        },
+        "timestamp": "2026-08-24T20:26:58.847701+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "c1e751cc37c0014546c1281ab93611bf82b51953d94f159df54f14c173b4196f",
+        "nonce": "a4b42e6219ad4a562332ddd458314e76",
+        "payload": {
+          "hint": "east",
+          "intent": "lie",
+          "move": "MOVE:W",
+          "position": [
+            6,
+            4
+          ],
+          "state": "grid=7x7;self=[6, 4];barriers=[]",
+          "step": 14
+        }
+      },
+      "step": 14,
+      "theirs": {
+        "capture_claim": [
+          5,
+          5
+        ],
+        "commit": "785ca454091d64f23bc4c5f8ada9854e469b6367d47b961ceb05cd2216bd2832",
+        "hint": "The truth is south of the landmark.",
+        "sender": "police",
+        "smell_grid": {
+          "2,4": 0.1,
+          "2,5": 0.2,
+          "2,6": 0.1,
+          "3,3": 0.2,
+          "3,4": 0.2,
+          "3,5": 0.3,
+          "3,6": 0.4,
+          "4,3": 0.2,
+          "4,4": 0.5,
+          "4,5": 0.5,
+          "4,6": 0.5,
+          "5,3": 0.2,
+          "5,4": 0.5,
+          "5,5": 0.8,
+          "5,6": 0.7,
+          "6,3": 0.2,
+          "6,4": 0.5,
+          "6,5": 0.5,
+          "6,6": 0.5
+        },
+        "timestamp": "2026-08-24T20:27:00.678442+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "9d3fbdf38a51657b85410429cb2c22d58ffef0255bd696f65633dc7d5702b1d3",
+        "nonce": "d0e41717fe927cbaaec9b9611f2937d9",
+        "payload": {
+          "hint": "east",
+          "intent": "lie",
+          "move": "MOVE:W",
+          "position": [
+            6,
+            3
+          ],
+          "state": "grid=7x7;self=[6, 3];barriers=[]",
+          "step": 15
+        }
+      },
+      "step": 15,
+      "theirs": {
+        "commit": "c0a645a0e392466418423953f2c586e71ebd3d33ef71d671db774a9d149a8d24",
+        "hint": "The truth is east, in New York.",
+        "sender": "police",
+        "smell_grid": {
+          "2,5": 0.1,
+          "3,3": 0.2,
+          "3,4": 0.2,
+          "3,5": 0.2,
+          "3,6": 0.3,
+          "4,3": 0.2,
+          "4,4": 0.5,
+          "4,5": 0.5,
+          "4,6": 0.5,
+          "5,3": 0.2,
+          "5,4": 0.5,
+          "5,5": 0.8,
+          "5,6": 0.6,
+          "6,3": 0.2,
+          "6,4": 0.5,
+          "6,5": 0.5,
+          "6,6": 0.5
+        },
+        "timestamp": "2026-08-24T20:27:02.794969+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "89bd439cb227c3fff4ab0f127e3bdcc66de6b92331518f47bdb3c7b493f74e96",
+        "nonce": "33a52a437d2efc6fc8d5681ca979690e",
+        "payload": {
+          "hint": "east",
+          "intent": "lie",
+          "move": "MOVE:W",
+          "position": [
+            6,
+            2
+          ],
+          "state": "grid=7x7;self=[6, 2];barriers=[]",
+          "step": 16
+        }
+      },
+      "step": 16,
+      "theirs": {
+        "capture_claim": [
+          5,
+          4
+        ],
+        "commit": "ad3b8dc8687f84fb315a468a05e815145f51e0e2e56e0a36f90e753917d00489",
+        "hint": "I found no evidence of a lie near the east landmark.",
+        "sender": "police",
+        "smell_grid": {
+          "3,2": 0.2,
+          "3,3": 0.2,
+          "3,4": 0.2,
+          "3,5": 0.2,
+          "3,6": 0.2,
+          "4,2": 0.2,
+          "4,3": 0.5,
+          "4,4": 0.5,
+          "4,5": 0.5,
+          "4,6": 0.4,
+          "5,2": 0.2,
+          "5,3": 0.5,
+          "5,4": 0.8,
+          "5,5": 0.7,
+          "5,6": 0.5,
+          "6,2": 0.2,
+          "6,3": 0.5,
+          "6,4": 0.5,
+          "6,5": 0.5,
+          "6,6": 0.4
+        },
+        "timestamp": "2026-08-24T20:27:04.421010+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "54df556d9f0b34390d1ada2a63530ecf6a919c0801291507fc25f1f89f18137d",
+        "nonce": "5b6bafe50560d79c6af4bc184f29c741",
+        "payload": {
+          "hint": "east",
+          "intent": "lie",
+          "move": "MOVE:W",
+          "position": [
+            6,
+            1
+          ],
+          "state": "grid=7x7;self=[6, 1];barriers=[]",
+          "step": 17
+        }
+      },
+      "step": 17,
+      "theirs": {
+        "capture_claim": [
+          6,
+          4
+        ],
+        "commit": "92f685d3252a9e18b3f7eab535ff13f39b3500b3c26cbedc901be383445904f6",
+        "hint": "I was in Manhattan, but I never saw the stolen watch.",
+        "sender": "police",
+        "smell_grid": {
+          "3,2": 0.1,
+          "3,3": 0.1,
+          "3,4": 0.1,
+          "3,5": 0.1,
+          "3,6": 0.1,
+          "4,2": 0.2,
+          "4,3": 0.4,
+          "4,4": 0.4,
+          "4,5": 0.4,
+          "4,6": 0.3,
+          "5,2": 0.2,
+          "5,3": 0.5,
+          "5,4": 0.7,
+          "5,5": 0.6,
+          "5,6": 0.4,
+          "6,2": 0.2,
+          "6,3": 0.5,
+          "6,4": 0.8,
+          "6,5": 0.5,
+          "6,6": 0.3
+        },
+        "timestamp": "2026-08-24T20:27:06.394118+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "2dec94b5745aa57ae1994de845e1849113a644c71f8c0b2f65e767f6a2d599aa",
+        "nonce": "20d0f5acd06f28031cbf9f8b9f0a9145",
+        "payload": {
+          "hint": "east",
+          "intent": "lie",
+          "move": "MOVE:W",
+          "position": [
+            6,
+            0
+          ],
+          "state": "grid=7x7;self=[6, 0];barriers=[]",
+          "step": 18
+        }
+      },
+      "step": 18,
+      "theirs": {
+        "commit": "84617a8023945124e888c55e50b178644cc491c9757b72b042b3c5d6091e6acf",
+        "hint": "I found no evidence of a lie near the east landmark.",
+        "sender": "police",
+        "smell_grid": {
+          "4,2": 0.2,
+          "4,3": 0.3,
+          "4,4": 0.3,
+          "4,5": 0.3,
+          "4,6": 0.2,
+          "5,2": 0.2,
+          "5,3": 0.5,
+          "5,4": 0.6,
+          "5,5": 0.5,
+          "5,6": 0.3,
+          "6,2": 0.2,
+          "6,3": 0.5,
+          "6,4": 0.8,
+          "6,5": 0.5,
+          "6,6": 0.2
+        },
+        "timestamp": "2026-08-24T20:27:08.547904+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "ffd3786d02a5c3962cffbe6f35e244326b0093308a6b5af819a431f287a65b01",
+        "nonce": "ae2c3f7e64301ae59e73d3783e8127f7",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            0
+          ],
+          "state": "grid=7x7;self=[6, 0];barriers=[]",
+          "step": 19
+        }
+      },
+      "step": 19,
+      "theirs": {
+        "capture_claim": [
+          6,
+          4
+        ],
+        "commit": "c2b59f1ed899ef3dbb4c9bcc1eed525b578733afe91809a301ec50685ba196b9",
+        "hint": "I saw nothing suspicious near the north landmark.",
+        "sender": "police",
+        "smell_grid": {
+          "4,2": 0.2,
+          "4,3": 0.2,
+          "4,4": 0.2,
+          "4,5": 0.2,
+          "4,6": 0.2,
+          "5,2": 0.2,
+          "5,3": 0.5,
+          "5,4": 0.5,
+          "5,5": 0.5,
+          "5,6": 0.2,
+          "6,2": 0.2,
+          "6,3": 0.5,
+          "6,4": 0.8,
+          "6,5": 0.5,
+          "6,6": 0.2
+        },
+        "timestamp": "2026-08-24T20:27:11.641396+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "a1005afca8a3a27368517bc02d96f8d276234cfaf0e3f090009b7255a5c6e89f",
+        "nonce": "ddbc59b1dc5a8a355ca2864e80dbe468",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            0
+          ],
+          "state": "grid=7x7;self=[6, 0];barriers=[]",
+          "step": 20
+        }
+      },
+      "step": 20,
+      "theirs": {
+        "capture_claim": [
+          6,
+          4
+        ],
+        "commit": "d1e72f1c0de955a62ec2c645bc3ca0973a47727361dc6355d6f2144ac8c12db2",
+        "hint": "In Brooklyn, the truth is what I see with my own eyes.",
+        "sender": "police",
+        "smell_grid": {
+          "4,2": 0.2,
+          "4,3": 0.2,
+          "4,4": 0.2,
+          "4,5": 0.2,
+          "4,6": 0.2,
+          "5,2": 0.2,
+          "5,3": 0.5,
+          "5,4": 0.5,
+          "5,5": 0.5,
+          "5,6": 0.2,
+          "6,2": 0.2,
+          "6,3": 0.5,
+          "6,4": 0.8,
+          "6,5": 0.5,
+          "6,6": 0.2
+        },
+        "timestamp": "2026-08-24T20:27:13.230930+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "d5bba6f05faf364af29ac0597c555bde336baf14aa7561f3d8a77c047f31c9cb",
+        "nonce": "23bdd9da2480dfef2aaea91a953fea85",
+        "payload": {
+          "hint": "south",
+          "intent": "lie",
+          "move": "MOVE:N",
+          "position": [
+            5,
+            0
+          ],
+          "state": "grid=7x7;self=[5, 0];barriers=[]",
+          "step": 21
+        }
+      },
+      "step": 21,
+      "theirs": {
+        "capture_claim": [
+          6,
+          4
+        ],
+        "commit": "292a14ba3557d2d77aac5fc18128c71bc4a59621cf663594a206527db903a5eb",
+        "hint": "The truth is south of the landmark.",
+        "sender": "police",
+        "smell_grid": {
+          "4,2": 0.2,
+          "4,3": 0.2,
+          "4,4": 0.2,
+          "4,5": 0.2,
+          "4,6": 0.2,
+          "5,2": 0.2,
+          "5,3": 0.5,
+          "5,4": 0.5,
+          "5,5": 0.5,
+          "5,6": 0.2,
+          "6,2": 0.2,
+          "6,3": 0.5,
+          "6,4": 0.8,
+          "6,5": 0.5,
+          "6,6": 0.2
+        },
+        "timestamp": "2026-08-24T20:27:16.974262+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "2f27dddd11a6b11fab4c6d4872062735e9751a7dbe34be9f46a793504e44afd6",
+        "nonce": "a9cef8100623a56e5c05fa045abb8b04",
+        "payload": {
+          "hint": "south",
+          "intent": "lie",
+          "move": "MOVE:N",
+          "position": [
+            4,
+            0
+          ],
+          "state": "grid=7x7;self=[4, 0];barriers=[]",
+          "step": 22
+        }
+      },
+      "step": 22,
+      "theirs": {
+        "capture_claim": [
+          6,
+          4
+        ],
+        "commit": "3f1357d15ccb274ae4902c917cf6eef4d5cc7a517622435d720a6e9dc6032302",
+        "hint": "The truth is south of the landmark.",
+        "sender": "police",
+        "smell_grid": {
+          "4,2": 0.2,
+          "4,3": 0.2,
+          "4,4": 0.2,
+          "4,5": 0.2,
+          "4,6": 0.2,
+          "5,2": 0.2,
+          "5,3": 0.5,
+          "5,4": 0.5,
+          "5,5": 0.5,
+          "5,6": 0.2,
+          "6,2": 0.2,
+          "6,3": 0.5,
+          "6,4": 0.8,
+          "6,5": 0.5,
+          "6,6": 0.2
+        },
+        "timestamp": "2026-08-24T20:27:18.188128+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "d3f823935fc119b9984c3f14d1c33ce5bc366a16df6950fc938a5cb2336a8edd",
+        "nonce": "6c7404079ebc4f2f690a043c6d028fe3",
+        "payload": {
+          "hint": "south",
+          "intent": "lie",
+          "move": "MOVE:N",
+          "position": [
+            3,
+            0
+          ],
+          "state": "grid=7x7;self=[3, 0];barriers=[]",
+          "step": 23
+        }
+      },
+      "step": 23,
+      "theirs": {
+        "capture_claim": [
+          5,
+          4
+        ],
+        "commit": "8414f69ba2965346149bd9bd38c9fd8401622429a15419c75e0598d0d11d7de1",
+        "hint": "I was nowhere near Central Park that night.",
+        "sender": "police",
+        "smell_grid": {
+          "3,2": 0.2,
+          "3,3": 0.2,
+          "3,4": 0.2,
+          "3,5": 0.2,
+          "3,6": 0.2,
+          "4,2": 0.2,
+          "4,3": 0.5,
+          "4,4": 0.5,
+          "4,5": 0.5,
+          "4,6": 0.2,
+          "5,2": 0.2,
+          "5,3": 0.5,
+          "5,4": 0.8,
+          "5,5": 0.5,
+          "5,6": 0.2,
+          "6,2": 0.2,
+          "6,3": 0.5,
+          "6,4": 0.7,
+          "6,5": 0.5,
+          "6,6": 0.2
+        },
+        "timestamp": "2026-08-24T20:27:19.874245+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "1fcb8cc25a46242434f2e83800f77063a4fa1377f64b61fe6835f3f4005e29c1",
+        "nonce": "51612fdf7e48b30718ab0bff0fd62019",
+        "payload": {
+          "hint": "south",
+          "intent": "lie",
+          "move": "MOVE:N",
+          "position": [
+            2,
+            0
+          ],
+          "state": "grid=7x7;self=[2, 0];barriers=[]",
+          "step": 24
+        }
+      },
+      "step": 24,
+      "theirs": {
+        "capture_claim": [
+          5,
+          3
+        ],
+        "commit": "f6d9e42e3336bc3e474b37dfdc503e553bb745f0af08f26683e7ee1518501377",
+        "hint": "I patrol Brooklyn to enforce the truth.",
+        "sender": "police",
+        "smell_grid": {
+          "3,1": 0.2,
+          "3,2": 0.2,
+          "3,3": 0.2,
+          "3,4": 0.2,
+          "3,5": 0.2,
+          "3,6": 0.1,
+          "4,1": 0.2,
+          "4,2": 0.5,
+          "4,3": 0.5,
+          "4,4": 0.5,
+          "4,5": 0.4,
+          "4,6": 0.1,
+          "5,1": 0.2,
+          "5,2": 0.5,
+          "5,3": 0.8,
+          "5,4": 0.7,
+          "5,5": 0.4,
+          "5,6": 0.1,
+          "6,1": 0.2,
+          "6,2": 0.5,
+          "6,3": 0.5,
+          "6,4": 0.6,
+          "6,5": 0.4,
+          "6,6": 0.1
+        },
+        "timestamp": "2026-08-24T20:27:21.932974+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "0a1cb30f6620a52f69d9952ec79bf002798a7c8a0983fab49ae521504e9b94d2",
+        "nonce": "b93f8863d21bded23729979caaa81891",
+        "payload": {
+          "hint": "south",
+          "intent": "lie",
+          "move": "MOVE:N",
+          "position": [
+            1,
+            0
+          ],
+          "state": "grid=7x7;self=[1, 0];barriers=[]",
+          "step": 25
+        }
+      },
+      "step": 25,
+      "theirs": {
+        "capture_claim": [
+          5,
+          2
+        ],
+        "commit": "c8cc6b3f69ad034f3c6a83ebebbf3d257f2e44eaddb55a80663e9eeabf5c1dd7",
+        "hint": "I found no evidence of a lie at the west landmark.",
+        "sender": "police",
+        "smell_grid": {
+          "3,0": 0.2,
+          "3,1": 0.2,
+          "3,2": 0.2,
+          "3,3": 0.2,
+          "3,4": 0.2,
+          "3,5": 0.1,
+          "4,0": 0.2,
+          "4,1": 0.5,
+          "4,2": 0.5,
+          "4,3": 0.5,
+          "4,4": 0.4,
+          "4,5": 0.3,
+          "5,0": 0.2,
+          "5,1": 0.5,
+          "5,2": 0.8,
+          "5,3": 0.7,
+          "5,4": 0.6,
+          "5,5": 0.3,
+          "6,0": 0.2,
+          "6,1": 0.5,
+          "6,2": 0.5,
+          "6,3": 0.5,
+          "6,4": 0.5,
+          "6,5": 0.3
+        },
+        "timestamp": "2026-08-24T20:27:23.816468+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "3385efd126b37e34cf1f51b2c0c51eb02567cfb2d7685343dfe1e18583fb39a0",
+        "nonce": "77d3e647365711f35308eb547fe2b136",
+        "payload": {
+          "hint": "south",
+          "intent": "lie",
+          "move": "MOVE:N",
+          "position": [
+            1,
+            0
+          ],
+          "state": "grid=7x7;self=[1, 0];barriers=[]",
+          "step": 26
+        }
+      },
+      "step": 26,
+      "theirs": {
+        "capture_claim": [
+          5,
+          1
+        ],
+        "commit": "26ffc785529fa10a634a715a0cb2e83118b935fc922e6cdd3718559f4b61dcec",
+        "hint": "In Manhattan, I'm telling you the truth.",
+        "sender": "police",
+        "smell_grid": {
+          "3,0": 0.2,
+          "3,1": 0.2,
+          "3,2": 0.2,
+          "3,3": 0.2,
+          "3,4": 0.1,
+          "4,0": 0.5,
+          "4,1": 0.5,
+          "4,2": 0.5,
+          "4,3": 0.4,
+          "4,4": 0.3,
+          "4,5": 0.2,
+          "5,0": 0.5,
+          "5,1": 0.8,
+          "5,2": 0.7,
+          "5,3": 0.6,
+          "5,4": 0.5,
+          "5,5": 0.2,
+          "6,0": 0.5,
+          "6,1": 0.5,
+          "6,2": 0.5,
+          "6,3": 0.4,
+          "6,4": 0.4,
+          "6,5": 0.2
+        },
+        "timestamp": "2026-08-24T20:27:26.183888+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "24aa27b62b20be1b104b20dbbb300efe450ccb3616ff5373c8c8cb6e1312ad54",
+        "nonce": "acc31d16669801c7223b55dbc7e72451",
+        "payload": {
+          "hint": "south",
+          "intent": "lie",
+          "move": "MOVE:N",
+          "position": [
+            1,
+            0
+          ],
+          "state": "grid=7x7;self=[1, 0];barriers=[]",
+          "step": 27
+        }
+      },
+      "step": 27,
+      "theirs": {
+        "capture_claim": [
+          5,
+          0
+        ],
+        "commit": "aca2317fceb487df38aad543ae87f637e798784b5a3a522dee2b72331c4f4f53",
+        "hint": "West is where I found the truth.",
+        "sender": "police",
+        "smell_grid": {
+          "3,0": 0.2,
+          "3,1": 0.2,
+          "3,2": 0.2,
+          "3,3": 0.1,
+          "4,0": 0.5,
+          "4,1": 0.5,
+          "4,2": 0.4,
+          "4,3": 0.3,
+          "4,4": 0.2,
+          "4,5": 0.1,
+          "5,0": 0.8,
+          "5,1": 0.7,
+          "5,2": 0.6,
+          "5,3": 0.5,
+          "5,4": 0.4,
+          "5,5": 0.1,
+          "6,0": 0.5,
+          "6,1": 0.5,
+          "6,2": 0.4,
+          "6,3": 0.3,
+          "6,4": 0.3,
+          "6,5": 0.1
+        },
+        "timestamp": "2026-08-24T20:27:28.321358+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "92bb8ea5e07e223075f604c1dae460b0b03e04794b0532f1bd2efd4a997ebe7a",
+        "nonce": "53be2d86ef726ac95a154d3d3d1987a7",
+        "payload": {
+          "hint": "south",
+          "intent": "lie",
+          "move": "MOVE:N",
+          "position": [
+            1,
+            0
+          ],
+          "state": "grid=7x7;self=[1, 0];barriers=[]",
+          "step": 28
+        }
+      },
+      "step": 28,
+      "theirs": {
+        "capture_claim": [
+          4,
+          0
+        ],
+        "commit": "545d67f5abc59ea0535672733116145e5bc7627afa11614f27684a24e2b1224b",
+        "hint": "West is where I found the truth.",
+        "sender": "police",
+        "smell_grid": {
+          "2,0": 0.2,
+          "2,1": 0.2,
+          "2,2": 0.2,
+          "3,0": 0.5,
+          "3,1": 0.5,
+          "3,2": 0.2,
+          "4,0": 0.8,
+          "4,1": 0.5,
+          "4,2": 0.3,
+          "4,3": 0.2,
+          "4,4": 0.1,
+          "5,0": 0.7,
+          "5,1": 0.6,
+          "5,2": 0.5,
+          "5,3": 0.4,
+          "5,4": 0.3,
+          "6,0": 0.4,
+          "6,1": 0.4,
+          "6,2": 0.3,
+          "6,3": 0.2,
+          "6,4": 0.2
+        },
+        "timestamp": "2026-08-24T20:27:29.619881+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "885587aa1f5cf1504007bf8dce86ea72aba9f3e32e4e5936db78484895591daa",
+        "nonce": "6f9decf4c630ff2067c48d71f8c55bf4",
+        "payload": {
+          "hint": "south",
+          "intent": "lie",
+          "move": "MOVE:N",
+          "position": [
+            1,
+            0
+          ],
+          "state": "grid=7x7;self=[1, 0];barriers=[]",
+          "step": 29
+        }
+      },
+      "step": 29,
+      "theirs": {
+        "capture_claim": [
+          3,
+          0
+        ],
+        "commit": "858e20dc5bab80af479ce101882ea46ff980c5a0038d8cc20eb729603ce6f0e9",
+        "hint": "West is where I found the truth.",
+        "sender": "police",
+        "smell_grid": {
+          "1,0": 0.2,
+          "1,1": 0.2,
+          "1,2": 0.2,
+          "2,0": 0.5,
+          "2,1": 0.5,
+          "2,2": 0.2,
+          "3,0": 0.8,
+          "3,1": 0.5,
+          "3,2": 0.2,
+          "4,0": 0.7,
+          "4,1": 0.5,
+          "4,2": 0.2,
+          "4,3": 0.1,
+          "5,0": 0.6,
+          "5,1": 0.5,
+          "5,2": 0.4,
+          "5,3": 0.3,
+          "5,4": 0.2,
+          "6,0": 0.3,
+          "6,1": 0.3,
+          "6,2": 0.2,
+          "6,3": 0.1,
+          "6,4": 0.1
+        },
+        "timestamp": "2026-08-24T20:27:31.463044+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "2d037082b02ef3a9306f37342192195ca0ba8a232330f2f55db59e6bc005065c",
+        "nonce": "2e853823602043c32064d85060b0ba74",
+        "payload": {
+          "hint": "south",
+          "intent": "lie",
+          "move": "MOVE:N",
+          "position": [
+            1,
+            0
+          ],
+          "state": "grid=7x7;self=[1, 0];barriers=[]",
+          "step": 30
+        }
+      },
+      "step": 30,
+      "theirs": {
+        "capture_claim": [
+          2,
+          0
+        ],
+        "commit": "3baa47de758e1be49649f9014844da521141b88422dcb3caafd568838ed51a59",
+        "hint": "West is where I found the truth.",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.2,
+          "0,1": 0.2,
+          "0,2": 0.2,
+          "1,0": 0.5,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.8,
+          "2,1": 0.5,
+          "2,2": 0.2,
+          "3,0": 0.7,
+          "3,1": 0.5,
+          "3,2": 0.2,
+          "4,0": 0.6,
+          "4,1": 0.4,
+          "4,2": 0.2,
+          "5,0": 0.5,
+          "5,1": 0.4,
+          "5,2": 0.3,
+          "5,3": 0.2,
+          "5,4": 0.1,
+          "6,0": 0.2,
+          "6,1": 0.2,
+          "6,2": 0.1
+        },
+        "timestamp": "2026-08-24T20:27:33.193494+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "b8ae79c20d44f40464f0713a8df947b4714192649c4fbf02c017c8e193bcbfb7",
+        "nonce": "792f8e696df1bea2019573c0fcf8f8f8",
+        "payload": {
+          "hint": "south",
+          "intent": "lie",
+          "move": "MOVE:N",
+          "position": [
+            1,
+            0
+          ],
+          "state": "grid=7x7;self=[1, 0];barriers=[]",
+          "step": 31
+        }
+      },
+      "step": 31,
+      "theirs": {
+        "commit": "830996ba9dfd197ae764ce76743841ec64ffa0545ca5b7d78e8445c63d47780a",
+        "hint": "I found no evidence of a lie at Manhattan.",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.2,
+          "0,1": 0.2,
+          "0,2": 0.2,
+          "1,0": 0.5,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.8,
+          "2,1": 0.5,
+          "2,2": 0.2,
+          "3,0": 0.6,
+          "3,1": 0.5,
+          "3,2": 0.2,
+          "4,0": 0.5,
+          "4,1": 0.3,
+          "4,2": 0.2,
+          "5,0": 0.4,
+          "5,1": 0.3,
+          "5,2": 0.2,
+          "5,3": 0.1,
+          "6,0": 0.1,
+          "6,1": 0.1
+        },
+        "timestamp": "2026-08-24T20:27:35.099908+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "a8bdc3f41c585843234edfdb8ef65c0ef1cce21621fe8da29e8d106b157bf544",
+        "nonce": "e0fc0e42769ab4f9e19acbc0d11ddb74",
+        "payload": {
+          "hint": "south",
+          "intent": "lie",
+          "move": "MOVE:N",
+          "position": [
+            1,
+            0
+          ],
+          "state": "grid=7x7;self=[1, 0];barriers=[]",
+          "step": 32
+        }
+      },
+      "step": 32,
+      "theirs": {
+        "commit": "2c641e5a607a26fb12d1b0601215e3fb6a57724306c2db788626a87a1c644b9d",
+        "hint": "",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.2,
+          "0,1": 0.2,
+          "0,2": 0.2,
+          "1,0": 0.5,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.8,
+          "2,1": 0.5,
+          "2,2": 0.2,
+          "3,0": 0.5,
+          "3,1": 0.5,
+          "3,2": 0.2,
+          "4,0": 0.4,
+          "4,1": 0.2,
+          "4,2": 0.2,
+          "5,0": 0.3,
+          "5,1": 0.2,
+          "5,2": 0.1
+        },
+        "timestamp": "2026-08-24T20:27:36.120002+00:00"
+      }
+    }
+  ],
+  "wire_shape": "reference-v3"
+}

@@ -1,0 +1,706 @@
+{
+  "artifact_version": 1,
+  "barriers": [],
+  "game_id": "ZeroOne0-vs-aviayeli",
+  "game_number": 1,
+  "game_uid": "ff90bd18-f873-981a-e1ca-0b89e6f9f03c",
+  "group_id": "aviayeli",
+  "handshake_counter_signed": false,
+  "our_role": "police",
+  "result_claim": {
+    "outcome": "capture",
+    "steps": 13
+  },
+  "their_audit_response": {
+    "ok": true
+  },
+  "turns": [
+    {
+      "ours": {
+        "commit": "ac22fda829b073bad2bf266adb8d37af4ebc4ff5782ed9366b454074e118725d",
+        "nonce": "b54b17f2042e1e0565b14b13745e1f7e",
+        "payload": {
+          "hint": "south",
+          "intent": "truth",
+          "move": "MOVE:S",
+          "position": [
+            1,
+            0
+          ],
+          "state": "grid=7x7;self=[1, 0];barriers=[]",
+          "step": 1
+        }
+      },
+      "step": 1,
+      "theirs": {
+        "commit": "b40f47edd3aec6aed57eeaf1881759694366dce8e31ee10945135cc4359ade3d",
+        "hint": "I stole the truth from the center of New York.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,1": 0.2,
+          "0,2": 0.2,
+          "0,3": 0.2,
+          "0,4": 0.2,
+          "0,5": 0.2,
+          "1,1": 0.2,
+          "1,2": 0.5,
+          "1,3": 0.5,
+          "1,4": 0.5,
+          "1,5": 0.2,
+          "2,1": 0.2,
+          "2,2": 0.5,
+          "2,3": 0.8,
+          "2,4": 0.5,
+          "2,5": 0.2,
+          "3,1": 0.2,
+          "3,2": 0.5,
+          "3,3": 0.5,
+          "3,4": 0.5,
+          "3,5": 0.2,
+          "4,1": 0.2,
+          "4,2": 0.2,
+          "4,3": 0.2,
+          "4,4": 0.2,
+          "4,5": 0.2
+        },
+        "timestamp": "2026-08-24T19:39:39.050966+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "e5f5f95cfa16c3a196761d41bd2b814c9f60ef623d7e0fe8a3224b2465b099c0",
+        "nonce": "898feb5e4dd0a05083c14828f7e96cf5",
+        "payload": {
+          "hint": "east",
+          "intent": "truth",
+          "move": "MOVE:E",
+          "position": [
+            1,
+            1
+          ],
+          "state": "grid=7x7;self=[1, 1];barriers=[]",
+          "step": 2
+        }
+      },
+      "step": 2,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            1,
+            0
+          ]
+        },
+        "commit": "dcc455784b8ea7c662f2736ff51295f590f47d13181169abd6fc3d5d204fb50b",
+        "hint": "I'm heading south to the landmark, but that's a lie.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,1": 0.1,
+          "0,2": 0.2,
+          "0,3": 0.2,
+          "0,4": 0.2,
+          "0,5": 0.2,
+          "0,6": 0.2,
+          "1,1": 0.1,
+          "1,2": 0.4,
+          "1,3": 0.5,
+          "1,4": 0.5,
+          "1,5": 0.5,
+          "1,6": 0.2,
+          "2,1": 0.1,
+          "2,2": 0.4,
+          "2,3": 0.7,
+          "2,4": 0.8,
+          "2,5": 0.5,
+          "2,6": 0.2,
+          "3,1": 0.1,
+          "3,2": 0.4,
+          "3,3": 0.5,
+          "3,4": 0.5,
+          "3,5": 0.5,
+          "3,6": 0.2,
+          "4,1": 0.1,
+          "4,2": 0.2,
+          "4,3": 0.2,
+          "4,4": 0.2,
+          "4,5": 0.2,
+          "4,6": 0.2
+        },
+        "timestamp": "2026-08-24T19:39:40.787178+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "0cdd64b9db359fbb6083c6904f86a147f81ce0b14097c51a58bd5a5660a78421",
+        "nonce": "e612a401d8afcdc5326722074d631319",
+        "payload": {
+          "hint": "east",
+          "intent": "truth",
+          "move": "MOVE:E",
+          "position": [
+            1,
+            2
+          ],
+          "state": "grid=7x7;self=[1, 2];barriers=[]",
+          "step": 3
+        }
+      },
+      "step": 3,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            1,
+            1
+          ]
+        },
+        "commit": "20d0e11a2d678a5f8f35c33aca395d494d544fd0173ba2452cf8c885d1fe1bdb",
+        "hint": "I stole the truth from the center of New York.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,2": 0.1,
+          "0,3": 0.1,
+          "0,4": 0.1,
+          "0,5": 0.1,
+          "0,6": 0.1,
+          "1,2": 0.3,
+          "1,3": 0.4,
+          "1,4": 0.4,
+          "1,5": 0.4,
+          "1,6": 0.2,
+          "2,2": 0.3,
+          "2,3": 0.6,
+          "2,4": 0.7,
+          "2,5": 0.5,
+          "2,6": 0.2,
+          "3,2": 0.3,
+          "3,3": 0.5,
+          "3,4": 0.8,
+          "3,5": 0.5,
+          "3,6": 0.2,
+          "4,2": 0.2,
+          "4,3": 0.5,
+          "4,4": 0.5,
+          "4,5": 0.5,
+          "4,6": 0.2,
+          "5,2": 0.2,
+          "5,3": 0.2,
+          "5,4": 0.2,
+          "5,5": 0.2,
+          "5,6": 0.2
+        },
+        "timestamp": "2026-08-24T19:39:42.527733+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "de8b1e34bc8e457a831b54a32b55208286ee69b414349ed40d142d1dbadd649e",
+        "nonce": "fad471a60ed2deada618f6723042ef31",
+        "payload": {
+          "hint": "south",
+          "intent": "truth",
+          "move": "MOVE:S",
+          "position": [
+            2,
+            2
+          ],
+          "state": "grid=7x7;self=[2, 2];barriers=[]",
+          "step": 4
+        }
+      },
+      "step": 4,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            1,
+            2
+          ]
+        },
+        "commit": "6f48be1818e8becf3c68b63ee504a4800d0ac2dd3d33233f454262c7d6d62393",
+        "hint": "I was at Central Park, but I never touched that diamond.",
+        "sender": "thief",
+        "smell_grid": {
+          "1,2": 0.2,
+          "1,3": 0.3,
+          "1,4": 0.3,
+          "1,5": 0.3,
+          "1,6": 0.1,
+          "2,2": 0.2,
+          "2,3": 0.5,
+          "2,4": 0.6,
+          "2,5": 0.4,
+          "2,6": 0.2,
+          "3,2": 0.2,
+          "3,3": 0.5,
+          "3,4": 0.7,
+          "3,5": 0.5,
+          "3,6": 0.2,
+          "4,2": 0.2,
+          "4,3": 0.5,
+          "4,4": 0.8,
+          "4,5": 0.5,
+          "4,6": 0.2,
+          "5,2": 0.2,
+          "5,3": 0.5,
+          "5,4": 0.5,
+          "5,5": 0.5,
+          "5,6": 0.2,
+          "6,2": 0.2,
+          "6,3": 0.2,
+          "6,4": 0.2,
+          "6,5": 0.2,
+          "6,6": 0.2
+        },
+        "timestamp": "2026-08-24T19:39:44.262335+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "8bfb0d5d7487cb7f39b698f7f47a7899dedffc3a44c1e5c0d1858d177aea3e39",
+        "nonce": "11a4146fdbad5711682fc5aebc295dc2",
+        "payload": {
+          "hint": "south",
+          "intent": "truth",
+          "move": "MOVE:S",
+          "position": [
+            3,
+            2
+          ],
+          "state": "grid=7x7;self=[3, 2];barriers=[]",
+          "step": 5
+        }
+      },
+      "step": 5,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            2,
+            2
+          ]
+        },
+        "commit": "41e5bc7fe5bd464f1dbf7d3dcd2aee1a1e80e3d98e946737ce906f368db0349b",
+        "hint": "I'm at the center, but I'm not the one who took the jewels.",
+        "sender": "thief",
+        "smell_grid": {
+          "1,2": 0.1,
+          "1,3": 0.2,
+          "1,4": 0.2,
+          "1,5": 0.2,
+          "2,2": 0.1,
+          "2,3": 0.4,
+          "2,4": 0.5,
+          "2,5": 0.3,
+          "2,6": 0.1,
+          "3,2": 0.2,
+          "3,3": 0.4,
+          "3,4": 0.6,
+          "3,5": 0.4,
+          "3,6": 0.2,
+          "4,2": 0.2,
+          "4,3": 0.5,
+          "4,4": 0.7,
+          "4,5": 0.5,
+          "4,6": 0.2,
+          "5,2": 0.2,
+          "5,3": 0.5,
+          "5,4": 0.8,
+          "5,5": 0.5,
+          "5,6": 0.2,
+          "6,2": 0.2,
+          "6,3": 0.5,
+          "6,4": 0.5,
+          "6,5": 0.5,
+          "6,6": 0.2
+        },
+        "timestamp": "2026-08-24T19:39:46.662127+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "8114fac2e7eeb1c00ef46dc854b9567fb9d432715b0bce4e94b973653cda2faa",
+        "nonce": "1bbbfadd9e2db5ca24d6974391a1e8c3",
+        "payload": {
+          "hint": "east",
+          "intent": "truth",
+          "move": "MOVE:E",
+          "position": [
+            3,
+            3
+          ],
+          "state": "grid=7x7;self=[3, 3];barriers=[]",
+          "step": 6
+        }
+      },
+      "step": 6,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            3,
+            2
+          ]
+        },
+        "commit": "c3162fa7fb32623bcacc8f5e4c40be0acb2d746b940081f727b5210aaee45b30",
+        "hint": "I hid the jewels south of the Statue of Liberty.",
+        "sender": "thief",
+        "smell_grid": {
+          "1,3": 0.1,
+          "1,4": 0.1,
+          "1,5": 0.1,
+          "2,3": 0.3,
+          "2,4": 0.4,
+          "2,5": 0.2,
+          "3,2": 0.1,
+          "3,3": 0.3,
+          "3,4": 0.5,
+          "3,5": 0.3,
+          "3,6": 0.2,
+          "4,2": 0.1,
+          "4,3": 0.4,
+          "4,4": 0.6,
+          "4,5": 0.5,
+          "4,6": 0.5,
+          "5,2": 0.1,
+          "5,3": 0.4,
+          "5,4": 0.7,
+          "5,5": 0.8,
+          "5,6": 0.5,
+          "6,2": 0.1,
+          "6,3": 0.4,
+          "6,4": 0.5,
+          "6,5": 0.5,
+          "6,6": 0.5
+        },
+        "timestamp": "2026-08-24T19:39:48.145321+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "46efb80b6b7584ca2fd42fa27f9c5e494b207b74c6fd93a9e01c639931decf36",
+        "nonce": "76e309ebbb6400af3f69703afe62c597",
+        "payload": {
+          "hint": "east",
+          "intent": "truth",
+          "move": "MOVE:E",
+          "position": [
+            3,
+            4
+          ],
+          "state": "grid=7x7;self=[3, 4];barriers=[]",
+          "step": 7
+        }
+      },
+      "step": 7,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            3,
+            3
+          ]
+        },
+        "commit": "10944e6cb7283417021c5e0c70a589e0dcbcf387ac1cc18775c625de31d02ee7",
+        "hint": "I was at Central Park, but I never touched that diamond.",
+        "sender": "thief",
+        "smell_grid": {
+          "2,3": 0.2,
+          "2,4": 0.3,
+          "2,5": 0.1,
+          "3,3": 0.2,
+          "3,4": 0.4,
+          "3,5": 0.2,
+          "3,6": 0.1,
+          "4,3": 0.3,
+          "4,4": 0.5,
+          "4,5": 0.4,
+          "4,6": 0.4,
+          "5,3": 0.3,
+          "5,4": 0.6,
+          "5,5": 0.7,
+          "5,6": 0.5,
+          "6,3": 0.3,
+          "6,4": 0.5,
+          "6,5": 0.8,
+          "6,6": 0.5
+        },
+        "timestamp": "2026-08-24T19:39:49.918144+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "bd2133137d86eaaadd7aacebd6b792277177ba6986b82c92887df4408ed3abda",
+        "nonce": "15067bfc11d6fd68ee0a6b0c1e304df3",
+        "payload": {
+          "hint": "south",
+          "intent": "truth",
+          "move": "MOVE:S",
+          "position": [
+            4,
+            4
+          ],
+          "state": "grid=7x7;self=[4, 4];barriers=[]",
+          "step": 8
+        }
+      },
+      "step": 8,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            3,
+            4
+          ]
+        },
+        "commit": "4356854c0afcf274133d1bf8dae369617f5965c967cb85ae9c4ae12a15528bd7",
+        "hint": "I hid the diamonds in Brooklyn, and that's the truth.",
+        "sender": "thief",
+        "smell_grid": {
+          "2,3": 0.1,
+          "2,4": 0.2,
+          "3,3": 0.1,
+          "3,4": 0.3,
+          "3,5": 0.1,
+          "4,3": 0.2,
+          "4,4": 0.4,
+          "4,5": 0.3,
+          "4,6": 0.3,
+          "5,3": 0.2,
+          "5,4": 0.5,
+          "5,5": 0.6,
+          "5,6": 0.5,
+          "6,3": 0.2,
+          "6,4": 0.4,
+          "6,5": 0.7,
+          "6,6": 0.8
+        },
+        "timestamp": "2026-08-24T19:39:51.601029+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "ad11bba2bbec8f9733797adea6f7546d8026e96660fc29adaaea77064db8b3a0",
+        "nonce": "c3182f3d2d6b3c72f8f424be0caf95de",
+        "payload": {
+          "hint": "east",
+          "intent": "truth",
+          "move": "MOVE:E",
+          "position": [
+            4,
+            5
+          ],
+          "state": "grid=7x7;self=[4, 5];barriers=[]",
+          "step": 9
+        }
+      },
+      "step": 9,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            4,
+            4
+          ]
+        },
+        "commit": "fe55573e1b09a0517be10491f3e03b22071c055256286de81590d7378e06d946",
+        "hint": "I stole the truth from Brooklyn, not its bridges.",
+        "sender": "thief",
+        "smell_grid": {
+          "2,4": 0.1,
+          "3,4": 0.2,
+          "3,5": 0.2,
+          "3,6": 0.2,
+          "4,3": 0.1,
+          "4,4": 0.3,
+          "4,5": 0.5,
+          "4,6": 0.5,
+          "5,3": 0.1,
+          "5,4": 0.4,
+          "5,5": 0.5,
+          "5,6": 0.8,
+          "6,3": 0.1,
+          "6,4": 0.3,
+          "6,5": 0.6,
+          "6,6": 0.7
+        },
+        "timestamp": "2026-08-24T19:39:53.656381+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "4cf14ddf0c9bc4e115fe43eefff2a1a4fe3d2c3e9e012291f49fb2ff90e49af4",
+        "nonce": "29556a1325b8b808b8d99bc1bcfe4ae9",
+        "payload": {
+          "hint": "south",
+          "intent": "truth",
+          "move": "MOVE:S",
+          "position": [
+            5,
+            5
+          ],
+          "state": "grid=7x7;self=[5, 5];barriers=[]",
+          "step": 10
+        }
+      },
+      "step": 10,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            4,
+            5
+          ]
+        },
+        "commit": "d3ab0d4888d5cee815f34be978d774832b96529f8dd44850e15dd6427cc874bf",
+        "hint": "I stole the truth from Brooklyn, not a thing.",
+        "sender": "thief",
+        "smell_grid": {
+          "3,4": 0.1,
+          "3,5": 0.1,
+          "3,6": 0.1,
+          "4,4": 0.2,
+          "4,5": 0.4,
+          "4,6": 0.4,
+          "5,4": 0.3,
+          "5,5": 0.5,
+          "5,6": 0.7,
+          "6,4": 0.2,
+          "6,5": 0.5,
+          "6,6": 0.8
+        },
+        "timestamp": "2026-08-24T19:39:55.476082+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "1ecd66e1a1ffbf1283b61bc55c89b6e62879d95749277f6ee53f65b849158469",
+        "nonce": "301d053d2a815478cb065417ceaba202",
+        "payload": {
+          "hint": "east",
+          "intent": "truth",
+          "move": "MOVE:E",
+          "position": [
+            5,
+            6
+          ],
+          "state": "grid=7x7;self=[5, 6];barriers=[]",
+          "step": 11
+        }
+      },
+      "step": 11,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            5,
+            5
+          ]
+        },
+        "commit": "9fa989f4939be433997206e663b9e3dfb47904a58dc9e40cc3d6a29bbd4a0de7",
+        "hint": "I hid the diamonds in Brooklyn, and that's the truth.",
+        "sender": "thief",
+        "smell_grid": {
+          "4,4": 0.2,
+          "4,5": 0.3,
+          "4,6": 0.3,
+          "5,4": 0.2,
+          "5,5": 0.5,
+          "5,6": 0.6,
+          "6,4": 0.2,
+          "6,5": 0.5,
+          "6,6": 0.8
+        },
+        "timestamp": "2026-08-24T19:39:57.262808+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "ebe974606b6f84116cdb1dbf1f20f9e327107efe535b4db7ce3371826989af71",
+        "nonce": "373f28a27c7210352d1ff7b9a129f66e",
+        "payload": {
+          "hint": "south",
+          "intent": "truth",
+          "move": "MOVE:S",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 12
+        }
+      },
+      "step": 12,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            5,
+            6
+          ]
+        },
+        "commit": "5fa739907d8f07d3f2e4aca1554a2d4f797a7aa780a07737716a4952adb27005",
+        "hint": "I hid the diamonds in Brooklyn, and that's the truth.",
+        "sender": "thief",
+        "smell_grid": {
+          "4,4": 0.2,
+          "4,5": 0.2,
+          "4,6": 0.2,
+          "5,4": 0.2,
+          "5,5": 0.5,
+          "5,6": 0.5,
+          "6,4": 0.2,
+          "6,5": 0.5,
+          "6,6": 0.8
+        },
+        "timestamp": "2026-08-24T19:39:59.281009+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "5efd49daabbc210926262c4a7d6c4cc9120d82c84c222fd518608e4d6a7574f6",
+        "nonce": "dfd1377627edce5d8c9b57555ff2376d",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 13
+        }
+      },
+      "step": 13,
+      "theirs": {
+        "claim_response": {
+          "caught": true,
+          "claim": [
+            6,
+            6
+          ]
+        },
+        "commit": "376d83e1724aa57c90528c43bed845e110cbb76e9d138fa985176c178a1ff9e4",
+        "hint": "I stole the truth from Brooklyn, not a thing more.",
+        "sender": "thief",
+        "smell_grid": {
+          "4,4": 0.2,
+          "4,5": 0.2,
+          "4,6": 0.2,
+          "5,4": 0.2,
+          "5,5": 0.5,
+          "5,6": 0.5,
+          "6,4": 0.2,
+          "6,5": 0.5,
+          "6,6": 0.8
+        },
+        "timestamp": "2026-08-24T19:40:01.194589+00:00",
+        "win_claim": {
+          "type": "capture"
+        }
+      }
+    }
+  ],
+  "wire_shape": "reference-v3"
+}

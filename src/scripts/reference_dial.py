@@ -1,4 +1,4 @@
-"""Reaching the opponent: the liveness probe and the session (PRD_10 10.16).
+"""Reaching the opponent: opening a session to their endpoint (PRD_10 10.16).
 
 Split from ``reference_launch`` at the transport seam -- that module decides
 WHEN to try, this one knows what a try consists of.
@@ -40,32 +40,6 @@ async def opponent(url: str, config):
             peer = HttpPeer(session, config.watchdog_timeout_sec,
                             limiter=opponent_limiter(config))
             yield peer.call
-
-
-async def reachable(url: str) -> str:
-    """One cheap liveness probe. Raises while their side is not serving.
-
-    A plain POST rather than an MCP session: we are asking whether anything
-    is behind their tunnel, and a session opened to answer that would have to
-    be torn down again on every attempt.
-
-    Raises:
-        httpx.HTTPStatusError: their tunnel answered but nothing is behind it
-            (the 502 an ngrok agent returns with a dead upstream), or the
-            server refused. Raised rather than returned so the retry sees the
-            reason and the operator sees THEIR error, not a generic timeout.
-    """
-    async with httpx.AsyncClient(timeout=_PROBE_TIMEOUT_SEC) as client:
-        response = await client.post(url, headers={
-            "Content-Type": "application/json",
-            "Accept": "application/json, text/event-stream",
-        }, json={
-            "jsonrpc": "2.0", "id": 0, "method": "initialize",
-            "params": {"protocolVersion": _PROTOCOL_VERSION, "capabilities": {},
-                       "clientInfo": {"name": "zero-trust-cop", "version": "1"}},
-        })
-        response.raise_for_status()
-        return url
 
 
 @contextlib.asynccontextmanager
@@ -123,23 +97,49 @@ async def lazy_opponents(endpoints: dict, config, dial=None,
     opener = dial or opponent
     calls: dict = {}
     async with contextlib.AsyncExitStack() as stack:
+        async def _open(url):
+            """Open one endpoint, retrying while it is flapping."""
+            for attempt in range(attempts):
+                try:
+                    return await stack.enter_async_context(opener(url, config))
+                except BaseException as failure:
+                    # BaseException: anyio wraps their 502 in a task group,
+                    # so it arrives as a BaseExceptionGroup.
+                    if isinstance(failure, (KeyboardInterrupt, SystemExit)):
+                        raise
+                    if attempt == attempts - 1:
+                        raise
+                    await waiter(_REOPEN_WAIT_SEC)
+
+        def _reviving(url):
+            """A call that REPLACES its session when the far side has gone.
+
+            One session per URL was cached and reused for the whole series.
+            Against a single-endpoint opponent that means sub-game 2 rides
+            the connection sub-game 1 opened -- and both groups we played
+            restart their process between sub-games, so it is dead before we
+            touch it. Every run ended the same way: sub-game 1 perfect,
+            sub-game 2 dead on arrival.
+
+            Safe here and not in ``connect_and_play``: the previous sub-game
+            is banked and the new one has pushed no turn, so a reopen replays
+            nothing.
+            """
+            async def call(tool, **kwargs):
+                try:
+                    return await calls[url](tool, **kwargs)
+                except BaseException as failure:
+                    if isinstance(failure, (KeyboardInterrupt, SystemExit)):
+                        raise
+                    calls[url] = await _open(url)
+                    return await calls[url](tool, **kwargs)
+
+            return call
+
         async def reach(role):
             url = endpoint_for(endpoints, role)
             if url not in calls:
-                for attempt in range(attempts):
-                    try:
-                        calls[url] = await stack.enter_async_context(
-                            opener(url, config)
-                        )
-                        break
-                    except BaseException as failure:
-                        # BaseException: anyio wraps their 502 in a task
-                        # group, so it arrives as a BaseExceptionGroup.
-                        if isinstance(failure, (KeyboardInterrupt, SystemExit)):
-                            raise
-                        if attempt == attempts - 1:
-                            raise
-                        await waiter(_REOPEN_WAIT_SEC)
-            return calls[url]
+                calls[url] = await _open(url)
+            return _reviving(url)
 
         yield reach

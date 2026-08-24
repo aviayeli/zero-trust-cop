@@ -1,0 +1,59 @@
+{
+  "artifact_version": 1,
+  "game_id": "ZeroOne0-vs-aviayeli",
+  "game_uid": "ff90bd18-f873-981a-e1ca-0b89e6f9f03c",
+  "games": [
+    {
+      "captured": true,
+      "game_number": 1,
+      "our_role": "thief",
+      "terminal_reason": "capture",
+      "turns": 32
+    }
+  ],
+  "github_commit": "08b96a0c831ff7692965e451179f047f52aaabcf",
+  "group_id": "aviayeli",
+  "mutual_agreement": {
+    "confirmed": true,
+    "consensus": {
+      "aggregate": {
+        "series_tie": false,
+        "sub_games_won": {
+          "ZeroOne0": 1,
+          "aviayeli": 0
+        },
+        "ties": 0,
+        "total_score": {
+          "ZeroOne0": 20,
+          "aviayeli": 5
+        },
+        "winner_group": "ZeroOne0"
+      },
+      "game_id": "ZeroOne0-vs-aviayeli",
+      "sub_games": [
+        {
+          "result": "capture",
+          "roles": {
+            "cop": "ZeroOne0",
+            "thief": "aviayeli"
+          },
+          "score": {
+            "ZeroOne0": 20,
+            "aviayeli": 5
+          },
+          "sub_game_number": 1,
+          "winner_group": "ZeroOne0"
+        }
+      ]
+    },
+    "handshake_counter_signed": false,
+    "method": "opponent re-hash of each side's sealed chain at submit_audit",
+    "sha256": "c954e9e33030e8c21710b2d0eac72f638aa36ab698b181101799c84934400e78",
+    "sub_games_audited": 1
+  },
+  "repos": {
+    "cop": "https://github.com/aviayeli/zero-trust-cop",
+    "thief": "https://github.com/aviayeli/zero-trust-thief"
+  },
+  "wire_shape": "reference-v3"
+}
