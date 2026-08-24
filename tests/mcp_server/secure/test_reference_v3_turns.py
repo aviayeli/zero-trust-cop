@@ -92,22 +92,36 @@ def test_an_audit_is_rehashed_with_our_own_serializer(app):
     assert result["mismatches"] == []
 
 
-def test_a_tampered_record_is_named_not_just_refused(app):
-    payload = {"step": 1, "move": "MOVE:N"}
+def test_a_tampered_record_in_the_agreed_shape_is_named_not_a_crash(app):
+    """The agreed record is {payload, nonce, commit} with NO top-level step.
+    Indexing one crashed the tamper path while the honest path passed — the
+    wrong way round, since the tamper path is the one that has to work."""
+    good = {"step": 1, "move": "MOVE:N"}
     nonce = "ab"
     result = asyncio.run(app.submit_audit({
         "sender": "thief",
         "result_claim": {},
         "records": [
-            {"step": 1, "payload": payload, "nonce": nonce,
-             "commit": interop.commit(payload, nonce)},
-            {"step": 2, "payload": {"step": 2, "move": "MOVE:S"},
-             "nonce": nonce, "commit": "b" * 64},
+            {"payload": good, "nonce": nonce, "commit": interop.commit(good, nonce)},
+            {"payload": {"step": 2, "move": "MOVE:S"}, "nonce": nonce,
+             "commit": "b" * 64},
         ],
     }))
 
     assert result["status"] == "tampered"
     assert result["mismatches"] == [2]
+
+
+def test_a_tampered_record_is_named_even_with_no_step_anywhere(app):
+    """Fall back to position in the chain rather than raising."""
+    result = asyncio.run(app.submit_audit({
+        "sender": "thief", "result_claim": {},
+        "records": [{"payload": {"move": "MOVE:N"}, "nonce": "ab",
+                     "commit": "c" * 64}],
+    }))
+
+    assert result["status"] == "tampered"
+    assert result["mismatches"] == [1]
 
 
 def test_a_malformed_audit_is_refused_before_rehashing(app):

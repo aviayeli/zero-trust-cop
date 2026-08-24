@@ -3,8 +3,9 @@
 Lockstep without a gate. Each step we push our commit and then our reveal,
 and wait for theirs to land in the store their pushes fill. Nothing checks
 their reveal against their commit while this runs -- on this wire the nonces
-do not exist yet -- so the only verification is the audit at the end, and only
-if their entries carry the payloads (TODO 9.5).
+do not exist yet -- so the only verification is the audit at the end, through
+``submit_audit``, whose records carry the payload beside the nonce and are
+therefore actually recomputable.
 
 Commit strictly precedes reveal at every step. That ordering is the one
 property of simultaneity this dialect still gives us: revealing first would
@@ -87,9 +88,16 @@ async def play_sub_game(
             terminal = outcome.get("terminal_reason")
             break
 
-    audit = await client.final_audit()
+    # What WE believe happened. A claim, not a verdict: their re-hash of our
+    # records settles the sub-game, never this.
+    result_claim = {
+        "outcome": terminal or "max_steps_reached",
+        "steps": steps_played,
+    }
+    audit = await client.final_audit(result_claim)
     return {
         "steps": steps_played,
         "terminal_reason": terminal,
+        "result_claim": result_claim,
         "their_audit_response": audit,
     }

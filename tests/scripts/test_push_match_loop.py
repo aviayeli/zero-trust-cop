@@ -72,7 +72,7 @@ def _run(max_steps=3, their_moves=None, terminate_at=None):
 def test_each_step_pushes_a_commit_then_a_reveal():
     peer, _, _, _ = _run(max_steps=2)
 
-    order = [n for n in peer.names() if n != "receive_final_audit"]
+    order = [n for n in peer.names() if n != "submit_audit"]
 
     assert order == ["receive_commit", "receive_reveal",
                      "receive_commit", "receive_reveal"]

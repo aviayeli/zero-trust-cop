@@ -7,14 +7,17 @@ their side, so nothing here sends a field their signature does not name.
 
 The dropped nonce is the one that matters. It is the only evidence that our
 reveal matched our commitment, and on this wire it travels once, at sub-game
-end, through ``receive_final_audit``. A nonce dropped and not buffered
-destroys our own defence rather than theirs -- so every commit buffers it,
-and the tests assert the buffer by count.
+end, through ``submit_audit``. A nonce dropped and not buffered destroys our
+own defence rather than theirs -- so every commit buffers it, and the tests
+assert the buffer by count.
 
-Each buffered entry carries the PAYLOAD its digest sealed, not just the
-nonce. A bare nonce leaves the opponent no preimage to rebuild, which is
-exactly the gap we have asked them to close (TODO 9.5); sending payloads
-costs nothing and means our own chain is auditable even if theirs is not.
+The audit step is ``submit_audit(payload={sender, records, result_claim})``,
+each record ``{payload, nonce, commit}`` -- ali-ahm1 confirmed this on
+2026-08-24, correcting their earlier ``receive_final_audit(role, nonces)``.
+The correction is what makes the audit possible at all: the flat form carried
+bare nonces, and without the payload a digest has no preimage to rebuild, so
+the audit was not late but uncomputable. Every record here therefore carries
+its own preimage, and neither side has to reconstruct the other's payload.
 """
 
 from __future__ import annotations
@@ -49,7 +52,7 @@ class PushClient:
                      payload: dict) -> dict:
         """Send the digest; keep the nonce and its preimage for the audit."""
         self._buffered.append(
-            {"step": step, "nonce": nonce, "payload": payload}
+            {"payload": payload, "nonce": nonce, "commit": h_commit}
         )
         return await self._call(
             "receive_commit", role=self._role, step=step, h_commit=h_commit,
@@ -73,21 +76,27 @@ class PushClient:
             "receive_capture_claim", role=self._role, claimed=claimed
         )
 
-    async def final_audit(self) -> dict:
-        """Disclose the whole sub-game's nonces, then clear the buffer.
+    async def final_audit(self, result_claim: dict) -> dict:
+        """Disclose the whole sealed chain, then clear the buffer.
+
+        ``result_claim`` is what WE believe the sub-game ended as. It is a
+        claim, not a verdict: the opponent's re-hash of these records settles
+        the sub-game, never the claim.
 
         Raises:
             ValueError: nothing was buffered. An empty audit would assert a
                 sub-game we never played, and reads to the opponent as a
-                chain with no steps rather than as our mistake.
+                chain with no steps rather than as our own mistake.
         """
         if not self._buffered:
             raise ValueError(
-                "refusing to send a final audit with no nonces buffered: "
+                "refusing to send an audit with no records buffered: "
                 "nothing was committed this sub-game"
             )
-        entries = list(self._buffered)
+        records = list(self._buffered)
         self._buffered = []
-        return await self._call(
-            "receive_final_audit", role=self._role, nonces=entries
-        )
+        return await self._call("submit_audit", payload={
+            "sender": self._role,
+            "records": records,
+            "result_claim": result_claim,
+        })

@@ -64,24 +64,37 @@ def _run(max_steps=3, their_moves=None, terminate_at=None):
     return peer, client, summary, seen
 
 
-def test_the_final_audit_is_sent_once_at_the_end_with_every_nonce():
+def test_the_audit_is_sent_once_at_the_end_with_every_record():
     peer, client, _, _ = _run(max_steps=3)
 
-    audits = [k for n, k in peer.calls if n == "receive_final_audit"]
+    audits = [k["payload"] for n, k in peer.calls if n == "submit_audit"]
 
     assert len(audits) == 1
-    assert peer.names()[-1] == "receive_final_audit"
-    assert [e["step"] for e in audits[0]["nonces"]] == [1, 2, 3]
+    assert peer.names()[-1] == "submit_audit"
+    assert len(audits[0]["records"]) == 3
     assert client.buffered == []
+
+
+def test_the_audit_claims_our_own_result():
+    """A claim, not a verdict: their re-hash settles the sub-game."""
+    peer, _, summary, _ = _run(max_steps=9, terminate_at=2)
+
+    claim = [k["payload"] for n, k in peer.calls if n == "submit_audit"][0]["result_claim"]
+
+    assert claim == {"outcome": "capture", "steps": 2}
+    assert summary["result_claim"] == claim
 
 
 def test_every_audit_entry_reproduces_the_commit_we_sent():
     """Our own chain stays auditable even though theirs may not be."""
     peer, _, _, _ = _run(max_steps=3)
 
-    sent = {k["step"]: k["h_commit"] for n, k in peer.calls if n == "receive_commit"}
-    for entry in [k for n, k in peer.calls if n == "receive_final_audit"][0]["nonces"]:
-        assert interop.commit(entry["payload"], entry["nonce"]) == sent[entry["step"]]
+    sent = [k["h_commit"] for n, k in peer.calls if n == "receive_commit"]
+    records = [k["payload"] for n, k in peer.calls if n == "submit_audit"][0]["records"]
+
+    assert [r["commit"] for r in records] == sent
+    for record in records:
+        assert interop.commit(record["payload"], record["nonce"]) == record["commit"]
 
 
 def test_a_stalled_opponent_does_not_hang_forever():
@@ -106,8 +119,8 @@ def test_nonces_are_unpredictable_and_never_repeat():
     elements, so a derivable nonce lets the opponent brute-force our
     commitment before we reveal it."""
     peer, _, _, _ = _run(max_steps=3)
-    entries = [k for n, k in peer.calls if n == "receive_final_audit"][0]["nonces"]
-    nonces = [e["nonce"] for e in entries]
+    records = [k["payload"] for n, k in peer.calls if n == "submit_audit"][0]["records"]
+    nonces = [e["nonce"] for e in records]
 
     assert len(set(nonces)) == len(nonces)
     for nonce in nonces:
@@ -115,6 +128,6 @@ def test_nonces_are_unpredictable_and_never_repeat():
         int(nonce, 16)
 
     again = [e["nonce"] for e in
-             [k for n, k in _run(max_steps=3)[0].calls
-              if n == "receive_final_audit"][0]["nonces"]]
+             [k["payload"] for n, k in _run(max_steps=3)[0].calls
+              if n == "submit_audit"][0]["records"]]
     assert not set(nonces) & set(again), "nonces repeated across sub-games"

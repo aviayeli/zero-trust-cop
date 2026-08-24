@@ -28,6 +28,21 @@ def _now() -> str:
     return datetime.datetime.now(datetime.timezone.utc).isoformat()
 
 
+def _label(record: dict, position: int):
+    """Name a record for a mismatch report.
+
+    The agreed record is ``{payload, nonce, commit}`` with no top-level
+    ``step``, so indexing one raised instead of reporting -- and it raised on
+    the TAMPER path only, which is the path that has to work. Prefer the step
+    inside the payload, fall back to position in the chain, never raise.
+    """
+    payload = record.get("payload")
+    if isinstance(payload, dict) and isinstance(payload.get("step"), int):
+        return payload["step"]
+    step = record.get("step")
+    return step if isinstance(step, int) else position
+
+
 def register_reference_tools(mcp, inbox, our_terms, identity_source,
                             nonce_source, our_role):
     """Register the reference-v3 surface and return the callables.
@@ -65,8 +80,8 @@ def register_reference_tools(mcp, inbox, our_terms, identity_source,
             return {"status": "refused", "reason": verdict}
 
         mismatches = [
-            record["step"]
-            for record in payload["records"]
+            _label(record, position)
+            for position, record in enumerate(payload["records"], start=1)
             if interop.commit(record["payload"], record["nonce"]) != record["commit"]
         ]
         return {
