@@ -8,6 +8,13 @@ engine.
 Composition root only: it loads peer config, assembles the episode, buffer,
 commitment book, authenticated submission gate and greedy policy, then hands
 tool registration to mcp_server.tools.
+
+TWO DIALECTS are served on one app: our native commit/reveal surface
+(mcp_server.tools) and the league's reference-v3 surface
+(mcp_server.reference_tools), so an opponent on either can reach this peer.
+Compare tool LISTS before comparing anything inside them -- two peers can
+agree every term and still exchange nothing because their surfaces are
+disjoint.
 """
 
 import argparse
@@ -21,6 +28,7 @@ from engine.game_loop import GameEpisode
 from mcp_server.commitments import CommitmentBook
 from mcp_server.match_state import MatchState
 from mcp_server.peer_keys import load_public_keys
+from mcp_server import reference_surface
 from mcp_server.peer_policy import build_peer_policy
 from mcp_server.submissions import SubmissionGate
 from mcp_server.transport import load_network_settings
@@ -85,8 +93,15 @@ def create_app(role, config=None, config_root=None, clock=None):
     )
     tools = register_tools(mcp, gate, match_state, config, own_role)
 
+    # The reference-v3 half. `inbox` is where an inbound TurnMessage lands:
+    # the transport is symmetric push, so each side polls its own inbox.
+    reference = reference_surface.build(mcp, role, config_path, config_root)
+
     return SimpleNamespace(
         mcp=mcp,
+        inbox=reference.inbox,
+        terms=reference.terms,
+        **reference.tools,
         match_state=match_state,
         book=book,
         gate=gate,

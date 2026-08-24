@@ -60,6 +60,12 @@ def peer_keys():
 def secure_config_root(tmp_path, peer_keys):
     """A config root where each peer holds both public keys and a table."""
     shared = Path("config/game.json").read_text()
+    # `identity` rides in negotiate, so a peer needs its declaration — and
+    # the root contract build_declaration reads the league block from.
+    (tmp_path / "declaration.json").write_text(
+        Path("config/declaration.json").read_text()
+    )
+    (tmp_path / "game.json").write_text(shared)
     for role in PEER_ROLES:
         peers_dir = tmp_path / role / "peers"
         peers_dir.mkdir(parents=True)

@@ -55,23 +55,33 @@ def test_police_peer_loads_from_its_own_config_dir():
     assert thief.config_path.endswith(os.path.join("thief", "game.json"))
 
 
-def test_exactly_four_tools_registered_with_wire_schema():
-    """FastMCP registers exactly 4 tools, and the public input schema names the
-    parameter `role` — remote peers call over this contract, so a rename breaks P2P.
+def test_exactly_the_two_dialects_are_registered_with_wire_schema():
+    """The tool set is CLOSED, and the public input schema names the parameter
+    `role` — remote peers call over this contract, so a rename breaks P2P.
 
-    Moves reach the engine only via commit-then-reveal; the unauthenticated
-    plaintext make_move tool was removed in Phase 6 (D3).
+    Two dialects are served: our native commit-then-reveal surface, and the
+    league's reference-v3 surface (SPEC §7.5), so an opponent on either can
+    reach this peer. The set is pinned exactly rather than by subset, so a
+    tool cannot appear on the wire without a decision — which is how the
+    unauthenticated plaintext make_move got removed in Phase 6 (D3).
     """
     app = create_app("police")
     async def fetch_tools():
         return {t.name: t.inputSchema for t in await app.mcp.list_tools()}
     schemas = asyncio.run(fetch_tools())
     assert set(schemas) == {
+        # ours
         "get_observation",
         "submit_commitment",
         "reveal_move",
         "get_match_status",
+        # reference-v3
+        "negotiate",
+        "receive_turn",
+        "submit_audit",
+        "receive_control",
     }
+    assert "make_move" not in schemas
     assert list(schemas["get_observation"]["properties"]) == ["role"]
     assert schemas["get_match_status"].get("properties", {}) == {}
 

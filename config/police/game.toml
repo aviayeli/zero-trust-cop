@@ -36,7 +36,9 @@ match_policy_mode = "manhattan_primary"
 [network]
 host = "0.0.0.0"
 my_port = 8802
-opponent_url = "http://127.0.0.1:8801/mcp"
+# ali-ahm1 THIEF endpoint — replace the host with the URL they send.
+# Must stay a real https://<host>/mcp shape; the transport test rejects a bare token.
+opponent_url = "https://REPLACE-ME-ali-ahm1-thief.ngrok-free.dev/mcp"
 # How often a remote match asks a peer whether the turn resolved yet.
 # Only used against a REMOTE opponent, where our reveal may land first
 # and the gate answers "waiting" instead of the turn result.
@@ -51,8 +53,8 @@ thief = "https://github.com/aviayeli/zero-trust-thief"
 
 [email]
 # Where the end-of-series report goes.
-recipient = "rmisegal+uoh26finalgame@gmail.com"
+recipient = "atrabe08@gmail.com"
 # auto  = send if credentials exist, otherwise write a local draft
 # draft = never send; always write the draft artifact
 # send  = require a real send; report failure rather than drafting
-mode = "auto"
+mode = "draft"
