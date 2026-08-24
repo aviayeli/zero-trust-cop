@@ -67,6 +67,27 @@ def _winner(score: dict) -> str | None:
     return ranked[0][0]
 
 
+def _roles_for(game: dict, group_id: str, opponent_id: str,
+               series_roles: dict) -> dict:
+    """The side-to-group map for THIS sub-game.
+
+    Both teams agreed the sides alternate every sub-game on reference-v3, and
+    one series-level mapping scores half of them for the wrong group -- inside
+    the SIGNED preimage, where it surfaces only as two teams failing to
+    reproduce each other's hash. A row may therefore declare the side we
+    played that sub-game.
+
+    A row that declares nothing keeps the series mapping exactly, so every
+    fixed-role settlement ever signed still reproduces. Validation and the
+    police -> cop alias come from ``_roles_to_groups``, so a row cannot be
+    validated more loosely than the series.
+    """
+    declared = game.get("our_role")
+    if declared is None:
+        return series_roles
+    return _roles_to_groups(group_id, opponent_id, declared)
+
+
 def _sub_game_row(game: dict, scoring: dict, roles: dict) -> dict:
     score = _sub_game_score(game, scoring, roles)
     return {
@@ -108,9 +129,15 @@ def build_consensus(
     their own artifacts -- passing their own group as ``group_id`` and their
     own role -- and must reach byte-identical output.
     """
-    roles = _roles_to_groups(group_id, opponent_id, our_role)
+    series_roles = _roles_to_groups(group_id, opponent_id, our_role)
     scoring = config["scoring"]
-    rows = [_sub_game_row(game, scoring, roles) for game in result["games"]]
+    rows = [
+        _sub_game_row(
+            game, scoring,
+            _roles_for(game, group_id, opponent_id, series_roles),
+        )
+        for game in result["games"]
+    ]
     return {
         "game_id": result.get("game_id") or interop.game_id(group_id, opponent_id),
         "aggregate": _aggregate(rows, (group_id, opponent_id)),

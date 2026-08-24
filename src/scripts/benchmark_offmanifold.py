@@ -20,6 +20,8 @@ import json
 import os
 from dataclasses import replace
 
+from dataclasses import replace
+
 from engine.config import load_config
 from scripts.offmanifold_probe import build_table, evaluate, start_pairs
 from strategy.fallback import MANHATTAN_PRIMARY, QTABLE_PRIMARY
@@ -38,6 +40,9 @@ def load_benchmark_settings(config_root: str = _DEFAULT_CONFIG_ROOT) -> dict:
         return json.load(settings)
 
 
+_BENCHMARK_BARRIER_SEED = 20260818
+
+
 def benchmark(config_root: str = _DEFAULT_CONFIG_ROOT, seed=None, count=None) -> list:
     """Return one structured row per (cop policy, opponent) pair.
 
@@ -47,7 +52,16 @@ def benchmark(config_root: str = _DEFAULT_CONFIG_ROOT, seed=None, count=None) ->
     settings = load_benchmark_settings(config_root)
     seed = settings["seed"] if seed is None else seed
     count = settings["start_pairs"] if count is None else count
-    config = load_config(os.path.join(config_root, _SHARED_CONFIG))
+    config = replace(
+        load_config(os.path.join(config_root, _SHARED_CONFIG)),
+        # The board these published figures were measured on.
+        # `barrier_seed` left the shipped contract when we agreed a
+        # bare board with rstabcde; a benchmark that moved with a
+        # negotiated value would be measuring the contract, not the
+        # policy -- and on a bare board the evader survives 100%
+        # whether its table is trained or empty.
+        barrier_seed=_BENCHMARK_BARRIER_SEED,
+    )
     police = load_strategy_settings("police", config_root)
     burglar = load_strategy_settings("thief", config_root)
     pairs = start_pairs(config, count, seed)

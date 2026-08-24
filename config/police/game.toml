@@ -57,4 +57,4 @@ recipient = "avi.ayeli@gmail.com"
 # auto  = send if credentials exist, otherwise write a local draft
 # draft = never send; always write the draft artifact
 # send  = require a real send; report failure rather than drafting
-mode = "send"
+mode = "auto"

@@ -15,7 +15,7 @@
       0,
       0
     ],
-    "axis_origin_corner": "topleft",
+    "axis_origin_corner": "top-left",
     "axis_start_index": 0
   },
   "world": {
@@ -31,7 +31,6 @@
       "STAY"
     ],
     "max_barriers": 14,
-    "barrier_seed": 20260818,
     "max_moves": 35,
     "survival_threshold": 35
   },

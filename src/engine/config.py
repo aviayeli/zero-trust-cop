@@ -39,7 +39,16 @@ class GameConfig:
 # The convention this engine implements, in the contract's own vocabulary.
 # `actions.py` computes N as (-1, 0) and `board.py` indexes from 0; a peer on
 # any other convention plays a mirrored game that still looks plausible.
-SUPPORTED_AXIS_ORIGIN = "topleft"
+#
+# The LEAGUE spells it with a hyphen and so do we now: the value sits inside
+# the signed terms, `negotiate` compares those exactly, and every opposing
+# group runs the community kit -- which writes `top-left` in all five places
+# it appears. Our old `topleft` refused all of them on a hyphen.
+SUPPORTED_AXIS_ORIGIN = "top-left"
+# Accepted spellings of that SAME corner. Two strings, one geometry: a
+# contract written either way runs unchanged. A different CORNER is not on
+# this list and never should be -- that peer plays a mirrored game.
+AXIS_ORIGIN_ALIASES = frozenset({"top-left", "topleft"})
 SUPPORTED_AXIS_START = 0
 
 
@@ -50,12 +59,13 @@ def _validate_axis(board: dict) -> None:
         ValueError: the contract names an origin or start index we would
             silently disagree with rather than fail on.
     """
-    if board["axis_origin_corner"] != SUPPORTED_AXIS_ORIGIN:
+    if board["axis_origin_corner"] not in AXIS_ORIGIN_ALIASES:
         raise ValueError(
             f"axis_origin_corner is {board['axis_origin_corner']!r}; this "
-            f"engine implements {SUPPORTED_AXIS_ORIGIN!r} only. Playing on a "
-            "different origin would mirror every move and produce a plausible "
-            "but wrong game rather than an error."
+            f"engine implements the top-left origin only, spelled "
+            f"{sorted(AXIS_ORIGIN_ALIASES)}. Playing on a different origin "
+            "would mirror every move and produce a plausible but wrong game "
+            "rather than an error."
         )
     if board["axis_start_index"] != SUPPORTED_AXIS_START:
         raise ValueError(

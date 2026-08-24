@@ -97,37 +97,4 @@ def validate_control_message(message) -> str:
     })
 
 
-def pairing_refusal(message: dict, our_role: str, our_uid: str | None) -> str | None:
-    """Why this pairing must not start, or None.
-
-    The handshake is the ONLY place a mispairing can be caught. Identical
-    terms give identical ``game_uid``s, so two peers that both believe they
-    are the thief agree on every signed byte and produce artifacts that join
-    perfectly -- the contradiction surfaces only when a human reads the
-    result.
-
-    Both checks TOLERATE absence: the pairing fields are negotiate extras and
-    declaring the uid is PROPOSED, not required. Only a declared
-    CONTRADICTION is refused.
-    """
-    their_role = message.get("role")
-    if their_role is not None and their_role == our_role:
-        other = "thief" if our_role == "police" else "police"
-        return (
-            f"pairing: both peers declare role {our_role!r}. One must be "
-            f"{our_role!r} and the other {other!r}. Note the field's meaning: "
-            "`role` is the side THIS peer is playing, NOT the side of the peer "
-            "being called. If you are declaring the role of the endpoint you "
-            "dialled, invert it. If you meant your own side, you have the "
-            "wrong endpoint -- our two peers listen on different ports."
-        )
-
-    declared = message.get("game_uid")
-    if our_uid and declared and declared != our_uid:
-        return (
-            f"game_uid mismatch: ours {our_uid}, theirs {declared}. One side "
-            "derived it from something other than the flat negotiated terms; "
-            "a uid from the whole config is self-consistent across that "
-            "peer's own artifacts and fails only the cross-team join."
-        )
-    return None
+from mcp_server.pairing import pairing_refusal  # noqa: E402,F401

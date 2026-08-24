@@ -36,6 +36,15 @@ def _uid_for(our_terms, identity, message) -> str | None:
     return interop.game_uid(our_terms, ours, theirs)
 
 
+def _refuse(reason: str, **extra) -> dict:
+    """A refusal, in both spellings.
+
+    The mirror case matters more than the acceptance: a peer reading only
+    ``accepted`` must not read a refusal as silence and play on regardless.
+    """
+    return {"status": "refused", "accepted": False, "reason": reason, **extra}
+
+
 def register(mcp, our_terms, identity_source, nonce_source, our_role):
     """Register ``negotiate`` and return it."""
 
@@ -55,18 +64,17 @@ def register(mcp, our_terms, identity_source, nonce_source, our_role):
         """
         verdict = wire_v3_session.validate_negotiate(message)
         if verdict != wire_v3.ACCEPT:
-            return {"status": "refused", "reason": verdict}
+            return _refuse(verdict)
         terms, nonce = message["terms"], message["nonce"]
 
         if interop.terms_signature(terms, nonce) != message["signature"]:
-            return {
-                "status": "refused",
-                "reason": "signature does not verify over the terms sent; "
-                          "expected SHA256(canonical_json(terms)|nonce), a SINGLE pipe",
-            }
+            return _refuse(
+                "signature does not verify over the terms sent; expected "
+                "SHA256(canonical_json(terms)|nonce), a SINGLE pipe"
+            )
         disagreement = _terms_disagreement(our_terms, terms)
         if disagreement:
-            return {"status": "refused", "reason": disagreement}
+            return _refuse(disagreement)
 
         identity = identity_source()
         our_uid = _uid_for(our_terms, identity, message)
@@ -74,11 +82,18 @@ def register(mcp, our_terms, identity_source, nonce_source, our_role):
         if mispairing:
             # State our own side even when refusing: otherwise the caller
             # cannot tell which half of the pair to change.
-            return {"status": "refused", "reason": mispairing, "role": our_role}
+            return _refuse(mispairing, role=our_role)
 
         our_nonce = nonce_source()
         return {
             "status": "accepted",
+            # BOTH spellings. ali-ahm1's client reads `accepted`; ours reads
+            # `status`. A peer seeing only its own key reads the other's
+            # answer as absent -- which on 2026-08-24 stalled a live series
+            # with both sides negotiated, both returning 200, and neither
+            # pushing a turn. Extra keys are tolerated here (the extension
+            # seam), so carrying both removes the guess.
+            "accepted": True,
             "terms": our_terms,
             "nonce": our_nonce,
             "signature": interop.terms_signature(our_terms, our_nonce),

@@ -6,49 +6,44 @@ conformant. They are registered on the SAME FastMCP app as our native
 commit/reveal tools, so one peer answers both dialects and an opponent on
 either can reach us.
 
-What these tools do NOT do is play the game for us. reference-v3 is symmetric
-push: each side calls the other's ``receive_turn`` and polls its own inbox,
-and a turn carries a COMMIT that is never revealed until ``submit_audit`` at
-the end of the sub-game. Our engine resolves a turn only once both sides have
-REVEALED, so an inbound reference-v3 turn is validated, recorded and made
-available -- it cannot by itself advance our resolver. Driving a full sub-game
-on this surface needs a match loop that plays on claims rather than reveals;
-that is a separate phase, and pretending otherwise here would give us a peer
-that answers to the right names and still cannot finish a game.
+These tools RECEIVE; ``scripts.claims_match_loop`` plays (PRD_10). The
+transport is symmetric push -- each side calls the other's ``receive_turn``
+and polls its own inbox -- and a turn carries a COMMIT that is never revealed
+until ``submit_audit`` at the end of the sub-game. There is no move on this
+wire, so nothing here can advance our two-piece resolver, and nothing tries
+to: the loop that plays on this surface resolves OUR piece alone and settles
+capture by claim and honest answer.
+
+That is also why ``submit_audit`` compares against ``inbox``. Every turn we
+accepted carried that step's digest, and it arrived before the outcome was
+known, so the inbox is the evidence a chain rewritten after the fact fails.
 """
 
 from __future__ import annotations
 
 import datetime
 
-from mcp_server import interop, reference_negotiate, wire_v3, wire_v3_session
+from mcp_server import (audit_check, reference_negotiate, wire_v3,
+                        wire_v3_session)
 
 
 def _now() -> str:
     return datetime.datetime.now(datetime.timezone.utc).isoformat()
 
 
-def _label(record: dict, position: int):
-    """Name a record for a mismatch report.
-
-    The agreed record is ``{payload, nonce, commit}`` with no top-level
-    ``step``, so indexing one raised instead of reporting -- and it raised on
-    the TAMPER path only, which is the path that has to work. Prefer the step
-    inside the payload, fall back to position in the chain, never raise.
-    """
-    payload = record.get("payload")
-    if isinstance(payload, dict) and isinstance(payload.get("step"), int):
-        return payload["step"]
-    step = record.get("step")
-    return step if isinstance(step, int) else position
-
-
-def register_reference_tools(mcp, inbox, our_terms, identity_source,
+def register_reference_tools(mcp, inbox, audits, our_terms, identity_source,
                             nonce_source, our_role):
     """Register the reference-v3 surface and return the callables.
 
     ``inbox`` is the list an inbound turn is appended to -- the opponent polls
     its own inbox for ours, and we poll this one for theirs.
+
+    ``audits`` is where their DISCLOSED chains are kept. They used to be
+    verified and dropped, which left our log holding their play as one digest
+    per step: their moves and positions are disclosed here and nowhere else,
+    so discarding the payload meant asserting a verdict nobody could recheck
+    -- and made it impossible to catch an opponent walking through a cell our
+    board holds as a wall.
 
     ``identity_source`` is a CALLABLE, resolved when ``negotiate`` runs rather
     than at boot: a peer with no declaration on disk must still answer
@@ -68,28 +63,33 @@ def register_reference_tools(mcp, inbox, our_terms, identity_source,
 
     @mcp.tool()
     async def submit_audit(payload: dict) -> dict:
-        """One AuditPayload per sub-game: re-hash their chain with OUR serializer.
+        """One AuditPayload per sub-game: judge their chain against OUR evidence.
 
-        This is the whole point of the audit -- their ``result_claim`` is a
-        claim, and our recomputation is the evidence. A canonicalization
-        difference surfaces here as a mismatch, which is why §2's
-        ``ensure_ascii=False`` is load-bearing.
+        Their ``result_claim`` is a claim; our recomputation is the evidence.
+        Two things are recomputed: that each record re-hashes to its own
+        commit with our serializer (where a canonicalization difference
+        surfaces, which is why §2's ``ensure_ascii=False`` is load-bearing),
+        and that the commit disclosed is the digest they PUSHED at that step.
+        The second is what a chain rewritten after the fact fails.
         """
         verdict = wire_v3_session.validate_audit_payload(payload)
         if verdict != wire_v3.ACCEPT:
             return {"status": "refused", "reason": verdict}
 
-        mismatches = [
-            _label(record, position)
-            for position, record in enumerate(payload["records"], start=1)
-            if interop.commit(record["payload"], record["nonce"]) != record["commit"]
-        ]
-        return {
-            "status": "tampered" if mismatches else "accepted",
-            "records_verified": len(payload["records"]) - len(mismatches),
-            "mismatches": mismatches,
+        verdict = dict(
+            audit_check.verify_records(payload["records"], inbox),
+            result_claim=payload["result_claim"],
+        )
+        # AFTER validation, so a refused payload never enters the record --
+        # and for a TAMPERED one especially, since a verdict of cheating with
+        # the evidence thrown away is an accusation we cannot support.
+        audits.append({
+            "sender": payload["sender"],
+            "records": [dict(record) for record in payload["records"]],
             "result_claim": payload["result_claim"],
-        }
+            "verdict": verdict,
+        })
+        return verdict
 
     @mcp.tool()
     async def receive_control(message: dict) -> dict:

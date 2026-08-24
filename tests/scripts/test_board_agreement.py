@@ -102,7 +102,11 @@ def test_a_peer_that_does_not_REPORT_the_axis_is_allowed(peer_stub):
     asyncio.run(verify_board_agreement(peers, 14))
 
 
-def test_matching_axis_fields_pass(peer_stub):
+@pytest.mark.parametrize("spelling", ["top-left", "topleft"])
+def test_matching_axis_fields_pass(peer_stub, spelling):
+    """Both spellings name the SAME corner. The league writes `top-left`; we
+    used to write `topleft`, and other teams still may. Refusing one of them
+    rejects a peer that agrees with us, over a hyphen."""
     peers = [
         peer_stub(14, axis_origin_corner="topleft", axis_start_index=0),
         peer_stub(14, "thief", axis_origin_corner="topleft", axis_start_index=0),

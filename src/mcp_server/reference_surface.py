@@ -46,8 +46,16 @@ def build(mcp, role: str, config_path: str, config_root: str | None = None):
     with open(config_path, encoding="utf-8") as contract:
         terms = terms_from_config(json.load(contract))
     inbox: list = []
+    # Their disclosed chains, kept for the log: `receive_turn` carries a
+    # digest, and `submit_audit` is the only place their play is revealed.
+    audits: list = []
+    # Returned as well as injected: the RUNNER needs the same identity block
+    # to open a handshake, and rebuilding it there would be a second place
+    # for the declaration to drift.
+    identity = lambda: identity_block(role, config_root)  # noqa: E731
     tools = register_reference_tools(
-        mcp, inbox, terms, lambda: identity_block(role, config_root),
+        mcp, inbox, audits, terms, identity,
         lambda: token_hex(_NONCE_BYTES), role,
     )
-    return SimpleNamespace(inbox=inbox, terms=terms, tools=tools)
+    return SimpleNamespace(inbox=inbox, audits=audits, terms=terms,
+                           tools=tools, identity=identity)

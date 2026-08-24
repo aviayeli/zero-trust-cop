@@ -47,7 +47,9 @@ def build(mcp, role: str, config_path: str, config_root=None, dialect=None):
 
     return SimpleNamespace(
         inbox=reference.inbox,
+        audits=reference.audits,
         terms=reference.terms,
+        identity=reference.identity,
         push_store=push_store,
         tools={**reference.tools, **push},
     )

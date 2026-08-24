@@ -24,7 +24,11 @@ SHARED = "config/game.json"
 def spec_config(tmp_path):
     """The agreed contract as a peer without our extension would send it."""
     payload = json.loads(open(SHARED, encoding="utf-8").read())
-    del payload["movement_and_barriers"]["barrier_seed"]
+    # Tolerant: the shipped contract no longer carries the seed either. We
+    # dropped it by agreement with rstabcde, whose engine has no seeded-layout
+    # concept at all — barriers there are PLACED by the cop during play
+    # (SPEC 3.1 rules 46/47), which is the league's model and not ours.
+    payload["movement_and_barriers"].pop("barrier_seed", None)
     path = tmp_path / "game.json"
     path.write_text(json.dumps(payload), encoding="utf-8")
     return str(path)

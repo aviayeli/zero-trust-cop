@@ -32,15 +32,25 @@ from scripts.match_payloads import (
     ARTIFACT_VERSION, ARTIFACT_KINDS, build_log, build_result,
 )
 
-def _stamp_config(config_root, group_dir, suffix, game_uid) -> str:
+def _stamp_config(config_root, group_dir, suffix, game_uid, pair=None) -> str:
     """Snapshot the shared contract, stamped with the run's identity.
 
     Copied rather than referenced so the artifact records what the match
     ACTUALLY ran under, and stamped so all four files tie together.
+
+    ``pair`` overrides ``agreed_between``. The shipped contract still names a
+    placeholder opponent from an earlier phase, so a series against anyone
+    else shipped a config artifact declaring a match against a group that
+    never played -- beside a log and a result that both named the real one.
+    Nothing hashes ``agreed_between``, so this was never a tamper risk; it
+    just left the four files disagreeing, with the contract as the odd one
+    out. SORTED, so both teams write the same bytes.
     """
     with open(os.path.join(config_root, "game.json")) as shared:
         snapshot = json.load(shared)
     snapshot["game_uid"] = game_uid
+    if pair is not None:
+        snapshot["agreed_between"] = sorted(pair)
     return _dump(os.path.join(group_dir, f"config_{suffix}.json"), snapshot)
 
 

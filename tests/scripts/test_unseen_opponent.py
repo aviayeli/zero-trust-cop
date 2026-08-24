@@ -28,7 +28,8 @@ PAIRS = 120
 @pytest.fixture(scope="module")
 def survival():
     """Evader survival against a heuristic cop, trained table vs empty."""
-    config = load_config("config/game.json")
+    config = replace(load_config("config/game.json"),
+                     barrier_seed=BENCHMARK_BARRIER_SEED)
     police = load_strategy_settings("police")
     burglar = load_strategy_settings("thief")
     pairs = start_pairs(config, PAIRS, SEED)
@@ -42,6 +43,14 @@ def survival():
         return 100.0 - evaluate(config, cop, evader, pairs, SEED)["capture_rate"]
 
     return {"trained": rate(burglar.qtable_path), "empty": rate(None)}
+
+# The board these figures were measured on. `barrier_seed` left the shipped
+# contract when we agreed a bare board with rstabcde -- their engine has no
+# seeded-layout concept -- and a bare board makes the evader unbeatable:
+# trained and empty tables both survive 100%, so the comparison says nothing.
+# A strategy benchmark must pin its own board rather than move with a value
+# we negotiate per opponent.
+BENCHMARK_BARRIER_SEED = 20260818
 
 
 def test_the_trained_evader_table_outperforms_an_empty_one(survival):

@@ -31,9 +31,18 @@ def _written(tmp_path, **board):
 
 
 def test_the_shipped_contract_states_the_convention_we_implement():
+    """The GEOMETRY is unchanged and the SPELLING is the league's.
+
+    We shipped `topleft`; the community kit writes `top-left` everywhere,
+    including inside the terms-signature fixture every kit-following group
+    hashes. The value sits in the signed terms and `negotiate` compares those
+    exactly, so the old spelling refused every opponent on a hyphen. Both
+    strings name the same corner — see `test_axis_spelling.py` for the
+    aliasing, and note a different CORNER is still refused.
+    """
     config = load_config(SHARED)
 
-    assert config.axis_origin_corner == "topleft"
+    assert config.axis_origin_corner == "top-left"
     assert config.axis_start_index == 0
 
 
