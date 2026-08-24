@@ -1,0 +1,1905 @@
+{
+  "artifact_version": 1,
+  "barriers": [],
+  "game_id": "aviayeli-vs-rstabcde",
+  "game_number": 1,
+  "game_uid": "19ce4d0d-dca8-5862-eebd-10c7fed6e4c9",
+  "group_id": "aviayeli",
+  "handshake_counter_signed": false,
+  "our_role": "police",
+  "result_claim": {
+    "outcome": "survival",
+    "steps": 35
+  },
+  "their_audit_response": {
+    "accepted": true
+  },
+  "turns": [
+    {
+      "ours": {
+        "commit": "540bb911877a2051b3c3106047820d9154fd82a9f16f08fe3edc3153af5d436b",
+        "nonce": "1b0bbf25b5634d5f6f8205e0caf4c059",
+        "payload": {
+          "hint": "south",
+          "intent": "truth",
+          "move": "MOVE:S",
+          "position": [
+            1,
+            0
+          ],
+          "state": "grid=7x7;self=[1, 0];barriers=[]",
+          "step": 1
+        }
+      },
+      "step": 1,
+      "theirs": {
+        "commit": "0651a982c8e60cb5629abcbf623f76847eea9e89f31acb7fd1a22bccd8319fba",
+        "hint": "Heading north, Times Square at my back.",
+        "sender": "thief",
+        "smell_grid": {
+          "1,2": 0.3,
+          "1,3": 0.3,
+          "1,4": 0.3,
+          "1,5": 0.3,
+          "1,6": 0.3,
+          "2,2": 0.3,
+          "2,3": 0.6,
+          "2,4": 0.6,
+          "2,5": 0.6,
+          "2,6": 0.3,
+          "3,2": 0.3,
+          "3,3": 0.6,
+          "3,4": 0.9,
+          "3,5": 0.6,
+          "3,6": 0.3,
+          "4,2": 0.3,
+          "4,3": 0.6,
+          "4,4": 0.6,
+          "4,5": 0.6,
+          "4,6": 0.3,
+          "5,2": 0.3,
+          "5,3": 0.3,
+          "5,4": 0.3,
+          "5,5": 0.3,
+          "5,6": 0.3
+        },
+        "timestamp": "2026-08-24T17:48:20.546423+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "851a247d9ff331a3eaffa7a3cef0b93f42bb9bc40e01cddaa53e23735ac18dda",
+        "nonce": "b7babb0bf5481c47678c254622b99359",
+        "payload": {
+          "hint": "east",
+          "intent": "truth",
+          "move": "MOVE:E",
+          "position": [
+            1,
+            1
+          ],
+          "state": "grid=7x7;self=[1, 1];barriers=[]",
+          "step": 2
+        }
+      },
+      "step": 2,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": null
+        },
+        "commit": "6b628bc013ada7b5b2e827a41f6b7b583afaf81bde874a29420bd04787809563",
+        "hint": "Pushed south, Central Park fading behind.",
+        "sender": "thief",
+        "smell_grid": {
+          "1,2": 0.2,
+          "1,3": 0.2,
+          "1,4": 0.2,
+          "1,5": 0.2,
+          "1,6": 0.2,
+          "2,2": 0.3,
+          "2,3": 0.5,
+          "2,4": 0.5,
+          "2,5": 0.5,
+          "2,6": 0.3,
+          "3,2": 0.3,
+          "3,3": 0.6,
+          "3,4": 0.8,
+          "3,5": 0.6,
+          "3,6": 0.3,
+          "4,2": 0.3,
+          "4,3": 0.6,
+          "4,4": 0.9,
+          "4,5": 0.6,
+          "4,6": 0.3,
+          "5,2": 0.3,
+          "5,3": 0.6,
+          "5,4": 0.6,
+          "5,5": 0.6,
+          "5,6": 0.3,
+          "6,2": 0.3,
+          "6,3": 0.3,
+          "6,4": 0.3,
+          "6,5": 0.3,
+          "6,6": 0.3
+        },
+        "timestamp": "2026-08-24T17:48:22.711972+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "ff799757bd1e2fc7026e2a11172a4c4b0fdad3ed3eb96644db411b6243a34529",
+        "nonce": "dfa5f199303917e69b49ee1e40a58c87",
+        "payload": {
+          "hint": "south",
+          "intent": "truth",
+          "move": "MOVE:S",
+          "position": [
+            2,
+            1
+          ],
+          "state": "grid=7x7;self=[2, 1];barriers=[]",
+          "step": 3
+        }
+      },
+      "step": 3,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": null
+        },
+        "commit": "88a16202d01cfb16adda01e5cc6abf7b388d13b383553d2e78ab6fc8c3276f09",
+        "hint": "Angling east toward the Brooklyn Bridge.",
+        "sender": "thief",
+        "smell_grid": {
+          "1,2": 0.1,
+          "1,3": 0.1,
+          "1,4": 0.1,
+          "1,5": 0.1,
+          "1,6": 0.1,
+          "2,2": 0.2,
+          "2,3": 0.4,
+          "2,4": 0.4,
+          "2,5": 0.4,
+          "2,6": 0.3,
+          "3,2": 0.2,
+          "3,3": 0.5,
+          "3,4": 0.7,
+          "3,5": 0.6,
+          "3,6": 0.6,
+          "4,2": 0.2,
+          "4,3": 0.5,
+          "4,4": 0.8,
+          "4,5": 0.9,
+          "4,6": 0.6,
+          "5,2": 0.2,
+          "5,3": 0.5,
+          "5,4": 0.6,
+          "5,5": 0.6,
+          "5,6": 0.6,
+          "6,2": 0.2,
+          "6,3": 0.3,
+          "6,4": 0.3,
+          "6,5": 0.3,
+          "6,6": 0.3
+        },
+        "timestamp": "2026-08-24T17:48:24.878746+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "d07cb33adebab7740d9f9397d1ce831114b1366261b31b8a882ddba0b6cc3043",
+        "nonce": "a9739f5b63ae29d4397f80b8586d2337",
+        "payload": {
+          "hint": "east",
+          "intent": "truth",
+          "move": "MOVE:E",
+          "position": [
+            2,
+            2
+          ],
+          "state": "grid=7x7;self=[2, 2];barriers=[]",
+          "step": 4
+        }
+      },
+      "step": 4,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": null
+        },
+        "commit": "63003f5dc04766ba9c5070d042f69328e7edbf11985a7671ea1a42165f235d77",
+        "hint": "Eased west, Wall Street just ahead.",
+        "sender": "thief",
+        "smell_grid": {
+          "2,2": 0.1,
+          "2,3": 0.3,
+          "2,4": 0.3,
+          "2,5": 0.3,
+          "2,6": 0.2,
+          "3,2": 0.1,
+          "3,3": 0.4,
+          "3,4": 0.6,
+          "3,5": 0.5,
+          "3,6": 0.5,
+          "4,2": 0.1,
+          "4,3": 0.4,
+          "4,4": 0.7,
+          "4,5": 0.8,
+          "4,6": 0.6,
+          "5,2": 0.1,
+          "5,3": 0.4,
+          "5,4": 0.6,
+          "5,5": 0.9,
+          "5,6": 0.6,
+          "6,2": 0.1,
+          "6,3": 0.3,
+          "6,4": 0.6,
+          "6,5": 0.6,
+          "6,6": 0.6
+        },
+        "timestamp": "2026-08-24T17:48:27.339600+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "f6321e3799e131da65dc61971bed696e35e0f7c16db1ab33ec5762056e2919cd",
+        "nonce": "bdd5e2db36a50b48b65d417bcdfa0834",
+        "payload": {
+          "hint": "east",
+          "intent": "truth",
+          "move": "MOVE:E",
+          "position": [
+            2,
+            3
+          ],
+          "state": "grid=7x7;self=[2, 3];barriers=[]",
+          "step": 5
+        }
+      },
+      "step": 5,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": null
+        },
+        "commit": "57031c113c70815d4aade9823c3d419594e89a6fec1db8059b7073e022ac77de",
+        "hint": "Lying low near Times Square.",
+        "sender": "thief",
+        "smell_grid": {
+          "2,3": 0.2,
+          "2,4": 0.2,
+          "2,5": 0.2,
+          "2,6": 0.1,
+          "3,3": 0.3,
+          "3,4": 0.5,
+          "3,5": 0.4,
+          "3,6": 0.4,
+          "4,3": 0.3,
+          "4,4": 0.6,
+          "4,5": 0.7,
+          "4,6": 0.6,
+          "5,3": 0.3,
+          "5,4": 0.5,
+          "5,5": 0.8,
+          "5,6": 0.9,
+          "6,3": 0.2,
+          "6,4": 0.5,
+          "6,5": 0.6,
+          "6,6": 0.6
+        },
+        "timestamp": "2026-08-24T17:48:29.525398+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "fddb9868b9b3d73249f9de479de86ac08b905e4f308df7e313ce386db15a129f",
+        "nonce": "d0024930e436d4c22432b51f55dafa33",
+        "payload": {
+          "hint": "south",
+          "intent": "truth",
+          "move": "MOVE:S",
+          "position": [
+            3,
+            3
+          ],
+          "state": "grid=7x7;self=[3, 3];barriers=[]",
+          "step": 6
+        }
+      },
+      "step": 6,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": null
+        },
+        "commit": "e03cbde9f6ec076f934ebf9943449b9e290a2d43772e76910fd0fae8d444f957",
+        "hint": "Slipped north past Central Park.",
+        "sender": "thief",
+        "smell_grid": {
+          "2,3": 0.1,
+          "2,4": 0.1,
+          "2,5": 0.1,
+          "3,3": 0.2,
+          "3,4": 0.4,
+          "3,5": 0.3,
+          "3,6": 0.3,
+          "4,3": 0.2,
+          "4,4": 0.5,
+          "4,5": 0.6,
+          "4,6": 0.5,
+          "5,3": 0.2,
+          "5,4": 0.4,
+          "5,5": 0.7,
+          "5,6": 0.8,
+          "6,3": 0.1,
+          "6,4": 0.4,
+          "6,5": 0.6,
+          "6,6": 0.9
+        },
+        "timestamp": "2026-08-24T17:48:31.688931+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "8aabccfecc3a32c0e1117f6626259460b052a5d7db83fcd19bce39861bbf5026",
+        "nonce": "25c762e9d2f2492b997ca126c97a3659",
+        "payload": {
+          "hint": "south",
+          "intent": "truth",
+          "move": "MOVE:S",
+          "position": [
+            4,
+            3
+          ],
+          "state": "grid=7x7;self=[4, 3];barriers=[]",
+          "step": 7
+        }
+      },
+      "step": 7,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": null
+        },
+        "commit": "93a179bd0d7f97faac8af6f3c7347528d68e6e9f925e3029e13f3e98cc8b8578",
+        "hint": "Cutting south beyond the Brooklyn Bridge.",
+        "sender": "thief",
+        "smell_grid": {
+          "3,3": 0.1,
+          "3,4": 0.3,
+          "3,5": 0.2,
+          "3,6": 0.2,
+          "4,3": 0.3,
+          "4,4": 0.4,
+          "4,5": 0.5,
+          "4,6": 0.4,
+          "5,3": 0.3,
+          "5,4": 0.6,
+          "5,5": 0.6,
+          "5,6": 0.7,
+          "6,3": 0.3,
+          "6,4": 0.6,
+          "6,5": 0.9,
+          "6,6": 0.8
+        },
+        "timestamp": "2026-08-24T17:48:33.771382+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "c451bb2e2b41a1cc3a45cb09c173a3764f0d5afc1bdfb66de52c8fd8f4bd34ac",
+        "nonce": "86e762fbf0df810cda8676bcc987bf43",
+        "payload": {
+          "hint": "south",
+          "intent": "truth",
+          "move": "MOVE:S",
+          "position": [
+            5,
+            3
+          ],
+          "state": "grid=7x7;self=[5, 3];barriers=[]",
+          "step": 8
+        }
+      },
+      "step": 8,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": null
+        },
+        "commit": "e987da36f27b10b8f7035bcc7d9f27a2d77a383c73fc5c74b16fa2d1ae6cea92",
+        "hint": "Drifted east past Wall Street.",
+        "sender": "thief",
+        "smell_grid": {
+          "3,4": 0.2,
+          "3,5": 0.1,
+          "3,6": 0.1,
+          "4,2": 0.3,
+          "4,3": 0.3,
+          "4,4": 0.3,
+          "4,5": 0.4,
+          "4,6": 0.3,
+          "5,2": 0.3,
+          "5,3": 0.6,
+          "5,4": 0.6,
+          "5,5": 0.6,
+          "5,6": 0.6,
+          "6,2": 0.3,
+          "6,3": 0.6,
+          "6,4": 0.9,
+          "6,5": 0.8,
+          "6,6": 0.7
+        },
+        "timestamp": "2026-08-24T17:48:36.421649+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "61e79023421d817412469133a26a9addd85f936ab6a53ef84c07474ff71238df",
+        "nonce": "ade9b9125fbab561aa36c3084a61ca5b",
+        "payload": {
+          "hint": "south",
+          "intent": "truth",
+          "move": "MOVE:S",
+          "position": [
+            6,
+            3
+          ],
+          "state": "grid=7x7;self=[6, 3];barriers=[]",
+          "step": 9
+        }
+      },
+      "step": 9,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": null
+        },
+        "commit": "0107edb91aee368cba690381de7cd419ac3ddea73197a3e790878f9700c27473",
+        "hint": "Circling west near Times Square.",
+        "sender": "thief",
+        "smell_grid": {
+          "3,2": 0.3,
+          "3,3": 0.3,
+          "3,4": 0.3,
+          "3,5": 0.3,
+          "3,6": 0.3,
+          "4,2": 0.3,
+          "4,3": 0.6,
+          "4,4": 0.6,
+          "4,5": 0.6,
+          "4,6": 0.3,
+          "5,2": 0.3,
+          "5,3": 0.6,
+          "5,4": 0.9,
+          "5,5": 0.6,
+          "5,6": 0.5,
+          "6,2": 0.3,
+          "6,3": 0.6,
+          "6,4": 0.8,
+          "6,5": 0.7,
+          "6,6": 0.6
+        },
+        "timestamp": "2026-08-24T17:48:38.672088+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "a85c33de317c306da1de2648f7b8d184d95272a8e0a5b5a468f4474a975c9a13",
+        "nonce": "502c39c6b99ddbc2a08cde3d86e36e37",
+        "payload": {
+          "hint": "east",
+          "intent": "truth",
+          "move": "MOVE:E",
+          "position": [
+            6,
+            4
+          ],
+          "state": "grid=7x7;self=[6, 4];barriers=[]",
+          "step": 10
+        }
+      },
+      "step": 10,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": null
+        },
+        "commit": "8718590e86a9a9ebab7ace222be0403b84e6833a0a663c040c327a682f91d4b6",
+        "hint": "Holding position by Central Park.",
+        "sender": "thief",
+        "smell_grid": {
+          "3,2": 0.2,
+          "3,3": 0.3,
+          "3,4": 0.3,
+          "3,5": 0.3,
+          "3,6": 0.3,
+          "4,2": 0.2,
+          "4,3": 0.5,
+          "4,4": 0.6,
+          "4,5": 0.6,
+          "4,6": 0.6,
+          "5,2": 0.2,
+          "5,3": 0.5,
+          "5,4": 0.8,
+          "5,5": 0.9,
+          "5,6": 0.6,
+          "6,2": 0.2,
+          "6,3": 0.5,
+          "6,4": 0.7,
+          "6,5": 0.6,
+          "6,6": 0.6
+        },
+        "timestamp": "2026-08-24T17:48:40.796041+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "9e5c5763c7961e9062b0d763517fa2ded132073b4f9da04039a7d69f7a86014a",
+        "nonce": "bcb8615e127697bbff17aefb84e02615",
+        "payload": {
+          "hint": "east",
+          "intent": "truth",
+          "move": "MOVE:E",
+          "position": [
+            6,
+            5
+          ],
+          "state": "grid=7x7;self=[6, 5];barriers=[]",
+          "step": 11
+        }
+      },
+      "step": 11,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": null
+        },
+        "commit": "e2cf98163571df40a85578f260d761d0c69810e64efe20c3988a074a3a35c557",
+        "hint": "Heading north, the Brooklyn Bridge at my back.",
+        "sender": "thief",
+        "smell_grid": {
+          "2,3": 0.3,
+          "2,4": 0.3,
+          "2,5": 0.3,
+          "2,6": 0.3,
+          "3,2": 0.1,
+          "3,3": 0.3,
+          "3,4": 0.6,
+          "3,5": 0.6,
+          "3,6": 0.6,
+          "4,2": 0.1,
+          "4,3": 0.4,
+          "4,4": 0.6,
+          "4,5": 0.9,
+          "4,6": 0.6,
+          "5,2": 0.1,
+          "5,3": 0.4,
+          "5,4": 0.7,
+          "5,5": 0.8,
+          "5,6": 0.6,
+          "6,2": 0.1,
+          "6,3": 0.4,
+          "6,4": 0.6,
+          "6,5": 0.5,
+          "6,6": 0.5
+        },
+        "timestamp": "2026-08-24T17:48:43.068966+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "c82dae1ed94244fa1ce56ffe6f7d5c9bb6442904e5aa6763639f19179fbdb2dd",
+        "nonce": "0964e18a5de79cb704026fca70d2e07d",
+        "payload": {
+          "hint": "north",
+          "intent": "truth",
+          "move": "MOVE:N",
+          "position": [
+            5,
+            5
+          ],
+          "state": "grid=7x7;self=[5, 5];barriers=[]",
+          "step": 12
+        }
+      },
+      "step": 12,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": null
+        },
+        "commit": "0368b5dbd01aaccb9e0d26e4a3f7c1d44778e4e47d39ca75bdb1d5bf12c0dec2",
+        "hint": "Pushed south, Wall Street fading behind.",
+        "sender": "thief",
+        "smell_grid": {
+          "1,3": 0.3,
+          "1,4": 0.3,
+          "1,5": 0.3,
+          "1,6": 0.3,
+          "2,3": 0.3,
+          "2,4": 0.6,
+          "2,5": 0.6,
+          "2,6": 0.6,
+          "3,3": 0.3,
+          "3,4": 0.6,
+          "3,5": 0.9,
+          "3,6": 0.6,
+          "4,3": 0.3,
+          "4,4": 0.6,
+          "4,5": 0.8,
+          "4,6": 0.6,
+          "5,3": 0.3,
+          "5,4": 0.6,
+          "5,5": 0.7,
+          "5,6": 0.5,
+          "6,3": 0.3,
+          "6,4": 0.5,
+          "6,5": 0.4,
+          "6,6": 0.4
+        },
+        "timestamp": "2026-08-24T17:48:45.164356+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "a8110b8120299a7f63baf7f10a82693bbbc0c8ede9d470a19eff51b38fa03709",
+        "nonce": "aa150936a87d27a92e486ed22683a673",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            5,
+            5
+          ],
+          "state": "grid=7x7;self=[5, 5];barriers=[]",
+          "step": 13
+        }
+      },
+      "step": 13,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": null
+        },
+        "commit": "4a09b52a05af9fd78e2817283686ffa29465c202b908a02a5150163d833fb7bc",
+        "hint": "Angling east toward Times Square.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,3": 0.3,
+          "0,4": 0.3,
+          "0,5": 0.3,
+          "0,6": 0.3,
+          "1,3": 0.3,
+          "1,4": 0.6,
+          "1,5": 0.6,
+          "1,6": 0.6,
+          "2,3": 0.3,
+          "2,4": 0.6,
+          "2,5": 0.9,
+          "2,6": 0.6,
+          "3,3": 0.3,
+          "3,4": 0.6,
+          "3,5": 0.8,
+          "3,6": 0.6,
+          "4,3": 0.3,
+          "4,4": 0.5,
+          "4,5": 0.7,
+          "4,6": 0.5,
+          "5,3": 0.2,
+          "5,4": 0.5,
+          "5,5": 0.6,
+          "5,6": 0.4,
+          "6,3": 0.2,
+          "6,4": 0.4,
+          "6,5": 0.3,
+          "6,6": 0.3
+        },
+        "timestamp": "2026-08-24T17:48:47.322813+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "4ba99dd440338093ac737f984ac527bb188dbd73f6ed09631380a2e194779870",
+        "nonce": "4e51e2a261ac6ff5e2c05a74bf23cf2b",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            5,
+            5
+          ],
+          "state": "grid=7x7;self=[5, 5];barriers=[]",
+          "step": 14
+        }
+      },
+      "step": 14,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": null
+        },
+        "commit": "4bac0b1e011e56953a4b353d43441d8cfc3c9cc2b8f3040ad6e13c51248bc28f",
+        "hint": "Eased west, Central Park just ahead.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,3": 0.3,
+          "0,4": 0.6,
+          "0,5": 0.6,
+          "0,6": 0.6,
+          "1,3": 0.3,
+          "1,4": 0.6,
+          "1,5": 0.9,
+          "1,6": 0.6,
+          "2,3": 0.3,
+          "2,4": 0.6,
+          "2,5": 0.8,
+          "2,6": 0.6,
+          "3,3": 0.3,
+          "3,4": 0.5,
+          "3,5": 0.7,
+          "3,6": 0.5,
+          "4,3": 0.2,
+          "4,4": 0.4,
+          "4,5": 0.6,
+          "4,6": 0.4,
+          "5,3": 0.1,
+          "5,4": 0.4,
+          "5,5": 0.5,
+          "5,6": 0.3,
+          "6,3": 0.1,
+          "6,4": 0.3,
+          "6,5": 0.2,
+          "6,6": 0.2
+        },
+        "timestamp": "2026-08-24T17:48:49.577873+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "cd1ac16a0f684db40499b1a9df34e13dbe49866145b09616fb3a61161d9840b0",
+        "nonce": "8fa5ac08878aede9c20382bb6a1679ca",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            5,
+            5
+          ],
+          "state": "grid=7x7;self=[5, 5];barriers=[]",
+          "step": 15
+        }
+      },
+      "step": 15,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": null
+        },
+        "commit": "fb9795fcdc86428961d33fc4ee69c285e3c3ee4fa1716ce8d1de5383b8e64908",
+        "hint": "Lying low near the Brooklyn Bridge.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,2": 0.3,
+          "0,3": 0.6,
+          "0,4": 0.6,
+          "0,5": 0.6,
+          "0,6": 0.5,
+          "1,2": 0.3,
+          "1,3": 0.6,
+          "1,4": 0.9,
+          "1,5": 0.8,
+          "1,6": 0.5,
+          "2,2": 0.3,
+          "2,3": 0.6,
+          "2,4": 0.6,
+          "2,5": 0.7,
+          "2,6": 0.5,
+          "3,2": 0.3,
+          "3,3": 0.3,
+          "3,4": 0.4,
+          "3,5": 0.6,
+          "3,6": 0.4,
+          "4,3": 0.1,
+          "4,4": 0.3,
+          "4,5": 0.5,
+          "4,6": 0.3,
+          "5,4": 0.3,
+          "5,5": 0.4,
+          "5,6": 0.2,
+          "6,4": 0.2,
+          "6,5": 0.1,
+          "6,6": 0.1
+        },
+        "timestamp": "2026-08-24T17:48:51.678262+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "3c9801fb3cda11c1f0af4c473f03e7a7362d9238f93e796637bec9d241147f91",
+        "nonce": "bf365dd242cbb2ab4a9e6feafbb8ad2e",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            5,
+            5
+          ],
+          "state": "grid=7x7;self=[5, 5];barriers=[]",
+          "step": 16
+        }
+      },
+      "step": 16,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": null
+        },
+        "commit": "148fea3d3308c3fa99538f2dc316d0bc2655e177c2d8a5614b4b0868f4111688",
+        "hint": "Slipped north past Wall Street.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,1": 0.3,
+          "0,2": 0.6,
+          "0,3": 0.6,
+          "0,4": 0.6,
+          "0,5": 0.5,
+          "0,6": 0.4,
+          "1,1": 0.3,
+          "1,2": 0.6,
+          "1,3": 0.9,
+          "1,4": 0.8,
+          "1,5": 0.7,
+          "1,6": 0.4,
+          "2,1": 0.3,
+          "2,2": 0.6,
+          "2,3": 0.6,
+          "2,4": 0.6,
+          "2,5": 0.6,
+          "2,6": 0.4,
+          "3,1": 0.3,
+          "3,2": 0.3,
+          "3,3": 0.3,
+          "3,4": 0.3,
+          "3,5": 0.5,
+          "3,6": 0.3,
+          "4,4": 0.2,
+          "4,5": 0.4,
+          "4,6": 0.2,
+          "5,4": 0.2,
+          "5,5": 0.3,
+          "5,6": 0.1,
+          "6,4": 0.1
+        },
+        "timestamp": "2026-08-24T17:48:53.812540+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "80f309cfb97b673d4b15665426008e208d6a0fd2105350ec0f915c6b6711ca9d",
+        "nonce": "d5c3dd92c8ba3c00d777366e4867e731",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            5,
+            5
+          ],
+          "state": "grid=7x7;self=[5, 5];barriers=[]",
+          "step": 17
+        }
+      },
+      "step": 17,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": null
+        },
+        "commit": "a146e68dbeb9f301c1b03b58ee7b1ec2f934b97c85f3efd1c2a9e16f6b5178a8",
+        "hint": "Cutting south beyond Times Square.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,0": 0.3,
+          "0,1": 0.6,
+          "0,2": 0.6,
+          "0,3": 0.6,
+          "0,4": 0.5,
+          "0,5": 0.4,
+          "0,6": 0.3,
+          "1,0": 0.3,
+          "1,1": 0.6,
+          "1,2": 0.9,
+          "1,3": 0.8,
+          "1,4": 0.7,
+          "1,5": 0.6,
+          "1,6": 0.3,
+          "2,0": 0.3,
+          "2,1": 0.6,
+          "2,2": 0.6,
+          "2,3": 0.6,
+          "2,4": 0.5,
+          "2,5": 0.5,
+          "2,6": 0.3,
+          "3,0": 0.3,
+          "3,1": 0.3,
+          "3,2": 0.3,
+          "3,3": 0.3,
+          "3,4": 0.3,
+          "3,5": 0.4,
+          "3,6": 0.2,
+          "4,4": 0.1,
+          "4,5": 0.3,
+          "4,6": 0.1,
+          "5,4": 0.1,
+          "5,5": 0.2
+        },
+        "timestamp": "2026-08-24T17:48:55.949033+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "c98231d8278100a8f9e3995f6d2f911f17b0a5f18ab2c8e323d0e56af3dd45ec",
+        "nonce": "4c2290b8c05bc93cdfd0d1c7fe7d2805",
+        "payload": {
+          "hint": "north",
+          "intent": "truth",
+          "move": "MOVE:N",
+          "position": [
+            4,
+            5
+          ],
+          "state": "grid=7x7;self=[4, 5];barriers=[]",
+          "step": 18
+        }
+      },
+      "step": 18,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": null
+        },
+        "commit": "db3f7316888645a1718f82552a5d1ae55c696b2ecab7a4df8efcc10a42ffcbed",
+        "hint": "Drifted east past Central Park.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,0": 0.6,
+          "0,1": 0.6,
+          "0,2": 0.6,
+          "0,3": 0.5,
+          "0,4": 0.4,
+          "0,5": 0.3,
+          "0,6": 0.2,
+          "1,0": 0.6,
+          "1,1": 0.9,
+          "1,2": 0.8,
+          "1,3": 0.7,
+          "1,4": 0.6,
+          "1,5": 0.5,
+          "1,6": 0.2,
+          "2,0": 0.6,
+          "2,1": 0.6,
+          "2,2": 0.6,
+          "2,3": 0.5,
+          "2,4": 0.4,
+          "2,5": 0.4,
+          "2,6": 0.2,
+          "3,0": 0.3,
+          "3,1": 0.3,
+          "3,2": 0.3,
+          "3,3": 0.3,
+          "3,4": 0.2,
+          "3,5": 0.3,
+          "3,6": 0.1,
+          "4,5": 0.2,
+          "5,5": 0.1
+        },
+        "timestamp": "2026-08-24T17:50:01.113111+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "a01a4136f369b5b4bd6989dadb37f0532a3b25e0f9d948b9cbcf4e383643cedb",
+        "nonce": "eaf9ee6bb0ebe93e618310a40a750617",
+        "payload": {
+          "hint": "north",
+          "intent": "truth",
+          "move": "MOVE:N",
+          "position": [
+            3,
+            5
+          ],
+          "state": "grid=7x7;self=[3, 5];barriers=[]",
+          "step": 19
+        }
+      },
+      "step": 19,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": null
+        },
+        "commit": "96ddc5c1fbadb7a96b962bf500380d38dfd0b9dea7144a4cb0d23d71c6e04d56",
+        "hint": "Circling west near the Brooklyn Bridge.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,0": 0.6,
+          "0,1": 0.9,
+          "0,2": 0.6,
+          "0,3": 0.4,
+          "0,4": 0.3,
+          "0,5": 0.2,
+          "0,6": 0.1,
+          "1,0": 0.6,
+          "1,1": 0.8,
+          "1,2": 0.7,
+          "1,3": 0.6,
+          "1,4": 0.5,
+          "1,5": 0.4,
+          "1,6": 0.1,
+          "2,0": 0.5,
+          "2,1": 0.5,
+          "2,2": 0.5,
+          "2,3": 0.4,
+          "2,4": 0.3,
+          "2,5": 0.3,
+          "2,6": 0.1,
+          "3,0": 0.2,
+          "3,1": 0.2,
+          "3,2": 0.2,
+          "3,3": 0.2,
+          "3,4": 0.1,
+          "3,5": 0.2,
+          "4,5": 0.1
+        },
+        "timestamp": "2026-08-24T17:50:03.289835+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "a1e5bc4693eae5f4838e91c79b384ec68a066862ecbeaf00f4d3ac35198ec977",
+        "nonce": "ea4425d05cf0813cfae1b60223ce65a1",
+        "payload": {
+          "hint": "west",
+          "intent": "truth",
+          "move": "MOVE:W",
+          "position": [
+            3,
+            4
+          ],
+          "state": "grid=7x7;self=[3, 4];barriers=[]",
+          "step": 20
+        }
+      },
+      "step": 20,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": null
+        },
+        "commit": "3ba84d7a5e3ca4a3458379eee9c3f369708ad0446ac5c6bc2576ea29f0044ad6",
+        "hint": "Holding position by Wall Street.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,0": 0.9,
+          "0,1": 0.8,
+          "0,2": 0.5,
+          "0,3": 0.3,
+          "0,4": 0.2,
+          "0,5": 0.1,
+          "1,0": 0.6,
+          "1,1": 0.7,
+          "1,2": 0.6,
+          "1,3": 0.5,
+          "1,4": 0.4,
+          "1,5": 0.3,
+          "2,0": 0.4,
+          "2,1": 0.4,
+          "2,2": 0.4,
+          "2,3": 0.3,
+          "2,4": 0.2,
+          "2,5": 0.2,
+          "3,0": 0.1,
+          "3,1": 0.1,
+          "3,2": 0.1,
+          "3,3": 0.1,
+          "3,5": 0.1
+        },
+        "timestamp": "2026-08-24T17:50:05.897849+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "35c18f30cd1da5b086cf37f6f2eea58d4f38f34b1703f0f70c48bb01f131a973",
+        "nonce": "7dfde3cc80096fb6593e4854c077a2d8",
+        "payload": {
+          "hint": "west",
+          "intent": "truth",
+          "move": "MOVE:W",
+          "position": [
+            3,
+            3
+          ],
+          "state": "grid=7x7;self=[3, 3];barriers=[]",
+          "step": 21
+        }
+      },
+      "step": 21,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": null
+        },
+        "commit": "06c31200915f48321843b835f4c931d5f75225831a124f43edee462b473a02d4",
+        "hint": "Heading north, Times Square at my back.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,0": 0.8,
+          "0,1": 0.7,
+          "0,2": 0.4,
+          "0,3": 0.2,
+          "0,4": 0.1,
+          "1,0": 0.9,
+          "1,1": 0.6,
+          "1,2": 0.5,
+          "1,3": 0.4,
+          "1,4": 0.3,
+          "1,5": 0.2,
+          "2,0": 0.6,
+          "2,1": 0.6,
+          "2,2": 0.3,
+          "2,3": 0.2,
+          "2,4": 0.1,
+          "2,5": 0.1,
+          "3,0": 0.3,
+          "3,1": 0.3,
+          "3,2": 0.3
+        },
+        "timestamp": "2026-08-24T17:50:08.082978+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "8a609c1021ac45ce4db32a4e04006c537aa2ee311383142273bb81c637ad6f38",
+        "nonce": "04a0b5d20e1a914036689e6bfc63dfe7",
+        "payload": {
+          "hint": "north",
+          "intent": "truth",
+          "move": "MOVE:N",
+          "position": [
+            2,
+            3
+          ],
+          "state": "grid=7x7;self=[2, 3];barriers=[]",
+          "step": 22
+        }
+      },
+      "step": 22,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": null
+        },
+        "commit": "cfe05f9ac9fa6fb48986664bd364185fba5c21c8666e2360a8be5e90e5955ddc",
+        "hint": "Pushed south, Central Park fading behind.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,0": 0.7,
+          "0,1": 0.6,
+          "0,2": 0.3,
+          "0,3": 0.1,
+          "1,0": 0.8,
+          "1,1": 0.6,
+          "1,2": 0.4,
+          "1,3": 0.3,
+          "1,4": 0.2,
+          "1,5": 0.1,
+          "2,0": 0.9,
+          "2,1": 0.6,
+          "2,2": 0.3,
+          "2,3": 0.1,
+          "3,0": 0.6,
+          "3,1": 0.6,
+          "3,2": 0.3,
+          "4,0": 0.3,
+          "4,1": 0.3,
+          "4,2": 0.3
+        },
+        "timestamp": "2026-08-24T17:50:10.230089+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "3747b00986c4711a8234b7f463de404971bccdd3827c5f0d2bd5a08341cd4138",
+        "nonce": "ce5f7fd8d1115e335835a8c535847a24",
+        "payload": {
+          "hint": "west",
+          "intent": "truth",
+          "move": "MOVE:W",
+          "position": [
+            2,
+            2
+          ],
+          "state": "grid=7x7;self=[2, 2];barriers=[]",
+          "step": 23
+        }
+      },
+      "step": 23,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": null
+        },
+        "commit": "c0db16341fdf3a2f5c72efbb66869fb059ad74046670a72e36425120eae679be",
+        "hint": "Angling east toward the Brooklyn Bridge.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,0": 0.6,
+          "0,1": 0.5,
+          "0,2": 0.3,
+          "0,3": 0.3,
+          "1,0": 0.7,
+          "1,1": 0.6,
+          "1,2": 0.6,
+          "1,3": 0.3,
+          "1,4": 0.1,
+          "2,0": 0.8,
+          "2,1": 0.9,
+          "2,2": 0.6,
+          "2,3": 0.3,
+          "3,0": 0.6,
+          "3,1": 0.6,
+          "3,2": 0.6,
+          "3,3": 0.3,
+          "4,0": 0.3,
+          "4,1": 0.3,
+          "4,2": 0.3,
+          "4,3": 0.3
+        },
+        "timestamp": "2026-08-24T17:50:12.413966+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "5236070f4acdce070230be2cef8ff6eb2bbec2ed57b980c14f7b7003693c7fcc",
+        "nonce": "66ec1f9976bfdeff3a17e5317753cc00",
+        "payload": {
+          "hint": "north",
+          "intent": "truth",
+          "move": "MOVE:N",
+          "position": [
+            1,
+            2
+          ],
+          "state": "grid=7x7;self=[1, 2];barriers=[]",
+          "step": 24
+        }
+      },
+      "step": 24,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": null
+        },
+        "commit": "8a9baacb1ca699d8999380453ff642204881855832f31d1ae21c495d974204a7",
+        "hint": "Eased west, Wall Street just ahead.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,0": 0.5,
+          "0,1": 0.4,
+          "0,2": 0.3,
+          "0,3": 0.3,
+          "0,4": 0.3,
+          "1,0": 0.6,
+          "1,1": 0.6,
+          "1,2": 0.6,
+          "1,3": 0.6,
+          "1,4": 0.3,
+          "2,0": 0.7,
+          "2,1": 0.8,
+          "2,2": 0.9,
+          "2,3": 0.6,
+          "2,4": 0.3,
+          "3,0": 0.5,
+          "3,1": 0.6,
+          "3,2": 0.6,
+          "3,3": 0.6,
+          "3,4": 0.3,
+          "4,0": 0.3,
+          "4,1": 0.3,
+          "4,2": 0.3,
+          "4,3": 0.3,
+          "4,4": 0.3
+        },
+        "timestamp": "2026-08-24T17:50:14.728975+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "efe6518dd96682a9c7ec0bf35a6ec033abf356f451d7fece833dc26b9d137c49",
+        "nonce": "e85189c914adb6179af75c6527a45450",
+        "payload": {
+          "hint": "west",
+          "intent": "truth",
+          "move": "MOVE:W",
+          "position": [
+            1,
+            1
+          ],
+          "state": "grid=7x7;self=[1, 1];barriers=[]",
+          "step": 25
+        }
+      },
+      "step": 25,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": null
+        },
+        "commit": "9bca62cbdf333a729ed02a8ab2157ddf6ad9ff9f40de578f982960fdebfce84c",
+        "hint": "Lying low near Times Square.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,0": 0.4,
+          "0,1": 0.6,
+          "0,2": 0.6,
+          "0,3": 0.6,
+          "0,4": 0.3,
+          "1,0": 0.5,
+          "1,1": 0.6,
+          "1,2": 0.9,
+          "1,3": 0.6,
+          "1,4": 0.3,
+          "2,0": 0.6,
+          "2,1": 0.7,
+          "2,2": 0.8,
+          "2,3": 0.6,
+          "2,4": 0.3,
+          "3,0": 0.4,
+          "3,1": 0.5,
+          "3,2": 0.5,
+          "3,3": 0.5,
+          "3,4": 0.3,
+          "4,0": 0.2,
+          "4,1": 0.2,
+          "4,2": 0.2,
+          "4,3": 0.2,
+          "4,4": 0.2
+        },
+        "timestamp": "2026-08-24T17:50:17.929229+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "747a15ba0c7cd8160ac66c1f4f359d93a0e3bad04023f6799f391bafd22582e0",
+        "nonce": "c5cbe480b07fd6e9a7454b46e84b73c1",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            1,
+            1
+          ],
+          "state": "grid=7x7;self=[1, 1];barriers=[]",
+          "step": 26
+        }
+      },
+      "step": 26,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": null
+        },
+        "commit": "c6c2859c59a88201dd76bf7f07b72db6325ed63eb959d47e013b36f3d4f4f47c",
+        "hint": "Slipped north past Central Park.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,0": 0.3,
+          "0,1": 0.6,
+          "0,2": 0.9,
+          "0,3": 0.6,
+          "0,4": 0.3,
+          "1,0": 0.4,
+          "1,1": 0.6,
+          "1,2": 0.8,
+          "1,3": 0.6,
+          "1,4": 0.3,
+          "2,0": 0.5,
+          "2,1": 0.6,
+          "2,2": 0.7,
+          "2,3": 0.5,
+          "2,4": 0.3,
+          "3,0": 0.3,
+          "3,1": 0.4,
+          "3,2": 0.4,
+          "3,3": 0.4,
+          "3,4": 0.2,
+          "4,0": 0.1,
+          "4,1": 0.1,
+          "4,2": 0.1,
+          "4,3": 0.1,
+          "4,4": 0.1
+        },
+        "timestamp": "2026-08-24T17:50:23.922475+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "8278d59a36572194a8ed1a851efccd1794c1023b60eb6e80d5339d466d24726e",
+        "nonce": "bc816d7fd7d93f2adb34adca9f17e964",
+        "payload": {
+          "hint": "east",
+          "intent": "truth",
+          "move": "MOVE:E",
+          "position": [
+            1,
+            2
+          ],
+          "state": "grid=7x7;self=[1, 2];barriers=[]",
+          "step": 27
+        }
+      },
+      "step": 27,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": null
+        },
+        "commit": "5964e1d1512105de268c87f69a3c01954a33e330a71c70e2ad20d2cee1cf8b2b",
+        "hint": "Cutting south beyond the Brooklyn Bridge.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,0": 0.2,
+          "0,1": 0.5,
+          "0,2": 0.8,
+          "0,3": 0.9,
+          "0,4": 0.6,
+          "0,5": 0.3,
+          "1,0": 0.3,
+          "1,1": 0.5,
+          "1,2": 0.7,
+          "1,3": 0.6,
+          "1,4": 0.6,
+          "1,5": 0.3,
+          "2,0": 0.4,
+          "2,1": 0.5,
+          "2,2": 0.6,
+          "2,3": 0.4,
+          "2,4": 0.3,
+          "2,5": 0.3,
+          "3,0": 0.2,
+          "3,1": 0.3,
+          "3,2": 0.3,
+          "3,3": 0.3,
+          "3,4": 0.1
+        },
+        "timestamp": "2026-08-24T17:50:29.362545+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "4ba397ef7852c7a9aed204516a14125113780c389b1100bcb3315fa3a0504639",
+        "nonce": "d3ff2f15f9ba67f47dd56863ad006252",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            1,
+            2
+          ],
+          "state": "grid=7x7;self=[1, 2];barriers=[]",
+          "step": 28
+        }
+      },
+      "step": 28,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": null
+        },
+        "commit": "4bbd95467a6002771ac12309b66259a20a73f9df739162eb367465be3aaa0d60",
+        "hint": "Drifted east past Wall Street.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,0": 0.1,
+          "0,1": 0.4,
+          "0,2": 0.7,
+          "0,3": 0.8,
+          "0,4": 0.9,
+          "0,5": 0.6,
+          "0,6": 0.3,
+          "1,0": 0.2,
+          "1,1": 0.4,
+          "1,2": 0.6,
+          "1,3": 0.6,
+          "1,4": 0.6,
+          "1,5": 0.6,
+          "1,6": 0.3,
+          "2,0": 0.3,
+          "2,1": 0.4,
+          "2,2": 0.5,
+          "2,3": 0.3,
+          "2,4": 0.3,
+          "2,5": 0.3,
+          "2,6": 0.3,
+          "3,0": 0.1,
+          "3,1": 0.2,
+          "3,2": 0.2,
+          "3,3": 0.2
+        },
+        "timestamp": "2026-08-24T17:50:32.097791+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "dd670c471233adb4cd87f1b7a7e0739c599e660bdea079c90bfba37986cac6cb",
+        "nonce": "92ff9efb06a06dfb78fa7b2ebaaa4a92",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            1,
+            2
+          ],
+          "state": "grid=7x7;self=[1, 2];barriers=[]",
+          "step": 29
+        }
+      },
+      "step": 29,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": null
+        },
+        "commit": "b6798d0691a24cf859e04bcec31ccdef4bf0e7d50920af83db9e93cc43ab5d4f",
+        "hint": "Circling west near Times Square.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,1": 0.3,
+          "0,2": 0.6,
+          "0,3": 0.7,
+          "0,4": 0.8,
+          "0,5": 0.9,
+          "0,6": 0.6,
+          "1,0": 0.1,
+          "1,1": 0.3,
+          "1,2": 0.5,
+          "1,3": 0.5,
+          "1,4": 0.6,
+          "1,5": 0.6,
+          "1,6": 0.6,
+          "2,0": 0.2,
+          "2,1": 0.3,
+          "2,2": 0.4,
+          "2,3": 0.3,
+          "2,4": 0.3,
+          "2,5": 0.3,
+          "2,6": 0.3,
+          "3,1": 0.1,
+          "3,2": 0.1,
+          "3,3": 0.1
+        },
+        "timestamp": "2026-08-24T17:50:34.274802+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "cd6aba02fb011ebf2702848710f6cf17281682a29079627597f8b0e23556846c",
+        "nonce": "aad4b8bd6b1afb29ffbb80a5fcea58f6",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            1,
+            2
+          ],
+          "state": "grid=7x7;self=[1, 2];barriers=[]",
+          "step": 30
+        }
+      },
+      "step": 30,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": null
+        },
+        "commit": "13bff7c8026f7ec1905bf0ca098998790270f0d3b05230cc00b2c5d51161cf3c",
+        "hint": "Holding position by Central Park.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,1": 0.2,
+          "0,2": 0.5,
+          "0,3": 0.6,
+          "0,4": 0.7,
+          "0,5": 0.8,
+          "0,6": 0.9,
+          "1,1": 0.2,
+          "1,2": 0.4,
+          "1,3": 0.4,
+          "1,4": 0.5,
+          "1,5": 0.6,
+          "1,6": 0.6,
+          "2,0": 0.1,
+          "2,1": 0.2,
+          "2,2": 0.3,
+          "2,3": 0.2,
+          "2,4": 0.3,
+          "2,5": 0.3,
+          "2,6": 0.3
+        },
+        "timestamp": "2026-08-24T17:50:36.398585+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "6d356d5f804610da7a56f91740c2b839700dede71598e60d439d62234475837c",
+        "nonce": "4923246f189e377170d06da19481bcad",
+        "payload": {
+          "hint": "north",
+          "intent": "truth",
+          "move": "MOVE:N",
+          "position": [
+            0,
+            2
+          ],
+          "state": "grid=7x7;self=[0, 2];barriers=[]",
+          "step": 31
+        }
+      },
+      "step": 31,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": null
+        },
+        "commit": "e9ea74b2d08bb4045b8b1665d349627abe4eed6fda7fb2ee04c41e12d7744f4f",
+        "hint": "Heading north, the Brooklyn Bridge at my back.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,1": 0.1,
+          "0,2": 0.4,
+          "0,3": 0.5,
+          "0,4": 0.6,
+          "0,5": 0.7,
+          "0,6": 0.8,
+          "1,1": 0.1,
+          "1,2": 0.3,
+          "1,3": 0.3,
+          "1,4": 0.4,
+          "1,5": 0.6,
+          "1,6": 0.9,
+          "2,1": 0.1,
+          "2,2": 0.2,
+          "2,3": 0.1,
+          "2,4": 0.3,
+          "2,5": 0.6,
+          "2,6": 0.6,
+          "3,4": 0.3,
+          "3,5": 0.3,
+          "3,6": 0.3
+        },
+        "timestamp": "2026-08-24T17:50:38.565298+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "d9a7ec72913d91bebe43de01b362c568b90251af6ba6664e73b35bd6a8e45440",
+        "nonce": "6339fced02b6868b27f616b8b953cf58",
+        "payload": {
+          "hint": "east",
+          "intent": "truth",
+          "move": "MOVE:E",
+          "position": [
+            0,
+            3
+          ],
+          "state": "grid=7x7;self=[0, 3];barriers=[]",
+          "step": 32
+        }
+      },
+      "step": 32,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": null
+        },
+        "commit": "fe41b9571d31ab1ab534fef414f9e6f8c682392158928fe27a8acb8cff1df12a",
+        "hint": "Pushed south, Wall Street fading behind.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,2": 0.3,
+          "0,3": 0.4,
+          "0,4": 0.5,
+          "0,5": 0.6,
+          "0,6": 0.7,
+          "1,2": 0.2,
+          "1,3": 0.2,
+          "1,4": 0.3,
+          "1,5": 0.6,
+          "1,6": 0.8,
+          "2,2": 0.1,
+          "2,4": 0.3,
+          "2,5": 0.6,
+          "2,6": 0.9,
+          "3,4": 0.3,
+          "3,5": 0.6,
+          "3,6": 0.6,
+          "4,4": 0.3,
+          "4,5": 0.3,
+          "4,6": 0.3
+        },
+        "timestamp": "2026-08-24T17:50:40.729621+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "04762fdf3c09ad6d8733e235370397767be2ed5923c6a6394aa6e4c4f3aa5187",
+        "nonce": "f2f44c714c3d10236ab4c4a1221ca3fe",
+        "payload": {
+          "hint": "south",
+          "intent": "truth",
+          "move": "MOVE:S",
+          "position": [
+            1,
+            3
+          ],
+          "state": "grid=7x7;self=[1, 3];barriers=[]",
+          "step": 33
+        }
+      },
+      "step": 33,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": null
+        },
+        "commit": "8503ca3ca0586e246d7dc7c6230a8af25446af5128095ff50b3f57a39d4cb4e2",
+        "hint": "Angling east toward Times Square.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,2": 0.2,
+          "0,3": 0.3,
+          "0,4": 0.4,
+          "0,5": 0.5,
+          "0,6": 0.6,
+          "1,2": 0.1,
+          "1,3": 0.1,
+          "1,4": 0.3,
+          "1,5": 0.5,
+          "1,6": 0.7,
+          "2,4": 0.3,
+          "2,5": 0.6,
+          "2,6": 0.8,
+          "3,4": 0.3,
+          "3,5": 0.6,
+          "3,6": 0.9,
+          "4,4": 0.3,
+          "4,5": 0.6,
+          "4,6": 0.6,
+          "5,4": 0.3,
+          "5,5": 0.3,
+          "5,6": 0.3
+        },
+        "timestamp": "2026-08-24T17:50:42.988652+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "24d90e7f0f572a80c64ddebef390b22f35cbc4fde07b85000a5b699612df0ae7",
+        "nonce": "1dffc7015385d326c38de4e02355a101",
+        "payload": {
+          "hint": "east",
+          "intent": "truth",
+          "move": "MOVE:E",
+          "position": [
+            1,
+            4
+          ],
+          "state": "grid=7x7;self=[1, 4];barriers=[]",
+          "step": 34
+        }
+      },
+      "step": 34,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": null
+        },
+        "commit": "94867cb22b49f49047a92d485735fddc1c0652cd69589ae4d46216e7eca32719",
+        "hint": "Eased west, Central Park just ahead.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,2": 0.1,
+          "0,3": 0.2,
+          "0,4": 0.3,
+          "0,5": 0.4,
+          "0,6": 0.5,
+          "1,4": 0.2,
+          "1,5": 0.4,
+          "1,6": 0.6,
+          "2,4": 0.3,
+          "2,5": 0.5,
+          "2,6": 0.7,
+          "3,4": 0.3,
+          "3,5": 0.6,
+          "3,6": 0.8,
+          "4,4": 0.3,
+          "4,5": 0.6,
+          "4,6": 0.9,
+          "5,4": 0.3,
+          "5,5": 0.6,
+          "5,6": 0.6,
+          "6,4": 0.3,
+          "6,5": 0.3,
+          "6,6": 0.3
+        },
+        "timestamp": "2026-08-24T17:50:45.235445+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "495a07c9a66e256f78062c028e49a082286b63e154971010e3c26f44f7572459",
+        "nonce": "c49d0bc2748e8f7e3f057876f4aaae91",
+        "payload": {
+          "hint": "south",
+          "intent": "truth",
+          "move": "MOVE:S",
+          "position": [
+            2,
+            4
+          ],
+          "state": "grid=7x7;self=[2, 4];barriers=[]",
+          "step": 35
+        }
+      },
+      "step": 35,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": null
+        },
+        "commit": "57c370dd8e14e5079c075878e7f750a14d8a9777314aa300f71b0f0f44101064",
+        "hint": "Lying low near the Brooklyn Bridge.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,3": 0.1,
+          "0,4": 0.2,
+          "0,5": 0.3,
+          "0,6": 0.4,
+          "1,4": 0.1,
+          "1,5": 0.3,
+          "1,6": 0.5,
+          "2,4": 0.2,
+          "2,5": 0.4,
+          "2,6": 0.6,
+          "3,4": 0.3,
+          "3,5": 0.5,
+          "3,6": 0.7,
+          "4,4": 0.3,
+          "4,5": 0.6,
+          "4,6": 0.8,
+          "5,4": 0.3,
+          "5,5": 0.6,
+          "5,6": 0.9,
+          "6,4": 0.3,
+          "6,5": 0.6,
+          "6,6": 0.6
+        },
+        "timestamp": "2026-08-24T17:51:50.323364+00:00",
+        "win_claim": {
+          "type": "survival"
+        }
+      }
+    }
+  ],
+  "wire_shape": "reference-v3"
+}

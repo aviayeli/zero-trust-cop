@@ -1,0 +1,79 @@
+{
+  "artifact_version": 1,
+  "game_id": "aviayeli-vs-rstabcde",
+  "game_uid": "19ce4d0d-dca8-5862-eebd-10c7fed6e4c9",
+  "games": [
+    {
+      "captured": true,
+      "game_number": 1,
+      "our_role": "police",
+      "terminal_reason": "capture",
+      "turns": 21
+    },
+    {
+      "captured": true,
+      "game_number": 2,
+      "our_role": "thief",
+      "terminal_reason": "capture",
+      "turns": 13
+    }
+  ],
+  "github_commit": "8d0304e302f908a0918ef12eac2d5b790d98b63d",
+  "group_id": "aviayeli",
+  "mutual_agreement": {
+    "confirmed": true,
+    "consensus": {
+      "aggregate": {
+        "series_tie": true,
+        "sub_games_won": {
+          "aviayeli": 1,
+          "rstabcde": 1
+        },
+        "ties": 0,
+        "total_score": {
+          "aviayeli": 25,
+          "rstabcde": 25
+        },
+        "winner_group": null
+      },
+      "game_id": "aviayeli-vs-rstabcde",
+      "sub_games": [
+        {
+          "result": "capture",
+          "roles": {
+            "cop": "aviayeli",
+            "thief": "rstabcde"
+          },
+          "score": {
+            "aviayeli": 20,
+            "rstabcde": 5
+          },
+          "sub_game_number": 1,
+          "winner_group": "aviayeli"
+        },
+        {
+          "result": "capture",
+          "roles": {
+            "cop": "rstabcde",
+            "thief": "aviayeli"
+          },
+          "score": {
+            "aviayeli": 5,
+            "rstabcde": 20
+          },
+          "sub_game_number": 2,
+          "winner_group": "rstabcde"
+        }
+      ]
+    },
+    "handshake_counter_signed": false,
+    "method": "opponent re-hash of each side's sealed chain at submit_audit",
+    "sha256": "091cdbe9fbdce9b66d8454d3dfc001bfaf6aa35ca66317358f99547e61f6aa23",
+    "sub_games_audited": 2
+  },
+  "repos": {
+    "cop": "https://github.com/aviayeli/zero-trust-cop",
+    "thief": "https://github.com/aviayeli/zero-trust-thief"
+  },
+  "wire_shape": "reference-v3"
+}
