@@ -72,7 +72,9 @@ def register(mcp, our_terms, identity_source, nonce_source, our_role):
         our_uid = _uid_for(our_terms, identity, message)
         mispairing = wire_v3_session.pairing_refusal(message, our_role, our_uid)
         if mispairing:
-            return {"status": "refused", "reason": mispairing}
+            # State our own side even when refusing: otherwise the caller
+            # cannot tell which half of the pair to change.
+            return {"status": "refused", "reason": mispairing, "role": our_role}
 
         our_nonce = nonce_source()
         return {
@@ -81,8 +83,11 @@ def register(mcp, our_terms, identity_source, nonce_source, our_role):
             "nonce": our_nonce,
             "signature": interop.terms_signature(our_terms, our_nonce),
             "identity": identity,
+            # sub_game_number is the index BOTH peers believe they are on, so
+            # echoing is right. `role` is "the side THIS peer is playing", so
+            # echoing it would tell the caller nothing and hide a collision.
             "sub_game_number": message.get("sub_game_number"),
-            "role": message.get("role"),
+            "role": our_role,
             "game_uid": our_uid,
             "step_semantics": wire_v3.STEP_SEMANTICS,
         }

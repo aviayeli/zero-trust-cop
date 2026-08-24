@@ -61,7 +61,9 @@ def test_the_pairing_fields_ride_beside_the_terms_never_inside(app):
         "signature": interop.terms_signature(ours, nonce),
         "identity": {}, "sub_game_number": 4, "role": "thief"}))
 
-    assert reply["sub_game_number"] == 4 and reply["role"] == "thief"
+    # `role` in the reply is OUR side, not an echo -- see
+    # test_reference_v3_pairing.py. sub_game_number IS echoed.
+    assert reply["sub_game_number"] == 4 and reply["role"] == "police"
     assert "sub_game_number" not in reply["terms"] and "role" not in reply["terms"]
 
 
@@ -136,4 +138,5 @@ def test_the_optional_envelope_fields_may_be_absent(app):
         "signature": interop.terms_signature(ours, nonce)}))
 
     assert reply["status"] == "accepted"
-    assert reply["sub_game_number"] is None and reply["role"] is None
+    assert reply["sub_game_number"] is None
+    assert reply["role"] == "police"  # our own side, always stated

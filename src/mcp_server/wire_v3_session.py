@@ -115,8 +115,11 @@ def pairing_refusal(message: dict, our_role: str, our_uid: str | None) -> str | 
         other = "thief" if our_role == "police" else "police"
         return (
             f"pairing: both peers declare role {our_role!r}. One must be "
-            f"{our_role!r} and the other {other!r} -- check which endpoint "
-            "you were given: our two peers listen on different ports."
+            f"{our_role!r} and the other {other!r}. Note the field's meaning: "
+            "`role` is the side THIS peer is playing, NOT the side of the peer "
+            "being called. If you are declaring the role of the endpoint you "
+            "dialled, invert it. If you meant your own side, you have the "
+            "wrong endpoint -- our two peers listen on different ports."
         )
 
     declared = message.get("game_uid")

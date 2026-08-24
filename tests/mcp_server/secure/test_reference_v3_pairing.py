@@ -98,3 +98,45 @@ def test_an_absent_uid_is_tolerated(app):
     """Declaring it is PROPOSED, not required — the uid normally never
     crosses the wire at all."""
     assert asyncio.run(app.negotiate(_envelope(app, "thief")))["status"] == "accepted"
+
+
+# --- our reply must declare OUR side ---------------------------------------
+
+
+def test_our_reply_declares_our_own_role_not_an_echo_of_theirs(app):
+    """The kit defines `role` as "the side THIS peer is playing", so echoing
+    the caller's value tells them nothing and hides a collision.
+
+    Observed live 2026-08-24: ali-ahm1 declared the role of the endpoint they
+    dialled rather than their own, and our echo meant every reply agreed with
+    them — nothing in the exchange said what WE thought we were.
+    """
+    reply = asyncio.run(app.negotiate(_envelope(app, "thief")))
+
+    assert reply["status"] == "accepted"
+    assert reply["role"] == "police"
+
+
+def test_the_reply_still_echoes_the_sub_game_it_was_asked_about(app):
+    """sub_game_number is the index BOTH peers believe they are on, so
+    agreeing with the caller is the correct answer there."""
+    reply = asyncio.run(app.negotiate(_envelope(app, "thief")))
+
+    assert reply["sub_game_number"] == 1
+
+
+def test_a_refusal_names_the_two_conflicting_sides(thief_app):
+    """The refusal has to be diagnosable from the wire alone."""
+    reply = asyncio.run(thief_app.negotiate(_envelope(thief_app, "thief")))
+
+    assert "'thief'" in reply["reason"] and "'police'" in reply["reason"]
+    assert "the side THIS peer is playing" in reply["reason"]
+
+
+def test_a_refusal_still_states_our_own_side(thief_app):
+    """A refusal that does not say what WE are leaves the caller guessing
+    which half of the pair to change."""
+    reply = asyncio.run(thief_app.negotiate(_envelope(thief_app, "thief")))
+
+    assert reply["status"] == "refused"
+    assert reply["role"] == "thief"
