@@ -50,10 +50,19 @@ step. Items are checked only once the test that proves them passes.
       reports `unverifiable` — NOT `accepted`. This is the test that stops us
       shipping a green light we never computed.
 - [x] Re-hash whatever is reconstructable with `interop.commit`.
-- [ ] **BLOCKED — needs ali-ahm1**: what do the `nonces` entries carry, and
-      what payload does their `h_commit` seal? Without the payload schema the
-      deferred audit cannot be computed at all. Asked 2026-08-24; until it is
-      answered this dialect provides no verification, only play.
+- [x] **RESOLVED 2026-08-24 — the audit step is `submit_audit`, not
+      `receive_final_audit`.** ali-ahm1 confirmed the flat form was them
+      "describing the old flat wire shape by mistake"; a reference-v3 series
+      never calls it. The audit is
+      `submit_audit(payload={sender, records, result_claim})` with each record
+      `{payload, nonce, commit}` — the preimage travels beside the digest, so
+      neither side reconstructs the other's payload and the audit is
+      computable on both sides. The gap PRD_09 recorded is closed: this
+      dialect now verifies rather than merely plays.
+- [x] Client repointed at `submit_audit`; the loop sends a `result_claim`
+      (our belief, settled by THEIR re-hash, never by the claim).
+- [x] Our inbound `submit_audit` already re-hashed records with our own
+      serializer and needed no change — the reference-v3 work covered it.
 
 ## 9.5b Found while building — fixed
 

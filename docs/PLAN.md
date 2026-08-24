@@ -28,7 +28,7 @@ invariants; where it and a phase document disagree, this file wins.
   networking). `engine/config.py` and `strategy/settings.py` are the only
   modules permitted to know those paths.
 - **Strict TDD**: every module below was specified precisely enough that a
-  failing test could be written before it existed. Current state: **1143 tests
+  failing test could be written before it existed. Current state: **1146 tests
   passing**.
 
 ## FR5 Turn-Resolution & Tie-Break Rule (locked)
@@ -106,7 +106,7 @@ zero-trust-cop/
 │       ├── board_agreement.py   # pre-match board/axis check (§2, audit T-1)
 │       ├── opponent_pool.py     # weighted per-episode opponent selection
 │       └── train_diverse.py     # the shipped opponent-diverse trainer
-└── tests/                       # 1143 tests, mirroring the src/ layout
+└── tests/                       # 1146 tests, mirroring the src/ layout
 ```
 
 ## 1. Engine Layer — Module Responsibilities & Interfaces
@@ -1129,7 +1129,7 @@ close it.
 
 Every module was built test-first per `CLAUDE.md`; `docs/TODO.md` records the
 sequencing and the evidence. The suite mirrors `src/` and currently stands at
-**1143 passing tests**. The load-bearing cases, by layer:
+**1146 passing tests**. The load-bearing cases, by layer:
 
 - **Engine** — the six FR5 scenarios (both unobstructed, bounds-blocked,
   barrier-blocked, same-cell capture, swap capture, adjacent near-miss), plus

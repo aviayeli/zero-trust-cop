@@ -49,7 +49,7 @@ Both losses are inherent to their protocol, not to our implementation:
 Deferred detection is the reference-v3 model and is defensible. Accepting
 UNAUTHENTICATED moves on our live wire is not, which is why FR5 gates it.
 
-## The audit gap — open, and not ours to close alone
+## The audit gap — RESOLVED 2026-08-24
 
 `receive_final_audit(role, nonces)` carries nonces and nothing else. To
 re-hash their chain we need the PAYLOAD each `h_commit` sealed, and their
@@ -58,19 +58,28 @@ position, no step-0 record. Unless their `nonces` entries carry the payloads,
 the deferred audit cannot actually be computed, and this dialect would provide
 **no verification at all** rather than late verification.
 
-This is a question for ali-ahm1, recorded in TODO 9.5. Until it is answered,
-FR4 requires the audit to report `unverifiable` explicitly. Reporting a clean
-audit we did not compute would be worse than reporting none.
+**Closed.** ali-ahm1 confirmed the flat `receive_final_audit(role, nonces)`
+was a mis-description of an older wire and is never called in a reference-v3
+series. The audit step is `submit_audit(payload={sender, records,
+result_claim})`, each record `{payload, nonce, commit}` — the preimage travels
+beside the digest, so neither side reconstructs the other's payload and both
+can recompute every commitment.
+
+FR4 stands regardless: when a record cannot be rebuilt the audit still reports
+`unverifiable` rather than `accepted`. A green light we did not compute would
+be worse than no light, and the shape agreeing today is not a reason to drop
+the check that notices when it stops agreeing.
 
 ## Requirements
 
 * **FR1** — Serve the six inbound `receive_*` tools, validated before any
   state change, with refusals that name the offending field.
-* **FR2** — An outbound client that pushes our commit, reveal, ack and final
-  audit to their endpoint, dropping `signature` from the commit and `nonce` /
-  `state` from the reveal, per their signatures.
-* **FR3** — Buffer every nonce we drop and emit them all through
-  `receive_final_audit` at sub-game end.
+* **FR2** — An outbound client that pushes our commit, reveal and ack to
+  their endpoint, dropping `signature` from the commit and `nonce` / `state`
+  from the reveal, per their signatures, and closes the sub-game with
+  `submit_audit`.
+* **FR3** — Buffer every nonce we drop, with the payload and digest it
+  belongs to, and emit them all as `submit_audit` records at sub-game end.
 * **FR4** — At final audit, re-hash whatever CAN be reconstructed and mark
   the rest `unverifiable`. Never report a pass that was not computed.
 * **FR5** — The dialect is OPT-IN (`--dialect push`). Our own authenticated
