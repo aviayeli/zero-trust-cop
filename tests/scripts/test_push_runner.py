@@ -37,31 +37,41 @@ class FakeOpponent:
 
 
 @pytest.fixture
+def thief_app():
+    return create_app("thief", dialect="push")
+
+
+@pytest.fixture
 def app():
     """The shipped peer, so the runner is exercised against the real policy
     and the real contract rather than a stub of either."""
     return create_app("police", dialect="push")
 
 
-def _opponent_feeder(app, moves=("MOVE:S",)):
-    """Their pushes arriving between our polls, one step per poll."""
+def _opponent_feeder(*apps, moves=("MOVE:S",)):
+    """Their pushes arriving between our polls, one step per poll.
+
+    Fills every peer we serve, because which of ours they push to changes
+    with the role schedule and the opponent does not announce the switch.
+    """
     async def wait():
-        step = len(app.push.commits) + 1
-        payload = {"step": step, "move": moves[(step - 1) % len(moves)]}
-        app.push.commits[step] = interop.commit(payload, f"theirs-{step}")
-        app.push.reveals[step] = {
-            "role": "thief", "move": moves[(step - 1) % len(moves)],
-            "hint": "", "intent": "truth",
-        }
+        for app in apps:
+            step = len(app.push.commits) + 1
+            move = moves[(step - 1) % len(moves)]
+            payload = {"step": step, "move": move}
+            app.push.commits[step] = interop.commit(payload, f"theirs-{step}")
+            app.push.reveals[step] = {"role": "thief", "move": move,
+                                      "hint": "", "intent": "truth"}
     return wait
 
 
-def _play(app, sub_games=1, max_steps=3, moves=("MOVE:S",)):
+def _play(app, sub_games=1, max_steps=3, moves=("MOVE:S",), apps=None):
     peer = FakeOpponent()
-    client = PushClient(peer, role="police")
+    served = apps or {"police": app}
     summaries = asyncio.run(play_series(
-        app, client, sub_games=sub_games, seed=7,
-        wait=_opponent_feeder(app, moves), max_steps=max_steps,
+        served, peer, sub_games=sub_games, seed=7,
+        wait=_opponent_feeder(*served.values(), moves=moves),
+        max_steps=max_steps, first_role="police",
     ))
     return peer, summaries
 
@@ -99,8 +109,9 @@ def test_our_engine_actually_advances(app):
     assert app.match_state.turn_count > before
 
 
-def test_each_sub_game_ends_with_one_audit(app):
-    peer, summaries = _play(app, sub_games=2, max_steps=2)
+def test_each_sub_game_ends_with_one_audit(app, thief_app):
+    peer, summaries = _play(app, sub_games=2, max_steps=2,
+                            apps={"police": app, "thief": thief_app})
 
     assert len(peer.args_for("submit_audit")) == 2
     assert len(summaries) == 2
@@ -117,10 +128,11 @@ def test_the_audit_records_reproduce_the_commits_we_pushed(app):
         assert interop.commit(record["payload"], record["nonce"]) == record["commit"]
 
 
-def test_the_opponent_store_is_cleared_between_sub_games(app):
+def test_the_opponent_store_is_cleared_between_sub_games(app, thief_app):
     """Carrying their step 1 into the next sub-game would let a stale commit
     satisfy a step we never played."""
-    peer, summaries = _play(app, sub_games=2, max_steps=2)
+    peer, _ = _play(app, sub_games=2, max_steps=2,
+                    apps={"police": app, "thief": thief_app})
 
     first, second = peer.args_for("submit_audit")
     assert len(first["payload"]["records"]) == 2

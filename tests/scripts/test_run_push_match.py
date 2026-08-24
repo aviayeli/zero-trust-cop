@@ -17,13 +17,33 @@ def test_the_cli_requires_an_opponent_url():
     from scripts.run_push_match import parse_args
 
     with pytest.raises(SystemExit):
-        parse_args(["--role", "police", "--seed", "1"])
+        parse_args(["--seed", "1"])
 
 
-def test_the_cli_defaults_to_a_single_sub_game():
+def test_the_cli_plays_the_whole_series_by_default():
+    """A league series is six sub-games. Defaulting to one would leave the
+    operator alternating roles by hand in the middle of a live match."""
     from scripts.run_push_match import parse_args
 
-    args = parse_args(["--role", "police", "--seed", "1",
-                       "--opponent-url", "https://x/mcp"])
+    args = parse_args(["--seed", "1", "--opponent-url", "https://x/mcp"])
 
-    assert args.sub_games == 1 and args.opponent_url == "https://x/mcp"
+    assert args.sub_games == 6
+    assert args.first_role == "police"
+    assert args.opponent_url == "https://x/mcp"
+
+
+def test_the_starting_side_is_selectable():
+    from scripts.run_push_match import parse_args
+
+    assert parse_args(["--seed", "1", "--opponent-url", "https://x/mcp",
+                       "--first-role", "thief"]).first_role == "thief"
+
+
+def test_there_is_no_single_role_flag_any_more():
+    """--role would describe only the first sub-game and silently mislead
+    about the other five."""
+    from scripts.run_push_match import parse_args
+
+    with pytest.raises(SystemExit):
+        parse_args(["--seed", "1", "--opponent-url", "https://x/mcp",
+                    "--role", "police"])

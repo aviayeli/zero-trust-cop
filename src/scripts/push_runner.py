@@ -17,6 +17,7 @@ from random import Random
 
 from engine.barriers import populated_board
 from mcp_server.directions import LIE, TRUTH, decode, encode, token_for_claim
+from mcp_server.push_client import PushClient
 
 # The engine names the sides cop/thief; the wire names the peers police/thief.
 _OPPONENT = {"cop": "thief", "thief": "cop"}
@@ -79,31 +80,62 @@ def _reset(app) -> None:
     store.nonces.clear()
 
 
-async def play_series(app, client, sub_games: int, seed: int, wait,
-                      max_steps=None, max_polls=None) -> list:
-    """Play ``sub_games`` sub-games through ``client`` and return a summary each.
+_WIRE_OPPOSITE = {"police": "thief", "thief": "police"}
 
-    ``seed`` drives the policy's RNG, so a series replays move for move.
+
+def role_schedule(sub_games: int, first_role: str) -> list:
+    """Which side WE play in each sub-game, alternating every one.
+
+    Both teams agreed the sides swap per sub-game, so the schedule is a pure
+    function of who starts -- neither peer has to be told it.
+    """
+    roles = [first_role]
+    while len(roles) < sub_games:
+        roles.append(_WIRE_OPPOSITE[roles[-1]])
+    return roles
+
+
+async def play_series(apps: dict, call, sub_games: int, seed: int, wait,
+                      first_role: str = "police", max_steps=None,
+                      max_polls=None) -> list:
+    """Play a whole series, swapping sides every sub-game.
+
+    ``apps`` maps our wire role to the peer that serves it. BOTH are needed
+    for an alternating series: their pushes land in the store of whichever of
+    our peers is playing that sub-game, and that peer changes every time.
+
+    ``seed`` drives the policy's RNG once for the whole series, so a replay
+    reproduces it move for move without every sub-game being identical.
+
+    Raises:
+        ValueError: a scheduled role has no peer. Better than silently
+            playing the wrong side for half the series.
     """
     from scripts.push_match_loop import play_sub_game
 
+    schedule = role_schedule(sub_games, first_role)
+    missing = sorted({r for r in schedule if r not in apps})
+    if missing:
+        raise ValueError(
+            f"no peer for scheduled role(s) {missing}: an alternating series "
+            f"needs both, got {sorted(apps)}"
+        )
+
     rng = Random(seed)
-    # Both peers derive the identical layout from the contract's barrier_seed,
-    # so the board needs no wire message (PLAN.md §4.3).
-    board = populated_board(app.config)
-    steps = max_steps if max_steps is not None else app.config.max_moves
     summaries = []
 
-    for index in range(1, sub_games + 1):
-        if index > 1:
-            _reset(app)
+    for index, role in enumerate(schedule, start=1):
+        app = apps[role]
+        _reset(app)
+        # Both peers derive the identical layout from the contract's
+        # barrier_seed, so the board needs no wire message (PLAN.md §4.3).
+        board = populated_board(app.config)
+        steps = max_steps if max_steps is not None else app.config.max_moves
         kwargs = {} if max_polls is None else {"max_polls": max_polls}
         summary = await play_sub_game(
-            client, app.push, choose=_chooser(app, rng, board),
+            PushClient(call, role), app.push, choose=_chooser(app, rng, board),
             advance=_advancer(app), max_steps=steps, wait=wait, **kwargs
         )
-        summaries.append({"sub_game": index, **summary})
-        if index < sub_games:
-            _reset(app)
+        summaries.append({"sub_game": index, "role": role, **summary})
 
     return summaries
