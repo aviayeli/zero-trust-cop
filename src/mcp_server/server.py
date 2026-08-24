@@ -9,12 +9,8 @@ Composition root only: it loads peer config, assembles the episode, buffer,
 commitment book, authenticated submission gate and greedy policy, then hands
 tool registration to mcp_server.tools.
 
-TWO DIALECTS are served on one app: our native commit/reveal surface
-(mcp_server.tools) and the league's reference-v3 surface
-(mcp_server.reference_tools), so an opponent on either can reach this peer.
-Compare tool LISTS before comparing anything inside them -- two peers can
-agree every term and still exchange nothing because their surfaces are
-disjoint.
+Two dialects are served by default, ours and reference-v3, and a third is
+opt-in; which and why is ``mcp_server.dialects``.
 """
 
 import argparse
@@ -28,7 +24,7 @@ from engine.game_loop import GameEpisode
 from mcp_server.commitments import CommitmentBook
 from mcp_server.match_state import MatchState
 from mcp_server.peer_keys import load_public_keys
-from mcp_server import reference_surface
+from mcp_server import dialects
 from mcp_server.peer_policy import build_peer_policy
 from mcp_server.submissions import SubmissionGate
 from mcp_server.transport import load_network_settings
@@ -48,7 +44,8 @@ def peer_config_path(role, config_root=None):
     return os.path.join(config_root, role, _CONFIG_FILENAME)
 
 
-def create_app(role, config=None, config_root=None, clock=None):
+def create_app(role, config=None, config_root=None, clock=None,
+               dialect=None):
     """Build a wired FastMCP app for a peer role.
 
     Args:
@@ -95,13 +92,15 @@ def create_app(role, config=None, config_root=None, clock=None):
 
     # The reference-v3 half. `inbox` is where an inbound TurnMessage lands:
     # the transport is symmetric push, so each side polls its own inbox.
-    reference = reference_surface.build(mcp, role, config_path, config_root)
+    surfaces = dialects.build(mcp, role, config_path, config_root, dialect)
 
     return SimpleNamespace(
         mcp=mcp,
-        inbox=reference.inbox,
-        terms=reference.terms,
-        **reference.tools,
+        inbox=surfaces.inbox,
+        terms=surfaces.terms,
+        push=surfaces.push_store,
+        dialect=dialect,
+        **surfaces.tools,
         match_state=match_state,
         book=book,
         gate=gate,
@@ -116,33 +115,17 @@ def create_app(role, config=None, config_root=None, clock=None):
 
 
 def parse_args(argv=None):
-    """Parse CLI arguments: --role (required), --config-root (optional)."""
-    parser = argparse.ArgumentParser(description="Zero-trust cop-thief MCP server")
-    parser.add_argument(
-        "--role",
-        required=True,
-        choices=PEER_ROLES,
-        help="Peer role: police or thief",
-    )
-    parser.add_argument(
-        "--config-root",
-        default=None,
-        help="Config directory root (default: ZTC_CONFIG_ROOT env or 'config')",
-    )
-    parser.add_argument(
-        "--transport",
-        default="streamable-http",
-        choices=("stdio", "streamable-http"),
-        help="Wire transport; D1 rules streamable HTTP for local P2P play",
-    )
-    return parser.parse_args(argv)
+    """Re-exported from ``mcp_server.cli``; see that module."""
+    from mcp_server.cli import parse_args as _parse
+
+    return _parse(argv)
 
 
 def main(argv=None):
-    """Run the MCP server for a peer."""
-    args = parse_args(argv)
-    app = create_app(args.role, config_root=args.config_root)
-    app.mcp.run(transport=args.transport)
+    """Re-exported so ``python -m mcp_server.server`` keeps working."""
+    from mcp_server.cli import main as _main
+
+    return _main(argv)
 
 
 if __name__ == "__main__":

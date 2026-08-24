@@ -23,9 +23,6 @@ SENDERS = ("police", "thief")
 
 TURN_REQUIRED = ("step", "sender", "hint", "smell_grid", "commit", "timestamp")
 TURN_OPTIONAL = ("barrier_placed", "capture_claim", "claim_response", "win_claim")
-AUDIT_REQUIRED = ("sender", "records", "result_claim")
-CONTROL_REQUIRED = ("kind", "sender")
-_AUDIT_RECORD_KEYS = ("payload", "nonce", "commit")
 
 # A step is a ROUND -- one action from each side -- not a half-turn. Stated as
 # a constant because it is the desync no gate on either side would report.
@@ -98,39 +95,4 @@ def validate_turn_message(message) -> str:
             lambda v: isinstance(v, str) and v.strip() != "",
             "timestamp: required non-empty str",
         ),
-    })
-
-
-def _records_ok(records) -> bool:
-    return (
-        isinstance(records, list)
-        and bool(records)
-        and all(isinstance(record, dict) for record in records)
-    )
-
-
-def validate_audit_payload(payload) -> str:
-    """One ``AuditPayload`` per sub-game: the sealed chain WITH nonces.
-
-    ``result_claim`` is what this side believes the sub-game ended as. The
-    opponent's audit settles it -- never the claim.
-    """
-    verdict = _check(payload, {
-        "sender": (_sender_ok, "sender: required 'police' | 'thief'"),
-        "records": (_records_ok, "records: required non-empty list"),
-        "result_claim": (lambda v: isinstance(v, dict), "result_claim: required object"),
-    })
-    if verdict != ACCEPT:
-        return verdict
-    for record in payload["records"]:
-        if not all(key in record for key in _AUDIT_RECORD_KEYS):
-            return "records: each record needs payload, nonce, commit"
-    return ACCEPT
-
-
-def validate_control_message(message) -> str:
-    """A status channel touching no game state, never sealed and never scored."""
-    return _check(message, {
-        "kind": (lambda v: isinstance(v, str) and v != "", "kind: required non-empty str"),
-        "sender": (_sender_ok, "sender: required 'police' | 'thief'"),
     })

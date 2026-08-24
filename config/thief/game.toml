@@ -53,8 +53,8 @@ thief = "https://github.com/aviayeli/zero-trust-thief"
 
 [email]
 # Where the end-of-series report goes.
-recipient = "atrabe08@gmail.com"
+recipient = "avi.ayeli@gmail.com"
 # auto  = send if credentials exist, otherwise write a local draft
 # draft = never send; always write the draft artifact
 # send  = require a real send; report failure rather than drafting
-mode = "draft"
+mode = "send"

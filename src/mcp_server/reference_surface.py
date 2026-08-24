@@ -48,6 +48,6 @@ def build(mcp, role: str, config_path: str, config_root: str | None = None):
     inbox: list = []
     tools = register_reference_tools(
         mcp, inbox, terms, lambda: identity_block(role, config_root),
-        lambda: token_hex(_NONCE_BYTES),
+        lambda: token_hex(_NONCE_BYTES), role,
     )
     return SimpleNamespace(inbox=inbox, terms=terms, tools=tools)

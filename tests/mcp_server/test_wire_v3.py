@@ -15,7 +15,7 @@ from pathlib import Path
 
 import pytest
 
-from mcp_server import wire_v3
+from mcp_server import wire_v3, wire_v3_session
 
 VECTORS = Path(__file__).parent.parent / "fixtures" / "interop"
 FIXTURE = json.loads((VECTORS / "turn_message.json").read_text(encoding="utf-8"))
@@ -68,7 +68,7 @@ def test_a_non_mapping_message_is_refused_without_raising():
 
 
 def test_the_audit_required_keys_match_the_published_set():
-    assert sorted(wire_v3.AUDIT_REQUIRED) == sorted(FIXTURE["audit_payload"]["required"])
+    assert sorted(wire_v3_session.AUDIT_REQUIRED) == sorted(FIXTURE["audit_payload"]["required"])
 
 
 def test_an_audit_carries_its_nonces():
@@ -78,28 +78,28 @@ def test_an_audit_carries_its_nonces():
                "records": [{"step": 1, "payload": {"move": "MOVE:N"},
                             "nonce": "ab", "commit": "a" * 64}]}
 
-    assert wire_v3.validate_audit_payload(payload) == "accept"
+    assert wire_v3_session.validate_audit_payload(payload) == "accept"
     stripped = {**payload, "records": [{"step": 1, "payload": {}, "commit": "a" * 64}]}
-    assert wire_v3.validate_audit_payload(stripped) == \
+    assert wire_v3_session.validate_audit_payload(stripped) == \
         "records: each record needs payload, nonce, commit"
 
 
 def test_an_audit_with_no_records_is_refused():
-    assert wire_v3.validate_audit_payload(
+    assert wire_v3_session.validate_audit_payload(
         {"sender": "police", "records": [], "result_claim": {}}
     ) == "records: required non-empty list"
 
 
 def test_a_control_message_needs_only_kind_and_sender():
-    assert sorted(wire_v3.CONTROL_REQUIRED) == sorted(
+    assert sorted(wire_v3_session.CONTROL_REQUIRED) == sorted(
         FIXTURE["control_message"]["required"])
-    assert wire_v3.validate_control_message(
+    assert wire_v3_session.validate_control_message(
         {"kind": "status", "sender": "police"}) == "accept"
-    assert wire_v3.validate_control_message({"kind": "status"}) == \
+    assert wire_v3_session.validate_control_message({"kind": "status"}) == \
         "sender: required 'police' | 'thief'"
 
 
 def test_control_touches_no_game_state():
     """A status channel that is never sealed and never scored."""
-    assert wire_v3.validate_control_message(
+    assert wire_v3_session.validate_control_message(
         {"kind": "status", "sender": "thief", "unknown": 1}) == "accept"
