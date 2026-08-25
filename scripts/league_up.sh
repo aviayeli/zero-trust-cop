@@ -10,6 +10,11 @@
 # with its tunnel never coming up — so each config pins its own web_addr
 # (cop 4040, thief 4041) and each agent's public URL is read from its OWN API.
 #
+# The declaration is UPDATED here, not merely printed: it ships naming
+# 127.0.0.1, and a graded artifact went out advertising loopback for a match
+# that was really played over these tunnels. Advertising the URL we just
+# created for that role also removes the hand-paste that could swap them.
+#
 # The ports live in config/<role>/game.toml. They are repeated in the ngrok
 # configs because ngrok cannot read TOML, so this script CHECKS the two agree
 # and refuses to start on drift rather than tunnelling to a dead port.
@@ -150,9 +155,9 @@ if [[ $UNIFIED == 1 ]]; then
   echo "the opponent to get backwards. Serve it with:"
   echo "  PYTHONPATH=src $PY -m scripts.unified_serve --first-role police"
   echo
-  echo "Advertise it for BOTH roles in the declaration they read:"
-  echo "  PYTHONPATH=src $PY -m scripts.setup_league_match --role police --public-url ${PUBLIC[unified]}"
-  echo "  PYTHONPATH=src $PY -m scripts.setup_league_match --role thief  --public-url ${PUBLIC[unified]}"
+  echo "Advertised for BOTH roles in the declaration the opponent reads:"
+  PYTHONPATH=src $PY -m scripts.setup_league_match --role police --public-url "${PUBLIC[unified]}" | head -1
+  PYTHONPATH=src $PY -m scripts.setup_league_match --role thief  --public-url "${PUBLIC[unified]}" | head -1
 else
   echo "[ok] cop   ${PUBLIC[cop]}/mcp"
   echo "[ok] thief ${PUBLIC[thief]}/mcp"
@@ -160,7 +165,7 @@ else
   echo "SEND BOTH TO THE OPPONENT. They dial the side they are playing AGAINST:"
   echo "as their thief they call our cop URL, as their cop our thief URL."
   echo
-  echo "Advertise them in the declaration they read:"
-  echo "  PYTHONPATH=src $PY -m scripts.setup_league_match --role police --public-url ${PUBLIC[cop]}"
-  echo "  PYTHONPATH=src $PY -m scripts.setup_league_match --role thief  --public-url ${PUBLIC[thief]}"
+  echo "Advertised in the declaration the opponent reads:"
+  PYTHONPATH=src $PY -m scripts.setup_league_match --role police --public-url "${PUBLIC[cop]}"   | head -1
+  PYTHONPATH=src $PY -m scripts.setup_league_match --role thief  --public-url "${PUBLIC[thief]}" | head -1
 fi

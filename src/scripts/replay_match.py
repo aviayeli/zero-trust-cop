@@ -28,6 +28,7 @@ from scripts.log_checks import check_commitments, check_replay, check_signatures
 from scripts.log_shape import check_intents, check_structure, check_turn_indices
 from scripts.render_replay import DEFAULT_DELAY, pause_for, render_replay
 
+REFERENCE_WIRE = "reference-v3"
 VERIFIED = "Verified OK"
 TAMPERED = "TAMPERED!"
 _GREEN, _RED, _RESET = "\033[32m", "\033[31m", "\033[0m"
@@ -108,6 +109,20 @@ def main(argv=None):
 
     with open(args.log_path) as log_file:
         log = json.load(log_file)
+
+    # A reference-v3 turn carries {step, ours, theirs}; the native verifier
+    # below reads a `submissions` block and refuses it as tampered (PRD_17).
+    if log.get("wire_shape") == REFERENCE_WIRE:
+        from scripts.reference_replay import verify
+
+        report = verify(log, load_config(args.config).grid_size)
+        print(colourise(str(report), report.ok, colour_enabled()))
+        for failure in report.failures:
+            print(f"  - {failure}")
+        if report.ok:
+            print(f"  {report.caveat}")
+        raise SystemExit(0 if report.ok else 1)
+
     config = load_config(args.config)
     public_keys = load_public_keys(args.own_role, args.config_root)
 
