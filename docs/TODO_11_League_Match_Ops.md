@@ -280,3 +280,32 @@ Derived from `PLAN_11_League_Match_Ops.md` §11b.
       "our two peers listen on different ports", which is false in unified
       mode. It is shared by both topologies, so it needs a wording that is
       true of each rather than a quick edit.
+
+## 11.13 A series cannot be resumed, and that desynced a live match
+
+Found against bb-ai-12 on 2026-08-25, after sub-game 1 finally played.
+
+- [x] **Sub-game 1 played 35/35 but our closing `submit_audit` got 502** --
+      their peer exits once it has pushed its own last turn. That exception
+      ended our whole run, so we never entered sub-game 2.
+- [x] **Every launch starts a fresh series at sub-game 1.** `play_series`
+      walks `role_schedule(sub_games, first_role)` from `index = 1`; there is
+      no resume. So our supervisor relaunched into sub-game 1 as police while
+      the opponent had correctly advanced to sub-game 2 as cop.
+- [x] **The two sides were then reading different boxes.** As cop they push to
+      our THIEF endpoint (`endpoint_for`), whose inbox is a different list from
+      the police one our relaunched run was polling. Our diagnostic read
+      `our inbox: 0 msg, steps=[], senders=[]` -- not a refusal, we were
+      looking elsewhere.
+- [x] Their hypothesis -- "the fix is only live on your police path" -- is
+      disprovable from the source: the fix is `app.inbox.clear()` on
+      `app = apps[role]`, one role-agnostic line.
+
+- [ ] **Open: no resume, and no way to survive a peer that leaves at the
+      boundary.** Two candidate directions, neither taken here:
+      a `--start-at-sub-game N` so a relaunch can rejoin a series in progress,
+      and treating a failed CLOSING audit as a completed sub-game rather than
+      a fatal error -- the 35 turns are played and sealed either way, and
+      discarding them because the opponent hung up first loses real evidence.
+      Both need their own PRD; the immediate mitigation is one sub-game per
+      launch, which has no boundary to desync at.
