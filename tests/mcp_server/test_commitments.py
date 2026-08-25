@@ -3,7 +3,6 @@
 from mcp_server.commitments import CommitmentBook
 from mcp_server.crypto import commit
 
-
 STATE = "turn-state"
 INTENT = "move"
 

@@ -17,7 +17,6 @@ from pathlib import Path
 
 import pytest
 
-from mcp_server import interop
 from mcp_server.terms import terms_from_config
 
 FIXTURE = json.loads(

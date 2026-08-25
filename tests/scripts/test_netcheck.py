@@ -13,7 +13,12 @@ handshake and the comparison; the shared fake lives in
 
 import pytest
 from netcheck_peer import (
-    TOOLS, FakePeer, load_terms, run_probe, signed_reply, verdict_for,
+    TOOLS,
+    FakePeer,
+    load_terms,
+    run_probe,
+    signed_reply,
+    verdict_for,
 )
 
 from scripts import netcheck

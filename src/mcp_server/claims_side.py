@@ -29,8 +29,8 @@ from __future__ import annotations
 
 from engine.actions import parse_action
 from engine.player import PlayerState, intended_position
-from mcp_server.directions import decode
 from mcp_server.barrier_record import BarrierRecord
+from mcp_server.directions import decode
 from mcp_server.smell_trail import SmellTrail
 
 POLICE, THIEF = "police", "thief"

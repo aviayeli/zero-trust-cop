@@ -13,7 +13,6 @@ Two dialects are served by default, ours and reference-v3, and a third is
 opt-in; which and why is ``mcp_server.dialects``.
 """
 
-import argparse
 import os
 from types import SimpleNamespace
 
@@ -21,15 +20,14 @@ from mcp.server.fastmcp import FastMCP
 
 from engine.config import load_config
 from engine.game_loop import GameEpisode
+from mcp_server import dialects
 from mcp_server.commitments import CommitmentBook
 from mcp_server.match_state import MatchState
 from mcp_server.peer_keys import load_public_keys
-from mcp_server import dialects
 from mcp_server.peer_policy import build_peer_policy
 from mcp_server.submissions import SubmissionGate
-from mcp_server.transport import load_network_settings
 from mcp_server.tools import register_tools
-
+from mcp_server.transport import load_network_settings
 
 PEER_ROLES = ("police", "thief")
 _ENGINE_ROLE = {"police": "cop", "thief": "thief"}

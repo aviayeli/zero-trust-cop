@@ -20,8 +20,6 @@ import json
 import os
 from dataclasses import replace
 
-from dataclasses import replace
-
 from engine.config import load_config
 from scripts.offmanifold_probe import build_table, evaluate, start_pairs
 from strategy.fallback import MANHATTAN_PRIMARY, QTABLE_PRIMARY
@@ -36,7 +34,7 @@ _COLUMNS = ("policy", "opponent", "capture_rate", "mean_turns", "flat_state_rate
 def load_benchmark_settings(config_root: str = _DEFAULT_CONFIG_ROOT) -> dict:
     """Read the probe's own tunables; none of them are inlined in Python."""
     path = os.path.join(config_root, _BENCHMARK_CONFIG)
-    with open(path, "r", encoding="utf-8") as settings:
+    with open(path, encoding="utf-8") as settings:
         return json.load(settings)
 
 

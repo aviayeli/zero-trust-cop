@@ -10,12 +10,11 @@ not lie detection: it measures stated intent versus action only, so a peer
 with an honest intent and good strategy remains honest.
 """
 
-from collections import defaultdict
 import re
+from collections import defaultdict
 
 from engine.config import GameConfig
 from strategy.settings import StrategySettings
-
 
 _DIRECTION_WORDS = {
     "north": "N",
@@ -34,7 +33,7 @@ class BeliefTracker:
     def __init__(self, config: GameConfig, settings: StrategySettings):
         self.config = config
         self.settings = settings
-        self._counts = defaultdict(lambda: {verdict: 0 for verdict in _VERDICTS})
+        self._counts = defaultdict(lambda: dict.fromkeys(_VERDICTS, 0))
         self._moves = {str(token).upper(): token for token in config.move_set}
 
     def record(self, peer: str, intent: str, move: str) -> str:
@@ -63,7 +62,7 @@ class BeliefTracker:
         """Return every verdict tally for a peer, including zero tallies."""
         counts = self._counts.get(peer)
         if counts is None:
-            return {verdict: 0 for verdict in _VERDICTS}
+            return dict.fromkeys(_VERDICTS, 0)
         return dict(counts)
 
     def _named_moves(self, intent: str) -> set[str]:

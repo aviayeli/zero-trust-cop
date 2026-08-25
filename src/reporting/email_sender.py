@@ -21,7 +21,11 @@ import json
 import logging
 import os
 
-from reporting.gmail_transport import SCOPE, TOKEN_FILE, gmail_send
+from reporting.gmail_transport import (  # noqa: F401  -- SCOPE re-exported
+    SCOPE,
+    TOKEN_FILE,
+    gmail_send,
+)
 from reporting.mime_report import attachment_json, build_message, summary_text
 
 DEFAULT_RECIPIENT = "rmisegal+uoh26finalgame@gmail.com"

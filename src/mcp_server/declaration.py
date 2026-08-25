@@ -18,7 +18,6 @@ import os
 import platform
 import subprocess
 
-
 _UNKNOWN = "unknown"
 SYSTEM_SPEC = "system_spec"
 _NO_HARDWARE = "none"

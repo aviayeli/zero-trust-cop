@@ -6,7 +6,6 @@ nothing from that cell, never a reason to end a live match, and ties break
 the way the kit's `hottest` breaks them so a replay agrees across teams.
 """
 
-import pytest
 
 from mcp_server.smell_trail import strongest_cell
 

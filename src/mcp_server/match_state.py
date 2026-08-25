@@ -30,7 +30,7 @@ class SubmitOutcome:
     when resolved; `reason` holds a machine code when rejected."""
 
     status: str
-    result: "object | None" = None
+    result: object | None = None
     reason: str | None = None
 
 

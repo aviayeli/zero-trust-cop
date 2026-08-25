@@ -10,7 +10,6 @@ assert and neither is visible by reading the training output:
   tables came to be specialised to one board.
 """
 
-from dataclasses import replace
 
 import pytest
 

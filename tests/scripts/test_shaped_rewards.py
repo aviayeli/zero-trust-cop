@@ -114,7 +114,7 @@ def test_zeroing_both_shaping_terms_restores_the_old_sparse_signal(
 ):
     """The shaping is configuration, not a hardcoded behaviour change."""
     cop_settings, thief_settings = training_settings(num_games=2)
-    unshaped = dict(step_cost=0.0, invalid_move_penalty=0.0)
+    unshaped = {"step_cost": 0.0, "invalid_move_penalty": 0.0}
     seen = _record_learn_calls(monkeypatch)
 
     train_tournament(

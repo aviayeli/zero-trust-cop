@@ -1,7 +1,7 @@
 """Board management for the game engine."""
 
 from engine.config import GameConfig
-from engine.errors import IllegalBarrierPlacementError, BarrierLimitError
+from engine.errors import BarrierLimitError, IllegalBarrierPlacementError
 
 
 class Board:

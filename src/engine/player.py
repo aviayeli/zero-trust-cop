@@ -1,6 +1,7 @@
 """Player state and movement for the game engine."""
 
 from dataclasses import dataclass
+
 from engine.actions import Action, action_delta
 
 

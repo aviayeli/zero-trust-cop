@@ -119,8 +119,8 @@ def main(argv=None) -> int:
         RESULT_PATH, args.recipient, config_mode=args.mode
     )
     if delivered and args.mode == "draft":
-        print("\nOK: drafted only. See logs/email_draft_%s.txt; "
-              "nothing was sent." % GAME_UID)
+        print(f"\nOK: drafted only. See logs/email_draft_{GAME_UID}.txt; "
+              "nothing was sent.")
         return 0
     if delivered:
         print(f"\nOK: report handled. Check the inbox of {args.recipient} "

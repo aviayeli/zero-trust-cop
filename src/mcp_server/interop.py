@@ -69,7 +69,7 @@ def commit(payload: dict, nonce: str) -> str:
     re-hash every revealed ``(payload, nonce)`` and must reproduce it.
     """
     return hashlib.sha256(
-        f"{canonical_str(payload)}{NONCE_SEPARATOR}{nonce}".encode("utf-8")
+        f"{canonical_str(payload)}{NONCE_SEPARATOR}{nonce}".encode()
     ).hexdigest()
 
 

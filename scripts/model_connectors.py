@@ -15,12 +15,10 @@ Stdlib only, deliberately: this is dev tooling and must not add a runtime
 dependency to a submission graded on its dependency list.
 """
 
-import json
-import os
 import subprocess
 
 import cloud_connectors
-from http_post import BROWSER_AGENT, ConnectorError, post
+from http_post import ConnectorError, post
 
 OLLAMA_URL = "http://localhost:11434/api/generate"
 # A cold local model can spend a minute loading weights before its first token.

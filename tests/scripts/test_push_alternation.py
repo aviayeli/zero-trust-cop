@@ -11,7 +11,6 @@ import asyncio
 import pytest
 
 from mcp_server import interop
-from mcp_server.push_client import PushClient
 from mcp_server.server import create_app
 from scripts.push_runner import play_series
 

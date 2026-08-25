@@ -12,7 +12,11 @@ playing a different game.
 
 import pytest
 from netcheck_peer import (
-    FakePeer, load_terms, run_probe, signed_reply, verdict_for,
+    FakePeer,
+    load_terms,
+    run_probe,
+    signed_reply,
+    verdict_for,
 )
 
 from scripts import netcheck

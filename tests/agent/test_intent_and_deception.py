@@ -1,6 +1,5 @@
 """Tests for intent generation and deception logic."""
 
-import pytest
 
 from agent.agent_core import AgentPolicy
 from strategy.belief import BeliefTracker

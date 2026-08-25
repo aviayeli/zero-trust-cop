@@ -9,12 +9,11 @@ Every key is required. A half-configured peer that silently fell back to a
 default port would bind somewhere its opponent is not calling.
 """
 
-from dataclasses import dataclass
 import tomllib
+from dataclasses import dataclass
 
 from mcp_server.tunnel import parse_public_url
 from strategy.settings import strategy_settings_path
-
 
 # A wildcard bind means "every interface"; it names no host to connect TO.
 # Translating it is what lets a peer be exposed for league play without

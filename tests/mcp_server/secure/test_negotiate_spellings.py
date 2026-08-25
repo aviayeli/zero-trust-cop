@@ -12,11 +12,9 @@ The refusal case matters more than the acceptance: a peer reading only
 
 import asyncio
 import json
-
-from mcp_server import interop
-
 from pathlib import Path
 
+from mcp_server import interop
 from mcp_server.terms import terms_from_config
 
 

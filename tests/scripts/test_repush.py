@@ -14,8 +14,6 @@ retry.
 
 import asyncio
 
-import pytest
-
 from scripts.claims_guards import await_turn
 
 

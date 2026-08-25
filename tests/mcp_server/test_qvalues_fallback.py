@@ -8,8 +8,8 @@ opponent's RELATIVE cell, so a distance-greedy choice is available without
 widening the state space or touching the learned manifold.
 """
 
-from dataclasses import replace
 import random
+from dataclasses import replace
 
 import pytest
 

@@ -99,8 +99,7 @@ def _sub_game(row: dict, ours: dict, log: dict, us: str, them: str,
         # We do not meter tokens; both reference reports carry zeros.
         "tokens": {us: 0, them: 0},
         "score": dict(row["score"]),
-        "log_files": {group: f"log_{game_id}_g{number:02d}.json"
-                      for group in (us, them)},
+        "log_files": dict.fromkeys((us, them), f"log_{game_id}_g{number:02d}.json"),
         "audit": _audit(log),
     }
 

@@ -26,6 +26,7 @@ import time
 from mcp_server.turn_message import build_turn, sealed_payload
 from scripts.claims_guards import DEFAULT_MAX_POLLS, accepted, await_turn
 
+
 async def _settle(client, result_claim) -> dict:
     """Close the sub-game with their audit -- or record that we never got one.
 

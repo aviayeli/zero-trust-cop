@@ -12,7 +12,6 @@ silent logical divergence into a startup error.
 """
 
 import json
-from dataclasses import replace
 
 import pytest
 

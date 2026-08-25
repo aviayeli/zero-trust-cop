@@ -4,7 +4,6 @@ import asyncio
 
 from mcp_server.match_state import MatchState, SubmitOutcome
 
-
 # --- buffer basics ---------------------------------------------------------
 
 def test_buffer_starts_empty(fresh):

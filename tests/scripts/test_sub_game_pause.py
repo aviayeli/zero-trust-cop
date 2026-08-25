@@ -25,7 +25,7 @@ from scripts.claims_runner import play_series
 
 
 @pytest.fixture
-def apps(config):  # noqa: F811
+def apps(config):
     return {role: SimpleNamespace(config=config, inbox=[], policy=StubPolicy(),
                                   terms=dict(TERMS),
                                   identity=lambda: {"group_name": "aviayeli"})

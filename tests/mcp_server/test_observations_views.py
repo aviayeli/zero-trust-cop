@@ -2,7 +2,6 @@
 
 from mcp_server.observations import build_move_waiting, build_observation
 
-
 # --- build_observation -------------------------------------------------
 
 

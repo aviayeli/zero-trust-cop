@@ -128,7 +128,7 @@ def _report(result_path, args) -> None:
     try:
         report_by_email(result_path, args.config_root, args.logs_dir,
                         mode=args.email_mode)
-    except Exception as failure:  # noqa: BLE001 - reporting may not fail play
+    except Exception as failure:
         print(f"email_report=FAILED {type(failure).__name__}: {failure}",
               flush=True)
 

@@ -2,7 +2,6 @@
 
 from mcp_server.observations import build_move_error, build_move_resolved
 
-
 # --- build_move_resolved --------------------------------------------------
 
 

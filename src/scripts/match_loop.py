@@ -10,7 +10,6 @@ and are compared every turn — which is the point, since neither peer trusts
 the other's engine. A disagreement is raised, never absorbed.
 """
 
-from mcp_server.directions import stated_hint
 
 from scripts.board_agreement import verify_board_agreement
 

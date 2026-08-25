@@ -20,8 +20,6 @@ from engine.config import load_config
 from scripts.board_agreement import BoardMismatchError, verify_board_agreement
 
 
-
-
 @pytest.fixture
 def config():
     return load_config("config/game.json")

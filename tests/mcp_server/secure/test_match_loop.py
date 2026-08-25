@@ -16,7 +16,6 @@ from mcp_server.peer_client import PeerClient
 from mcp_server.server import create_app
 from scripts.match_loop import (
     DivergenceError,
-    divergence,
     exchange_turn,
     play_match,
 )

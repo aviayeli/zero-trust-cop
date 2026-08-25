@@ -6,8 +6,6 @@ plaintext `make_move` had none of.
 
 import asyncio
 
-from mcp_server.identity import sign
-
 
 def test_a_commitment_signed_with_the_wrong_key_is_rejected(
     app, peer_keys, make_commitment

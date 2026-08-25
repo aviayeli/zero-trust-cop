@@ -17,10 +17,14 @@ ignored, which from our side is indistinguishable from a slow peer.
 import asyncio
 
 import pytest
-from types import SimpleNamespace
-
-from claims_series import (TERMS, FakeOpponent, StubPolicy, _nothing,
-                           _series, apps, config, play_series)
+from claims_series import (  # noqa: F401  -- `apps`/`config` are FIXTURES
+    FakeOpponent,
+    _nothing,
+    _series,
+    apps,
+    config,
+    play_series,
+)
 
 
 def test_every_sub_game_opens_with_a_handshake(apps):

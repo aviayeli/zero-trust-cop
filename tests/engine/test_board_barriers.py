@@ -1,9 +1,10 @@
 """Tests for engine.board barrier placement, limits, and ordering."""
 
 import pytest
+
 from engine.board import Board
 from engine.config import load_config
-from engine.errors import IllegalBarrierPlacementError, BarrierLimitError
+from engine.errors import BarrierLimitError, IllegalBarrierPlacementError
 
 
 def test_is_barrier_before_placement():

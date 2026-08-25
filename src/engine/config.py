@@ -88,7 +88,7 @@ def load_config(path: str) -> GameConfig:
         FileNotFoundError: If the file does not exist.
         KeyError: If a required key is missing from the JSON structure.
     """
-    with open(path, "r") as f:
+    with open(path) as f:
         data = json.load(f)
 
     _validate_axis(data["board_and_agents"])

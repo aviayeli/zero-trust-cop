@@ -22,7 +22,6 @@ Omission still plays. `sub_game_number` is a negotiate EXTRA, and a peer that
 declares nothing is not in disagreement with us.
 """
 
-import pytest
 
 from mcp_server.wire_v3_session import pairing_refusal
 

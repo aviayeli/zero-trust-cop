@@ -5,11 +5,11 @@ trusted because it could label a reveal as future work or clear a book's
 in-progress commitments.
 """
 
+from engine.actions import parse_action
+from engine.errors import InvalidActionError
 from mcp_server import observations
 from mcp_server.directions import decode, is_intent, is_wire_move
 from mcp_server.identity import verify_signature
-from engine.actions import parse_action
-from engine.errors import InvalidActionError
 
 
 class SubmissionGate:

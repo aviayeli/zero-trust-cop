@@ -35,7 +35,7 @@ def _reference(state, move, intent, nonce) -> str:
         {"intent": intent, "move": move, "state": state},
         sort_keys=True, ensure_ascii=False, separators=(",", ":"),
     )
-    return hashlib.sha256(f"{canonical}|{nonce}".encode("utf-8")).hexdigest()
+    return hashlib.sha256(f"{canonical}|{nonce}".encode()).hexdigest()
 
 
 def test_commit_emits_the_reference_form(monkeypatch):

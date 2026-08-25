@@ -22,7 +22,7 @@ class ActionBuffer:
     def __init__(self, response_timeout_sec: float, clock):
         self.response_timeout_sec = response_timeout_sec
         self._clock = clock
-        self._actions: dict = {role: None for role in ENGINE_ROLES}
+        self._actions: dict = dict.fromkeys(ENGINE_ROLES)
         self._deadline: float | None = None
 
     @staticmethod

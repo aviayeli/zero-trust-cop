@@ -16,7 +16,6 @@ import pytest
 from mcp_server.transport import load_network_settings
 from mcp_server.tunnel import parse_public_url
 
-
 # --- accepted ----------------------------------------------------------------
 
 def test_empty_means_loopback_only_and_stays_empty():

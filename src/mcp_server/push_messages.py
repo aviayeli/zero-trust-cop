@@ -19,7 +19,12 @@ extension seam) and a missing required key is refused rather than defaulted.
 
 from __future__ import annotations
 
-from mcp_server.wire_v3 import ACCEPT, _check, _is_commit, _sender_ok
+from mcp_server.wire_v3 import (  # noqa: F401  -- ACCEPT is re-exported
+    ACCEPT,
+    _check,
+    _is_commit,
+    _sender_ok,
+)
 
 # `step` is a PER-SENDER counter: each peer numbers its own chain and
 # `max_steps: 35` means 35 moves EACH (agreed with ali-ahm1, 2026-08-24).

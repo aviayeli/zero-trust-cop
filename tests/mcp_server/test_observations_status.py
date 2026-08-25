@@ -2,7 +2,6 @@
 
 from mcp_server.observations import build_status
 
-
 # --- build_status --------------------------------------------------
 
 

@@ -5,9 +5,9 @@ from dataclasses import replace
 from unittest.mock import MagicMock
 
 from agent.agent_core import AgentPolicy
+from strategy.belief import BeliefTracker
 from strategy.pheromones import PheromoneField
 from strategy.qvalues import QValues
-from strategy.belief import BeliefTracker
 
 
 class TestThiefStayAndTruncation:

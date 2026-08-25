@@ -1,6 +1,7 @@
 """Actions and movement utilities for the game engine."""
 
 from enum import Enum
+
 from engine.errors import InvalidActionError
 
 

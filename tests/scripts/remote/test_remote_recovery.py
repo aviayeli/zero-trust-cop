@@ -14,6 +14,7 @@ from mcp_server.http_peer import TechnicalLossError
 from scripts.match_loop import DivergenceError
 from scripts.remote_match import RemoteMatchError
 
+
 def test_a_waiting_reveal_is_recovered_by_polling(peers, fake_client, board, config, play, turns):
     """Our reveal landed first, so the gate told us nothing about the turn."""
     local, remote = peers("cop", "thief", resolves_inline=False)

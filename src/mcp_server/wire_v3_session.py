@@ -25,24 +25,6 @@ _AUDIT_RECORD_KEYS = ("payload", "nonce", "commit")
 NEGOTIATE_REQUIRED = ("terms", "nonce", "signature")
 NEGOTIATE_OPTIONAL = ("identity", "sub_game_number", "role")
 
-def validate_audit_payload(payload) -> str:
-    """One ``AuditPayload`` per sub-game: the sealed chain WITH nonces.
-
-    ``result_claim`` is what this side believes the sub-game ended as. The
-    opponent's audit settles it -- never the claim.
-    """
-    verdict = _check(payload, {
-        "sender": (_sender_ok, "sender: required 'police' | 'thief'"),
-        "records": (_records_ok, "records: required non-empty list"),
-        "result_claim": (lambda v: isinstance(v, dict), "result_claim: required object"),
-    })
-    if verdict != ACCEPT:
-        return verdict
-    for record in payload["records"]:
-        if not all(key in record for key in _AUDIT_RECORD_KEYS):
-            return "records: each record needs payload, nonce, commit"
-    return ACCEPT
-
 
 def validate_negotiate(message) -> str:
     """The ``negotiate`` envelope: every argument under one key.

@@ -21,9 +21,6 @@ from scripts.render_replay import (
     COP,
     THIEF,
     board_lines,
-    render_replay,
-    replay_frames,
-    turn_checks,
 )
 
 REAL_LOG = Path("logs/aviayeli/log_aviayeli_g01.json")

@@ -1,7 +1,7 @@
 """Tests for engine.resolver movement resolution (T1-T4)."""
 
-from engine.player import PlayerState
 from engine.actions import Action
+from engine.player import PlayerState
 from engine.resolver import resolve_turn
 
 

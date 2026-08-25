@@ -15,7 +15,6 @@ where the figures actually ship.
 
 import json
 import re
-
 from pathlib import Path
 
 from strategy.settings import load_strategy_settings

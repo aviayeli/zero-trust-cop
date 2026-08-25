@@ -1,7 +1,7 @@
 """Tests for engine.resolver capture detection and turn resolution (T5-T11)."""
 
-from engine.player import PlayerState
 from engine.actions import Action
+from engine.player import PlayerState
 from engine.resolver import resolve_turn
 
 

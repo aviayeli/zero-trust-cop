@@ -12,7 +12,6 @@ rather than `src/`, matching `thief_readme.py`.
 """
 
 import asyncio
-import json
 import sys
 from pathlib import Path
 
@@ -21,8 +20,8 @@ import pytest
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(PROJECT_ROOT / "scripts"))
 
-import model_connectors  # noqa: E402
-import multi_model_debate as debate  # noqa: E402
+import model_connectors
+import multi_model_debate as debate
 
 
 @pytest.fixture

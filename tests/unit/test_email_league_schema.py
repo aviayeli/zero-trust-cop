@@ -21,7 +21,9 @@ import json
 import pytest
 
 from reporting.mime_report import (
-    attachment_filename, build_message, summary_text,
+    attachment_filename,
+    build_message,
+    summary_text,
 )
 
 GRADED = "logs/evidence/graded_series/result_aviayeli-vs-bb-ai-12.json"
