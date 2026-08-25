@@ -68,7 +68,7 @@ def _observer(app):
 async def play_series(apps: dict, call, sub_games: int, seed: int, wait,
                       first_role: str = "police", max_steps=None,
                       max_polls=None, call_for=None,
-                      progress=None, on_sub_game=None) -> list:
+                      progress=None, on_sub_game=None, on_repush=None) -> list:
     """Play a whole series on reference-v3, swapping sides every sub-game.
 
     ``apps`` maps our wire role to the peer that serves it. BOTH are needed:
@@ -127,7 +127,8 @@ async def play_series(apps: dict, call, sub_games: int, seed: int, wait,
             TurnClient(reach, sender=role), app.inbox, side,
             choose=_chooser(app, side, rng, board),
             barriers=barrier_layout(app.config), max_steps=steps, wait=wait,
-            observe=_observer(app), progress=progress, **kwargs
+            observe=_observer(app), progress=progress,
+            on_repush=on_repush, **kwargs
         )
         closed = {
             "sub_game": index, "role": role,

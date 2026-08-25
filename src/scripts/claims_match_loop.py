@@ -28,7 +28,8 @@ from scripts.claims_guards import DEFAULT_MAX_POLLS, accepted, await_turn
 
 async def play_sub_game(client, inbox, side, choose, barriers, max_steps: int,
                         wait, observe=None, progress=None,
-                        max_polls: int = DEFAULT_MAX_POLLS) -> dict:
+                        max_polls: int = DEFAULT_MAX_POLLS,
+                        on_repush=None) -> dict:
     """Play one sub-game and disclose our sealed chain at the end.
 
     Args:
@@ -41,6 +42,9 @@ async def play_sub_game(client, inbox, side, choose, barriers, max_steps: int,
         max_steps: our own step budget, moves by US.
         wait: awaited between polls while their step is outstanding.
         observe: optional ``(their_turn) -> None`` -- where belief is updated.
+        on_repush: optional ``(dict) -> None`` (PRD_12), called per re-push
+            while their step is outstanding. Without it a loop stuck on step 1
+            prints nothing while emitting a request every ten seconds.
         progress: optional ``(dict) -> None``, called once per step with what
             we pushed and when theirs landed. Four aborted series were argued
             from the opponent's inbound traffic alone, because our own side
@@ -76,7 +80,7 @@ async def play_sub_game(client, inbox, side, choose, barriers, max_steps: int,
         # stops their start time from having to match ours to the second.
         theirs = await await_turn(
             inbox, step, wait, max_polls, side.sender,
-            repush=lambda: client.turn(message),
+            repush=lambda: client.turn(message), on_repush=on_repush,
         )
         if progress is not None:
             progress({"step": step, "phase": "pushed", "move": move,

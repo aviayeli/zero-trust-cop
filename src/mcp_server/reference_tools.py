@@ -22,9 +22,31 @@ known, so the inbox is the evidence a chain rewritten after the fact fails.
 from __future__ import annotations
 
 import datetime
+import logging
 
 from mcp_server import (audit_check, reference_negotiate, wire_v3,
                         wire_v3_session)
+
+_LOG = logging.getLogger(__name__)
+
+
+def _refused(tool: str, reason: str, message) -> None:
+    """Record an inbound message we would otherwise drop in silence (PRD_12).
+
+    A refusal leaves as HTTP 200 carrying ``{"status": "refused"}``, because
+    that is what a completed tool call returns. So an opponent watching status
+    codes sees an unbroken run of 200s while every message they send is
+    dropped -- which is exactly what bb-ai-12 reported on 2026-08-25 as "turns
+    exchange cleanly" for a series that advanced past no step at all. Our own
+    console showed nothing either.
+
+    Nothing about the refusal changes here. This only makes it visible.
+    """
+    known = message if isinstance(message, dict) else {}
+    _LOG.warning(
+        "%s REFUSED step=%r sender=%r: %s",
+        tool, known.get("step"), known.get("sender"), reason,
+    )
 
 
 def _now() -> str:
@@ -56,6 +78,7 @@ def register_reference_tools(mcp, inbox, audits, our_terms, identity_source,
         """One TurnMessage per half-turn. Validated BEFORE anything is stored."""
         verdict = wire_v3.validate_turn_message(message)
         if verdict != wire_v3.ACCEPT:
+            _refused("receive_turn", verdict, message)
             return {"status": "refused", "reason": verdict}
         inbox.append(dict(message))
         return {"status": "accepted", "step": message["step"],
@@ -74,6 +97,7 @@ def register_reference_tools(mcp, inbox, audits, our_terms, identity_source,
         """
         verdict = wire_v3_session.validate_audit_payload(payload)
         if verdict != wire_v3.ACCEPT:
+            _refused("submit_audit", verdict, payload)
             return {"status": "refused", "reason": verdict}
 
         verdict = dict(

@@ -8,22 +8,35 @@ because of a live failure, not a design instinct:
   turns and a full sub-game completed against a mirror -- clean audits,
   plausible outcome, opponent never involved.
 * the push response was DISCARDED, so a peer refusing every turn looked
-  exactly like a peer that was merely quiet, and we waited out the poll
-  budget instead of reporting the reason they had already handed us.
+  exactly like one that was merely quiet, and we waited out the poll budget
+  instead of reporting the reason they had already handed us.
 
-Both now fail loudly and name the cause.
+Both now fail loudly and name the cause. PRD_12 adds a third: a stalled wait
+says so per re-push instead of printing nothing at all.
 """
 
 from __future__ import annotations
 
 # Polls to wait for one of their steps before declaring the peer stalled. A
-# match that blocks forever is worse than one that fails: the operator cannot
-# tell a slow opponent from a dead one.
+# match that blocks forever is worse than one that fails.
 DEFAULT_MAX_POLLS = 600
 
 
+def _stall(inbox, step: int, attempt: int) -> dict:
+    """What tells a desync from a dead peer: ``inbox_depth`` 0 is "they never
+    reached us", non-zero is "they did, and we are not matching it"."""
+    return {
+        "step": step,
+        "attempt": attempt,
+        "inbox_depth": len(inbox),
+        "inbox_steps": [m.get("step") for m in inbox],
+        "senders": sorted({m.get("sender") for m in inbox if m.get("sender")}),
+    }
+
+
 async def await_turn(inbox, step: int, wait, max_polls: int, ours: str,
-                     repush=None, repush_every: int = 20) -> dict:
+                     repush=None, repush_every: int = 20,
+                     on_repush=None) -> dict:
     """Block until THEIR turn for ``step`` is in the inbox.
 
     ``ours`` is the side WE are playing, and matching on ``step`` alone was a
@@ -40,18 +53,19 @@ async def await_turn(inbox, step: int, wait, max_polls: int, ours: str,
     identical digest, and the receiver must tolerate a repeat under the kit's
     at-least-once contract) and turns a coordination problem into a retry.
 
-    A repush that RAISES is swallowed: their endpoint may be down for exactly
-    the seconds we retry into, and that is a reason to keep waiting rather
-    than to end the sub-game.
+    A repush that RAISES is swallowed -- their endpoint may be down for the
+    seconds we retry into, which is a reason to keep waiting, not to end the
+    sub-game. ``on_repush`` is a diagnostic and is swallowed for the same
+    reason, more strongly: it must never be able to end a graded series.
 
     Raises:
         RuntimeError: our OWN turn is in our own inbox. There is no
             legitimate route for that, so it is raised at once rather than
             left to surface as a timeout minutes later.
-        TimeoutError: their turn never arrived. Named with the step, and with
-            what the inbox does hold, so a desync reads as a desync rather
-            than as a dead peer.
+        TimeoutError: their turn never arrived, named with the step and what
+            the inbox holds, so a desync reads as a desync.
     """
+    attempts = 0
     for poll in range(max_polls):
         for message in inbox:
             if message.get("sender") == ours:
@@ -65,6 +79,14 @@ async def await_turn(inbox, step: int, wait, max_polls: int, ours: str,
             if message.get("step") == step:
                 return message
         if repush is not None and poll and poll % repush_every == 0:
+            attempts += 1
+            if on_repush is not None:
+                # Swallowed like the re-push itself: a diagnostic that can end
+                # a graded series is worse than no diagnostic.
+                try:
+                    on_repush(_stall(inbox, step, attempts))
+                except Exception:
+                    pass
             try:
                 await repush()
             except Exception:

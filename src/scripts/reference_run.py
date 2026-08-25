@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
+import logging
 
 from mcp_server.server import PEER_ROLES, create_app
 from scripts.claims_runner import play_series
@@ -29,6 +30,10 @@ _DIAL_RETRY_SEC = 5.0
 
 async def run(args) -> list:
     """Serve both our peers, then play the series through them."""
+    # PRD_12 FR6. Logging a refused inbound message is pointless without a
+    # handler to carry it: `receive_turn` returns HTTP 200 for a refusal, so
+    # this warning is the ONLY signal either side gets that we dropped it.
+    logging.basicConfig(level=logging.WARNING, format="  %(message)s")
     apps = {role: create_app(role, config_root=args.config_root)
             for role in PEER_ROLES}
     servers = [asyncio.create_task(app.mcp.run_streamable_http_async())
@@ -65,6 +70,18 @@ async def run(args) -> list:
             return await call(name, **kwargs)
         return counting
 
+    def stalled(entry):
+        """A wait that is going nowhere, said out loud (PRD_12 FR6).
+
+        `inbox_depth` 0 is "they never reached us"; non-zero is "they did and
+        we are not matching what they sent". Nothing distinguished those two
+        on 2026-08-25 and it cost a day.
+        """
+        print(f"  WAITING on their step {entry['step']} "
+              f"(re-pushed {entry['attempt']}x) | our inbox: "
+              f"{entry['inbox_depth']} msg, steps={entry['inbox_steps']}, "
+              f"senders={entry['senders']}", flush=True)
+
     def report(entry):
         # Unbuffered by the -u the entry point is run with, so a live series
         # shows OUR side of the timeline as it happens rather than only at
@@ -90,7 +107,7 @@ async def run(args) -> list:
             wait=wait, first_role=args.first_role,
             max_polls=polls_for(args.wait_minutes, interval),
             call_for=reach_counted,
-            progress=report, on_sub_game=keep,
+            progress=report, on_sub_game=keep, on_repush=stalled,
         )
 
     try:
