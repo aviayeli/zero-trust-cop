@@ -309,3 +309,31 @@ Found against bb-ai-12 on 2026-08-25, after sub-game 1 finally played.
       discarding them because the opponent hung up first loses real evidence.
       Both need their own PRD; the immediate mitigation is one sub-game per
       launch, which has no boundary to desync at.
+
+## 11.14 First settled sub-game against bb-ai-12 (2026-08-25 14:39)
+
+Our own record, exit 0, independent of their report. Kept at
+`logs/evidence/first_settled_subgame_bb-ai-12.log`:
+
+```
+sub_game=1 role=police steps=35 outcome=survival
+  their_audit=accepted handshake=UNVERIFIED
+```
+
+- [x] 35 turns, thief survived, and they re-hashed our disclosed chain and
+      accepted it. Both sides' records agree. Their missing piece was a
+      shutdown-grace period after their play loop, which is why our closing
+      `submit_audit` kept hitting a peer that had already gone.
+
+- [ ] **Open, and it reaches the graded artifact: `handshake=UNVERIFIED`.**
+      Their `negotiate` reply is a bare acceptance carrying no `terms`,
+      `nonce` or `signature`, so two of our three handshake checks had nothing
+      to run against -- we could verify neither their signature over their
+      terms nor that their terms equal ours. `build_result` writes that flag
+      into `result_<game_id>.json` as `handshake_counter_signed: false`, so a
+      marker reads a series that ran without a verified handshake. Raised with
+      them ahead of the graded series.
+- [ ] **Open: the dry-run should write artifacts.** We agreed artifacts off,
+      and that now looks wrong -- the graded series would be the first time
+      either side exercises the four-file path and the cross-team settlement
+      hash. A disagreement there should surface on a friendly game.

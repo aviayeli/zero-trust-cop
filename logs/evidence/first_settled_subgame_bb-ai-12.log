@@ -1,0 +1,57 @@
+  step  1 pushed MOVE:S | theirs +0.0s
+  step  2 pushed MOVE:S | theirs +0.0s
+  step  3 pushed MOVE:S | theirs +0.0s
+  step  4 pushed MOVE:E | theirs +0.0s
+  step  5 pushed MOVE:S | theirs +0.0s
+  step  6 pushed MOVE:S | theirs +0.0s
+  step  7 pushed MOVE:E | theirs +0.0s
+  step  8 pushed MOVE:E | theirs +0.0s
+  step  9 pushed MOVE:E | theirs +0.0s
+  step 10 pushed MOVE:S | theirs +0.0s
+  step 11 pushed MOVE:E | theirs +0.0s
+  step 12 pushed MOVE:E | theirs +0.0s
+  step 13 pushed MOVE:STAY | theirs +0.0s
+  step 14 pushed MOVE:STAY | theirs +0.0s
+  step 15 pushed MOVE:STAY | theirs +0.0s
+  step 16 pushed MOVE:STAY | theirs +0.0s
+  step 17 pushed MOVE:STAY | theirs +0.0s
+  step 18 pushed MOVE:STAY | theirs +0.0s
+  step 19 pushed MOVE:STAY | theirs +0.0s
+  step 20 pushed MOVE:STAY | theirs +0.0s
+  step 21 pushed MOVE:STAY | theirs +0.0s
+  step 22 pushed MOVE:STAY | theirs +0.0s
+  step 23 pushed MOVE:STAY | theirs +0.0s
+  step 24 pushed MOVE:STAY | theirs +0.0s
+  step 25 pushed MOVE:STAY | theirs +0.0s
+  step 26 pushed MOVE:STAY | theirs +0.0s
+  step 27 pushed MOVE:STAY | theirs +0.0s
+  step 28 pushed MOVE:STAY | theirs +0.0s
+  step 29 pushed MOVE:N | theirs +0.0s
+  step 30 pushed MOVE:N | theirs +0.0s
+  step 31 pushed MOVE:N | theirs +0.0s
+  step 32 pushed MOVE:N | theirs +0.0s
+  step 33 pushed MOVE:N | theirs +0.0s
+  step 34 pushed MOVE:N | theirs +0.0s
+  step 35 pushed MOVE:W | theirs +0.0s
+ERROR:    Traceback (most recent call last):
+  File "/home/aavi/zero-trust-cop/.venv/lib/python3.12/site-packages/starlette/routing.py", line 645, in lifespan
+    await receive()
+  File "/home/aavi/zero-trust-cop/.venv/lib/python3.12/site-packages/uvicorn/lifespan/on.py", line 137, in receive
+    return await self.receive_queue.get()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/queues.py", line 158, in get
+    await getter
+asyncio.exceptions.CancelledError
+
+ERROR:    Traceback (most recent call last):
+  File "/home/aavi/zero-trust-cop/.venv/lib/python3.12/site-packages/starlette/routing.py", line 645, in lifespan
+    await receive()
+  File "/home/aavi/zero-trust-cop/.venv/lib/python3.12/site-packages/uvicorn/lifespan/on.py", line 137, in receive
+    return await self.receive_queue.get()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/queues.py", line 158, in get
+    await getter
+asyncio.exceptions.CancelledError
+
+sub_game=1 role=police steps=35 outcome=survival
+  their_audit=accepted handshake=UNVERIFIED
