@@ -44,7 +44,7 @@ class HttpPeer:
                 return await asyncio.wait_for(
                     self._session.call_tool(name, arguments), self.timeout_seconds
                 )
-            except (asyncio.TimeoutError, TimeoutError) as expiry:
+            except TimeoutError as expiry:
                 raise TechnicalLossError(
                     f"peer did not answer {name!r} within "
                     f"{self.timeout_seconds} seconds"

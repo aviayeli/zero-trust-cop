@@ -16,7 +16,6 @@ import json
 import mcp_server.crypto as crypto
 from mcp_server.crypto import commit, verify
 
-
 STATE = "turn-7:cop=(0,0):thief=(3,3)"
 MOVE = "N"
 INTENT = "cut off the northern exit"

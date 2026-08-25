@@ -11,7 +11,6 @@ import asyncio
 from engine.game_loop import GameEpisode
 from mcp_server.match_state import MatchState
 
-
 # --- lazy, non-blocking timeout via injected clock -------------------------
 
 def test_lazy_timeout_forfeits_stale_half_filled_turn(cfg, fake_clock, count_steps):

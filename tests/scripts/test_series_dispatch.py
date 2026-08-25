@@ -9,8 +9,8 @@ import asyncio
 from types import SimpleNamespace
 
 import pytest
-
 from claims_series import TERMS, FakeOpponent, StubPolicy, _nothing, play_series
+
 from engine.config import load_config
 
 

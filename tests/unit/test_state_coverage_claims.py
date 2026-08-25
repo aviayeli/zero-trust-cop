@@ -12,7 +12,6 @@ no training run — which is why it can afford to be exact.
 """
 
 import json
-import re
 from pathlib import Path
 
 import pytest

@@ -7,7 +7,6 @@ piece whose absence meant a successful handshake was followed by silence.
 
 import pytest
 
-
 # --- the CLI ---------------------------------------------------------------
 
 

@@ -3,9 +3,9 @@
 from engine.actions import parse_action
 from engine.board import Board
 from engine.config import load_config
+from engine.game_loop import GameEpisode
 from engine.player import PlayerState
 from engine.resolver import resolve_turn
-from engine.game_loop import GameEpisode
 
 
 def test_one_valid_step_advances_turn_count_and_history(make_episode):

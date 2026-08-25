@@ -58,7 +58,7 @@ def train_diverse(config, seed, episodes, cop_path, thief_path, config_root=None
 
     cop = build_policy("cop", config, _match(config_root, "cop"))
     thief = build_policy("thief", config, _match(config_root, "thief"))
-    faced = {bucket: 0 for bucket in settings.opponent_mix}
+    faced = dict.fromkeys(settings.opponent_mix, 0)
     pool = build_pool(config, config_root)
 
     for episode in range(episodes):

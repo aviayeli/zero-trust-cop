@@ -8,7 +8,6 @@ commit-reveal pipeline is what advances the engine.
 
 import asyncio
 
-from mcp_server.server import create_app
 from mcp_server.peer_keys import load_public_keys
 
 

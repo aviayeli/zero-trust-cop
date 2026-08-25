@@ -20,10 +20,10 @@ from mcp_server.rate_limiter import RateLimiter, ThrottleSettings
 
 
 def _settings(**kwargs):
-    base = dict(
-        requests_per_minute=30, concurrent_requests=2,
-        retry_backoff_sec=5, max_retries=3, queue_depth=100,
-    )
+    base = {
+        "requests_per_minute": 30, "concurrent_requests": 2,
+        "retry_backoff_sec": 5, "max_retries": 3, "queue_depth": 100,
+    }
     base.update(kwargs)
     return ThrottleSettings(**base)
 

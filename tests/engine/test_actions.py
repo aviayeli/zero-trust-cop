@@ -1,9 +1,10 @@
 """Tests for engine.actions module."""
 
 import pytest
-from engine.actions import Action, parse_action, action_delta
-from engine.errors import InvalidActionError
+
+from engine.actions import Action, action_delta, parse_action
 from engine.config import load_config
+from engine.errors import InvalidActionError
 
 
 def test_action_enum_members():

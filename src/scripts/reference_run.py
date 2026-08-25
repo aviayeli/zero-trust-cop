@@ -18,10 +18,10 @@ import contextlib
 import logging
 
 from mcp_server.server import PEER_ROLES, create_app
+from scripts import reference_console as console
 from scripts.claims_runner import play_series
 from scripts.match_report import group_id
 from scripts.opponent_endpoints import resolve_endpoints
-from scripts import reference_console as console
 from scripts.reference_dial import lazy_opponents
 from scripts.reference_launch import connect_and_play, polls_for
 from scripts.reference_writer import write_sub_game_log

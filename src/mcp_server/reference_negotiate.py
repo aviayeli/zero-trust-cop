@@ -11,6 +11,7 @@ from __future__ import annotations
 
 from mcp_server import interop, wire_v3, wire_v3_session
 
+
 def _terms_disagreement(ours: dict, theirs: dict) -> str | None:
     """The first term whose VALUE differs, named. A bare "mismatch" sends both
     sides diffing fourteen values that already agree."""

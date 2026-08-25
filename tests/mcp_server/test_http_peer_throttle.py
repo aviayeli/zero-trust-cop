@@ -7,8 +7,6 @@ declared and unread in the first place. So the wiring is asserted, not assumed.
 
 import asyncio
 
-import pytest
-
 from engine.config import load_config
 from mcp_server.http_peer import HttpPeer
 from mcp_server.rate_limiter import RateLimiter, throttle_settings

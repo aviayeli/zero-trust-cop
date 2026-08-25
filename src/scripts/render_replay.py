@@ -11,13 +11,11 @@ elsewhere here, so tests drive the renderer without sleeping.
 import time
 from dataclasses import dataclass
 
-from engine.game_loop import GameEpisode
-
-from scripts.log_checks import replay_episode
 from mcp_server.crypto import verify
 from mcp_server.directions import decode
 from mcp_server.identity import verify_signature
 from scripts.heatmap import EMPTY, heat_cell
+from scripts.log_checks import replay_episode
 from strategy.pheromones import PheromoneField
 
 COP, THIEF, CAPTURE, BARRIER = "C", "T", "X", "#"

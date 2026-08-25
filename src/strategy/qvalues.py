@@ -8,14 +8,12 @@ own state; unlearned states defer to ``strategy/fallback.py``.  Persistence stor
 tuple keys as ``[[relative-row, relative-col] | null, mask, action, value]``.
 """
 
-import json
 from pathlib import Path
 
 from engine.config import GameConfig
 from strategy.fallback import BARRIER_BIT_DIRECTIONS, policy_action
-from strategy.qtable_io import STATE_LAYOUT_VERSION, load_table, save_table
+from strategy.qtable_io import load_table, save_table
 from strategy.settings import StrategySettings
-
 
 
 class QValues:

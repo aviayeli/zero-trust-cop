@@ -16,7 +16,6 @@ import pytest
 
 from engine.board import Board
 from engine.config import load_config
-from mcp_server import wire_v3
 from mcp_server.claims_side import Side
 from mcp_server.turn_client import TurnClient
 from scripts.claims_match_loop import play_sub_game

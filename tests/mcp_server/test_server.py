@@ -3,10 +3,11 @@
 import asyncio
 import json
 import os
+
 import pytest
 
-from mcp_server.server import create_app, peer_config_path, parse_args, PEER_ROLES
 from engine.config import load_config
+from mcp_server.server import PEER_ROLES, create_app, parse_args, peer_config_path
 
 
 def test_peer_config_path_is_role_separated():

@@ -6,7 +6,6 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from mcp_server.crypto import canonical_json
 from mcp_server.identity import sign, verify_signature
 
-
 KEY = Ed25519PrivateKey.from_private_bytes(bytes(range(32)))
 OTHER_KEY = Ed25519PrivateKey.from_private_bytes(bytes(range(1, 33)))
 ROLE = "police"

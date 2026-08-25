@@ -11,7 +11,6 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import (
 
 from mcp_server.crypto import canonical_json
 
-
 PEER_ROLES = ("police", "thief")
 
 

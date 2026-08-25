@@ -7,7 +7,6 @@ the default and the flag turns it OFF.
 
 from scripts.reference_cli import parse_args
 
-
 # --- artifacts -------------------------------------------------------------
 
 
@@ -38,7 +37,6 @@ def test_the_entry_point_uses_the_reference_writer_not_the_native_one():
     revealed move. This wire carries neither, and a graded artifact must not
     claim fields no message ever held."""
     import scripts.reference_cli as module
-
     from scripts.reference_writer import write_series_artifacts
 
     assert module.write_series_artifacts is write_series_artifacts

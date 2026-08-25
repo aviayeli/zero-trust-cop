@@ -9,7 +9,6 @@ import pytest
 
 from mcp_server import declaration
 
-
 EXPECTED_KEYS = {
     "group_name", "members", "repos", "mcp_servers", "hardware",
     "github_commit_hash",

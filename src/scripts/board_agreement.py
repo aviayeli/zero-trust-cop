@@ -5,9 +5,13 @@ turn logic: it runs once, before either peer has signed anything, and the
 module was at the 150-line limit.
 """
 
-from engine.config import (AXIS_ORIGIN_ALIASES, SUPPORTED_AXIS_ORIGIN,
-                           SUPPORTED_AXIS_START)
+from engine.config import (
+    AXIS_ORIGIN_ALIASES,
+    SUPPORTED_AXIS_ORIGIN,
+    SUPPORTED_AXIS_START,
+)
 from mcp_server.observations import scoring_block
+
 
 class BoardMismatchError(RuntimeError):
     """The peers are not playing the same board, so no match is possible.

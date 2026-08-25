@@ -1,9 +1,8 @@
 """Tests for hybrid state source and barrier scanning."""
 
-import pytest
 
-from engine.board import Board
 from agent.agent_core import AgentPolicy
+from engine.board import Board
 
 
 class TestHybridStateSource:

@@ -12,8 +12,8 @@ import pytest
 
 tk = pytest.importorskip("tkinter")
 
-from gui.palette import TAMPERED_COLOUR, TAMPERED_TEXT, VERIFIED_COLOUR, VERIFIED_TEXT
 from gui.live_heatmap import build as build_heatmap
+from gui.palette import TAMPERED_COLOUR, TAMPERED_TEXT, VERIFIED_COLOUR, VERIFIED_TEXT
 from gui.replay import build as build_replay
 
 LOG = "logs/aviayeli/log_aviayeli_g01.json"

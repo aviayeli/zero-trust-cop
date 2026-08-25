@@ -27,10 +27,13 @@ from mcp_server import interop
 from mcp_server.declaration import write_declaration
 from mcp_server.terms import opponent_of, terms_from_config
 from reporting.settlement import build_consensus
-
-from scripts.match_payloads import (
-    ARTIFACT_VERSION, ARTIFACT_KINDS, build_log, build_result,
+from scripts.match_payloads import (  # noqa: F401  -- re-exported
+    ARTIFACT_KINDS,
+    ARTIFACT_VERSION,
+    build_log,
+    build_result,
 )
+
 
 def _stamp_config(config_root, group_dir, suffix, game_uid, pair=None) -> str:
     """Snapshot the shared contract, stamped with the run's identity.

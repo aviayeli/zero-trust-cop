@@ -51,7 +51,6 @@ def test_this_entry_point_drives_the_claims_runner_not_the_push_one():
     """The whole point of the module. Asserted on the import, because a
     correct CLI in front of the wrong loop is exactly the bug being fixed."""
     import scripts.reference_run as module
-
     from scripts.claims_runner import play_series
 
     assert module.play_series is play_series

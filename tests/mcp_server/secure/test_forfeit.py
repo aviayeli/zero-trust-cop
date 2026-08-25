@@ -8,9 +8,7 @@ turn forever. The timeout now lives where the stall actually happens.
 The clock is injected throughout: no test sleeps.
 """
 
-import asyncio
 
-import pytest
 
 from mcp_server.commitments import CommitmentBook
 

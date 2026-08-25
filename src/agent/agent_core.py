@@ -1,7 +1,5 @@
 """Policy layer that consumes strategy modules."""
 
-from engine.config import GameConfig
-from strategy.settings import StrategySettings
 
 
 class AgentPolicy:

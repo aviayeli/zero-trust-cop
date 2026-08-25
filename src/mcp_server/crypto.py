@@ -58,7 +58,7 @@ def reference_payload(state: str, move: str, intent: str, nonce: str) -> bytes:
     with nothing to go on but "digest mismatch".
     """
     canonical = canonical_str({"state": state, "move": move, "intent": intent})
-    return f"{canonical}{NONCE_SEPARATOR}{nonce}".encode("utf-8")
+    return f"{canonical}{NONCE_SEPARATOR}{nonce}".encode()
 
 
 def positional_payload(state: str, move: str, intent: str, nonce: str) -> bytes:
@@ -70,7 +70,7 @@ def positional_payload(state: str, move: str, intent: str, nonce: str) -> bytes:
     preimage. The trailing nonce is fixed-length and ``intent`` was one of two
     known words, which bounded the ambiguity in practice -- but only bounded it.
     """
-    return f"{state}{move}{intent}{nonce}".encode("utf-8")
+    return f"{state}{move}{intent}{nonce}".encode()
 
 
 def _nonce_sealed_payload(state: str, move: str, intent: str, nonce: str) -> bytes:

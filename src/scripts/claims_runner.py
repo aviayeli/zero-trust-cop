@@ -32,8 +32,8 @@ from mcp_server.negotiate_client import negotiate
 from mcp_server.turn_client import TurnClient
 from scripts.claims_adapters import _chooser, _observer
 from scripts.claims_match_loop import play_sub_game
-from strategy.thaw import Thaw
 from scripts.push_runner import role_schedule
+from strategy.thaw import Thaw
 
 
 async def play_series(apps: dict, call, sub_games: int, seed: int, wait,

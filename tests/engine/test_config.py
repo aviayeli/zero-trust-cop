@@ -1,6 +1,7 @@
 """Tests for engine.config module."""
 
 import pytest
+
 from engine.config import GameConfig, load_config
 
 

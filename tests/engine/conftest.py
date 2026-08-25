@@ -2,9 +2,9 @@
 
 import pytest
 
+from engine.board import Board
 from engine.config import load_config
 from engine.game_loop import GameEpisode
-from engine.board import Board
 
 
 def _make_episode():

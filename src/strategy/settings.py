@@ -4,10 +4,9 @@ Every strategy field is required: missing configuration must fail loudly rather
 than silently training with invented defaults.
 """
 
-from dataclasses import dataclass
 import os
 import tomllib
-
+from dataclasses import dataclass
 
 _DEFAULT_CONFIG_ROOT = "config"
 _CONFIG_FILENAME = "game.toml"

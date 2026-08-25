@@ -11,8 +11,6 @@ own chain 1..max_steps, so `max_steps: 35` means 35 moves EACH.
 
 import asyncio
 
-import pytest
-
 from mcp_server import interop
 from mcp_server.push_audit import PushStore
 from mcp_server.push_client import PushClient
@@ -51,11 +49,11 @@ def _run(max_steps=3, their_moves=None, terminate_at=None):
     peer = FakePeer()
     store = PushStore()
     client = PushClient(peer, role="police")
-    their_moves = their_moves or {s: "MOVE:S" for s in range(1, max_steps + 1)}
+    their_moves = their_moves or dict.fromkeys(range(1, max_steps + 1), "MOVE:S")
     seen = []
 
     def choose(step):
-        return f"MOVE:N", f"hint {step}", "truth"
+        return "MOVE:N", f"hint {step}", "truth"
 
     async def advance(step, ours, theirs):
         seen.append((step, ours, theirs))

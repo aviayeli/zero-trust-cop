@@ -20,9 +20,9 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
 
-import http_post  # noqa: E402
-import model_connectors as connectors  # noqa: E402
-import multi_model_debate as debate  # noqa: E402
+import http_post
+import model_connectors as connectors
+import multi_model_debate as debate
 
 
 def test_every_request_carries_a_browser_user_agent(monkeypatch):

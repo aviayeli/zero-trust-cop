@@ -6,9 +6,6 @@ SERVER — which needs only public keys — but not the CLIENT, which must sign.
 """
 
 import os
-from pathlib import Path
-
-import pytest
 
 from mcp_server.identity import (
     load_peer_public_key,

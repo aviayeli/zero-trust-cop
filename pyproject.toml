@@ -29,3 +29,25 @@ addopts = ["--import-mode=importlib"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.ruff]
+# The repo had no ruff config, so an unconfigured run reported 239 findings
+# across rule families this project never adopted -- including ones it
+# deliberately violates with a written reason at the site. A linter with no
+# declared rule set measures the linter's defaults, not the code.
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+# Correctness and hygiene we DO subscribe to. Deliberately not the whole
+# catalogue: each family below is one we are willing to keep at zero.
+select = ["E4", "E7", "E9", "F", "I", "UP", "C4", "PIE", "RUF100"]
+
+[tool.ruff.lint.per-file-ignores]
+# A fixture imported for its side effect and then taken as a parameter reads
+# as a redefinition. It is the documented pytest idiom, and `tests/_support`
+# exists precisely so fixtures can be shared.
+"tests/**" = ["F811", "E402", "E741"]
+# Re-exported on purpose so callers reach for one module; the docstrings say
+# which and why.
+"src/mcp_server/smell_trail.py" = ["F401"]

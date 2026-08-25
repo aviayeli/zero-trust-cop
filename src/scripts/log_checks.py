@@ -15,7 +15,6 @@ from engine.game_loop import GameEpisode
 from mcp_server.crypto import verify
 from mcp_server.directions import decode, is_wire_move
 from mcp_server.identity import verify_signature
-
 from scripts.log_shape import PEER_ROLES
 
 

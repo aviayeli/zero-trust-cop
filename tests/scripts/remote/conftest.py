@@ -7,12 +7,11 @@ be without colliding with the ``scripts`` package in ``src``.
 
 import anyio
 import pytest
+from remote_fakes import FakeClient, FakePeer
 
 from engine.barriers import populated_board
 from engine.config import load_config
 from scripts.remote_match import play_remote_match
-
-from remote_fakes import FakeClient, FakePeer
 
 TURNS = 3
 

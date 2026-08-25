@@ -5,7 +5,6 @@ import asyncio
 from engine.game_loop import GameEpisode
 from mcp_server.match_state import MatchState
 
-
 # --- concurrency (FR8): exactly one step under asyncio.gather --------------
 
 def test_concurrent_submissions_fire_exactly_one_step(fresh, count_steps):

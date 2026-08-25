@@ -100,8 +100,8 @@ def _sub_game_row(game: dict, scoring: dict, roles: dict) -> dict:
 
 
 def _aggregate(rows: list, groups: tuple) -> dict:
-    total = {group: 0 for group in groups}
-    won = {group: 0 for group in groups}
+    total = dict.fromkeys(groups, 0)
+    won = dict.fromkeys(groups, 0)
     ties = 0
     for row in rows:
         for group, points in row["score"].items():

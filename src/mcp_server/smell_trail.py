@@ -43,7 +43,7 @@ from __future__ import annotations
 
 # Re-exported: reading THEIR grid lives in `smell_reader`, but callers
 # think in one protocol and importing it from here keeps them honest.
-from mcp_server.smell_reader import strongest_cell  # noqa: F401
+from mcp_server.smell_reader import strongest_cell
 
 # Places every value is rounded to. The kit's CORE vector rounds to 3 and
 # compares dicts exactly, so a value carried at full float precision is a

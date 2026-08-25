@@ -34,7 +34,7 @@ class PushStore:
     nonces: list = field(default_factory=list)
 
 
-def audit_nonces(store: "PushStore", entries: list) -> dict:
+def audit_nonces(store: PushStore, entries: list) -> dict:
     """Re-hash whatever can be rebuilt; be explicit about what cannot.
 
     An entry must carry the payload its ``h_commit`` sealed. A bare nonce

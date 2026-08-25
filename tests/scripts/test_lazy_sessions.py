@@ -18,8 +18,6 @@ schedule actually reaches it.
 import asyncio
 import contextlib
 
-import pytest
-
 from scripts.reference_dial import lazy_opponents
 
 

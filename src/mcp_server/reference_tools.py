@@ -24,8 +24,7 @@ from __future__ import annotations
 import datetime
 import logging
 
-from mcp_server import (audit_check, reference_negotiate, wire_v3,
-                        wire_v3_session)
+from mcp_server import audit_check, reference_negotiate, wire_v3, wire_v3_session
 
 _LOG = logging.getLogger(__name__)
 
@@ -50,7 +49,7 @@ def _refused(tool: str, reason: str, message) -> None:
 
 
 def _now() -> str:
-    return datetime.datetime.now(datetime.timezone.utc).isoformat()
+    return datetime.datetime.now(datetime.UTC).isoformat()
 
 
 def register_reference_tools(mcp, inbox, audits, our_terms, identity_source,

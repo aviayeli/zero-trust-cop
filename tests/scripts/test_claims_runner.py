@@ -10,13 +10,16 @@ in the inbox across a boundary would satisfy a step of the NEXT sub-game with
 a message about the previous one, and both peers would sign it.
 """
 
-import asyncio
 
-import pytest
 from types import SimpleNamespace
 
-from claims_series import (TERMS, FakeOpponent, StubPolicy, _nothing,
-                           _series, apps, config, play_series)
+import pytest
+from claims_series import (  # noqa: F401  -- `apps`/`config` are FIXTURES
+    StubPolicy,
+    _series,
+    apps,
+    config,
+)
 
 
 def test_a_six_sub_game_series_swaps_sides_every_time(apps):

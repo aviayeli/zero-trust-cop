@@ -1,7 +1,12 @@
 """Tests for engine.errors module."""
 
 import pytest
-from engine.errors import InvalidActionError, BarrierLimitError, IllegalBarrierPlacementError
+
+from engine.errors import (
+    BarrierLimitError,
+    IllegalBarrierPlacementError,
+    InvalidActionError,
+)
 
 
 def test_invalid_action_error_exists():

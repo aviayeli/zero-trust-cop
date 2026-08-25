@@ -37,7 +37,7 @@ def test_full_belief_is_pure_red():
 
 
 def test_every_colour_is_a_valid_hex_triplet():
-    for step in range(0, 11):
+    for step in range(11):
         colour = heat_colour(step / 10)
         assert len(colour) == 7 and colour.startswith("#")
         int(colour[1:], 16)

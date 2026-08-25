@@ -1,8 +1,7 @@
 """Tests for engine.player module."""
 
-import pytest
-from engine.player import PlayerState, intended_position
 from engine.actions import Action
+from engine.player import PlayerState, intended_position
 
 
 def test_player_state_initialization_thief():

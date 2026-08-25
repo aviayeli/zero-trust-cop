@@ -18,7 +18,7 @@ from pathlib import Path
 import pytest
 
 from mcp_server import interop
-from reporting.settlement import CONSENSUS_ROW_KEYS, build_consensus, sign_consensus
+from reporting.settlement import CONSENSUS_ROW_KEYS, build_consensus
 
 US = "aviayeli"
 THEM = "groupb"

@@ -14,9 +14,6 @@ what happens next cannot un-play it.
 import json
 from pathlib import Path
 
-import pytest
-
-from scripts.reference_artifacts import build_log
 from scripts.reference_writer import write_series_artifacts
 
 
@@ -90,7 +87,6 @@ def test_the_runner_can_actually_call_the_incremental_writer():
     module that actually calls the writer, not the shim in front of it.
     """
     import scripts.reference_run as runner
-
     from scripts.reference_writer import write_sub_game_log
 
     assert runner.write_sub_game_log is write_sub_game_log

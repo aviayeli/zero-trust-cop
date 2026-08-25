@@ -17,9 +17,9 @@ from dataclasses import replace
 import pytest
 
 from engine.config import load_config
+from scripts.offmanifold_probe import build_table, evaluate, start_pairs
 from strategy.fallback import MANHATTAN_PRIMARY
 from strategy.settings import load_strategy_settings
-from scripts.offmanifold_probe import build_table, evaluate, start_pairs
 
 SEED = 20260817
 PAIRS = 120

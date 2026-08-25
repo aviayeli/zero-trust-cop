@@ -20,8 +20,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from model_connectors import probe, timeout_for  # noqa: E402
-from multi_model_debate import (  # noqa: E402
+from model_connectors import probe
+from multi_model_debate import (
     debate,
     load_debate_config,
 )

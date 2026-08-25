@@ -17,7 +17,6 @@ conversion INSERTS are checked against the shipped Q-table by
 """
 
 import re
-
 from pathlib import Path
 
 import pytest

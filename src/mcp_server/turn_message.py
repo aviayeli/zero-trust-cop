@@ -25,7 +25,7 @@ from mcp_server.wire_v3 import TURN_OPTIONAL
 
 def now() -> str:
     """A non-empty ISO-8601 UTC stamp. Decorative field, load-bearing refusal."""
-    return datetime.datetime.now(datetime.timezone.utc).isoformat()
+    return datetime.datetime.now(datetime.UTC).isoformat()
 
 
 def state_string(config, position, barriers) -> str:

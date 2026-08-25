@@ -4,7 +4,6 @@ import pytest
 
 from strategy.settings import load_strategy_settings
 
-
 _EXPECTED = {
     "epsilon_decay_factor": 0.999744,
     "epsilon_floor": 0.01,
