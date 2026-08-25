@@ -26,6 +26,34 @@ import time
 from mcp_server.turn_message import build_turn, sealed_payload
 from scripts.claims_guards import DEFAULT_MAX_POLLS, accepted, await_turn
 
+async def _settle(client, result_claim) -> dict:
+    """Close the sub-game with their audit -- or record that we never got one.
+
+    An opponent hanging up first does not un-play a sub-game. The moves were
+    made and our chain is sealed and complete; what is missing is their
+    VERDICT on it. Letting the exception out discarded all of it: on
+    2026-08-25 a full 35-turn game against bb-ai-12 was thrown away because
+    their peer exited before our `submit_audit` landed, and we replayed it.
+
+    ``unreachable`` rather than ``refused`` on purpose. Those are opposite
+    claims about who is at fault -- they rejected our evidence, versus they
+    were not there to see it -- and a grader reading the artifact has to be
+    able to tell them apart.
+
+    Never an acceptance: `_accepted` reads False in both spellings, which is
+    what keeps `mutual_agreement.confirmed` False and the reporter refusing.
+    """
+    try:
+        return await client.audit(result_claim)
+    except BaseException as failure:
+        # BaseException: anyio delivers a peer's 502 wrapped in a task group,
+        # which does not subclass Exception.
+        if isinstance(failure, (KeyboardInterrupt, SystemExit)):
+            raise
+        return {"status": "unreachable", "accepted": False,
+                "reason": f"{type(failure).__name__}: {failure}"}
+
+
 async def play_sub_game(client, inbox, side, choose, barriers, max_steps: int,
                         wait, observe=None, progress=None,
                         max_polls: int = DEFAULT_MAX_POLLS,
@@ -105,7 +133,7 @@ async def play_sub_game(client, inbox, side, choose, barriers, max_steps: int,
     # audit cannot re-assert a sub-game. Without this copy a finished series
     # holds nothing but numbers and there is no log left to write.
     our_chain = client.records
-    verdict = await client.audit(result_claim)
+    verdict = await _settle(client, result_claim)
     return {
         "steps": steps_played,
         "terminal_reason": terminal,
