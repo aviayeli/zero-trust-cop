@@ -87,4 +87,34 @@ async def connect_and_play(open_session, play, seconds: float, started,
                 raise
             if started() or clock() >= deadline:
                 raise failure
-            await sleep(interval)
+            await _wait_out(sleep, interval)
+
+
+async def _wait_out(sleep, interval) -> None:
+    """Wait between attempts, absorbing the DEAD session's own cancellation.
+
+    ``streamable_http_client`` hosts its session in an anyio task group. When
+    the session fails, anyio cancels that scope, and on asyncio the
+    cancellation lands on OUR task -- delivered at the next await, which is
+    this sleep. On 2026-08-25 the re-raise turned ``--wait-minutes 45`` into a
+    single 183-second attempt against bb-ai-12, and said nothing: one
+    ``lazy_opponents`` budget, no outer retry, no message. Their thief
+    meanwhile pushed seven turns into an inbox our loop never reached.
+
+    The cancellation belongs to the session that already failed, so it is
+    consumed once and the wait retried. ``uncancel()`` alone does not do it on
+    3.12: it decrements the counter and leaves ``_must_cancel`` set, so the
+    next await raises regardless. DELIVERY is what clears the flag, which is
+    why this catches rather than pre-empts.
+
+    A CancelledError with no cancellation actually requested is someone
+    else's shutdown, and is re-raised untouched.
+    """
+    try:
+        await sleep(interval)
+    except asyncio.CancelledError:
+        task = asyncio.current_task()
+        if task is None or not task.cancelling():
+            raise
+        task.uncancel()
+        await sleep(interval)

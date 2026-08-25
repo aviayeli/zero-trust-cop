@@ -37,8 +37,8 @@ leaves behind are re-verifiable offline by a standalone replay verifier that
 certifies (`Verified OK`) or rejects (`TAMPERED!`) the record — cryptographically,
 not by trust.
 
-The system is evidenced rather than asserted: **1419 tests**, a mechanically
-enforced 150-line ceiling on every one of the **311** tracked Python files, and
+The system is evidenced rather than asserted: **1423 tests**, a mechanically
+enforced 150-line ceiling on every one of the **312** tracked Python files, and
 figures in this document that are re-derived from the tree by the suite itself
 (`tests/unit/test_readme_consistency.py`), so a stale number fails the build.
 
@@ -573,8 +573,8 @@ never produces an artifact.)
 
 | Discipline | State |
 |---|---|
-| Test suite | **1419 tests**, all passing (unit → live two-process HTTP) |
-| Line limit | every one of the **311** tracked Python files ≤ **150 lines** (max: 150) |
+| Test suite | **1423 tests**, all passing (unit → live two-process HTTP) |
+| Line limit | every one of the **312** tracked Python files ≤ **150 lines** (max: 150) |
 | TDD | strict red→green: every implementation change preceded by a confirmed failing test |
 | Hyperparameters | zero tunables inlined in Python — all in `config/game.json` / per-peer `game.toml` |
 | Lifecycle | PRD → PLAN → TODO under `docs/`, per phase |
@@ -632,7 +632,7 @@ configured for pytest; standalone scripts take `PYTHONPATH=src`.
 
 ```bash
 .venv/bin/python -m pytest -q
-# expected: 1419 passed
+# expected: 1423 passed
 # actually prints "919 passed, 1 skipped": one test in
 # tests/test_release_artifact.py asserts the submission TAG points at HEAD,
 # which is only meaningful during a release. Between a commit and a push the

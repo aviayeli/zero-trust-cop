@@ -93,3 +93,84 @@ appears above.
       `replay_match`, re-running `audit_check.verify_records` over the
       disclosed chain, is the fix. It is a phase of its own (PRD_12) and is
       deliberately not smuggled into this one.
+
+## 11.8 bb-ai-12 pre-match findings (2026-08-25)
+
+Recorded here because the reply to bb-ai-12 quotes these numbers and a claim
+made to another team should be reproducible from this repo.
+
+- [x] **They run `multiplicative_book_v1`; we run `subtractive_chebyshev_v1`.**
+      Harmless, and for a sharper reason than "not one of the 14 terms":
+      `smell_grid` is absent from `turn_message.sealed_payload`
+      (`{step, state, position, move, intent, hint}`), so it is never hashed
+      and never re-hashed at `submit_audit`. A decay disagreement cannot
+      produce a false tamper verdict.
+- [x] **The argmax is unaffected — 0 disagreements over 7,000 half-turns**
+      (200 random walks x 35 steps, 35% stall rate to age the trail).
+      Structural, not luck: both forms merge by MAX and re-emit at the current
+      cell, so that cell holds the post-decay centre (0.80 subtractive / 0.81
+      multiplicative) and no aged cell can exceed it. `claims_runner.py:62` is
+      our only consumer of their grid and reads only `strongest_cell`.
+- [x] **Multiplicative discloses far more.** ~36 of 49 cells lit at sub-game
+      end against our ~19. The asymmetry favours us, so it was disclosed to
+      them rather than banked.
+- [x] **Multiplicative never clears, at the kit's 3-place rounding.**
+      `round(0.005 * 0.9, 3) == 0.005` is a fixed point; 25 cells were still
+      lit after 200 decay steps. Subtractive clears completely in 8. Reported
+      to them as a probable unintended bug on their side.
+- [x] **Their endpoint was down at negotiation time.** Six probes of
+      `https://comic-leverage-paprika.ngrok-free.dev/mcp` over 52 seconds all
+      returned HTTP 502: tunnel up, nothing listening behind it. `netcheck`
+      stopped at `reachable` and ran no later check, which is the intended
+      ordering.
+
+Reproduce the decay comparison by subclassing `SmellTrail` and overriding
+`decay` to scale by `1 - pheromone_decay` instead of subtracting it; everything
+else is the shipped class.
+
+- [ ] **Open, needs bb-ai-12:** who plays which side in sub-game 1 (a mutual
+      `role` assumption is refused at `negotiate`; an inverted one is played
+      through coherently by both engines), their exact team-code string, and a
+      re-send of one corrupted line describing their endpoint topology.
+
+## 11.9 The window that was not a window (2026-08-25, live)
+
+- [x] **`--wait-minutes 45` gave up after 183 seconds and said nothing.**
+      183s is exactly one `lazy_opponents` budget (36 x `_REOPEN_WAIT_SEC`),
+      so the OUTER retry in `connect_and_play` never fired once.
+      Root cause: `streamable_http_client` hosts its session in an anyio task
+      group; when the session fails, anyio cancels that scope and on asyncio
+      the cancellation is delivered to OUR task at its next await -- which was
+      `await sleep(interval)` in the retry itself. It re-raised, and the run
+      unwound.
+- [x] **Intermittent, which is why it survived the phase that introduced it.**
+      One relaunch died at 183s and the next was still up at 453s under the
+      same conditions; whether anyio leaves a cancellation pending depends on
+      how the failure unwinds. Every existing test of `connect_and_play`
+      injects a fake `sleep` that cannot raise, so none of them could see it.
+- [x] Fixed in `reference_launch._wait_out`, covered by
+      `tests/scripts/test_connect_and_play_cancel.py`. `Task.uncancel()` alone
+      is NOT enough on 3.12: it decrements the counter and leaves
+      `_must_cancel` set, so the next await raises regardless. Delivery clears
+      the flag, so the cancellation is caught, counted down, and the wait
+      retried once. A CancelledError with no request behind it is re-raised.
+
+## 11.10 The structural blocker this exposed, NOT fixed here
+
+- [ ] **Our loop cannot read an inbox until it has dialled the opponent.**
+      `play_series` asks `call_for(role)` before the turn loop, and that goes
+      through `lazy_opponents._open`. Against bb-ai-12 on 2026-08-25 their
+      thief negotiated with our cop and pushed SEVEN turns into our inbox
+      while our runner was still retrying their 502 endpoint, so not one of
+      them was ever read. From their side it looked exactly like a peer that
+      accepted the turns and went silent.
+
+      This is the ali-ahm1 failure from `run_reference_match.py:7-11` in the
+      opposite direction: there, their loop would not read our turns until a
+      handshake completed; here, OUR loop will not read theirs until we can
+      reach them. A peer that can be reached but cannot reach back plays no
+      turns and produces no diagnostic.
+
+      Worth considering: serve-and-read before the dial succeeds, or at least
+      report inbox depth while retrying, so "they are pushing to us and we
+      cannot see it" stops being invisible. Needs its own PRD.
