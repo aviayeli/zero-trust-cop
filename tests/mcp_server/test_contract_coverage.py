@@ -85,6 +85,22 @@ def test_every_contract_key_is_consumed_or_declared(contract, source_text):
     )
 
 
+def _read_somewhere(name: str, source_text: str) -> bool:
+    """Is this key ACCESSED in src/, as opposed to merely named there?
+
+    A bare-name search is right for "is it consumed", where a false positive
+    only means we believe a key is live. It is wrong here, because a module
+    that EMITS a field of the same name into a different document would read
+    as a contradiction: `league_result` writes the league report's own
+    `schema_version` ("1.1"), which has nothing to do with the contract's
+    ("1.3"). So this looks for a read, not a mention.
+    """
+    return bool(re.search(
+        rf"""\[["']{re.escape(name)}["']\]|get\(["']{re.escape(name)}["']""",
+        source_text,
+    ))
+
+
 def test_the_whitelist_does_not_cover_keys_that_are_actually_used(
     contract, source_text
 ):
@@ -92,7 +108,7 @@ def test_the_whitelist_does_not_cover_keys_that_are_actually_used(
     contradictions = [
         key
         for key in INFORMATIONAL
-        if re.search(rf"\b{re.escape(key.rsplit('.', 1)[-1])}\b", source_text)
+        if _read_somewhere(key.rsplit(".", 1)[-1], source_text)
     ]
 
     assert not contradictions, (
@@ -112,3 +128,14 @@ def test_the_whitelist_only_names_keys_that_exist(contract):
 
 def test_every_whitelist_entry_states_a_reason():
     assert all(reason.strip() for reason in INFORMATIONAL.values())
+
+
+def test_the_precision_does_not_hide_a_real_read(source_text):
+    """The narrowed check must still catch a whitelisted key being consumed.
+
+    Its whole job is to stop INFORMATIONAL absorbing a live key, so prove it
+    against a key that IS read -- `response_timeout_sec`, which
+    `transport.py` and `server.py` both pull off the contract.
+    """
+    assert _read_somewhere("response_timeout_sec", source_text)
+    assert not _read_somewhere("no_such_contract_key_anywhere", source_text)

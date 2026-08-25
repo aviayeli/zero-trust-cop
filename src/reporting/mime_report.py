@@ -19,45 +19,78 @@ from email.mime.text import MIMEText
 
 UNKNOWN_UID = "unknown"
 JSON_SUBTYPE = "json"
+# The opponent's commit, which only they can state. Never ours.
+_THEIRS = "declared-in-their-own-report"
 
 
-def attachment_filename(uid: str) -> str:
-    """The attachment carries the same name as the on-disk result artifact."""
-    return f"result_{uid}.json"
+def attachment_filename(game_id: str) -> str:
+    """``result_<game_id>.json`` -- the name the league schema mandates.
+
+    "Every actual file name MUST be derived from the game_id so that files
+    from different games are never mixed." It was derived from ``game_uid``,
+    so a report declaring ``links.result: result_a-vs-b.json`` shipped an
+    attachment called ``result_<uuid>.json`` -- a submission contradicting its
+    own manifest, which is what an automatic validator exists to catch.
+    """
+    return f"result_{game_id}.json"
 
 
-def _summary(result: dict, uid: str) -> str:
+def _sub_games(result: dict) -> list:
+    """The series rows, under either schema.
+
+    The league calls them ``sub_games``; the native dialect's own result still
+    says ``games``, and both are live -- so a summary that knew only one
+    reported a six-sub-game series as zero.
+    """
+    return result.get("sub_games") or result.get("games") or []
+
+
+def _our_commit(result: dict) -> str:
+    """Our commit, from wherever this schema keeps it.
+
+    The league schema records it per sub-game and per group, so ours is the
+    one value that is not the opponent's placeholder.
+    """
+    if result.get("github_commit"):
+        return result["github_commit"]
+    for row in _sub_games(result):
+        for sha in (row.get("github_commit") or {}).values():
+            if sha and sha != _THEIRS:
+                return sha
+    return UNKNOWN_UID
+
+
+def _summary(result: dict, name: str) -> str:
     """A brace-free human summary. Never a serialisation of the result."""
     agreement = result.get("mutual_agreement") or {}
-    games = result.get("games") or []
+    digest = agreement.get("sha256")
     return "\n".join([
-        f"zero-trust match report for game_uid={uid}",
+        f"zero-trust match report for game_id={result.get('game_id', name)}",
+        f"game_uid: {result.get('game_uid', UNKNOWN_UID)}",
         "",
         f"mutual agreement confirmed: {bool(agreement.get('confirmed'))}",
-        f"turns cross-checked: {agreement.get('turns_cross_checked', 'n/a')}",
-        f"games in series: {len(games)}",
-        f"commit: {result.get('github_commit', UNKNOWN_UID)}",
+        f"settlement sha256: {digest or 'n/a'}",
+        f"sub-games in series: {len(_sub_games(result))}",
+        f"commit: {_our_commit(result)}",
         "",
-        f"The full result is attached as {attachment_filename(uid)} "
-        "(application/json).",
+        f"The full result is attached as {name} (application/json).",
     ])
 
 
 def build_message(result: dict, recipient: str) -> MIMEMultipart:
     """Return a multipart/mixed report: summary body, result as attachment."""
-    uid = result.get("game_uid", UNKNOWN_UID)
+    game_id = result.get("game_id") or result.get("game_uid", UNKNOWN_UID)
+    name = attachment_filename(game_id)
     message = MIMEMultipart()
     message["To"] = recipient
     message["From"] = "me"
-    message["Subject"] = f"[zero-trust] match report {uid}"
+    message["Subject"] = f"[zero-trust] match report {game_id}"
 
-    message.attach(MIMEText(_summary(result, uid), "plain", "utf-8"))
+    message.attach(MIMEText(_summary(result, name), "plain", "utf-8"))
 
     payload = json.dumps(result, indent=2, sort_keys=True).encode("utf-8")
     attachment = MIMEApplication(payload, _subtype=JSON_SUBTYPE)
-    attachment.add_header(
-        "Content-Disposition", "attachment", filename=attachment_filename(uid)
-    )
+    attachment.add_header("Content-Disposition", "attachment", filename=name)
     message.attach(attachment)
     return message
 
