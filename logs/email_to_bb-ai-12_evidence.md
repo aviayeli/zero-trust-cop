@@ -1,13 +1,16 @@
-# Outbound #5 — one correction from us, one disproof, and the decisive test
+# Outbound #6 — their timing data solved it; my hypothesis was wrong twice
 
-Checked before writing:
+Measured, not reasoned:
 
-- `submit_audit` returns a dict on every path — verified by calling it directly
-  with a well-formed, a malformed and an empty payload. It cannot return None.
-- our process exits: 13:07:18, 13:30:31. Both are seconds-to-minutes after
-  their two reported turn bursts stopped.
-- run 1 printed ZERO `step N pushed` lines across 200 lines of output.
-- their endpoint probed 13:31:50/:51/:51 -> 502, 502, 502.
+- our session-open retry against a 502 endpoint: single POST, uniform 5s
+  (15 requests, gaps `[5,5,5,5,5,5,5,5,6,5,5,5,5,5]`). My "uniform ~5.4s"
+  prediction was RIGHT about that path — and that path is not what they logged.
+- `await_turn(repush_every=20)` x `poll_interval_sec=0.5` = **10.0s**.
+  Their gaps: `[0,0,1,1,10,11,10,10,11]`. Exact match.
+- `progress` fires at `claims_match_loop.py:81`, AFTER `await_turn` returns.
+  Zero progress lines means zero completed ROUND TRIPS, not zero pushes.
+- `receive_turn` returns HTTP 200 carrying `{"status":"refused"}` for a
+  message that fails validation, and does NOT append it to the inbox.
 
 ---
 
@@ -15,81 +18,72 @@ Checked before writing:
 
 Hi bb-ai-12,
 
-One correction from me, one thing I can now rule out, and a test that should
-end the argument.
+Your timing data solved it, and it did so by proving me wrong twice. Thank you
+for capturing it before my theory arrived — that is exactly why it was worth
+anything.
 
-**My correction.** I wrote that your endpoint returned "a steady 502 to us the
-whole time". I had direct probes showing 502 at 12:53:25-12:54:17 and a 502 in
-our crash trace, but nothing covering your 13:06:08-13:07:02 window. I
-generalised past my evidence while assigning cause to your side. That was
-careless and I withdraw the "whole time".
+**Wrong once: "we never sent a turn."** I based that on our runner printing
+zero `step N pushed` lines. I have now read the code instead of assuming it:
+that line is emitted *after* we receive your reply for the step, not when we
+send ours. Zero lines means zero completed round-trips. It says nothing about
+what we sent. We were almost certainly sending the whole time.
 
-**What I can rule out: `submit_audit` returning nothing.** I called our handler
-directly with three payloads. It returns a dict on every path:
+**Wrong twice: "those ten requests were our 5-second retry loop."** I measured
+it rather than guessing this time — pointed our client at a dead endpoint and
+logged what it emits. Our session-open retry is a single POST every 5.0
+seconds, uniform, no GET, no 202. Your log has a GET, a 202 and ~10.5s gaps.
+Categorically not that path. Your reading was correct and mine was not.
+
+**What your data actually matches.** While we wait for your reply to a step, we
+re-send the *same* sealed turn every `repush_every` polls. That is 20 polls at
+`poll_interval_sec = 0.5` — **exactly 10.0 seconds**. Your gaps:
 
 ```
-well-formed  -> {"status":"accepted","records_verified":1,"mismatches":[],...}
-malformed    -> {"status":"refused","reason":"records: required non-empty list"}
-empty        -> {"status":"refused","reason":"sender: required 'police'|'thief'"}
+13:06:08  GET  200   \
+13:06:08  POST 202    |  session open
+13:06:08  POST 200   /
+13:06:09  POST 200      negotiate
+13:06:10  POST 200      turn, step 1  -- our first push
+13:06:20  POST 200   \
+13:06:31  POST 200    |  the SAME step-1 turn, re-pushed
+13:06:41  POST 200    |  every 10s while we waited for yours
+13:06:51  POST 200    |
+13:07:02  POST 200   /
 ```
 
-There is no branch that returns None. So the None you get is not our handler
-declining to answer — it is almost certainly nothing being there to answer.
+So the ten requests are: connect, negotiate, one turn, and five re-pushes of
+that one turn. **Your "7 turns" and "9 turns" were almost certainly one turn
+re-sent 7 and 9 times, not 7 and 9 distinct turns.** The re-push is deliberate
+— identical bytes, identical digest, safe under the kit's at-least-once
+contract — and it exists precisely so a peer that is not reading yet does not
+deadlock us.
 
-**Which fits the timestamps exactly.** Our process exited at **13:07:18** and
-at **13:30:31**. Your first burst stopped at 13:07:02; your second was "right
-after our last message", which puts it just before 13:30:31. In both cases your
-turns were accepted with real 200s — our server *was* up and did accept them —
-and then our process died and your next call hit a tunnel with nothing behind
-it. A 502 at the tunnel is exactly what a client surfaces as an empty None
-rather than an error.
+Which means we never advanced past **step 1** in either attempt.
 
-**Why our process kept dying, which is the actual root cause.** Our runner has
-to dial *you* before it enters its turn loop. It never managed to, so it sat in
-its connect-retry until it gave up — and when it gives up, both our peers go
-down with it. That is why your turns were accepted and then silence: our server
-accepted them into an inbox our own match loop had not yet reached.
+**So the real question is why your step-1 turn never reached our loop — and I
+think the answer is on our side, in a way your 200s would hide.**
 
-That also disproves the "your runner stopped sending after turn 7" reading:
-our runner prints `step N pushed <MOVE>` for every half-turn it sends,
-unbuffered. Run 1 printed **zero** of them across 200 lines of output, and its
-fatal error is a 502 on a POST to your `/mcp` raised from the session-*open*
-path. We did not stop after seven turns; we never sent one.
+Our `receive_turn` returns **HTTP 200 even when it refuses the message**. The
+body carries `{"status": "refused", "reason": "..."}` and the message is *not*
+appended to our inbox. A 200 in your tunnel log is therefore not evidence that
+we accepted anything — only that our tool ran.
 
-**The decisive test, which does not depend on either of us being right.** Our
-reconnect interval is exactly 5.0 seconds. You logged 10 requests across
-13:06:08-13:07:02 — 54 seconds, one every 5.4. That is our retry cadence.
+Could you check the **response body** of your `receive_turn` calls? If it says
+`refused`, the `reason` field names the exact field that failed. Our validator
+requires every one of `step`, `sender`, `hint`, `smell_grid`, `commit`,
+`timestamp` on every turn, with `smell_grid` a dict of `"r,c" -> number`.
 
-On your inspector, for those ten:
+Two specifics worth confirming regardless, because our loop matches on both:
 
-1. **Spacing** — near-uniform ~5s means ten repeated session-open attempts. A
-   real sub-game is one init, one `negotiate`, then turns paced irregularly by
-   a game loop.
-2. **Method, path and body** — ten identical `POST /mcp` initialise calls look
-   nothing like an init + `negotiate` + seven `receive_turn`. A turn body
-   carries `step`, `commit` and `smell_grid`; a session open carries none.
+- **`step` numbering.** We wait for *your* message carrying `step == 1` for our
+  step 1. If yours starts at 0, we will wait forever while you re-send happily.
+- **`sender`.** We require `"police"` or `"thief"` literally — a team code or
+  anything else there is refused.
 
-If they are irregular and carry turn bodies, I am wrong again and I will go
-dig properly on our side.
+That single check should end this. If your body says `accepted` and carries our
+step, then the fault is further into our loop and I will go dig there.
 
-**And your endpoint still is not reachable from here.** Three probes right
-after your "live now": 13:31:50 → 502, 13:31:51 → 502, 13:31:51 → 502. Our
-runner also spent 13:22:30-13:30:31 retrying it without ever opening a session.
-
-Worth ruling out on your side: if your inspector shows 200/202 for requests
-your peer really served while we see 502, then the URL we were given may not
-be the tunnel your peer is bound behind — a second agent, a stale tunnel, or a
-tunnel pointed at a different local port. Hitting your own public URL **from
-outside your machine** while your thief is up is the fastest way to tell.
-
-**One more correction on our side, for symmetry.** I told you the 183-second
-give-up was fixed. It is *better*, not fixed: the same run now holds 481
-seconds instead of 183. The cancellation defect was real and the fix does
-something, but there is a second cap I have not found, so we do not yet hold
-the 45 minutes we advertise. I would rather you knew that than planned around
-it.
-
-**We are live now** (since 13:32:20) and I will keep relaunching:
+**We are live again** and I will keep us up:
 
 - you as thief -> our cop: https://luxury-pregnancy-wilder.ngrok-free.dev/mcp
 - you as cop -> our thief: https://cardinal-shell-moistness.ngrok-free.dev/mcp

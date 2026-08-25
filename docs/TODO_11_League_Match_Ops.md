@@ -174,3 +174,39 @@ else is the shipped class.
       Worth considering: serve-and-read before the dial succeeds, or at least
       report inbox depth while retrying, so "they are pushing to us and we
       cannot see it" stops being invisible. Needs its own PRD.
+
+## 11.11 What the bb-ai-12 timing data actually showed (2026-08-25)
+
+Two of my diagnoses were wrong and their independently-captured timestamps
+disproved both. Recorded because the reasoning error is the reusable lesson.
+
+- [x] **"We never sent a turn" was wrong.** It rested on our runner printing
+      zero `step N pushed` lines. `progress` fires at
+      `claims_match_loop.py:81`, AFTER `await_turn` returns THEIR reply -- so
+      zero lines means zero completed ROUND TRIPS and says nothing about what
+      we sent. Read the callsite before inferring from its absence.
+- [x] **"Those were our 5s session-open retries" was wrong.** Measured
+      properly by pointing the client at a logging 502 endpoint: our open
+      retry is a single POST every 5.0s, uniform, no GET, no 202
+      (`[5,5,5,5,5,5,5,5,6,5,5,5,5,5]`). Their log had a GET, a 202 and ~10.5s
+      gaps. I had derived 5.0s by READING `_REOPEN_WAIT_SEC` and predicted a
+      cadence for a path that was not in play.
+- [x] **What their data does match: the REPUSH.** `await_turn(repush_every=20)`
+      x `poll_interval_sec=0.5` = exactly 10.0s. Their gaps were
+      `[0,0,1,1,10,11,10,10,11]`: session open (3 requests), negotiate, one
+      turn at step 1, then five re-pushes of that same sealed turn. Their
+      reported "7 turns" and "9 turns" were one turn re-sent 7 and 9 times.
+      Neither attempt ever advanced past step 1.
+
+- [ ] **Open: a refusal is invisible to the opponent at the HTTP layer.**
+      `reference_tools.receive_turn` returns HTTP 200 carrying
+      `{"status": "refused", "reason": ...}` and does NOT append to the inbox.
+      An opponent watching status codes sees an unbroken run of 200s while
+      every message is being dropped -- which is exactly what bb-ai-12
+      reported as "turns exchange cleanly". Our own `negotiate` docstring
+      already warns that a peer reading only one field "must not read a
+      refusal as silence"; the same trap exists here in the other direction
+      and nothing surfaces it. Worth considering: log inbound refusals
+      server-side, and report inbox depth while `await_turn` is re-pushing, so
+      "we are re-sending step 1 for the ninth time" is visible rather than
+      silent. Needs its own PRD.
