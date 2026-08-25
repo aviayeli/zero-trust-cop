@@ -38,8 +38,8 @@ def pairing_refusal(message: dict, our_role: str, our_uid: str | None,
             f"{our_role!r} and the other {other!r}. Note the field's meaning: "
             "`role` is the side THIS peer is playing, NOT the side of the peer "
             "being called. If you are declaring the role of the endpoint you "
-            "dialled, invert it. If you meant your own side, you have the "
-            "wrong endpoint -- our two peers listen on different ports."
+            "dialled, invert it. If you meant your own side, then one of us "
+            "is not alternating: the sides swap every sub-game."
         )
 
     # SPEC 7.2's truth table: "sub-game numbers differ -> refuse; one game
