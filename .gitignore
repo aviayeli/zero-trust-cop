@@ -45,3 +45,7 @@ scripts/ngrok_unified.yml
 .ngrok-*.log
 logs/stay_up/
 .stay_up.stop
+docs/paper/*.aux
+docs/paper/*.log
+docs/paper/*.out
+docs/paper/IEEEtran.cls

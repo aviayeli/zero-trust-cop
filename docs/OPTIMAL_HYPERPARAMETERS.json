@@ -1,0 +1,40 @@
+{
+  "_note": "Runtime BELIEF parameters only. Not applied to config: decay_per_step and emit_intensity are two of the FOURTEEN signed contract terms, so changing them unilaterally breaks the pre-game terms hash and the opponent refuses the handshake. They are renegotiable, not tunable.",
+  "searched": {
+    "cells": 80,
+    "games_per_cell": 200,
+    "total_games": 32000,
+    "profiles": [
+      "A_random",
+      "C_bluffer"
+    ]
+  },
+  "champion_vs_profile_A": {
+    "decay_per_step": 0.25,
+    "emit_intensity": 0.5,
+    "max_consecutive_stay": 2,
+    "capture_rate": 100.0,
+    "mean_steps_to_capture": 9.3,
+    "thaw_fired": 129
+  },
+  "shipped_baseline_vs_profile_A": {
+    "decay_per_step": 0.1,
+    "emit_intensity": 0.9,
+    "max_consecutive_stay": 3,
+    "capture_rate": 99.0,
+    "mean_steps_to_capture": 10.7,
+    "thaw_fired": 308
+  },
+  "result_vs_profile_C": {
+    "cells_with_any_capture": 0,
+    "champion": null,
+    "note": "80 cells x 200 games = 16,000 games, zero captures, no knob moved any metric."
+  },
+  "safe_to_apply_unilaterally": [
+    "max_consecutive_stay"
+  ],
+  "requires_renegotiation": [
+    "decay_per_step",
+    "emit_intensity"
+  ]
+}

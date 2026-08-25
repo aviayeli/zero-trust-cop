@@ -1,0 +1,267 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{url}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+
+\begin{document}
+
+\title{Adversarial Dec-POMDP Game Theory in Decentralized\\
+Multi-Agent Pursuit--Evasion: Mitigating Freeze-Loops\\
+and Information Asymmetry}
+
+\author{\IEEEauthorblockN{A. Ayeli}
+\IEEEauthorblockA{\textit{zero-trust-cop} \\
+University of Haifa, 2026 \\
+\texttt{github.com/aviayeli/zero-trust-cop}}}
+
+\maketitle
+
+\begin{abstract}
+We report a failure mode observed in a live, cryptographically audited
+pursuit--evasion league between mutually distrusting reinforcement-learning
+agents. The pursuer never observes the evader's position; it maintains a
+belief from a \emph{self-reported} pheromone signal the evader is free to
+fabricate. We prove that this construction admits a policy fixed point in
+which the pursuer becomes permanently stationary, and we observed it in a
+graded match: the pursuer emitted \texttt{STAY} for exactly sixteen
+consecutive turns in each of three sub-games, $52\%$ of all its turns. We give
+the closed form of the belief field, derive the switching lag $L$ between a
+signal change and the belief following it, and validate that expression
+against simulation to the turn. We then evaluate a minimal mitigation---a
+refutation rule keyed on the pursuer standing on its own belief with no
+capture to claim---over $1{,}000$ simulated games across four evader profiles.
+The mitigation eliminates the freeze entirely (longest stationary run $23
+\rightarrow 0$) and, we report, \emph{does not convert it into captures}: a
+grid search over $80$ hyperparameter configurations and $16{,}000$ further
+games yields zero captures against a perfectly-informed deceptive evader. We
+argue the residual gap is a train/test mismatch rather than a heuristic one,
+and that the signalling channel is cheap talk whose only sequential
+equilibrium is babbling.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Dec-POMDP, pursuit--evasion, cheap talk, babbling equilibrium, belief state,
+multi-agent systems, commit--reveal
+\end{IEEEkeywords}
+
+\section{Introduction and the Pursuit--Evasion Setup}
+
+Two independent agents---a pursuer $p$ and an evader $e$---play a
+simultaneous-move game on a grid $G \subset \mathbb{Z}^2$ of size $7\times 7$
+over a horizon $T = 35$. They share no process, no memory and no trust. Every
+move is sealed by a SHA-256 commit--reveal exchange before either engine
+advances, and each sub-game closes with a mutual audit in which each peer
+re-hashes the other's disclosed chain.
+
+The information structure is the paper's subject. Neither agent observes the
+other's position. Instead each transmits, once per turn, a \emph{scent grid}
+$\sigma_t : G \to \mathbb{R}_{\ge 0}$, and each maintains a belief field
+$\Phi_t$ updated from what it receives. Crucially $\sigma_t$ is
+\textbf{self-reported and unverified}: nothing in the protocol binds it to the
+sender's true position, and the sealed commitment covers the move record, not
+the grid.
+
+\section{The Babbling Equilibrium and the Infinite STAY Loop}
+
+\subsection{Notation}
+Let $p_t, e_t \in G$. The action set is
+$A(p_t) = \{p_t + \delta \in G \mid \delta \in \Delta\}$ with
+$\Delta = \{(0,0)\} \cup \{\delta : \|\delta\|_1 = 1\}$, where $(0,0)$ is
+\texttt{STAY}. The pursuer's belief is $b_t = \operatorname{argmax}_{g \in G}
+\Phi_t(g)$ and its policy is
+\begin{equation}
+a_t = \pi(p_t, b_t) = \operatorname*{argmin}_{a \in A(p_t)} \|b_t - a\|_1 ,
+\label{eq:policy}
+\end{equation}
+ties broken by a learned action-value table. The field evolves as
+\begin{equation}
+\Phi_{t+1} = (1-d)\,\Phi_t + K\!\left(\operatorname*{argmax}_{g}\sigma_t\right),
+\label{eq:field}
+\end{equation}
+with decay $d \in (0,1)$ and $K(c)$ a Manhattan-falloff kernel centred at $c$.
+
+\subsection{STAY as a unique optimum}
+
+\begin{proposition}
+\texttt{STAY} is uniquely optimal under \eqref{eq:policy} if and only if
+$b_t = p_t$.
+\end{proposition}
+
+\begin{proof}
+$G$ is convex under the $\ell_1$ metric, so if $b_t \neq p_t$ there exists
+$a \in A(p_t)\setminus\{p_t\}$ with
+$\|b_t - a\|_1 = \|b_t - p_t\|_1 - 1$, strictly better than $(0,0)$.
+Conversely if $b_t = p_t$ then $\|b_t - p_t\|_1 = 0$ while every other legal
+action yields $1$.
+\end{proof}
+
+This is the critical structural point: the learned table cannot override the
+result. Our policy admits it only as a tie-break \emph{within} the
+distance-optimal set, and when $b_t = p_t$ that set is the singleton
+$\{\texttt{STAY}\}$, whatever the learned values.
+
+\subsection{The fixed point}
+
+\begin{theorem}[Freeze]
+If $b_t = p_t$ and the evader signals a constant cell
+$c = \operatorname{argmax}\sigma_\tau = p_t$ for all $\tau \ge t$, then
+$p_\tau = p_t$ for all $\tau \ge t$.
+\end{theorem}
+
+\begin{proof}
+By induction. The base case is $\Phi_t(p_t) > \Phi_t(g)$ for $g \neq p_t$, by
+uniqueness of the argmax. Assume $\Phi_\tau(p_t) > \Phi_\tau(g)$. Since
+$1-d>0$ and $K(p_t)(p_t) > K(p_t)(g)$,
+\begin{align}
+\Phi_{\tau+1}(p_t) &= (1-d)\Phi_\tau(p_t) + K(p_t)(p_t)\\
+&> (1-d)\Phi_\tau(g) + K(p_t)(g) = \Phi_{\tau+1}(g).
+\end{align}
+Hence $b_{\tau+1}=p_t$, and by the Proposition $\pi$ selects
+$p_{\tau+1}=p_\tau$. The pursuer's trajectory is stationary.
+\end{proof}
+
+\subsection{Belief dynamics and the switching lag}
+
+Under repeated deposit at $c_0$ from $\Phi_0 = 0$,
+\begin{equation}
+\Phi_t(g) = \frac{1-(1-d)^t}{d}\,K(c_0)(g),
+\end{equation}
+whose steady state is $K(c_0)(g)/d$. If the signal then shifts to $c_1$, let
+$M_0 = \Phi_{\mathrm{pre}}(c_0) - \Phi_{\mathrm{pre}}(c_1)$ be the accumulated
+mass difference and $\Delta K = K(c_1)(c_1) - K(c_1)(c_0)$. The belief follows
+the signal only after
+\begin{equation}
+L = \left\lceil
+\frac{\ln\!\left(1 + \dfrac{d\,M_0}{\Delta K}\right)}{-\ln(1-d)}
+\right\rceil
+\label{eq:lag}
+\end{equation}
+further observations. We validated \eqref{eq:lag} against the implementation
+at $d = 0.1$: for a signal parked for $6$, $12$ and $18$ turns the predicted
+lags were $4$, $6$ and $6$, and the measured lags were $4$, $6$ and $6$.
+
+\subsection{Cheap talk}
+
+The signal enters no utility and no transition:
+$u_i(p_{1:T}, e_{1:T}, \sigma_{1:T}) = u_i(p_{1:T}, e_{1:T})$ for both
+players. It is therefore \emph{cheap talk}. In a strictly adversarial game the
+players' interests are opposed, and the only sequential equilibrium under
+Perfect Bayesian Equilibrium is the \textbf{babbling equilibrium}: the sender
+transmits uninformative signals and a rational receiver assigns them no
+credibility. Our pursuer is not rational in that sense---its update rule is
+fixed---so the evader faces a single-controller problem and optimally chooses
+$\sigma_t$ to steer $b_t$. The Freeze theorem gives its best response in
+closed form: pin $\operatorname{argmax}\sigma$ to a corner and evade
+elsewhere.
+
+\section{The Thawed Pursuer}
+
+We adopt the strongest refutation the protocol affords. Capture is settled by
+claim and honest answer, so a pursuer standing on the evader's cell would have
+a capture to claim; standing there with none proves the evader is elsewhere.
+Formally, \texttt{STAY} is removed from $A(p_t)$ whenever $b_t = p_t$ and no
+capture is claimable, and additionally whenever the stationary run exceeds a
+configured bound $\kappa$. The learned table is untouched: the restriction
+applies to the action set \emph{before} either ranking stage, never after.
+
+Note this is an \emph{empirical} refutation, requiring no model of the
+opponent's honesty and no additional message---which is why we prefer it to
+filtering $\sigma_t$ for physical plausibility.
+
+\section{Experimental Results}
+
+\subsection{Method}
+Because the training harness supplies true positions, it cannot reproduce the
+fault; we therefore built a harness that reproduces the wire, in which the
+evader's transmitted grid and its true cell are independent. Four profiles:
+(A) random walker, honest; (B) greedy distance-maximiser, honest;
+(C) deceptive bluffer---evades while pinning $\operatorname{argmax}\sigma$ to a
+corner; (D) corner-hider, honest. $125$ games per profile per arm.
+
+\subsection{Results}
+
+\begin{table}[h]
+\caption{Thawed versus unthawed, 1{,}000 games}
+\label{tab:bench}
+\centering
+\begin{tabular}{llrrr}
+\toprule
+Profile & Arm & Capture & Longest \texttt{STAY} & Thaw fired \\
+\midrule
+A random  & thawed   & \textbf{100.0\%} & 0 & 171 \\
+A random  & unthawed & 99.2\% & 4 & --- \\
+B greedy  & thawed   & 0.0\% & 0 & 500 \\
+B greedy  & unthawed & 0.0\% & 6 & --- \\
+C bluffer & thawed   & 0.0\% & \textbf{0} & 1500 \\
+C bluffer & unthawed & 0.0\% & \textbf{23} & --- \\
+D corner  & thawed   & 100.0\% & 0 & 0 \\
+D corner  & unthawed & 100.0\% & 0 & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{A negative result}
+
+The freeze is eliminated: the longest stationary run against the bluffer falls
+from $23$ to $0$. It does not become capture. Profiles B and C are $0\%$ in
+\emph{both} arms, so the freeze was never the reason a competent evader
+escapes. We further searched $80$ configurations of decay
+$d\in[0.05,0.25]$, emission intensity $\in[0.5,1.0]$ and bound
+$\kappa\in\{2,3,4,5\}$ at $200$ games each---$16{,}000$ games---against
+profile C. \textbf{No configuration captured anything}, and no knob moved any
+metric. We report this rather than crown a least-bad cell.
+
+Two limitations bound the claim. Profiles B and C are given the pursuer's true
+position while the pursuer has only belief, so $0\%$ means ``against a
+perfectly-informed evader'', an upper bound on evader strength. And the
+shipped contract has a null barrier seed, so every game runs on an empty
+board.
+
+\section{Protocol: Unified Endpoint and Commit--Reveal}
+
+Each half-turn carries $\mathrm{commit} = \mathrm{SHA256}(
+\mathrm{canonical}(r) \,\|\, \nu)$ over the sealed record
+$r = \{\text{step}, \text{state}, \text{position}, \text{move},
+\text{intent}, \text{hint}\}$ with a fresh nonce $\nu$; records and nonces are
+disclosed only at the closing audit, where the opponent re-hashes each against
+the digest pushed at the time. Self-consistency alone would be a checksum---a
+peer rewriting its whole chain passes it---so it is the comparison against the
+\emph{pushed} digest that makes the seal binding.
+
+Serving both roles from one endpoint removes a class of operator error, but
+introduces one: a peer may reach itself. The mispairing check must therefore
+compare the caller's declared role against an \emph{authoritative} local role.
+Deriving the local role from the caller's claim makes the comparison
+tautological and destroys the only place a mispairing is caught---a
+mispairing both engines otherwise play through coherently for the full
+horizon, producing artifacts that join perfectly and a contradiction visible
+only to a human reader.
+
+\section{Conclusion and Future Work}
+
+An unverified belief channel in an adversarial Dec-POMDP admits a policy fixed
+point that a distance-minimising pursuer cannot escape, and we observed it
+costing $52\%$ of a graded match. The refutation rule removes it completely
+and is not, by itself, worth a single capture against a competent evader.
+
+The residual gap is a train/test mismatch: the action-value tables were
+trained against \emph{true} opponent positions and are executed against an
+argmax that lags by $L$ turns per \eqref{eq:lag}. Future work is to retrain on
+belief-derived state so that training and execution share a state
+distribution, and to evaluate against evaders that are themselves
+belief-limited rather than perfectly informed.
+
+\begin{thebibliography}{1}
+\bibitem{crawford} V.~P. Crawford and J.~Sobel, ``Strategic information
+transmission,'' \emph{Econometrica}, vol.~50, no.~6, pp.~1431--1451, 1982.
+\bibitem{bernstein} D.~S. Bernstein, R.~Givan, N.~Immerman and S.~Zilberstein,
+``The complexity of decentralized control of Markov decision processes,''
+\emph{Mathematics of Operations Research}, vol.~27, no.~4, 2002.
+\bibitem{parsons} T.~D. Parsons, ``Pursuit-evasion in a graph,'' in
+\emph{Theory and Applications of Graphs}, Springer, 1978.
+\end{thebibliography}
+
+\end{document}
