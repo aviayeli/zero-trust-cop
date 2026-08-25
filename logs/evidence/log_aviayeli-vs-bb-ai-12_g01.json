@@ -17,8 +17,8 @@
   "turns": [
     {
       "ours": {
-        "commit": "6990070281af43ff62628ebd487ee126ca6e4ba1037af0402e460ef27a2792af",
-        "nonce": "948d0316bef2951241341bc9b029c008",
+        "commit": "a52656b768555f8fb8d77ce1e66452ee4c705ad86971b10119b910ddee214a4e",
+        "nonce": "43b33e59e20c67eb5f10676d920bcccc",
         "payload": {
           "hint": "south",
           "intent": "truth",
@@ -33,19 +33,19 @@
       },
       "step": 1,
       "theirs": {
-        "commit": "12bb83002bbea05286b3b3fa72ef291ed2aba745ca8515ba1bfec0173012d317",
+        "commit": "f9ddbbe550c4a7515fa39547912adebb281ed5abccd6aff7ed0331d9d02e48bc",
         "hint": "I was never even here.",
         "sender": "thief",
         "smell_grid": {
           "4,3": 0.9
         },
-        "timestamp": "2026-08-25T15:31:28.143356+00:00"
+        "timestamp": "2026-08-25T15:48:37.818270+00:00"
       }
     },
     {
       "ours": {
-        "commit": "8ad6a9fbbd71ba7cffa9714a68df3fb28abe00a5fb3628788351b08e6ef7ab0f",
-        "nonce": "ecf11b2a939da0ebd12a5fa5488780db",
+        "commit": "becaf6c5feca08d6043712a0d8c5b7f3d7bbeedaa0f06631cccc9c3dd5bff335",
+        "nonce": "68e64590eb01f647ece7f322bcb8e9ef",
         "payload": {
           "hint": "south",
           "intent": "truth",
@@ -67,20 +67,20 @@
             0
           ]
         },
-        "commit": "c360dcf1d0484676ef399f5d929af6cb7f1f8d8af0e3d99e56dc3400ad7847c1",
+        "commit": "a604f8bddda6519078083974f471e410c40302977c6a9302f451a1bfa8019083",
         "hint": "Slower than my grandmother, officer.",
         "sender": "thief",
         "smell_grid": {
           "4,3": 0.81,
           "5,3": 0.9
         },
-        "timestamp": "2026-08-25T15:31:28.543589+00:00"
+        "timestamp": "2026-08-25T15:48:39.273728+00:00"
       }
     },
     {
       "ours": {
-        "commit": "0b26388723bf745a9c8decd04001450ad866c68b79c25a5647e8af7f2d7a4dea",
-        "nonce": "6eaefeb0bd0e79f050245b30222b3fb2",
+        "commit": "b28cae70ddf459104cd3f45b526165b13879f37f168b6e852e90890b0609020c",
+        "nonce": "f8474e7b201faa2072587afdd0130561",
         "payload": {
           "hint": "south",
           "intent": "truth",
@@ -102,7 +102,7 @@
             0
           ]
         },
-        "commit": "bc6f90c6504c330da37e76e429d6b1f91f438313808f49a8c2627f775caf1935",
+        "commit": "7a24627bf2fa88b67b9e791aaf78ab2d3b684e7bafcf4a81f8fde0bbb20a4f50",
         "hint": "Try looking the other way.",
         "sender": "thief",
         "smell_grid": {
@@ -110,13 +110,13 @@
           "5,3": 0.81,
           "6,3": 0.9
         },
-        "timestamp": "2026-08-25T15:31:29.316113+00:00"
+        "timestamp": "2026-08-25T15:48:41.090865+00:00"
       }
     },
     {
       "ours": {
-        "commit": "3efb9c00058d42eaf48ab9a4939bcf226123b75ca3ef8b161dad1ff6e0096edc",
-        "nonce": "c9c22380907b0d3f4cacfd6f6cb5c425",
+        "commit": "5062cb060ab51e951047e4ecf48836646a4c80f92e235dd84d96f72c570421f2",
+        "nonce": "544cfe83af7cf5992ea33ee3988bae44",
         "payload": {
           "hint": "east",
           "intent": "truth",
@@ -138,7 +138,7 @@
             0
           ]
         },
-        "commit": "2ff2ee506ab5ce77f2a4227da1c5eb5ae7a41441b495ddde413f4e0ea3d4458f",
+        "commit": "3f995a4b71127070bd9b64c7013c37e19627d01d973a19b3143bdea11b4f8355",
         "hint": "You'll never catch me.",
         "sender": "thief",
         "smell_grid": {
@@ -147,13 +147,13 @@
           "6,3": 0.81,
           "6,4": 0.9
         },
-        "timestamp": "2026-08-25T15:31:31.156060+00:00"
+        "timestamp": "2026-08-25T15:48:43.057059+00:00"
       }
     },
     {
       "ours": {
-        "commit": "a31a033b086caaba4a5dc958970b6a3d6ed620f3e7c73001332c08ed8f5c1f8a",
-        "nonce": "dffb13922950a9e8420d5694b60a2c54",
+        "commit": "814d3e40f0d63cf1cd279b171bb2a3b62cb81396956b9fb82cd265014be40d43",
+        "nonce": "fab006abbcd43f3cb578e1d7e6ede29f",
         "payload": {
           "hint": "south",
           "intent": "truth",
@@ -175,7 +175,7 @@
             1
           ]
         },
-        "commit": "8daf48f43441b8c4a5e9268a3cd78eaf8aaf3dd5056d1b46c42965a3d06aec16",
+        "commit": "436e05e4cc4de6cf8c7661f8b924abe4bdd9de365495cfbf1d29c6394dbde5da",
         "hint": "I was never even here.",
         "sender": "thief",
         "smell_grid": {
@@ -185,13 +185,13 @@
           "6,4": 0.81,
           "6,5": 0.9
         },
-        "timestamp": "2026-08-25T15:31:32.956696+00:00"
+        "timestamp": "2026-08-25T15:48:44.714248+00:00"
       }
     },
     {
       "ours": {
-        "commit": "2c351a09086d3749add596890ecc8d674036e26294308c82cf50466732f466b2",
-        "nonce": "2890d507c8f879ea23128acad35400aa",
+        "commit": "1bad7b8abc5b17df5e8514b04e34d7c710f88e26131c12f065456edc7e64aa6c",
+        "nonce": "a631a569f712db3ac610ada1675d70ad",
         "payload": {
           "hint": "south",
           "intent": "truth",
@@ -213,7 +213,7 @@
             1
           ]
         },
-        "commit": "c263230eab6c830251c4109e274ba328536c0351c1d96574dc44555ff201b7e2",
+        "commit": "6a664c1c8bbe97e4285dd53d09be709863702d60b65e677a9da96856e28dc097",
         "hint": "Slower than my grandmother, officer.",
         "sender": "thief",
         "smell_grid": {
@@ -224,13 +224,13 @@
           "6,5": 0.81,
           "6,6": 0.9
         },
-        "timestamp": "2026-08-25T15:31:34.738114+00:00"
+        "timestamp": "2026-08-25T15:48:46.569609+00:00"
       }
     },
     {
       "ours": {
-        "commit": "0d3f37386da3d60fc99ab1513f1bdd37c32a3fa3d9a05ebf0c88dbc253dc5622",
-        "nonce": "a99677b4a6469e2d4b419235ba960494",
+        "commit": "221d83ea36090a0e8fb4c08c74a5280a6b4209a862423e2ffb51e24a19da190d",
+        "nonce": "9705d6554cfe522e7ee2221f5470e5fb",
         "payload": {
           "hint": "east",
           "intent": "truth",
@@ -252,7 +252,7 @@
             1
           ]
         },
-        "commit": "3dc9b9f5c2aee08e6591357d213fadd3411be84e7589847fcfbc4f6fc629761d",
+        "commit": "f2586715db53f4870cd5f6234e0b2a1974b52e6058cafa4350197a368385db0b",
         "hint": "Try looking the other way.",
         "sender": "thief",
         "smell_grid": {
@@ -263,13 +263,13 @@
           "6,5": 0.729,
           "6,6": 1.71
         },
-        "timestamp": "2026-08-25T15:31:36.541003+00:00"
+        "timestamp": "2026-08-25T15:48:48.378826+00:00"
       }
     },
     {
       "ours": {
-        "commit": "7ca4c3e830d980adf5396c0987e5c3910ae2048d7999654cc9f16556dbc3a633",
-        "nonce": "977097e98bcf049fecb6122ff31006f9",
+        "commit": "b626592c65c3da83d2ee54235efc2ec7f6963751148134adfc45b83c2b054978",
+        "nonce": "f1a1c7c245d27a0a6ae11432289786c6",
         "payload": {
           "hint": "east",
           "intent": "truth",
@@ -291,7 +291,7 @@
             2
           ]
         },
-        "commit": "189a456dc6eb41b3ac4fe719ceddcb9a00a3fa216a64eb48cebf7bafba891630",
+        "commit": "efaa88224ad07fdc036f56e1593e0ec36be06a1e70b3e1b199c7f05f16c45c6e",
         "hint": "You'll never catch me.",
         "sender": "thief",
         "smell_grid": {
@@ -302,13 +302,13 @@
           "6,5": 0.6561,
           "6,6": 2.439
         },
-        "timestamp": "2026-08-25T15:31:38.436107+00:00"
+        "timestamp": "2026-08-25T15:48:50.216858+00:00"
       }
     },
     {
       "ours": {
-        "commit": "ac122ab3cb5db6be8c6c50b3556d3372e22fadee5783bb9f140479eaafbed440",
-        "nonce": "d9c112e992aa68b743323d55eff6a769",
+        "commit": "6df06c6d21fca6b61f92bc73726e534960ba6ebf5c80e440f34324af8588c9f8",
+        "nonce": "c8a3ee5ad5da5c111b7a419d2171a636",
         "payload": {
           "hint": "east",
           "intent": "truth",
@@ -330,7 +330,7 @@
             3
           ]
         },
-        "commit": "32819f9d8e83c7adad916d0876f34466709955606107d7daf61e66c90d67a962",
+        "commit": "cb3e9e4db84e34ea3dc6ec91cfd94756fa1ea87b7d9144809fcbc205fe89a72e",
         "hint": "I was never even here.",
         "sender": "thief",
         "smell_grid": {
@@ -341,13 +341,13 @@
           "6,5": 0.5905,
           "6,6": 3.0951
         },
-        "timestamp": "2026-08-25T15:31:40.274417+00:00"
+        "timestamp": "2026-08-25T15:48:52.025748+00:00"
       }
     },
     {
       "ours": {
-        "commit": "ae11623141ab17d1f14a0544f6389207960176894e50542661252acc901da7be",
-        "nonce": "7434f85e605eae677225473806086d7d",
+        "commit": "c28bc934ca5290e392b08f1c2bd20b8725436c1e14335147f6dfc4f78bce0067",
+        "nonce": "c5b41b3a02b1d59ed47712ffbf562d32",
         "payload": {
           "hint": "south",
           "intent": "truth",
@@ -369,7 +369,7 @@
             4
           ]
         },
-        "commit": "8380801ba8f1eae03ac6b7213fe556a9cdd5b752b801e18a2a05516ad24c0b5d",
+        "commit": "52e7204ad528b1fca63584fbef175038a013588a2f5ab333778fb830bab48372",
         "hint": "Slower than my grandmother, officer.",
         "sender": "thief",
         "smell_grid": {
@@ -380,13 +380,13 @@
           "6,5": 0.5314,
           "6,6": 3.6856
         },
-        "timestamp": "2026-08-25T15:31:42.018126+00:00"
+        "timestamp": "2026-08-25T15:48:53.852045+00:00"
       }
     },
     {
       "ours": {
-        "commit": "2760d19414d08d0c380405a1d0e533d9014909245602fbba95a18974904bc5c9",
-        "nonce": "82f32046161a2f3ed4d1cdef1db27fb4",
+        "commit": "ca44bd3079046edbbbb8aaeeaca86e037b69c6eb011bc20d7c4c251ec747dd34",
+        "nonce": "0adeb7b23083d26f684ccc853868a06e",
         "payload": {
           "hint": "east",
           "intent": "truth",
@@ -408,7 +408,7 @@
             4
           ]
         },
-        "commit": "a23a1e5f92ba30cc896ecb797bd1b67796d1a53e7bdae00b88bd9e7d5a8ffe00",
+        "commit": "1d32d1cf560a5c549c9016cb03438fdfd932b815fcb69ca0366303852b3849f6",
         "hint": "Try looking the other way.",
         "sender": "thief",
         "smell_grid": {
@@ -420,13 +420,13 @@
           "6,5": 0.4783,
           "6,6": 3.317
         },
-        "timestamp": "2026-08-25T15:31:43.917556+00:00"
+        "timestamp": "2026-08-25T15:48:55.656231+00:00"
       }
     },
     {
       "ours": {
-        "commit": "853a04513ce527267fb0f727e0f34cb60ebf9891cee4c74195d995ce34f74442",
-        "nonce": "3638536a2236f0c06173f83f41ecdd02",
+        "commit": "158da8a30b1cba5b64cf12585db44e73b7b07bcfc019d30c02737d507abd9e56",
+        "nonce": "7d8504c47ec12ad9318980d288adffd0",
         "payload": {
           "hint": "east",
           "intent": "truth",
@@ -448,7 +448,7 @@
             5
           ]
         },
-        "commit": "68f98465756ba26aac156841a624b98c1d73013b4997ba77e6fbbd4aa5e94713",
+        "commit": "f4ccab4e6da780afa0cc9c9bc7b99c2a8e179ad6e8e17bb45647c0f59448ce44",
         "hint": "You'll never catch me.",
         "sender": "thief",
         "smell_grid": {
@@ -461,13 +461,13 @@
           "6,5": 0.4305,
           "6,6": 2.9853
         },
-        "timestamp": "2026-08-25T15:31:45.701207+00:00"
+        "timestamp": "2026-08-25T15:48:57.474936+00:00"
       }
     },
     {
       "ours": {
-        "commit": "7b960612c2624f0769bf30a4ab615d35cd8c5b27d6cc704dfd03335a4b0675ba",
-        "nonce": "19c1d6e6c5da3c5d8481fca4e0eb44a2",
+        "commit": "54e03ce45801348ed92bee8088d51686c267cc18e1e94f8d2fea4a31120dd121",
+        "nonce": "79814f876fbc072aaabec02f0a7bbf78",
         "payload": {
           "hint": "stay",
           "intent": "truth",
@@ -489,7 +489,7 @@
             6
           ]
         },
-        "commit": "4132527d6835c25939f724b9d526b163a468669b94442b0a14b72626648470ef",
+        "commit": "0bd44f87c358744bc14093703df4590d9f8686241255af37789c19b8743f2e71",
         "hint": "I was never even here.",
         "sender": "thief",
         "smell_grid": {
@@ -503,13 +503,13 @@
           "6,5": 0.3874,
           "6,6": 2.6868
         },
-        "timestamp": "2026-08-25T15:31:47.539472+00:00"
+        "timestamp": "2026-08-25T15:48:59.281838+00:00"
       }
     },
     {
       "ours": {
-        "commit": "9121f00145c9d44e4e13f9690786fcff11032cf3b0ef9c3a6e3ab17b43ec55e7",
-        "nonce": "52bc0a926021e51248a3620d26da6228",
+        "commit": "e2c51bc08f0be5fc0b8feac5bfcca453c675c7ddcd2c407a83d9d35991888593",
+        "nonce": "5042317f8ee8ce6d7cb41ef81fe43faf",
         "payload": {
           "hint": "stay",
           "intent": "truth",
@@ -531,7 +531,7 @@
             6
           ]
         },
-        "commit": "64efe8dca83f83d8dbbd2f782390eb96cb098377d2f77e4485b98beae3a809c0",
+        "commit": "56fcfe0f1870ab4f20b6e1321f0ee83f63c3c7ff48f3ab49ae18c7713420b923",
         "hint": "Slower than my grandmother, officer.",
         "sender": "thief",
         "smell_grid": {
@@ -546,13 +546,13 @@
           "6,5": 0.3487,
           "6,6": 2.4181
         },
-        "timestamp": "2026-08-25T15:31:49.360966+00:00"
+        "timestamp": "2026-08-25T15:49:01.097275+00:00"
       }
     },
     {
       "ours": {
-        "commit": "a1dc9f57f54a7fe1f95e2fad90ad2bdbc1be439b7ee42113a0c9f6e787a07a14",
-        "nonce": "ab1e300779e9f244ce2362eab8a46227",
+        "commit": "675df4a1fa871eb23addb81ca25ebf18f0cff2772ce3068dc6deb738d56f5830",
+        "nonce": "84654fce83b55b50fab09933abefd937",
         "payload": {
           "hint": "stay",
           "intent": "truth",
@@ -574,7 +574,7 @@
             6
           ]
         },
-        "commit": "3fc04fdd06b0a3b20b0a8ef00ab65734001402d031e63b0b597eaa6ffa090bd3",
+        "commit": "2395b951986fc2a74c5781c993842376cf90be748440d34f40d2c5567d24eaa2",
         "hint": "Try looking the other way.",
         "sender": "thief",
         "smell_grid": {
@@ -590,13 +590,13 @@
           "6,5": 0.3138,
           "6,6": 2.1763
         },
-        "timestamp": "2026-08-25T15:31:51.229081+00:00"
+        "timestamp": "2026-08-25T15:49:02.909302+00:00"
       }
     },
     {
       "ours": {
-        "commit": "a5c030cb915b82c71792b5a26f00a1b3e2f621375cceeca57904ced49e8c8da1",
-        "nonce": "9c7f4cd6334d1b76fcae5fad56aa4f7f",
+        "commit": "29099e9822b02ef7bb49e9dc8ef4bfe56acb68c9448f4289133df72032be95ed",
+        "nonce": "39e258ca7d030e4ca04094f670bfb61f",
         "payload": {
           "hint": "stay",
           "intent": "truth",
@@ -618,7 +618,7 @@
             6
           ]
         },
-        "commit": "3cb1ac0ee06731f5e4c1bdd1a7767d40ccbf432eeecca020821177d34f53e7fa",
+        "commit": "08d67ddd4e23f7f07122033f44da74865fadc62d4124a17446ef53421628a0cf",
         "hint": "You'll never catch me.",
         "sender": "thief",
         "smell_grid": {
@@ -635,13 +635,13 @@
           "6,5": 0.2824,
           "6,6": 1.9587
         },
-        "timestamp": "2026-08-25T15:31:52.967299+00:00"
+        "timestamp": "2026-08-25T15:49:04.773700+00:00"
       }
     },
     {
       "ours": {
-        "commit": "145f358687ad28087c0c8823cfc1c25906cbc405809994ec2847797205ac7a0c",
-        "nonce": "9542c9c5d5daa5fa9b6df7630887b7a7",
+        "commit": "f3893919e50dda5389e1a3715d3badeb2d7d1a74174e299ba6df1e3664b43a98",
+        "nonce": "8e52cc5ccfa51f9d79fb973a91464f66",
         "payload": {
           "hint": "stay",
           "intent": "truth",
@@ -663,7 +663,7 @@
             6
           ]
         },
-        "commit": "ce1f0dbe12d22008a5c1892b5e24459545f01dbdc023bdfe6d794430a5d509a4",
+        "commit": "1981c9dbf67b4dd00c5ed6869674548d7dc1e511609b94a7070ffe214ad0481a",
         "hint": "I was never even here.",
         "sender": "thief",
         "smell_grid": {
@@ -681,13 +681,13 @@
           "6,5": 0.2542,
           "6,6": 1.7628
         },
-        "timestamp": "2026-08-25T15:31:54.784975+00:00"
+        "timestamp": "2026-08-25T15:49:06.588536+00:00"
       }
     },
     {
       "ours": {
-        "commit": "2dc5d96519c560fb0c6d576adaade5ad3c970e15751f04db68ee864274052629",
-        "nonce": "01cdb23c05555fe16f4a45558b3de962",
+        "commit": "af88c6a114e014e39e6d7f2fd554fcdfd4ad5f0f851964ebfa74a56196ece20d",
+        "nonce": "452ce606b368e52dae2176974c3e7dce",
         "payload": {
           "hint": "stay",
           "intent": "truth",
@@ -709,7 +709,7 @@
             6
           ]
         },
-        "commit": "4e2f5ad249f5e580c25bb4c0e2a5fbb823a9fd1339c30b075ce6a3cb81535a5e",
+        "commit": "08adf02c7d67c1cbab81a0b65eac80be46cd1acbd0d69adc23db2dda0514fdeb",
         "hint": "Slower than my grandmother, officer.",
         "sender": "thief",
         "smell_grid": {
@@ -728,13 +728,13 @@
           "6,5": 0.2288,
           "6,6": 1.5865
         },
-        "timestamp": "2026-08-25T15:31:56.664646+00:00"
+        "timestamp": "2026-08-25T15:49:08.407616+00:00"
       }
     },
     {
       "ours": {
-        "commit": "aeeeeaba80caa67e74876b1e2efaeb062ad441b3a01a56b7ab6df93d0383895d",
-        "nonce": "72658bda352d4fe34f3679f64fbda373",
+        "commit": "9c880a06358fd89dbe76320746d13a2f4d5f0b06206f8de36319e4435f5038d6",
+        "nonce": "5b52509c7aeed8ca8fe500356df4c644",
         "payload": {
           "hint": "stay",
           "intent": "truth",
@@ -756,7 +756,7 @@
             6
           ]
         },
-        "commit": "0f768201480911460da5e037e8e468c4f9ff79ee6209723ab824430a18e182b9",
+        "commit": "89c970b23ea6984cf79aa454a96720037ace4fa4bc42741bcf994bb7725ef43a",
         "hint": "Try looking the other way.",
         "sender": "thief",
         "smell_grid": {
@@ -776,13 +776,13 @@
           "6,5": 0.2059,
           "6,6": 1.4279
         },
-        "timestamp": "2026-08-25T15:31:58.408933+00:00"
+        "timestamp": "2026-08-25T15:49:10.236537+00:00"
       }
     },
     {
       "ours": {
-        "commit": "b7d0661437eb7cc64bc621f7a13e5a33e8790c65b10be6052781a2bd0830dc6a",
-        "nonce": "931fcb5850fa832e33a178e61443ff4f",
+        "commit": "ed13cffe8d14349b9733c7fe8bf661e062f381187e2de0483a9bad316c8ca0b9",
+        "nonce": "febeee376914b61a0b4871029017dffd",
         "payload": {
           "hint": "stay",
           "intent": "truth",
@@ -804,7 +804,7 @@
             6
           ]
         },
-        "commit": "6f9c26e27b7fc174e4b4dda2057f6fc28fab420687b364e34f04950987a1011c",
+        "commit": "ddca406a4a53bc175e535134bc7fcb6a4184612fbda72e6cf1efc83ff50bbee5",
         "hint": "You'll never catch me.",
         "sender": "thief",
         "smell_grid": {
@@ -825,13 +825,13 @@
           "6,5": 0.1853,
           "6,6": 1.2851
         },
-        "timestamp": "2026-08-25T15:32:00.241934+00:00"
+        "timestamp": "2026-08-25T15:49:12.121744+00:00"
       }
     },
     {
       "ours": {
-        "commit": "21c339037ab008411ef48bc9acbebe44f55d928383ba6a1f92d5f693c2ed88b1",
-        "nonce": "5e84aced8481c92deed2bea3fcf82f6d",
+        "commit": "b1e38ba0b6cc8e37edfc451748f20bc6ae461f9a57fa9f3a9bf6c2667022327b",
+        "nonce": "b3ca29a28e333cdce63265c41a9c38cc",
         "payload": {
           "hint": "stay",
           "intent": "truth",
@@ -853,7 +853,7 @@
             6
           ]
         },
-        "commit": "00d49ef76eeab4d4f9c069dc4112e4a776f831fb6e8838ab8918d06e95d5b336",
+        "commit": "d8041e28beb9d58cc5fa74ef6229ce0543214474e0bf46f928981df6c64dac18",
         "hint": "I was never even here.",
         "sender": "thief",
         "smell_grid": {
@@ -875,13 +875,13 @@
           "6,5": 0.1668,
           "6,6": 1.1566
         },
-        "timestamp": "2026-08-25T15:32:02.182769+00:00"
+        "timestamp": "2026-08-25T15:49:13.890216+00:00"
       }
     },
     {
       "ours": {
-        "commit": "32a6dec35b5b5bea6cf60778324c8dfb8cf14c5571cf080a89514732b4335869",
-        "nonce": "616558afefe383df20fb4d87338ecb6e",
+        "commit": "8ecb75666d88a305335e53e14a139c16c079f660f0e4c7d9b7970a83513ac2fd",
+        "nonce": "50cc7365576da2ce77765fb7e6bfcd03",
         "payload": {
           "hint": "stay",
           "intent": "truth",
@@ -903,7 +903,7 @@
             6
           ]
         },
-        "commit": "a56418016449289b75d370d0a8df1531e0b6c7e32bd84d8c10d5e18fc052f694",
+        "commit": "c4322d8f420af81c7cbcec0c1ceee352624ec624aaed371892efbfd3a16723da",
         "hint": "Slower than my grandmother, officer.",
         "sender": "thief",
         "smell_grid": {
@@ -926,13 +926,13 @@
           "6,5": 0.1501,
           "6,6": 1.0409
         },
-        "timestamp": "2026-08-25T15:32:03.935746+00:00"
+        "timestamp": "2026-08-25T15:49:15.697816+00:00"
       }
     },
     {
       "ours": {
-        "commit": "9a2614fc59c85bf4304fe55c12db5af8a97b0be72e41cc3b30eaf5424e31b219",
-        "nonce": "98761282c0292138951b3e4dec1d46a4",
+        "commit": "5a4208c21f8dea9958a0dc09e2144cd7180a8a2594c950d0dd4dafb0603595ed",
+        "nonce": "393312e410b5b61ebb03dc074e7254b9",
         "payload": {
           "hint": "stay",
           "intent": "truth",
@@ -954,7 +954,7 @@
             6
           ]
         },
-        "commit": "f9dd01e4807b9d990499f60e0a002c05db2b858c1996c577159ff40d08c4a036",
+        "commit": "8ea94e9cbe37cace91f8b48529d6d0f8568c892b25775632f8fa0ca542da8a65",
         "hint": "Try looking the other way.",
         "sender": "thief",
         "smell_grid": {
@@ -977,13 +977,13 @@
           "6,5": 0.1351,
           "6,6": 0.9368
         },
-        "timestamp": "2026-08-25T15:32:05.776320+00:00"
+        "timestamp": "2026-08-25T15:49:17.521145+00:00"
       }
     },
     {
       "ours": {
-        "commit": "f414eecb5e5122a8244cad41476dfc2670f93634520abc2c95305e6a62f92210",
-        "nonce": "8419118b72bdff9eb0cb8edfef55d10b",
+        "commit": "47316f83c8672086f5fa280dbe23c665931abbca0b72e50ed8c2c07a7ae6f87c",
+        "nonce": "da6a4cad6d94688d7b68d001bf00fcd1",
         "payload": {
           "hint": "stay",
           "intent": "truth",
@@ -1005,7 +1005,7 @@
             6
           ]
         },
-        "commit": "aa9278a8a6d79ab7d4bb26677a38401a3a1a2a8eaa1d29044a50643dc0482a93",
+        "commit": "3197d46241247738d1b5d6f02e2d716f57b8cfd7dc243a673eab5a470e1deedc",
         "hint": "You'll never catch me.",
         "sender": "thief",
         "smell_grid": {
@@ -1028,13 +1028,13 @@
           "6,5": 0.1216,
           "6,6": 0.8431
         },
-        "timestamp": "2026-08-25T15:32:17.313044+00:00"
+        "timestamp": "2026-08-25T15:49:19.343868+00:00"
       }
     },
     {
       "ours": {
-        "commit": "e482831855252032246395e012f906fb54b1855a886a22d092029f6795cf75e5",
-        "nonce": "2e603f01bb5e9fd937d41aff792fd2d6",
+        "commit": "edc12300352850df34702ec7d2761d8d98d116866394a2e71d102b9dcb624cb9",
+        "nonce": "ab37ba0e6e732bf5b3a32c9adee2049e",
         "payload": {
           "hint": "stay",
           "intent": "truth",
@@ -1056,7 +1056,7 @@
             6
           ]
         },
-        "commit": "b82b3f06607e245de8c3ce049702df79838bcc393fc0ce4992875b323d32a987",
+        "commit": "bd793a6fbc0f23b9cf0af1fbe44d1871e0bbaa09a2235ddeceb732ebc1e49e97",
         "hint": "I was never even here.",
         "sender": "thief",
         "smell_grid": {
@@ -1079,13 +1079,13 @@
           "6,5": 0.1094,
           "6,6": 0.7588
         },
-        "timestamp": "2026-08-25T15:32:18.832369+00:00"
+        "timestamp": "2026-08-25T15:49:21.162449+00:00"
       }
     },
     {
       "ours": {
-        "commit": "29588f24ac2df265d28ff1e411e16e9f6a1546e2d2a0a9b5beb9fab8bc4df7af",
-        "nonce": "f72754cc95cf59aa881b91d3387dcb1e",
+        "commit": "b5f97c580984e067fd7cafe2c874253ac4be9a895e3f34fb8e4fffed2d0545f1",
+        "nonce": "867186cdc064f7d1b3d4d318f9d4ca87",
         "payload": {
           "hint": "stay",
           "intent": "truth",
@@ -1107,7 +1107,7 @@
             6
           ]
         },
-        "commit": "9fcfcaf3cde988a32865c994eaf9f90b7e4d7963569a8489fd6de2c3a650af15",
+        "commit": "850f3a3685f5409b577a965b3e5292bea7781940592672c1b94a0821d611767a",
         "hint": "Slower than my grandmother, officer.",
         "sender": "thief",
         "smell_grid": {
@@ -1130,13 +1130,13 @@
           "6,5": 0.0985,
           "6,6": 0.6829
         },
-        "timestamp": "2026-08-25T15:32:20.622501+00:00"
+        "timestamp": "2026-08-25T15:49:22.970832+00:00"
       }
     },
     {
       "ours": {
-        "commit": "b1a3fc1798b5b3a2c0ad3957cc7c497432d1b5b07d040332be647e5f7ff75336",
-        "nonce": "e43b7e65d69444b82b4c3cdc6d22a12f",
+        "commit": "97f0d8f51dad370205991bf5cc66cc46caf27fb8ac491847e963efd096168578",
+        "nonce": "68d9bbae541c4dd022282027b9fba998",
         "payload": {
           "hint": "stay",
           "intent": "truth",
@@ -1158,7 +1158,7 @@
             6
           ]
         },
-        "commit": "0b9a4ecb1f3d37aaa5865ddd3214656f548504b988af5384a038d8aa535da04b",
+        "commit": "412feb1f397a55ad8900b84fc80a3bd2188b53fa2b874deaf2ca690c497b511c",
         "hint": "Try looking the other way.",
         "sender": "thief",
         "smell_grid": {
@@ -1181,13 +1181,13 @@
           "6,5": 0.0886,
           "6,6": 0.6147
         },
-        "timestamp": "2026-08-25T15:32:22.565953+00:00"
+        "timestamp": "2026-08-25T15:49:24.798546+00:00"
       }
     },
     {
       "ours": {
-        "commit": "12b21e7873d2fc0bc97bd70eca5265d8e478d84c8afee60283d4398989075372",
-        "nonce": "0b6dc65a669f8e9472b341ca78b76b3a",
+        "commit": "6e474f8ad4e6bfb5f991d39fdea6e088fccd0088eec04648ada50fc465e01f85",
+        "nonce": "9c8868ea885c6384a01012950c1d4d92",
         "payload": {
           "hint": "stay",
           "intent": "truth",
@@ -1209,7 +1209,7 @@
             6
           ]
         },
-        "commit": "f353e1db9e7602525e83626418ebfb190015739ce80d3b60b5a355bd16f9dc96",
+        "commit": "8701184e03393d4e81139f5a0065f8a1ebc53df856a6ee3ac9a9acce6d858dd8",
         "hint": "You'll never catch me.",
         "sender": "thief",
         "smell_grid": {
@@ -1232,13 +1232,13 @@
           "6,5": 0.0798,
           "6,6": 0.5532
         },
-        "timestamp": "2026-08-25T15:32:24.313260+00:00"
+        "timestamp": "2026-08-25T15:49:26.632842+00:00"
       }
     },
     {
       "ours": {
-        "commit": "82a294e5eb320956c42a689da3898832fb64f686fb3b53d05bbb5cb01fdb29d4",
-        "nonce": "563ce34261dd31ca7ca4ccdfbac5b70d",
+        "commit": "1bdaecffe955a9aa2023343f9e1b50de9c5f47b5deed9c82f16dc27319e2d8f9",
+        "nonce": "6a5b2a9598f3a1307e0cd22a7452e510",
         "payload": {
           "hint": "north",
           "intent": "truth",
@@ -1260,7 +1260,7 @@
             6
           ]
         },
-        "commit": "e48beded183352e55a1c3b7b357c4667984ead5295cd669fec2fa81080996131",
+        "commit": "9ca8d4f0e149f4a213953ac8f05d489856f1b26fca2423058d8dd0b92f2957e7",
         "hint": "I was never even here.",
         "sender": "thief",
         "smell_grid": {
@@ -1283,13 +1283,13 @@
           "6,5": 0.0718,
           "6,6": 0.4979
         },
-        "timestamp": "2026-08-25T15:32:26.147773+00:00"
+        "timestamp": "2026-08-25T15:49:28.460646+00:00"
       }
     },
     {
       "ours": {
-        "commit": "964bcf58b1f26583fb6badfb2f13a400b104ffb9972ea2f3ff21ce5f83971de5",
-        "nonce": "b7163986d94c21f7075423c0bdbf5a7a",
+        "commit": "30ab7060f8e3346d37abd36afcb31800d98a28930065915a9798ce2ae91489e1",
+        "nonce": "751a72fdb04ac226e9b0f5c9dedd1a99",
         "payload": {
           "hint": "north",
           "intent": "truth",
@@ -1311,7 +1311,7 @@
             6
           ]
         },
-        "commit": "dca4b442468dac53cdaf8fac594924d8a4e6734e90f89ba26b06dee34c4fbf21",
+        "commit": "6e5830286e4c71ae6504375e79c9abba87061bbeb2e3d986ee8580192aa85dfe",
         "hint": "Slower than my grandmother, officer.",
         "sender": "thief",
         "smell_grid": {
@@ -1334,13 +1334,13 @@
           "6,5": 0.0646,
           "6,6": 0.4481
         },
-        "timestamp": "2026-08-25T15:32:27.994036+00:00"
+        "timestamp": "2026-08-25T15:49:30.276603+00:00"
       }
     },
     {
       "ours": {
-        "commit": "9cbe1ec3f54268ba79d998b84d18867a4dac8e7da3debeb8432c98643e927e20",
-        "nonce": "cd7b5b78754fc8b79d870fb5ad11d68e",
+        "commit": "43eb6808ee82219525c6832a71cb8e21b2b433b028465cf22602c75a8e735b8f",
+        "nonce": "89fb7886695585358f36219da79af07c",
         "payload": {
           "hint": "north",
           "intent": "truth",
@@ -1362,7 +1362,7 @@
             6
           ]
         },
-        "commit": "7b0d073bc990d0e5777b88b71e252aa2b97ce28f1bd1e3c38facde8cd6471190",
+        "commit": "c84bcad66c8f76da9ad3aa883c091bea04b0c7eb87f318112dbef71d2c379156",
         "hint": "Try looking the other way.",
         "sender": "thief",
         "smell_grid": {
@@ -1385,13 +1385,13 @@
           "6,5": 0.0581,
           "6,6": 0.4033
         },
-        "timestamp": "2026-08-25T15:32:29.839206+00:00"
+        "timestamp": "2026-08-25T15:49:32.070644+00:00"
       }
     },
     {
       "ours": {
-        "commit": "789ca3beb9a8194db6109a051f8abc305b9630f9b3f2beb5921bfe5e9d5496d8",
-        "nonce": "bb101a0eecdd8d497fdb6732baae4014",
+        "commit": "151db84da73c418c2a57d0907b19ef965d0214f878703e9fc7fdcb4d15cc9401",
+        "nonce": "0ec8fb2eb7de210afec38db8c78cdfeb",
         "payload": {
           "hint": "north",
           "intent": "truth",
@@ -1413,7 +1413,7 @@
             6
           ]
         },
-        "commit": "d3f6ba1fac6e4f80ab86c9ea6511631ecdcf799aaef1b1c2948e3a88b12af0fd",
+        "commit": "48b37164f9efc7b6ddc1197fe5ae1b5c04d3dd451ae02ca3360f7bcbf99aec00",
         "hint": "You'll never catch me.",
         "sender": "thief",
         "smell_grid": {
@@ -1436,13 +1436,13 @@
           "6,5": 0.0523,
           "6,6": 0.3629
         },
-        "timestamp": "2026-08-25T15:32:31.579748+00:00"
+        "timestamp": "2026-08-25T15:49:33.884849+00:00"
       }
     },
     {
       "ours": {
-        "commit": "ec898affab272a3843e498f114fc447591298d51040adf989a854311a23854a7",
-        "nonce": "3de079ee687d2650f610e96123f76e1a",
+        "commit": "0c33667d6f3997455ff48ea74e896378785ff481570a2db9d378a22607f5854e",
+        "nonce": "f1c120046accdee7e208890b5a536d2d",
         "payload": {
           "hint": "north",
           "intent": "truth",
@@ -1464,7 +1464,7 @@
             6
           ]
         },
-        "commit": "bcf796a2003ffce12f1010819a978d96bee563dd5298f6448e93d2b864575002",
+        "commit": "9b06c9d5abcac5c89c2ab6f8ca365753321c981dd25272a605934b1839d412fc",
         "hint": "I was never even here.",
         "sender": "thief",
         "smell_grid": {
@@ -1487,13 +1487,13 @@
           "6,5": 0.0471,
           "6,6": 0.3267
         },
-        "timestamp": "2026-08-25T15:32:33.405645+00:00"
+        "timestamp": "2026-08-25T15:49:35.723525+00:00"
       }
     },
     {
       "ours": {
-        "commit": "f5216ca0fd109f6b7161157a65e47c965ad0b7272f5f619e6802917e0ff3c8b5",
-        "nonce": "911345c9c74350e5d8081799a79ba18d",
+        "commit": "a8e9b30579b41d6f4a21451cd4db2a342f69444e6af24cc584a6df7a68a36c23",
+        "nonce": "fdc119eeed6018e01d35bb29bf1fcf2c",
         "payload": {
           "hint": "north",
           "intent": "truth",
@@ -1515,7 +1515,7 @@
             6
           ]
         },
-        "commit": "7bc8f8b740d672db7e5376caaf6e6b10bb7d9a0e554875da63326be69c44a7f1",
+        "commit": "23000e1a51113ec6e8e63053707496237fcb532635cd40a06dc20f0a1e5e5497",
         "hint": "Slower than my grandmother, officer.",
         "sender": "thief",
         "smell_grid": {
@@ -1538,13 +1538,13 @@
           "6,5": 0.0424,
           "6,6": 0.294
         },
-        "timestamp": "2026-08-25T15:32:35.250414+00:00"
+        "timestamp": "2026-08-25T15:49:37.537727+00:00"
       }
     },
     {
       "ours": {
-        "commit": "fcd0b422c0f31f1d003d592a6fcce63f29afd8bc7db898e09dfeb77b1890480f",
-        "nonce": "008292199770d662f3baaa6218942a1d",
+        "commit": "7fffe5f8b300fe16054c6d9b75fc7ee7ec44d17dcf40e21cb407759f53b01f7e",
+        "nonce": "22f1bc29a5cd8bda5f51a2a479a0c536",
         "payload": {
           "hint": "west",
           "intent": "truth",
@@ -1566,7 +1566,7 @@
             6
           ]
         },
-        "commit": "5cdf9ecbc5791259ed63d336dace343c17cc973031d8c98e229fc3e35bea874b",
+        "commit": "1da1282bf6e49128c3c1861fe003a9662e760c65b5c40fbec92bd421d6d2cb60",
         "hint": "Try looking the other way.",
         "sender": "thief",
         "smell_grid": {
@@ -1590,7 +1590,7 @@
           "6,5": 0.0382,
           "6,6": 0.2646
         },
-        "timestamp": "2026-08-25T15:32:37.090488+00:00",
+        "timestamp": "2026-08-25T15:49:39.355551+00:00",
         "win_claim": {
           "type": "survival"
         }
