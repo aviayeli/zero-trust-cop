@@ -1,0 +1,1601 @@
+{
+  "artifact_version": 1,
+  "barriers": [],
+  "game_id": "aviayeli-vs-bb-ai-12",
+  "game_number": 1,
+  "game_uid": "521727a1-e4d5-3c92-8f0a-82dc5a77e6fc",
+  "group_id": "aviayeli",
+  "handshake_counter_signed": true,
+  "our_role": "police",
+  "result_claim": {
+    "outcome": "survival",
+    "steps": 35
+  },
+  "their_audit_response": {
+    "ok": true
+  },
+  "turns": [
+    {
+      "ours": {
+        "commit": "6990070281af43ff62628ebd487ee126ca6e4ba1037af0402e460ef27a2792af",
+        "nonce": "948d0316bef2951241341bc9b029c008",
+        "payload": {
+          "hint": "south",
+          "intent": "truth",
+          "move": "MOVE:S",
+          "position": [
+            1,
+            0
+          ],
+          "state": "grid=7x7;self=[1, 0];barriers=[]",
+          "step": 1
+        }
+      },
+      "step": 1,
+      "theirs": {
+        "commit": "12bb83002bbea05286b3b3fa72ef291ed2aba745ca8515ba1bfec0173012d317",
+        "hint": "I was never even here.",
+        "sender": "thief",
+        "smell_grid": {
+          "4,3": 0.9
+        },
+        "timestamp": "2026-08-25T15:31:28.143356+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "8ad6a9fbbd71ba7cffa9714a68df3fb28abe00a5fb3628788351b08e6ef7ab0f",
+        "nonce": "ecf11b2a939da0ebd12a5fa5488780db",
+        "payload": {
+          "hint": "south",
+          "intent": "truth",
+          "move": "MOVE:S",
+          "position": [
+            2,
+            0
+          ],
+          "state": "grid=7x7;self=[2, 0];barriers=[]",
+          "step": 2
+        }
+      },
+      "step": 2,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            1,
+            0
+          ]
+        },
+        "commit": "c360dcf1d0484676ef399f5d929af6cb7f1f8d8af0e3d99e56dc3400ad7847c1",
+        "hint": "Slower than my grandmother, officer.",
+        "sender": "thief",
+        "smell_grid": {
+          "4,3": 0.81,
+          "5,3": 0.9
+        },
+        "timestamp": "2026-08-25T15:31:28.543589+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "0b26388723bf745a9c8decd04001450ad866c68b79c25a5647e8af7f2d7a4dea",
+        "nonce": "6eaefeb0bd0e79f050245b30222b3fb2",
+        "payload": {
+          "hint": "south",
+          "intent": "truth",
+          "move": "MOVE:S",
+          "position": [
+            3,
+            0
+          ],
+          "state": "grid=7x7;self=[3, 0];barriers=[]",
+          "step": 3
+        }
+      },
+      "step": 3,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            2,
+            0
+          ]
+        },
+        "commit": "bc6f90c6504c330da37e76e429d6b1f91f438313808f49a8c2627f775caf1935",
+        "hint": "Try looking the other way.",
+        "sender": "thief",
+        "smell_grid": {
+          "4,3": 0.729,
+          "5,3": 0.81,
+          "6,3": 0.9
+        },
+        "timestamp": "2026-08-25T15:31:29.316113+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "3efb9c00058d42eaf48ab9a4939bcf226123b75ca3ef8b161dad1ff6e0096edc",
+        "nonce": "c9c22380907b0d3f4cacfd6f6cb5c425",
+        "payload": {
+          "hint": "east",
+          "intent": "truth",
+          "move": "MOVE:E",
+          "position": [
+            3,
+            1
+          ],
+          "state": "grid=7x7;self=[3, 1];barriers=[]",
+          "step": 4
+        }
+      },
+      "step": 4,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            3,
+            0
+          ]
+        },
+        "commit": "2ff2ee506ab5ce77f2a4227da1c5eb5ae7a41441b495ddde413f4e0ea3d4458f",
+        "hint": "You'll never catch me.",
+        "sender": "thief",
+        "smell_grid": {
+          "4,3": 0.6561,
+          "5,3": 0.729,
+          "6,3": 0.81,
+          "6,4": 0.9
+        },
+        "timestamp": "2026-08-25T15:31:31.156060+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "a31a033b086caaba4a5dc958970b6a3d6ed620f3e7c73001332c08ed8f5c1f8a",
+        "nonce": "dffb13922950a9e8420d5694b60a2c54",
+        "payload": {
+          "hint": "south",
+          "intent": "truth",
+          "move": "MOVE:S",
+          "position": [
+            4,
+            1
+          ],
+          "state": "grid=7x7;self=[4, 1];barriers=[]",
+          "step": 5
+        }
+      },
+      "step": 5,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            3,
+            1
+          ]
+        },
+        "commit": "8daf48f43441b8c4a5e9268a3cd78eaf8aaf3dd5056d1b46c42965a3d06aec16",
+        "hint": "I was never even here.",
+        "sender": "thief",
+        "smell_grid": {
+          "4,3": 0.5905,
+          "5,3": 0.6561,
+          "6,3": 0.729,
+          "6,4": 0.81,
+          "6,5": 0.9
+        },
+        "timestamp": "2026-08-25T15:31:32.956696+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "2c351a09086d3749add596890ecc8d674036e26294308c82cf50466732f466b2",
+        "nonce": "2890d507c8f879ea23128acad35400aa",
+        "payload": {
+          "hint": "south",
+          "intent": "truth",
+          "move": "MOVE:S",
+          "position": [
+            5,
+            1
+          ],
+          "state": "grid=7x7;self=[5, 1];barriers=[]",
+          "step": 6
+        }
+      },
+      "step": 6,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            4,
+            1
+          ]
+        },
+        "commit": "c263230eab6c830251c4109e274ba328536c0351c1d96574dc44555ff201b7e2",
+        "hint": "Slower than my grandmother, officer.",
+        "sender": "thief",
+        "smell_grid": {
+          "4,3": 0.5314,
+          "5,3": 0.5905,
+          "6,3": 0.6561,
+          "6,4": 0.729,
+          "6,5": 0.81,
+          "6,6": 0.9
+        },
+        "timestamp": "2026-08-25T15:31:34.738114+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "0d3f37386da3d60fc99ab1513f1bdd37c32a3fa3d9a05ebf0c88dbc253dc5622",
+        "nonce": "a99677b4a6469e2d4b419235ba960494",
+        "payload": {
+          "hint": "east",
+          "intent": "truth",
+          "move": "MOVE:E",
+          "position": [
+            5,
+            2
+          ],
+          "state": "grid=7x7;self=[5, 2];barriers=[]",
+          "step": 7
+        }
+      },
+      "step": 7,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            5,
+            1
+          ]
+        },
+        "commit": "3dc9b9f5c2aee08e6591357d213fadd3411be84e7589847fcfbc4f6fc629761d",
+        "hint": "Try looking the other way.",
+        "sender": "thief",
+        "smell_grid": {
+          "4,3": 0.4783,
+          "5,3": 0.5314,
+          "6,3": 0.5905,
+          "6,4": 0.6561,
+          "6,5": 0.729,
+          "6,6": 1.71
+        },
+        "timestamp": "2026-08-25T15:31:36.541003+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "7ca4c3e830d980adf5396c0987e5c3910ae2048d7999654cc9f16556dbc3a633",
+        "nonce": "977097e98bcf049fecb6122ff31006f9",
+        "payload": {
+          "hint": "east",
+          "intent": "truth",
+          "move": "MOVE:E",
+          "position": [
+            5,
+            3
+          ],
+          "state": "grid=7x7;self=[5, 3];barriers=[]",
+          "step": 8
+        }
+      },
+      "step": 8,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            5,
+            2
+          ]
+        },
+        "commit": "189a456dc6eb41b3ac4fe719ceddcb9a00a3fa216a64eb48cebf7bafba891630",
+        "hint": "You'll never catch me.",
+        "sender": "thief",
+        "smell_grid": {
+          "4,3": 0.4305,
+          "5,3": 0.4783,
+          "6,3": 0.5314,
+          "6,4": 0.5905,
+          "6,5": 0.6561,
+          "6,6": 2.439
+        },
+        "timestamp": "2026-08-25T15:31:38.436107+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "ac122ab3cb5db6be8c6c50b3556d3372e22fadee5783bb9f140479eaafbed440",
+        "nonce": "d9c112e992aa68b743323d55eff6a769",
+        "payload": {
+          "hint": "east",
+          "intent": "truth",
+          "move": "MOVE:E",
+          "position": [
+            5,
+            4
+          ],
+          "state": "grid=7x7;self=[5, 4];barriers=[]",
+          "step": 9
+        }
+      },
+      "step": 9,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            5,
+            3
+          ]
+        },
+        "commit": "32819f9d8e83c7adad916d0876f34466709955606107d7daf61e66c90d67a962",
+        "hint": "I was never even here.",
+        "sender": "thief",
+        "smell_grid": {
+          "4,3": 0.3874,
+          "5,3": 0.4305,
+          "6,3": 0.4783,
+          "6,4": 0.5314,
+          "6,5": 0.5905,
+          "6,6": 3.0951
+        },
+        "timestamp": "2026-08-25T15:31:40.274417+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "ae11623141ab17d1f14a0544f6389207960176894e50542661252acc901da7be",
+        "nonce": "7434f85e605eae677225473806086d7d",
+        "payload": {
+          "hint": "south",
+          "intent": "truth",
+          "move": "MOVE:S",
+          "position": [
+            6,
+            4
+          ],
+          "state": "grid=7x7;self=[6, 4];barriers=[]",
+          "step": 10
+        }
+      },
+      "step": 10,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            5,
+            4
+          ]
+        },
+        "commit": "8380801ba8f1eae03ac6b7213fe556a9cdd5b752b801e18a2a05516ad24c0b5d",
+        "hint": "Slower than my grandmother, officer.",
+        "sender": "thief",
+        "smell_grid": {
+          "4,3": 0.3487,
+          "5,3": 0.3874,
+          "6,3": 0.4305,
+          "6,4": 0.4783,
+          "6,5": 0.5314,
+          "6,6": 3.6856
+        },
+        "timestamp": "2026-08-25T15:31:42.018126+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "2760d19414d08d0c380405a1d0e533d9014909245602fbba95a18974904bc5c9",
+        "nonce": "82f32046161a2f3ed4d1cdef1db27fb4",
+        "payload": {
+          "hint": "east",
+          "intent": "truth",
+          "move": "MOVE:E",
+          "position": [
+            6,
+            5
+          ],
+          "state": "grid=7x7;self=[6, 5];barriers=[]",
+          "step": 11
+        }
+      },
+      "step": 11,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            6,
+            4
+          ]
+        },
+        "commit": "a23a1e5f92ba30cc896ecb797bd1b67796d1a53e7bdae00b88bd9e7d5a8ffe00",
+        "hint": "Try looking the other way.",
+        "sender": "thief",
+        "smell_grid": {
+          "4,3": 0.3138,
+          "5,3": 0.3487,
+          "5,6": 0.9,
+          "6,3": 0.3874,
+          "6,4": 0.4305,
+          "6,5": 0.4783,
+          "6,6": 3.317
+        },
+        "timestamp": "2026-08-25T15:31:43.917556+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "853a04513ce527267fb0f727e0f34cb60ebf9891cee4c74195d995ce34f74442",
+        "nonce": "3638536a2236f0c06173f83f41ecdd02",
+        "payload": {
+          "hint": "east",
+          "intent": "truth",
+          "move": "MOVE:E",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 12
+        }
+      },
+      "step": 12,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            6,
+            5
+          ]
+        },
+        "commit": "68f98465756ba26aac156841a624b98c1d73013b4997ba77e6fbbd4aa5e94713",
+        "hint": "You'll never catch me.",
+        "sender": "thief",
+        "smell_grid": {
+          "4,3": 0.2824,
+          "4,6": 0.9,
+          "5,3": 0.3138,
+          "5,6": 0.81,
+          "6,3": 0.3487,
+          "6,4": 0.3874,
+          "6,5": 0.4305,
+          "6,6": 2.9853
+        },
+        "timestamp": "2026-08-25T15:31:45.701207+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "7b960612c2624f0769bf30a4ab615d35cd8c5b27d6cc704dfd03335a4b0675ba",
+        "nonce": "19c1d6e6c5da3c5d8481fca4e0eb44a2",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 13
+        }
+      },
+      "step": 13,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            6,
+            6
+          ]
+        },
+        "commit": "4132527d6835c25939f724b9d526b163a468669b94442b0a14b72626648470ef",
+        "hint": "I was never even here.",
+        "sender": "thief",
+        "smell_grid": {
+          "3,6": 0.9,
+          "4,3": 0.2542,
+          "4,6": 0.81,
+          "5,3": 0.2824,
+          "5,6": 0.729,
+          "6,3": 0.3138,
+          "6,4": 0.3487,
+          "6,5": 0.3874,
+          "6,6": 2.6868
+        },
+        "timestamp": "2026-08-25T15:31:47.539472+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "9121f00145c9d44e4e13f9690786fcff11032cf3b0ef9c3a6e3ab17b43ec55e7",
+        "nonce": "52bc0a926021e51248a3620d26da6228",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 14
+        }
+      },
+      "step": 14,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            6,
+            6
+          ]
+        },
+        "commit": "64efe8dca83f83d8dbbd2f782390eb96cb098377d2f77e4485b98beae3a809c0",
+        "hint": "Slower than my grandmother, officer.",
+        "sender": "thief",
+        "smell_grid": {
+          "2,6": 0.9,
+          "3,6": 0.81,
+          "4,3": 0.2288,
+          "4,6": 0.729,
+          "5,3": 0.2542,
+          "5,6": 0.6561,
+          "6,3": 0.2824,
+          "6,4": 0.3138,
+          "6,5": 0.3487,
+          "6,6": 2.4181
+        },
+        "timestamp": "2026-08-25T15:31:49.360966+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "a1dc9f57f54a7fe1f95e2fad90ad2bdbc1be439b7ee42113a0c9f6e787a07a14",
+        "nonce": "ab1e300779e9f244ce2362eab8a46227",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 15
+        }
+      },
+      "step": 15,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            6,
+            6
+          ]
+        },
+        "commit": "3fc04fdd06b0a3b20b0a8ef00ab65734001402d031e63b0b597eaa6ffa090bd3",
+        "hint": "Try looking the other way.",
+        "sender": "thief",
+        "smell_grid": {
+          "1,6": 0.9,
+          "2,6": 0.81,
+          "3,6": 0.729,
+          "4,3": 0.2059,
+          "4,6": 0.6561,
+          "5,3": 0.2288,
+          "5,6": 0.5905,
+          "6,3": 0.2542,
+          "6,4": 0.2824,
+          "6,5": 0.3138,
+          "6,6": 2.1763
+        },
+        "timestamp": "2026-08-25T15:31:51.229081+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "a5c030cb915b82c71792b5a26f00a1b3e2f621375cceeca57904ced49e8c8da1",
+        "nonce": "9c7f4cd6334d1b76fcae5fad56aa4f7f",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 16
+        }
+      },
+      "step": 16,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            6,
+            6
+          ]
+        },
+        "commit": "3cb1ac0ee06731f5e4c1bdd1a7767d40ccbf432eeecca020821177d34f53e7fa",
+        "hint": "You'll never catch me.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,6": 0.9,
+          "1,6": 0.81,
+          "2,6": 0.729,
+          "3,6": 0.6561,
+          "4,3": 0.1853,
+          "4,6": 0.5905,
+          "5,3": 0.2059,
+          "5,6": 0.5314,
+          "6,3": 0.2288,
+          "6,4": 0.2542,
+          "6,5": 0.2824,
+          "6,6": 1.9587
+        },
+        "timestamp": "2026-08-25T15:31:52.967299+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "145f358687ad28087c0c8823cfc1c25906cbc405809994ec2847797205ac7a0c",
+        "nonce": "9542c9c5d5daa5fa9b6df7630887b7a7",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 17
+        }
+      },
+      "step": 17,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            6,
+            6
+          ]
+        },
+        "commit": "ce1f0dbe12d22008a5c1892b5e24459545f01dbdc023bdfe6d794430a5d509a4",
+        "hint": "I was never even here.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,5": 0.9,
+          "0,6": 0.81,
+          "1,6": 0.729,
+          "2,6": 0.6561,
+          "3,6": 0.5905,
+          "4,3": 0.1668,
+          "4,6": 0.5314,
+          "5,3": 0.1853,
+          "5,6": 0.4783,
+          "6,3": 0.2059,
+          "6,4": 0.2288,
+          "6,5": 0.2542,
+          "6,6": 1.7628
+        },
+        "timestamp": "2026-08-25T15:31:54.784975+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "2dc5d96519c560fb0c6d576adaade5ad3c970e15751f04db68ee864274052629",
+        "nonce": "01cdb23c05555fe16f4a45558b3de962",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 18
+        }
+      },
+      "step": 18,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            6,
+            6
+          ]
+        },
+        "commit": "4e2f5ad249f5e580c25bb4c0e2a5fbb823a9fd1339c30b075ce6a3cb81535a5e",
+        "hint": "Slower than my grandmother, officer.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,4": 0.9,
+          "0,5": 0.81,
+          "0,6": 0.729,
+          "1,6": 0.6561,
+          "2,6": 0.5905,
+          "3,6": 0.5314,
+          "4,3": 0.1501,
+          "4,6": 0.4783,
+          "5,3": 0.1668,
+          "5,6": 0.4305,
+          "6,3": 0.1853,
+          "6,4": 0.2059,
+          "6,5": 0.2288,
+          "6,6": 1.5865
+        },
+        "timestamp": "2026-08-25T15:31:56.664646+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "aeeeeaba80caa67e74876b1e2efaeb062ad441b3a01a56b7ab6df93d0383895d",
+        "nonce": "72658bda352d4fe34f3679f64fbda373",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 19
+        }
+      },
+      "step": 19,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            6,
+            6
+          ]
+        },
+        "commit": "0f768201480911460da5e037e8e468c4f9ff79ee6209723ab824430a18e182b9",
+        "hint": "Try looking the other way.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,3": 0.9,
+          "0,4": 0.81,
+          "0,5": 0.729,
+          "0,6": 0.6561,
+          "1,6": 0.5905,
+          "2,6": 0.5314,
+          "3,6": 0.4783,
+          "4,3": 0.1351,
+          "4,6": 0.4305,
+          "5,3": 0.1501,
+          "5,6": 0.3874,
+          "6,3": 0.1668,
+          "6,4": 0.1853,
+          "6,5": 0.2059,
+          "6,6": 1.4279
+        },
+        "timestamp": "2026-08-25T15:31:58.408933+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "b7d0661437eb7cc64bc621f7a13e5a33e8790c65b10be6052781a2bd0830dc6a",
+        "nonce": "931fcb5850fa832e33a178e61443ff4f",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 20
+        }
+      },
+      "step": 20,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            6,
+            6
+          ]
+        },
+        "commit": "6f9c26e27b7fc174e4b4dda2057f6fc28fab420687b364e34f04950987a1011c",
+        "hint": "You'll never catch me.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,2": 0.9,
+          "0,3": 0.81,
+          "0,4": 0.729,
+          "0,5": 0.6561,
+          "0,6": 0.5905,
+          "1,6": 0.5314,
+          "2,6": 0.4783,
+          "3,6": 0.4305,
+          "4,3": 0.1216,
+          "4,6": 0.3874,
+          "5,3": 0.1351,
+          "5,6": 0.3487,
+          "6,3": 0.1501,
+          "6,4": 0.1668,
+          "6,5": 0.1853,
+          "6,6": 1.2851
+        },
+        "timestamp": "2026-08-25T15:32:00.241934+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "21c339037ab008411ef48bc9acbebe44f55d928383ba6a1f92d5f693c2ed88b1",
+        "nonce": "5e84aced8481c92deed2bea3fcf82f6d",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 21
+        }
+      },
+      "step": 21,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            6,
+            6
+          ]
+        },
+        "commit": "00d49ef76eeab4d4f9c069dc4112e4a776f831fb6e8838ab8918d06e95d5b336",
+        "hint": "I was never even here.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,1": 0.9,
+          "0,2": 0.81,
+          "0,3": 0.729,
+          "0,4": 0.6561,
+          "0,5": 0.5905,
+          "0,6": 0.5314,
+          "1,6": 0.4783,
+          "2,6": 0.4305,
+          "3,6": 0.3874,
+          "4,3": 0.1094,
+          "4,6": 0.3487,
+          "5,3": 0.1216,
+          "5,6": 0.3138,
+          "6,3": 0.1351,
+          "6,4": 0.1501,
+          "6,5": 0.1668,
+          "6,6": 1.1566
+        },
+        "timestamp": "2026-08-25T15:32:02.182769+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "32a6dec35b5b5bea6cf60778324c8dfb8cf14c5571cf080a89514732b4335869",
+        "nonce": "616558afefe383df20fb4d87338ecb6e",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 22
+        }
+      },
+      "step": 22,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            6,
+            6
+          ]
+        },
+        "commit": "a56418016449289b75d370d0a8df1531e0b6c7e32bd84d8c10d5e18fc052f694",
+        "hint": "Slower than my grandmother, officer.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,0": 0.9,
+          "0,1": 0.81,
+          "0,2": 0.729,
+          "0,3": 0.6561,
+          "0,4": 0.5905,
+          "0,5": 0.5314,
+          "0,6": 0.4783,
+          "1,6": 0.4305,
+          "2,6": 0.3874,
+          "3,6": 0.3487,
+          "4,3": 0.0985,
+          "4,6": 0.3138,
+          "5,3": 0.1094,
+          "5,6": 0.2824,
+          "6,3": 0.1216,
+          "6,4": 0.1351,
+          "6,5": 0.1501,
+          "6,6": 1.0409
+        },
+        "timestamp": "2026-08-25T15:32:03.935746+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "9a2614fc59c85bf4304fe55c12db5af8a97b0be72e41cc3b30eaf5424e31b219",
+        "nonce": "98761282c0292138951b3e4dec1d46a4",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 23
+        }
+      },
+      "step": 23,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            6,
+            6
+          ]
+        },
+        "commit": "f9dd01e4807b9d990499f60e0a002c05db2b858c1996c577159ff40d08c4a036",
+        "hint": "Try looking the other way.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,0": 1.71,
+          "0,1": 0.729,
+          "0,2": 0.6561,
+          "0,3": 0.5905,
+          "0,4": 0.5314,
+          "0,5": 0.4783,
+          "0,6": 0.4305,
+          "1,6": 0.3874,
+          "2,6": 0.3487,
+          "3,6": 0.3138,
+          "4,3": 0.0886,
+          "4,6": 0.2824,
+          "5,3": 0.0985,
+          "5,6": 0.2542,
+          "6,3": 0.1094,
+          "6,4": 0.1216,
+          "6,5": 0.1351,
+          "6,6": 0.9368
+        },
+        "timestamp": "2026-08-25T15:32:05.776320+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "f414eecb5e5122a8244cad41476dfc2670f93634520abc2c95305e6a62f92210",
+        "nonce": "8419118b72bdff9eb0cb8edfef55d10b",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 24
+        }
+      },
+      "step": 24,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            6,
+            6
+          ]
+        },
+        "commit": "aa9278a8a6d79ab7d4bb26677a38401a3a1a2a8eaa1d29044a50643dc0482a93",
+        "hint": "You'll never catch me.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,0": 2.439,
+          "0,1": 0.6561,
+          "0,2": 0.5905,
+          "0,3": 0.5314,
+          "0,4": 0.4783,
+          "0,5": 0.4305,
+          "0,6": 0.3874,
+          "1,6": 0.3487,
+          "2,6": 0.3138,
+          "3,6": 0.2824,
+          "4,3": 0.0798,
+          "4,6": 0.2542,
+          "5,3": 0.0886,
+          "5,6": 0.2288,
+          "6,3": 0.0985,
+          "6,4": 0.1094,
+          "6,5": 0.1216,
+          "6,6": 0.8431
+        },
+        "timestamp": "2026-08-25T15:32:17.313044+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "e482831855252032246395e012f906fb54b1855a886a22d092029f6795cf75e5",
+        "nonce": "2e603f01bb5e9fd937d41aff792fd2d6",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 25
+        }
+      },
+      "step": 25,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            6,
+            6
+          ]
+        },
+        "commit": "b82b3f06607e245de8c3ce049702df79838bcc393fc0ce4992875b323d32a987",
+        "hint": "I was never even here.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,0": 3.0951,
+          "0,1": 0.5905,
+          "0,2": 0.5314,
+          "0,3": 0.4783,
+          "0,4": 0.4305,
+          "0,5": 0.3874,
+          "0,6": 0.3487,
+          "1,6": 0.3138,
+          "2,6": 0.2824,
+          "3,6": 0.2542,
+          "4,3": 0.0718,
+          "4,6": 0.2288,
+          "5,3": 0.0798,
+          "5,6": 0.2059,
+          "6,3": 0.0886,
+          "6,4": 0.0985,
+          "6,5": 0.1094,
+          "6,6": 0.7588
+        },
+        "timestamp": "2026-08-25T15:32:18.832369+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "29588f24ac2df265d28ff1e411e16e9f6a1546e2d2a0a9b5beb9fab8bc4df7af",
+        "nonce": "f72754cc95cf59aa881b91d3387dcb1e",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 26
+        }
+      },
+      "step": 26,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            6,
+            6
+          ]
+        },
+        "commit": "9fcfcaf3cde988a32865c994eaf9f90b7e4d7963569a8489fd6de2c3a650af15",
+        "hint": "Slower than my grandmother, officer.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,0": 3.6856,
+          "0,1": 0.5314,
+          "0,2": 0.4783,
+          "0,3": 0.4305,
+          "0,4": 0.3874,
+          "0,5": 0.3487,
+          "0,6": 0.3138,
+          "1,6": 0.2824,
+          "2,6": 0.2542,
+          "3,6": 0.2288,
+          "4,3": 0.0646,
+          "4,6": 0.2059,
+          "5,3": 0.0718,
+          "5,6": 0.1853,
+          "6,3": 0.0798,
+          "6,4": 0.0886,
+          "6,5": 0.0985,
+          "6,6": 0.6829
+        },
+        "timestamp": "2026-08-25T15:32:20.622501+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "b1a3fc1798b5b3a2c0ad3957cc7c497432d1b5b07d040332be647e5f7ff75336",
+        "nonce": "e43b7e65d69444b82b4c3cdc6d22a12f",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 27
+        }
+      },
+      "step": 27,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            6,
+            6
+          ]
+        },
+        "commit": "0b9a4ecb1f3d37aaa5865ddd3214656f548504b988af5384a038d8aa535da04b",
+        "hint": "Try looking the other way.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,0": 4.217,
+          "0,1": 0.4783,
+          "0,2": 0.4305,
+          "0,3": 0.3874,
+          "0,4": 0.3487,
+          "0,5": 0.3138,
+          "0,6": 0.2824,
+          "1,6": 0.2542,
+          "2,6": 0.2288,
+          "3,6": 0.2059,
+          "4,3": 0.0581,
+          "4,6": 0.1853,
+          "5,3": 0.0646,
+          "5,6": 0.1668,
+          "6,3": 0.0718,
+          "6,4": 0.0798,
+          "6,5": 0.0886,
+          "6,6": 0.6147
+        },
+        "timestamp": "2026-08-25T15:32:22.565953+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "12b21e7873d2fc0bc97bd70eca5265d8e478d84c8afee60283d4398989075372",
+        "nonce": "0b6dc65a669f8e9472b341ca78b76b3a",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 28
+        }
+      },
+      "step": 28,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            6,
+            6
+          ]
+        },
+        "commit": "f353e1db9e7602525e83626418ebfb190015739ce80d3b60b5a355bd16f9dc96",
+        "hint": "You'll never catch me.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,0": 4.6953,
+          "0,1": 0.4305,
+          "0,2": 0.3874,
+          "0,3": 0.3487,
+          "0,4": 0.3138,
+          "0,5": 0.2824,
+          "0,6": 0.2542,
+          "1,6": 0.2288,
+          "2,6": 0.2059,
+          "3,6": 0.1853,
+          "4,3": 0.0523,
+          "4,6": 0.1668,
+          "5,3": 0.0581,
+          "5,6": 0.1501,
+          "6,3": 0.0646,
+          "6,4": 0.0718,
+          "6,5": 0.0798,
+          "6,6": 0.5532
+        },
+        "timestamp": "2026-08-25T15:32:24.313260+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "82a294e5eb320956c42a689da3898832fb64f686fb3b53d05bbb5cb01fdb29d4",
+        "nonce": "563ce34261dd31ca7ca4ccdfbac5b70d",
+        "payload": {
+          "hint": "north",
+          "intent": "truth",
+          "move": "MOVE:N",
+          "position": [
+            5,
+            6
+          ],
+          "state": "grid=7x7;self=[5, 6];barriers=[]",
+          "step": 29
+        }
+      },
+      "step": 29,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            6,
+            6
+          ]
+        },
+        "commit": "e48beded183352e55a1c3b7b357c4667984ead5295cd669fec2fa81080996131",
+        "hint": "I was never even here.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,0": 5.1258,
+          "0,1": 0.3874,
+          "0,2": 0.3487,
+          "0,3": 0.3138,
+          "0,4": 0.2824,
+          "0,5": 0.2542,
+          "0,6": 0.2288,
+          "1,6": 0.2059,
+          "2,6": 0.1853,
+          "3,6": 0.1668,
+          "4,3": 0.0471,
+          "4,6": 0.1501,
+          "5,3": 0.0523,
+          "5,6": 0.1351,
+          "6,3": 0.0581,
+          "6,4": 0.0646,
+          "6,5": 0.0718,
+          "6,6": 0.4979
+        },
+        "timestamp": "2026-08-25T15:32:26.147773+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "964bcf58b1f26583fb6badfb2f13a400b104ffb9972ea2f3ff21ce5f83971de5",
+        "nonce": "b7163986d94c21f7075423c0bdbf5a7a",
+        "payload": {
+          "hint": "north",
+          "intent": "truth",
+          "move": "MOVE:N",
+          "position": [
+            4,
+            6
+          ],
+          "state": "grid=7x7;self=[4, 6];barriers=[]",
+          "step": 30
+        }
+      },
+      "step": 30,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            5,
+            6
+          ]
+        },
+        "commit": "dca4b442468dac53cdaf8fac594924d8a4e6734e90f89ba26b06dee34c4fbf21",
+        "hint": "Slower than my grandmother, officer.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,0": 5.5132,
+          "0,1": 0.3487,
+          "0,2": 0.3138,
+          "0,3": 0.2824,
+          "0,4": 0.2542,
+          "0,5": 0.2288,
+          "0,6": 0.2059,
+          "1,6": 0.1853,
+          "2,6": 0.1668,
+          "3,6": 0.1501,
+          "4,3": 0.0424,
+          "4,6": 0.1351,
+          "5,3": 0.0471,
+          "5,6": 0.1216,
+          "6,3": 0.0523,
+          "6,4": 0.0581,
+          "6,5": 0.0646,
+          "6,6": 0.4481
+        },
+        "timestamp": "2026-08-25T15:32:27.994036+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "9cbe1ec3f54268ba79d998b84d18867a4dac8e7da3debeb8432c98643e927e20",
+        "nonce": "cd7b5b78754fc8b79d870fb5ad11d68e",
+        "payload": {
+          "hint": "north",
+          "intent": "truth",
+          "move": "MOVE:N",
+          "position": [
+            3,
+            6
+          ],
+          "state": "grid=7x7;self=[3, 6];barriers=[]",
+          "step": 31
+        }
+      },
+      "step": 31,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            4,
+            6
+          ]
+        },
+        "commit": "7b0d073bc990d0e5777b88b71e252aa2b97ce28f1bd1e3c38facde8cd6471190",
+        "hint": "Try looking the other way.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,0": 5.8619,
+          "0,1": 0.3138,
+          "0,2": 0.2824,
+          "0,3": 0.2542,
+          "0,4": 0.2288,
+          "0,5": 0.2059,
+          "0,6": 0.1853,
+          "1,6": 0.1668,
+          "2,6": 0.1501,
+          "3,6": 0.1351,
+          "4,3": 0.0382,
+          "4,6": 0.1216,
+          "5,3": 0.0424,
+          "5,6": 0.1094,
+          "6,3": 0.0471,
+          "6,4": 0.0523,
+          "6,5": 0.0581,
+          "6,6": 0.4033
+        },
+        "timestamp": "2026-08-25T15:32:29.839206+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "789ca3beb9a8194db6109a051f8abc305b9630f9b3f2beb5921bfe5e9d5496d8",
+        "nonce": "bb101a0eecdd8d497fdb6732baae4014",
+        "payload": {
+          "hint": "north",
+          "intent": "truth",
+          "move": "MOVE:N",
+          "position": [
+            2,
+            6
+          ],
+          "state": "grid=7x7;self=[2, 6];barriers=[]",
+          "step": 32
+        }
+      },
+      "step": 32,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            3,
+            6
+          ]
+        },
+        "commit": "d3f6ba1fac6e4f80ab86c9ea6511631ecdcf799aaef1b1c2948e3a88b12af0fd",
+        "hint": "You'll never catch me.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,0": 6.1757,
+          "0,1": 0.2824,
+          "0,2": 0.2542,
+          "0,3": 0.2288,
+          "0,4": 0.2059,
+          "0,5": 0.1853,
+          "0,6": 0.1668,
+          "1,6": 0.1501,
+          "2,6": 0.1351,
+          "3,6": 0.1216,
+          "4,3": 0.0343,
+          "4,6": 0.1094,
+          "5,3": 0.0382,
+          "5,6": 0.0985,
+          "6,3": 0.0424,
+          "6,4": 0.0471,
+          "6,5": 0.0523,
+          "6,6": 0.3629
+        },
+        "timestamp": "2026-08-25T15:32:31.579748+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "ec898affab272a3843e498f114fc447591298d51040adf989a854311a23854a7",
+        "nonce": "3de079ee687d2650f610e96123f76e1a",
+        "payload": {
+          "hint": "north",
+          "intent": "truth",
+          "move": "MOVE:N",
+          "position": [
+            1,
+            6
+          ],
+          "state": "grid=7x7;self=[1, 6];barriers=[]",
+          "step": 33
+        }
+      },
+      "step": 33,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            2,
+            6
+          ]
+        },
+        "commit": "bcf796a2003ffce12f1010819a978d96bee563dd5298f6448e93d2b864575002",
+        "hint": "I was never even here.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,0": 6.4581,
+          "0,1": 0.2542,
+          "0,2": 0.2288,
+          "0,3": 0.2059,
+          "0,4": 0.1853,
+          "0,5": 0.1668,
+          "0,6": 0.1501,
+          "1,6": 0.1351,
+          "2,6": 0.1216,
+          "3,6": 0.1094,
+          "4,3": 0.0309,
+          "4,6": 0.0985,
+          "5,3": 0.0343,
+          "5,6": 0.0886,
+          "6,3": 0.0382,
+          "6,4": 0.0424,
+          "6,5": 0.0471,
+          "6,6": 0.3267
+        },
+        "timestamp": "2026-08-25T15:32:33.405645+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "f5216ca0fd109f6b7161157a65e47c965ad0b7272f5f619e6802917e0ff3c8b5",
+        "nonce": "911345c9c74350e5d8081799a79ba18d",
+        "payload": {
+          "hint": "north",
+          "intent": "truth",
+          "move": "MOVE:N",
+          "position": [
+            0,
+            6
+          ],
+          "state": "grid=7x7;self=[0, 6];barriers=[]",
+          "step": 34
+        }
+      },
+      "step": 34,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            1,
+            6
+          ]
+        },
+        "commit": "7bc8f8b740d672db7e5376caaf6e6b10bb7d9a0e554875da63326be69c44a7f1",
+        "hint": "Slower than my grandmother, officer.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,0": 6.7123,
+          "0,1": 0.2288,
+          "0,2": 0.2059,
+          "0,3": 0.1853,
+          "0,4": 0.1668,
+          "0,5": 0.1501,
+          "0,6": 0.1351,
+          "1,6": 0.1216,
+          "2,6": 0.1094,
+          "3,6": 0.0985,
+          "4,3": 0.0278,
+          "4,6": 0.0886,
+          "5,3": 0.0309,
+          "5,6": 0.0798,
+          "6,3": 0.0343,
+          "6,4": 0.0382,
+          "6,5": 0.0424,
+          "6,6": 0.294
+        },
+        "timestamp": "2026-08-25T15:32:35.250414+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "fcd0b422c0f31f1d003d592a6fcce63f29afd8bc7db898e09dfeb77b1890480f",
+        "nonce": "008292199770d662f3baaa6218942a1d",
+        "payload": {
+          "hint": "west",
+          "intent": "truth",
+          "move": "MOVE:W",
+          "position": [
+            0,
+            5
+          ],
+          "state": "grid=7x7;self=[0, 5];barriers=[]",
+          "step": 35
+        }
+      },
+      "step": 35,
+      "theirs": {
+        "claim_response": {
+          "caught": false,
+          "claim": [
+            0,
+            6
+          ]
+        },
+        "commit": "5cdf9ecbc5791259ed63d336dace343c17cc973031d8c98e229fc3e35bea874b",
+        "hint": "Try looking the other way.",
+        "sender": "thief",
+        "smell_grid": {
+          "0,0": 6.0411,
+          "0,1": 0.2059,
+          "0,2": 0.1853,
+          "0,3": 0.1668,
+          "0,4": 0.1501,
+          "0,5": 0.1351,
+          "0,6": 0.1216,
+          "1,0": 0.9,
+          "1,6": 0.1094,
+          "2,6": 0.0985,
+          "3,6": 0.0886,
+          "4,3": 0.025,
+          "4,6": 0.0798,
+          "5,3": 0.0278,
+          "5,6": 0.0718,
+          "6,3": 0.0309,
+          "6,4": 0.0343,
+          "6,5": 0.0382,
+          "6,6": 0.2646
+        },
+        "timestamp": "2026-08-25T15:32:37.090488+00:00",
+        "win_claim": {
+          "type": "survival"
+        }
+      }
+    }
+  ],
+  "wire_shape": "reference-v3"
+}
