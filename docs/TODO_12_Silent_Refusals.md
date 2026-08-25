@@ -125,3 +125,27 @@ them would have caught it; instead I sent a confident, wrong diagnosis and they
 had to disprove it with their own logs. Third time in this exchange I asserted
 past my evidence. The diagnostics are only as good as the care taken reading
 them.
+
+## 12.9 The fix worked: 35/35 steps, first complete exchange (14:26-14:31)
+
+First run after moving the inbox clear ahead of the handshake:
+
+```
+  step  1 pushed MOVE:S | theirs +0.0s
+  ...
+  step 35 pushed MOVE:W | theirs +0.0s
+```
+
+- [x] **All 35 steps, both directions, nothing refused.** `theirs +0.0s` on
+      every step: their turn was already in our inbox when we polled. Not a
+      limping exchange -- perfect lockstep for a whole sub-game.
+- [x] The deadlock is closed. Three failed attempts and two days of
+      correspondence, and the cause was one unconditional `clear()` on the
+      wrong side of an await.
+
+- [ ] **Still open, and theirs: the sub-game was PLAYED, not SETTLED.** Our
+      closing `submit_audit` got 502 -- their peer exits once it has pushed
+      its own last turn. Without the mutual audit there is no verdict, no
+      cross-team evidence and no artifact; the result would be a claim rather
+      than something a grader can re-verify. A sub-game ends at the audit
+      exchange, not at step 35.
