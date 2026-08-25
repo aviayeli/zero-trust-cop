@@ -3,11 +3,12 @@
 Split from ``run_reference_match`` at the 150-line limit; that module is now
 the module docstring and the re-exported entry points, this is the wiring.
 
-Two orderings here were each paid for with a lost series. Our servers bind
-BEFORE we dial, so the whole time we wait for the opponent we are also
-answering them. And each of their endpoints opens ON FIRST USE -- holding one
-idle through a 190-second sub-game outlived their 180s watchdog, and it was
-dead before the sub-game that needed it began.
+Three orderings here were each paid for with a lost series. Our servers bind
+BEFORE we dial, so while we wait for the opponent we are also answering them.
+Their endpoints open ON FIRST USE -- holding one idle through a 190-second
+sub-game outlived their 180s watchdog. And a sub-game PAUSE releases their
+sessions before it sleeps, because the window exists so they can exit
+(PRD_15).
 """
 
 from __future__ import annotations
@@ -20,6 +21,7 @@ from mcp_server.server import PEER_ROLES, create_app
 from scripts.claims_runner import play_series
 from scripts.match_report import group_id
 from scripts.opponent_endpoints import resolve_endpoints
+from scripts import reference_console as console
 from scripts.reference_dial import lazy_opponents
 from scripts.reference_launch import connect_and_play, polls_for
 from scripts.reference_writer import write_sub_game_log
@@ -57,9 +59,8 @@ async def run(args) -> list:
     # the state their side waits to observe before launching.
     endpoints = resolve_endpoints(args.opponent_url, args.opponent_cop_url,
                                   args.opponent_thief_url)
-    # Endpoints open ON FIRST USE (`lazy_opponents`): holding a session for
-    # their other process through all of sub-game 1 outlived their watchdog,
-    # and it was dead before the sub-game that needed it began.
+    # Endpoints open ON FIRST USE (`reference_pool`): holding one for their
+    # other process through sub-game 1 outlived their watchdog.
 
     pushed = {"n": 0}
 
@@ -70,48 +71,40 @@ async def run(args) -> list:
             return await call(name, **kwargs)
         return counting
 
-    def stalled(entry):
-        """A wait going nowhere, said out loud (PRD_12 FR6). `inbox_depth` 0
-        is "they never reached us"; non-zero is "they did and we are not
-        matching it" -- nothing distinguished those two, and it cost a day."""
-        print(f"  WAITING on their step {entry['step']} "
-              f"(re-pushed {entry['attempt']}x) | our inbox: "
-              f"{entry['inbox_depth']} msg, steps={entry['inbox_steps']}, "
-              f"senders={entry['senders']}", flush=True)
-
-    async def hold(seconds):
-        """The window a per-sub-game-relaunching opponent needs, announced so
-        a long deliberate wait does not read as a stall."""
-        print(f"  PAUSE {seconds:g}s -- window for the opponent to relaunch",
-              flush=True)
-        await asyncio.sleep(seconds)
-
-    def report(entry):
-        # Unbuffered by the -u the entry point is run with, so a live series
-        # shows OUR side of the timeline as it happens rather than only at
-        # the end -- which for a series that never ends never came.
-        print(f"  step {entry['step']:>2} pushed {entry['move']} "
-              f"| theirs +{entry['theirs']}s", flush=True)
-
     def keep(closed):
         """Land this sub-game's log before the next one can go wrong."""
         if not args.write_artifacts:
             return
-        path = write_sub_game_log(
+        console.saved(write_sub_game_log(
             args.logs_dir, closed, group_id=group_id(args.config_root),
-            config_root=args.config_root, opponent_id=args.opponent_id)
-        print(f"  saved {path}", flush=True)
+            config_root=args.config_root, opponent_id=args.opponent_id))
 
     async def play(reach):
         async def reach_counted(role):
             return counted(await reach(role))
+
+        async def hold(seconds):
+            """The window a per-sub-game-relaunching opponent needs.
+
+            RELEASE FIRST, then sleep (PRD_15). The window exists so they can
+            EXIT, and holding their session across it killed the first live
+            run with a pause: their process went, its stream failed 502, and
+            the task group unwound through us two seconds before the window
+            closed. The pool reopens on first use, which is what the next
+            sub-game wants anyway. Announced, so a long deliberate wait does
+            not read as a stall.
+            """
+            await reach.release()
+            console.paused(seconds)
+            await asyncio.sleep(seconds)
 
         return await play_series(
             apps, None, sub_games=args.sub_games, seed=args.seed,
             wait=wait, first_role=args.first_role,
             max_polls=polls_for(args.wait_minutes, interval),
             call_for=reach_counted,
-            progress=report, on_sub_game=keep, on_repush=stalled,
+            progress=console.progress, on_sub_game=keep,
+            on_repush=console.stalled,
             pause_between=args.sub_game_pause, pause=hold,
         )
 
