@@ -64,3 +64,31 @@ Recorded so the cost is not forgotten. On 2026-08-25, against bb-ai-12:
 Four wrong conclusions, two of them ours, none of them possible if either side
 had been able to see what the other was actually doing. The wire was working
 the whole time.
+
+## 12.7 It paid for itself on the first live run (2026-08-25 14:09-14:16)
+
+The diagnostics were live for one run against bb-ai-12 and named both faults
+at once, after two days in which neither side could see anything:
+
+```
+WAITING on their step 1 (re-pushed 1x) | our inbox: 1 msg, steps=[2], senders=['thief']
+...
+submit_audit REFUSED step=None sender='thief': result_claim: required object
+```
+
+- [x] **`inbox_depth` was the field that mattered, exactly as PLAN §5 argued.**
+      1, not 0. They HAD reached us. Every earlier hypothesis on both sides
+      assumed one of "they never reached us" or "we stopped sending", and both
+      were wrong.
+- [x] **Fault A: their first turn carries `step: 2`; we wait on `step: 1`.**
+      A deadlock neither side could error on -- we re-push our step 1 every
+      10s forever, which from their side reads as a stream of turns. That is
+      the origin of their "7 turns" and "9 turns": one turn of ours, re-sent.
+- [x] **Fault B: their `submit_audit` omits `result_claim`.** Refused before
+      anything is stored, which is why they saw an empty reply.
+- [x] **A correction to us:** their endpoint DID serve us in that window --
+      we opened a session, negotiated and pushed. The 502s are intermittent,
+      not the permanent one-directional wire we told them it was.
+
+Nothing here needed a new experiment, a new probe or another round of
+correspondence. Two lines of diagnostic output, once.

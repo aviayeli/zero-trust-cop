@@ -1,115 +1,116 @@
-# Prompt for bb-ai-12's Claude — hand this over as-is
+# Prompt for bb-ai-12's Claude — SUPERSEDES the earlier version
 
-Verified before writing (2026-08-25 14:12 local):
+The diagnostics shipped an hour ago (PRD_12) found it on the first run they
+were live for. Our own console, 14:09:33-14:16:41, verbatim:
 
-- our two peers: HTTP 400 to a bare GET = live MCP servers refusing a
-  non-session request. Up since 14:0x and staying up.
-- their endpoint: HTTP 502 x3 at 14:12:23-24 = tunnel up, nothing behind it.
-- we have never completed a single bidirectional turn with them.
+```
+  WAITING on their step 1 (re-pushed 1x) | our inbox: 1 msg, steps=[2], senders=['thief']
+  WAITING on their step 1 (re-pushed 2x) | our inbox: 1 msg, steps=[2], senders=['thief']
+  WAITING on their step 1 (re-pushed 3x) | our inbox: 1 msg, steps=[2], senders=['thief']
+  WAITING on their step 1 (re-pushed 4x) | our inbox: 1 msg, steps=[2], senders=['thief']
+  WAITING on their step 1 (re-pushed 5x) | our inbox: 1 msg, steps=[2], senders=['thief']
+  submit_audit REFUSED step=None sender='thief': result_claim: required object
+  WAITING on their step 1 (re-pushed 6x) | our inbox: 1 msg, steps=[2], senders=['thief']
+```
+
+Two named faults, and a correction to what we told them before: their endpoint
+DID serve us in this window. We opened a session, negotiated and pushed. The
+502s were intermittent, not permanent.
 
 ---
 
-You are working on team **bb-ai-12**'s cop-and-thief league peer. Your
-opponent is team **aviayeli**. Two attempts at sub-game 1 have failed and we
-have jointly narrowed it down. Here is the state and what we need from your
-side.
+You are working on team **bb-ai-12**'s cop-and-thief league peer. Your opponent
+is **aviayeli**. We have found it, and it is two small things on your side.
 
-## Where it actually stands
+**First, a correction to what we told you.** We said your endpoint never served
+us. That was wrong — or rather it stopped being true. Between 14:09:33 and
+14:16:41 we opened a session to you, completed `negotiate`, and pushed our
+step 1. The earlier 502s were real but intermittent, not a permanent
+one-directional wire. Apologies for sending you after a fault that had already
+moved.
 
-We have **never completed one bidirectional turn**. Your peer reached ours and
-pushed messages; ours has never once opened a session to yours. Two faults,
-one on each side. Ours is fixed. Yours is not, and it is the blocker.
+## Fault A — your first turn is numbered 2, we are waiting for 1
 
-## Fault 1 — your endpoint does not serve us (blocking)
+This is the deadlock, and it is exact. Our console, once per re-push:
 
-`https://comic-leverage-paprika.ngrok-free.dev/mcp` returns **HTTP 502** to us,
-consistently. Probed 12:53:25-12:54:17 (6x), 13:31:50-51 (3x), 14:12:23-24
-(3x). 502 is ngrok saying the tunnel is up but nothing is listening on the
-local port behind it.
+```
+WAITING on their step 1 | our inbox: 1 msg, steps=[2], senders=['thief']
+```
 
-reference-v3 is **symmetric push**: both sides SERVE and both sides DIAL. We
-push our half-turns to *your* `receive_turn` exactly as you push yours to ours.
-A peer that only dials out can send but can never be sent to, and our match
-loop cannot even enter its turn loop until it has opened a session to you.
-That is why your turns landed in our inbox and nothing came back.
+Your turn **is** in our inbox. It carries `step: 2`. Our loop is waiting for
+`step: 1` and will wait forever, re-pushing our own step 1 every 10 seconds
+while it does. From your side that reads as a stream of turns from us; from
+ours it reads as a peer that never answered. Neither side errors. That is
+exactly what produced your "7 turns" and "9 turns" — one turn of ours, re-sent.
 
-**Please check:** with your thief running, hit your own public URL **from
-outside your machine** (not localhost). If it 502s, your peer is not bound to
-the port your tunnel forwards to. Confirm the tunnel's upstream port equals the
-port your peer actually binds, and that the peer stays bound for the whole
-window rather than only while it is mid-request.
+**We open at step 1**, and a step is a **ROUND** (one action from each side),
+not a half-turn: `max_steps = 35` means 35 moves each. So the first message of
+a sub-game carries `step: 1` from both peers, then `2`, and so on in lockstep.
 
-## Fault 2 — a 200 from us is not an acceptance (probable, and hidden)
+Please check whether you increment before sending the first turn, or count
+`negotiate` as a step. Either produces exactly this off-by-one.
 
-Our `receive_turn` returns **HTTP 200 even when it refuses your message**. The
-body carries `{"status": "refused", "reason": "<field>: <what was wrong>"}` and
-the message is **not** stored. Your log of "all 200/202" is therefore not
-evidence we accepted anything.
+## Fault B — your `submit_audit` is missing `result_claim`
 
-**Please check the response BODY**, not the status code, for every
-`receive_turn` and `negotiate` call. If it says `refused`, the `reason` names
-the exact field.
+```
+submit_audit REFUSED step=None sender='thief': result_claim: required object
+```
 
-## Exact TurnMessage schema we validate against
+That is why you got an empty reply. The payload needs all three:
 
-Every field required on every turn. Unknown extra keys are tolerated.
+```
+{"sender": "thief" | "police",
+ "records": [{"payload": {...}, "nonce": "...", "commit": "..."}, ...],
+ "result_claim": {...}}          <-- required, must be an OBJECT
+```
 
-| field | rule | the trap |
+`result_claim` is what your side believes the sub-game ended as. It is a
+*claim*; the opponent's re-hash of your chain is what settles it. A missing or
+non-object `result_claim` is refused before anything is stored.
+
+## A 200 from us is not an acceptance
+
+Worth repeating since it hid both faults: our tools return **HTTP 200 even when
+they refuse**, with `{"status": "refused", "reason": "..."}` in the body. Read
+the body, not the status code. The `reason` names the exact field — both faults
+above came out of ours verbatim.
+
+## Schema, for completeness
+
+Every field required on every turn; extra keys tolerated.
+
+| field | rule | trap |
 |---|---|---|
-| `step` | non-negative int | see step semantics below |
-| `sender` | literally `"police"` or `"thief"` | a team code here is refused |
+| `step` | non-negative int | **Fault A** — 1-indexed, a step is a ROUND |
+| `sender` | literally `"police"` / `"thief"` | a team code is refused |
 | `hint` | str; may be empty, may be a lie | absent ≠ empty |
-| `smell_grid` | dict of `"r,c"` → number | a **stringified** number is refused |
-| `commit` | 64-char **lowercase** hex | **uppercase hex is refused** |
-| `timestamp` | non-empty str | an empty string is refused |
+| `smell_grid` | dict `"r,c"` → number | a **stringified** number is refused |
+| `commit` | 64-char **lowercase** hex | **uppercase is refused** |
+| `timestamp` | non-empty str | empty string is refused |
 
-Two silent killers there: **uppercase hex in `commit`**, and **numbers sent as
-strings in `smell_grid`**. Both look fine to a human and both are refused.
+Handshake unchanged and already verified both ways:
+`signature = SHA256(canonical_json(terms) + "|" + nonce)`, single U+007C pipe,
+`sort_keys=True, ensure_ascii=False, separators=(",", ":")`. `role` is the side
+THAT peer plays. Agreed: we are cop in sub-game 1, you are thief, alternating.
 
-**Step semantics.** A step is a ROUND — one action from each side — not a
-half-turn. `max_steps = 35` means 35 moves *each*. We open at **step 1**. Our
-loop waits for *your* message carrying the step number it is on; if you number
-from 0, we will wait forever while you re-send happily and neither side errors.
-
-## Handshake
-
-- `negotiate(message={terms, nonce, signature, identity?, sub_game_number?, role?})`
-- `signature = SHA256(canonical_json(terms) + "|" + nonce)` — single U+007C
-  pipe; `canonical_json` is `sort_keys=True, ensure_ascii=False,
-  separators=(",", ":")`. You have already verified this reproduces.
-- `role` is **the side THAT peer is playing**, not the side of the peer being
-  called. If we both declare the same role the handshake is refused.
-- Agreed: **we are cop in sub-game 1, you are thief**, alternating after.
-- All 14 terms must value-match. Already confirmed on both sides.
-
-## Every message is ONE envelope argument
-
-`negotiate(message={...})`, `receive_turn(message={...})`,
-`submit_audit(payload={...})`, `receive_control(message={...})`. Flat
-parameters fail schema validation on the caller's side before reaching us.
-
-## Use us as an oracle
-
-We just shipped a change that logs **every** inbound refusal server-side with
-the tool, the reason, and the step and sender we refused. So if you push a turn
-at us now and it is malformed, we can tell you the exact failing field within
-seconds — something neither of us could do for the last two attempts.
+Every message is one envelope argument: `negotiate(message={...})`,
+`receive_turn(message={...})`, `submit_audit(payload={...})`,
+`receive_control(message={...})`.
 
 ## What to do
 
-1. Fix the 502 — make your peer serve that URL while it runs.
-2. Tell us when it is answering from outside, and we will run our read-only
-   pre-flight against it. It opens no sub-game and pushes no turn: one
-   `negotiate` at `sub_game_number = 0`, which appears in no schedule either
-   side plays.
-3. When both sides verify, we run the friendly dry-run: 2 sub-games, artifacts
-   off, nothing reported.
+1. Start your first turn of each sub-game at `step: 1`.
+2. Add `result_claim` to your `submit_audit` payload.
+3. Keep your endpoint up for the window rather than only while mid-request —
+   it was reachable for those seven minutes and 502 before and after.
 
-Our endpoints, up now and staying up:
+Then push at us. We log every refusal now with the failing field, so if
+anything else is wrong we can name it within seconds instead of days.
+
+Ours, up and staying up:
 
 - you as thief → our **cop**: `https://luxury-pregnancy-wilder.ngrok-free.dev/mcp`
 - you as cop → our **thief**: `https://cardinal-shell-moistness.ngrok-free.dev/mcp`
 
-A bare GET on those returns **HTTP 400**, not 200. That is the MCP server
-correctly refusing a non-session request — a live peer, not a broken one. 502
-is the "nobody home" signal; 400 means we are answering.
+A bare GET returns **400**, not 200 — a live MCP server refusing a non-session
+request. 502 is "nobody home"; 400 means we are answering.
