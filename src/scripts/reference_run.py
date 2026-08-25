@@ -71,16 +71,20 @@ async def run(args) -> list:
         return counting
 
     def stalled(entry):
-        """A wait that is going nowhere, said out loud (PRD_12 FR6).
-
-        `inbox_depth` 0 is "they never reached us"; non-zero is "they did and
-        we are not matching what they sent". Nothing distinguished those two
-        on 2026-08-25 and it cost a day.
-        """
+        """A wait going nowhere, said out loud (PRD_12 FR6). `inbox_depth` 0
+        is "they never reached us"; non-zero is "they did and we are not
+        matching it" -- nothing distinguished those two, and it cost a day."""
         print(f"  WAITING on their step {entry['step']} "
               f"(re-pushed {entry['attempt']}x) | our inbox: "
               f"{entry['inbox_depth']} msg, steps={entry['inbox_steps']}, "
               f"senders={entry['senders']}", flush=True)
+
+    async def hold(seconds):
+        """The window a per-sub-game-relaunching opponent needs, announced so
+        a long deliberate wait does not read as a stall."""
+        print(f"  PAUSE {seconds:g}s -- window for the opponent to relaunch",
+              flush=True)
+        await asyncio.sleep(seconds)
 
     def report(entry):
         # Unbuffered by the -u the entry point is run with, so a live series
@@ -108,6 +112,7 @@ async def run(args) -> list:
             max_polls=polls_for(args.wait_minutes, interval),
             call_for=reach_counted,
             progress=report, on_sub_game=keep, on_repush=stalled,
+            pause_between=args.sub_game_pause, pause=hold,
         )
 
     try:

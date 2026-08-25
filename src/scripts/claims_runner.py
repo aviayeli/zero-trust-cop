@@ -1,32 +1,29 @@
 """Hand the reference-v3 loop our policy, our board, and our own inbox.
 
-``claims_match_loop`` knows the protocol; it does not know how WE pick a move
-or what we believe about the opponent. This module is that glue, and it is
-the reference-v3 twin of ``push_runner`` -- deliberately a twin rather than a
-branch inside it, because the two wires disagree about something the loop
-cannot paper over: the push dialect resolves BOTH pieces from a revealed
-move, and this one resolves ours alone.
+``claims_match_loop`` knows the protocol, not how WE pick a move or what we
+believe. This module is that glue, and the reference-v3 twin of
+``push_runner`` -- a twin rather than a branch, because the wires disagree on
+something the loop cannot paper over: the push dialect resolves BOTH pieces
+from a revealed move, this one resolves ours alone.
 
-Every sub-game opens with ``negotiate`` and refuses to push a turn until it
-is accepted. ali-ahm1's server queues inbound turns without gating, but their
-game loop does not READ that queue until the handshake completes -- so a turn
-pushed first is not rejected, it is ignored, which is indistinguishable from
-a slow peer. The handshake also runs the pairing check in the one direction
-we never ran it.
+Every sub-game opens with ``negotiate`` and refuses to push a turn until it is
+accepted. ali-ahm1's server queues inbound turns ungated while their game loop
+will not READ that queue until the handshake completes, so a turn pushed first
+is ignored rather than rejected. The handshake also runs the pairing check in
+the direction we never ran it.
 
-The opponent's turns land in ``app.inbox``, which lives inside the SERVER, so
-a series runs in the same process as the peer it plays through. A runner in
-another process would complete the handshake and then poll an inbox it cannot
-see.
+The opponent's turns land in ``app.inbox``, inside the SERVER, so a series
+runs in the same process as the peer it plays through: a runner elsewhere
+would complete the handshake and then poll an inbox it cannot see.
 
-Belief on this wire comes from their SMELL, not from their words. Their hint
-is free text up to fifteen words, not our policy's direction vocabulary, so
-nothing here tries to read a move out of it; the trail they transmit is fed
-to the pheromone field and the policy asks that field where they are.
+Belief on this wire comes from their SMELL, not their words: the hint is free
+text, not our direction vocabulary, so nothing reads a move out of it. Their
+trail feeds the pheromone field and the policy asks that field where they are.
 """
 
 from __future__ import annotations
 
+import asyncio
 import inspect
 from random import Random
 
@@ -68,26 +65,24 @@ def _observer(app):
 async def play_series(apps: dict, call, sub_games: int, seed: int, wait,
                       first_role: str = "police", max_steps=None,
                       max_polls=None, call_for=None,
-                      progress=None, on_sub_game=None, on_repush=None) -> list:
+                      progress=None, on_sub_game=None, on_repush=None,
+                      pause_between: float = 0, pause=None) -> list:
     """Play a whole series on reference-v3, swapping sides every sub-game.
 
-    ``apps`` maps our wire role to the peer that serves it. BOTH are needed:
-    their turns land in the inbox of whichever of our peers is playing this
-    sub-game, and that peer changes every time.
+    ``apps`` maps our wire role to the peer serving it; both are needed, since
+    their turns land in the inbox of whichever peer plays this sub-game.
+    ``call`` reaches an opponent serving both roles on one endpoint;
+    ``call_for`` is the two-process form, ``(our_role) -> call``, asked per
+    sub-game because the endpoint receiving our turns changes with the side
+    they play; a wrong guess pushes a whole sub-game at the wrong peer.
 
-    ``call`` reaches an opponent that serves BOTH their roles on one
-    endpoint. ``call_for`` is the two-process form: ``(our_role) -> call``,
-    asked once per sub-game, because the side they play changes with ours and
-    so does the endpoint that must receive our turns. Named explicitly rather
-    than sniffed -- both are callables, and guessing which kind we were handed
-    would fail as a whole sub-game pushed at the wrong peer.
-
-    ``seed`` drives the policy's RNG once for the whole series, so a replay
-    reproduces it move for move without every sub-game being identical.
+    ``seed`` drives the policy RNG once for the series. ``pause_between``
+    seconds are waited at each BOUNDARY for an opponent that relaunches per
+    sub-game (PRD_14); zero, the default, is today.
 
     Raises:
-        ValueError: a scheduled role has no peer. Better than silently
-            playing the wrong side for half the series.
+        ValueError: a scheduled role has no peer -- otherwise silently played
+            as the wrong side for half the series.
     """
     schedule = role_schedule(sub_games, first_role)
     missing = sorted({role for role in schedule if role not in apps})
@@ -108,6 +103,11 @@ async def play_series(apps: dict, call, sub_games: int, seed: int, wait,
         # our negotiate round-trip. That deadlocked a live series on
         # 2026-08-25: we waited for a step 1 we had accepted and deleted.
         app.inbox.clear()
+        # AFTER the clear, never before (PRD_14 FR4): a peer that relaunches
+        # per sub-game may push its step 1 during this window, and clearing
+        # afterwards would delete exactly that turn.
+        if index > 1 and pause_between:
+            await (pause or asyncio.sleep)(pause_between)
         reach = call
         if call_for is not None:
             reach = call_for(role)

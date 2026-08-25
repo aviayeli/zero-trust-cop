@@ -99,3 +99,17 @@ def test_a_reporting_failure_cannot_discard_the_series(played, monkeypatch,
 
     assert [s["sub_game"] for s in summaries] == [1]
     assert "email_report=FAILED" in capsys.readouterr().out
+
+
+# --- the inter-sub-game window (PRD_14) ------------------------------------
+
+
+def test_the_sub_game_pause_defaults_to_none_at_all():
+    """Zero is today's behaviour, so an existing invocation is untouched."""
+    assert reference_cli.parse_args(ARGV).sub_game_pause == 0
+
+
+def test_a_relaunching_opponent_can_be_given_a_window():
+    args = reference_cli.parse_args(ARGV + ["--sub-game-pause", "60"])
+
+    assert args.sub_game_pause == 60

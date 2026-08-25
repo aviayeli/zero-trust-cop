@@ -55,6 +55,14 @@ def parse_args(argv=None):
     parser.add_argument("--logs-dir", default="logs",
                         help="where the four artifacts land, under "
                              "<logs-dir>/<group_id>/")
+    parser.add_argument("--sub-game-pause", type=float, default=0,
+                        help="seconds to wait at each sub-game BOUNDARY. For "
+                             "an opponent that launches one process per "
+                             "sub-game: our next handshake otherwise lands "
+                             "milliseconds after the audit, while their "
+                             "previous process is still inside its shutdown "
+                             "grace, and answers with the role it just "
+                             "played. Zero, the default, waits not at all")
     parser.add_argument("--email-mode", default=None, choices=MODES,
                         help="override the peer's [email] mode for THIS run. "
                              "Absent, the config decides -- which ships as "
