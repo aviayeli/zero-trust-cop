@@ -1,0 +1,1672 @@
+{
+  "artifact_version": 1,
+  "barriers": [],
+  "game_id": "aviayeli-vs-bb-ai-12",
+  "game_number": 2,
+  "game_uid": "521727a1-e4d5-3c92-8f0a-82dc5a77e6fc",
+  "group_id": "aviayeli",
+  "handshake_counter_signed": true,
+  "our_role": "thief",
+  "result_claim": {
+    "outcome": "capture",
+    "steps": 35
+  },
+  "their_audit_response": {
+    "ok": true
+  },
+  "turns": [
+    {
+      "ours": {
+        "commit": "def64ec3bada55da6ab643d311572599c7666ee3ed754cbea4f3428766a3f5f4",
+        "nonce": "92d783aa17ce980942be20e8f77b5a31",
+        "payload": {
+          "hint": "south",
+          "intent": "lie",
+          "move": "MOVE:N",
+          "position": [
+            2,
+            3
+          ],
+          "state": "grid=7x7;self=[2, 3];barriers=[]",
+          "step": 1
+        }
+      },
+      "step": 1,
+      "theirs": {
+        "capture_claim": [
+          1,
+          0
+        ],
+        "commit": "7b2834c49d3d58a30986383dc897b2c93fa58b6b1425c0d5d4f21e65ebecd770",
+        "hint": "I can practically smell your trail from here.",
+        "sender": "police",
+        "smell_grid": {
+          "1,0": 0.9
+        },
+        "timestamp": "2026-08-25T17:11:52.798333+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "75b3b24644b7761423d326af4c249794d9885b8342954b336ef8dbcfe56a016a",
+        "nonce": "8e413a1a3240abc090e03a60066718e1",
+        "payload": {
+          "hint": "north",
+          "intent": "lie",
+          "move": "MOVE:S",
+          "position": [
+            3,
+            3
+          ],
+          "state": "grid=7x7;self=[3, 3];barriers=[]",
+          "step": 2
+        }
+      },
+      "step": 2,
+      "theirs": {
+        "capture_claim": [
+          2,
+          0
+        ],
+        "commit": "5375563e549398a3a60e8cbaa30cb63c4f08219d2d2300f45fea7c5445303a33",
+        "hint": "Nowhere left to run in this city.",
+        "sender": "police",
+        "smell_grid": {
+          "1,0": 0.81,
+          "2,0": 0.9
+        },
+        "timestamp": "2026-08-25T17:11:54.257660+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "09b6ca24236d4d9e85f8f7eb0b83cf2bcb6cb81b8948b7d8ec6a34564aac1c83",
+        "nonce": "7db47f4b1390d675d911ff4bb4c4926a",
+        "payload": {
+          "hint": "north",
+          "intent": "lie",
+          "move": "MOVE:S",
+          "position": [
+            4,
+            3
+          ],
+          "state": "grid=7x7;self=[4, 3];barriers=[]",
+          "step": 3
+        }
+      },
+      "step": 3,
+      "theirs": {
+        "capture_claim": [
+          3,
+          0
+        ],
+        "commit": "438b3baa8e74982c549588c1d4a1132582ef70763fee212aa05f9d2d5c3907db",
+        "hint": "Every step you take leaves a trace.",
+        "sender": "police",
+        "smell_grid": {
+          "1,0": 0.729,
+          "2,0": 0.81,
+          "3,0": 0.9
+        },
+        "timestamp": "2026-08-25T17:11:56.066966+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "cb50d1b84a4f41d0d80570f254b0373cdf3ffe0a99e21c10bf616e91e34955e8",
+        "nonce": "e44532147400584a94e62f168d50752c",
+        "payload": {
+          "hint": "west",
+          "intent": "lie",
+          "move": "MOVE:E",
+          "position": [
+            4,
+            4
+          ],
+          "state": "grid=7x7;self=[4, 4];barriers=[]",
+          "step": 4
+        }
+      },
+      "step": 4,
+      "theirs": {
+        "capture_claim": [
+          4,
+          0
+        ],
+        "commit": "15a50161bec5b60f2026b88f50b1b4238d227206898d6ad653bcfd4ae77ff448",
+        "hint": "You can't hide forever.",
+        "sender": "police",
+        "smell_grid": {
+          "1,0": 0.6561,
+          "2,0": 0.729,
+          "3,0": 0.81,
+          "4,0": 0.9
+        },
+        "timestamp": "2026-08-25T17:11:57.946279+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "b0e231a3bc178dd7e83c7a8a6d1e5d82464f661639b3c9a822c03aa7c1b5bcde",
+        "nonce": "2c986245fe74106505f6b5e2bb3222fb",
+        "payload": {
+          "hint": "west",
+          "intent": "lie",
+          "move": "MOVE:E",
+          "position": [
+            4,
+            5
+          ],
+          "state": "grid=7x7;self=[4, 5];barriers=[]",
+          "step": 5
+        }
+      },
+      "step": 5,
+      "theirs": {
+        "capture_claim": [
+          4,
+          1
+        ],
+        "commit": "00e8698a2ff6f6d72d6dfafa03cfc1ac47d6d4329c0d4ae5b6bf7d6236b05bde",
+        "hint": "I can practically smell your trail from here.",
+        "sender": "police",
+        "smell_grid": {
+          "1,0": 0.5905,
+          "2,0": 0.6561,
+          "3,0": 0.729,
+          "4,0": 0.81,
+          "4,1": 0.9
+        },
+        "timestamp": "2026-08-25T17:11:59.713878+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "fa97dff028f3398e0d732ef8aa4471117428b670fbbcd8e833dc535e9b893186",
+        "nonce": "4c2385019654f48b9ee428854145c942",
+        "payload": {
+          "hint": "west",
+          "intent": "lie",
+          "move": "MOVE:E",
+          "position": [
+            4,
+            6
+          ],
+          "state": "grid=7x7;self=[4, 6];barriers=[]",
+          "step": 6
+        }
+      },
+      "step": 6,
+      "theirs": {
+        "capture_claim": [
+          4,
+          2
+        ],
+        "commit": "62bcf472b6f03b7bc9d27ff2ecdaa28c691654cd1a5d4cfb7f98de658fccbc39",
+        "hint": "Nowhere left to run in this city.",
+        "sender": "police",
+        "smell_grid": {
+          "1,0": 0.5314,
+          "2,0": 0.5905,
+          "3,0": 0.6561,
+          "4,0": 0.729,
+          "4,1": 0.81,
+          "4,2": 0.9
+        },
+        "timestamp": "2026-08-25T17:12:01.531883+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "3aa97faeae60507fb248e749ae075c444f40e127f71b1d0fd1b75d362c2c40d0",
+        "nonce": "c0269d9429adaaad7ea9cc08622081f3",
+        "payload": {
+          "hint": "north",
+          "intent": "lie",
+          "move": "MOVE:S",
+          "position": [
+            5,
+            6
+          ],
+          "state": "grid=7x7;self=[5, 6];barriers=[]",
+          "step": 7
+        }
+      },
+      "step": 7,
+      "theirs": {
+        "capture_claim": [
+          4,
+          3
+        ],
+        "commit": "69bd7b07194bc865332add80c4c853a81de9e8ac92c260fc78d120d1a06cac61",
+        "hint": "Every step you take leaves a trace.",
+        "sender": "police",
+        "smell_grid": {
+          "1,0": 0.4783,
+          "2,0": 0.5314,
+          "3,0": 0.5905,
+          "4,0": 0.6561,
+          "4,1": 0.729,
+          "4,2": 0.81,
+          "4,3": 0.9
+        },
+        "timestamp": "2026-08-25T17:12:03.349898+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "88fcefe2330f5e9c14a20492005315c770272e68fcdc3d0b17457ec1d2ba287c",
+        "nonce": "9f744dc73f9ae5e4bf7fade1e88cb969",
+        "payload": {
+          "hint": "north",
+          "intent": "lie",
+          "move": "MOVE:S",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 8
+        }
+      },
+      "step": 8,
+      "theirs": {
+        "capture_claim": [
+          5,
+          3
+        ],
+        "commit": "1e063548970211fb1507c2dd35e177f7588c3c91f3f98c1eba3054e875a94444",
+        "hint": "You can't hide forever.",
+        "sender": "police",
+        "smell_grid": {
+          "1,0": 0.4305,
+          "2,0": 0.4783,
+          "3,0": 0.5314,
+          "4,0": 0.5905,
+          "4,1": 0.6561,
+          "4,2": 0.729,
+          "4,3": 0.81,
+          "5,3": 0.9
+        },
+        "timestamp": "2026-08-25T17:12:05.212436+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "51dd8b27bac4b398ad321fac31f0cc793b85e14c5efb02c875bca5fb4f1ddbff",
+        "nonce": "647d9d9ed97eb133f9ac3d998f8bd988",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 9
+        }
+      },
+      "step": 9,
+      "theirs": {
+        "capture_claim": [
+          6,
+          3
+        ],
+        "commit": "3af4ab848d97721fe0a3b1370281ec928141160db82c6ed57143104f4fc7827b",
+        "hint": "I can practically smell your trail from here.",
+        "sender": "police",
+        "smell_grid": {
+          "1,0": 0.3874,
+          "2,0": 0.4305,
+          "3,0": 0.4783,
+          "4,0": 0.5314,
+          "4,1": 0.5905,
+          "4,2": 0.6561,
+          "4,3": 0.729,
+          "5,3": 0.81,
+          "6,3": 0.9
+        },
+        "timestamp": "2026-08-25T17:12:07.023833+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "a9863cdf94b9690984eab31ef74e5d4796c0b3759917b6890d89d35781bf51d9",
+        "nonce": "926c1f602875ee57fe612aac596a6fb3",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 10
+        }
+      },
+      "step": 10,
+      "theirs": {
+        "capture_claim": [
+          6,
+          4
+        ],
+        "commit": "8a6fd66373978ad69e7979c90857cc940119c2cd4fe9e36e027fa7e646b0933c",
+        "hint": "Nowhere left to run in this city.",
+        "sender": "police",
+        "smell_grid": {
+          "1,0": 0.3487,
+          "2,0": 0.3874,
+          "3,0": 0.4305,
+          "4,0": 0.4783,
+          "4,1": 0.5314,
+          "4,2": 0.5905,
+          "4,3": 0.6561,
+          "5,3": 0.729,
+          "6,3": 0.81,
+          "6,4": 0.9
+        },
+        "timestamp": "2026-08-25T17:12:08.815823+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "cfee09b0a47caf39cb2e7839b631700f795a56b1435b4fa9f45d425108f43afc",
+        "nonce": "bc86ba33cb8bc5a3d9fd296598805905",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 11
+        }
+      },
+      "step": 11,
+      "theirs": {
+        "capture_claim": [
+          6,
+          5
+        ],
+        "commit": "c9f357bd166ca1c1e2d89ec0fda149069dc5f4db5705fdf152f91a28469243d9",
+        "hint": "Every step you take leaves a trace.",
+        "sender": "police",
+        "smell_grid": {
+          "1,0": 0.3138,
+          "2,0": 0.3487,
+          "3,0": 0.3874,
+          "4,0": 0.4305,
+          "4,1": 0.4783,
+          "4,2": 0.5314,
+          "4,3": 0.5905,
+          "5,3": 0.6561,
+          "6,3": 0.729,
+          "6,4": 0.81,
+          "6,5": 0.9
+        },
+        "timestamp": "2026-08-25T17:12:10.634401+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "8928081a26a2949709d4da426545790623fed645afe788d9ffa8455bedf97c05",
+        "nonce": "4a73d03b89ee2c32b751077b5ad8fa09",
+        "payload": {
+          "hint": "south",
+          "intent": "lie",
+          "move": "MOVE:N",
+          "position": [
+            5,
+            6
+          ],
+          "state": "grid=7x7;self=[5, 6];barriers=[]",
+          "step": 12
+        }
+      },
+      "step": 12,
+      "theirs": {
+        "capture_claim": [
+          6,
+          6
+        ],
+        "commit": "ec383fbfa5118c05b0becf8cd113a90b4eadb2f6054252dea8ac0630d6ab1d8d",
+        "hint": "You can't hide forever.",
+        "sender": "police",
+        "smell_grid": {
+          "1,0": 0.2824,
+          "2,0": 0.3138,
+          "3,0": 0.3487,
+          "4,0": 0.3874,
+          "4,1": 0.4305,
+          "4,2": 0.4783,
+          "4,3": 0.5314,
+          "5,3": 0.5905,
+          "6,3": 0.6561,
+          "6,4": 0.729,
+          "6,5": 0.81,
+          "6,6": 0.9
+        },
+        "timestamp": "2026-08-25T17:12:12.455617+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "534fc184f0e42e338ff14f016aac82ba3e9f1e4b402101c5795bab8232506ff3",
+        "nonce": "0f7f0849efc4b951369c7e411cc0ef22",
+        "payload": {
+          "hint": "south",
+          "intent": "lie",
+          "move": "MOVE:N",
+          "position": [
+            4,
+            6
+          ],
+          "state": "grid=7x7;self=[4, 6];barriers=[]",
+          "step": 13
+        }
+      },
+      "step": 13,
+      "theirs": {
+        "capture_claim": [
+          5,
+          6
+        ],
+        "commit": "3c85f47d799833b3376b1b3e90ed2b8871d2b4f212a06932a8f93222d8324f21",
+        "hint": "I can practically smell your trail from here.",
+        "sender": "police",
+        "smell_grid": {
+          "1,0": 0.2542,
+          "2,0": 0.2824,
+          "3,0": 0.3138,
+          "4,0": 0.3487,
+          "4,1": 0.3874,
+          "4,2": 0.4305,
+          "4,3": 0.4783,
+          "5,3": 0.5314,
+          "5,6": 0.9,
+          "6,3": 0.5905,
+          "6,4": 0.6561,
+          "6,5": 0.729,
+          "6,6": 0.81
+        },
+        "timestamp": "2026-08-25T17:12:14.312808+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "fa6df4754f11dd0518a2811626f2c07d78093728eaa89c6f030f22f9a25334a2",
+        "nonce": "84f75b21c8a5e0b4e20112f4c339c07a",
+        "payload": {
+          "hint": "south",
+          "intent": "lie",
+          "move": "MOVE:N",
+          "position": [
+            3,
+            6
+          ],
+          "state": "grid=7x7;self=[3, 6];barriers=[]",
+          "step": 14
+        }
+      },
+      "step": 14,
+      "theirs": {
+        "capture_claim": [
+          4,
+          6
+        ],
+        "commit": "1643ca7a17550bfaf35dc854c877998ce67bde2e88b6fc0c3b8262b694b9d042",
+        "hint": "Nowhere left to run in this city.",
+        "sender": "police",
+        "smell_grid": {
+          "1,0": 0.2288,
+          "2,0": 0.2542,
+          "3,0": 0.2824,
+          "4,0": 0.3138,
+          "4,1": 0.3487,
+          "4,2": 0.3874,
+          "4,3": 0.4305,
+          "4,6": 0.9,
+          "5,3": 0.4783,
+          "5,6": 0.81,
+          "6,3": 0.5314,
+          "6,4": 0.5905,
+          "6,5": 0.6561,
+          "6,6": 0.729
+        },
+        "timestamp": "2026-08-25T17:12:16.085238+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "e514ea6f58270a6e94a89c4cdd6eb3498fcec7e5246939efcd3662c4b752c88e",
+        "nonce": "04e92e55d8609ee99c23fc2668a83c5f",
+        "payload": {
+          "hint": "east",
+          "intent": "lie",
+          "move": "MOVE:W",
+          "position": [
+            3,
+            5
+          ],
+          "state": "grid=7x7;self=[3, 5];barriers=[]",
+          "step": 15
+        }
+      },
+      "step": 15,
+      "theirs": {
+        "capture_claim": [
+          3,
+          6
+        ],
+        "commit": "ef99c588ab27a973f2766531c253bcfa089003dade687759534d9779fa8536eb",
+        "hint": "Every step you take leaves a trace.",
+        "sender": "police",
+        "smell_grid": {
+          "1,0": 0.2059,
+          "2,0": 0.2288,
+          "3,0": 0.2542,
+          "3,6": 0.9,
+          "4,0": 0.2824,
+          "4,1": 0.3138,
+          "4,2": 0.3487,
+          "4,3": 0.3874,
+          "4,6": 0.81,
+          "5,3": 0.4305,
+          "5,6": 0.729,
+          "6,3": 0.4783,
+          "6,4": 0.5314,
+          "6,5": 0.5905,
+          "6,6": 0.6561
+        },
+        "timestamp": "2026-08-25T17:12:17.947774+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "0a3111ca5d726168d2cc4749b7897557d73cc8bea89c717e428e2ea3bc1ad03d",
+        "nonce": "b0a46cdb78c2ca5f663eaa311c9489ac",
+        "payload": {
+          "hint": "east",
+          "intent": "lie",
+          "move": "MOVE:W",
+          "position": [
+            3,
+            4
+          ],
+          "state": "grid=7x7;self=[3, 4];barriers=[]",
+          "step": 16
+        }
+      },
+      "step": 16,
+      "theirs": {
+        "capture_claim": [
+          3,
+          5
+        ],
+        "commit": "68823f4b6680ace4dabf4d472ec14fe9aab7179906c46d0e45b439ad1a55e22d",
+        "hint": "You can't hide forever.",
+        "sender": "police",
+        "smell_grid": {
+          "1,0": 0.1853,
+          "2,0": 0.2059,
+          "3,0": 0.2288,
+          "3,5": 0.9,
+          "3,6": 0.81,
+          "4,0": 0.2542,
+          "4,1": 0.2824,
+          "4,2": 0.3138,
+          "4,3": 0.3487,
+          "4,6": 0.729,
+          "5,3": 0.3874,
+          "5,6": 0.6561,
+          "6,3": 0.4305,
+          "6,4": 0.4783,
+          "6,5": 0.5314,
+          "6,6": 0.5905
+        },
+        "timestamp": "2026-08-25T17:12:19.775357+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "6527c2582eeeebec2f076b530d0c057e10ffd249ef20547d0429952cc317abbd",
+        "nonce": "b97a969d9593be354150e855b7c06d21",
+        "payload": {
+          "hint": "east",
+          "intent": "lie",
+          "move": "MOVE:W",
+          "position": [
+            3,
+            3
+          ],
+          "state": "grid=7x7;self=[3, 3];barriers=[]",
+          "step": 17
+        }
+      },
+      "step": 17,
+      "theirs": {
+        "capture_claim": [
+          3,
+          4
+        ],
+        "commit": "965077d200d8ea59378f49e4395e22caa7e9002d3fa704367a9d7084151a2853",
+        "hint": "I can practically smell your trail from here.",
+        "sender": "police",
+        "smell_grid": {
+          "1,0": 0.1668,
+          "2,0": 0.1853,
+          "3,0": 0.2059,
+          "3,4": 0.9,
+          "3,5": 0.81,
+          "3,6": 0.729,
+          "4,0": 0.2288,
+          "4,1": 0.2542,
+          "4,2": 0.2824,
+          "4,3": 0.3138,
+          "4,6": 0.6561,
+          "5,3": 0.3487,
+          "5,6": 0.5905,
+          "6,3": 0.3874,
+          "6,4": 0.4305,
+          "6,5": 0.4783,
+          "6,6": 0.5314
+        },
+        "timestamp": "2026-08-25T17:12:21.595360+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "443888424c2656ca879546fdfb91f87e81d9f7b2fc0e90cabc6b45bbfe564206",
+        "nonce": "46aa7b193be4aa4e4d74ac3c721d7123",
+        "payload": {
+          "hint": "east",
+          "intent": "lie",
+          "move": "MOVE:W",
+          "position": [
+            3,
+            2
+          ],
+          "state": "grid=7x7;self=[3, 2];barriers=[]",
+          "step": 18
+        }
+      },
+      "step": 18,
+      "theirs": {
+        "capture_claim": [
+          3,
+          3
+        ],
+        "commit": "e9541530796f5b05fd55cf6f596b00e14d0ae35b1c4686c947a9253f2a8a66c5",
+        "hint": "Nowhere left to run in this city.",
+        "sender": "police",
+        "smell_grid": {
+          "1,0": 0.1501,
+          "2,0": 0.1668,
+          "3,0": 0.1853,
+          "3,3": 0.9,
+          "3,4": 0.81,
+          "3,5": 0.729,
+          "3,6": 0.6561,
+          "4,0": 0.2059,
+          "4,1": 0.2288,
+          "4,2": 0.2542,
+          "4,3": 0.2824,
+          "4,6": 0.5905,
+          "5,3": 0.3138,
+          "5,6": 0.5314,
+          "6,3": 0.3487,
+          "6,4": 0.3874,
+          "6,5": 0.4305,
+          "6,6": 0.4783
+        },
+        "timestamp": "2026-08-25T17:12:23.408127+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "ea314f6158ea87b92b21573a3d14d6ac940c3c14b09f9bf02919cf3a1cfb9c8d",
+        "nonce": "03affbbc7259f87f8d781a763dc9e61f",
+        "payload": {
+          "hint": "south",
+          "intent": "lie",
+          "move": "MOVE:N",
+          "position": [
+            2,
+            2
+          ],
+          "state": "grid=7x7;self=[2, 2];barriers=[]",
+          "step": 19
+        }
+      },
+      "step": 19,
+      "theirs": {
+        "capture_claim": [
+          3,
+          2
+        ],
+        "commit": "d028eb4db124867e6c6f2d70874d8975b5a21b4e3ab202b13159756159cb8849",
+        "hint": "Every step you take leaves a trace.",
+        "sender": "police",
+        "smell_grid": {
+          "1,0": 0.1351,
+          "2,0": 0.1501,
+          "3,0": 0.1668,
+          "3,2": 0.9,
+          "3,3": 0.81,
+          "3,4": 0.729,
+          "3,5": 0.6561,
+          "3,6": 0.5905,
+          "4,0": 0.1853,
+          "4,1": 0.2059,
+          "4,2": 0.2288,
+          "4,3": 0.2542,
+          "4,6": 0.5314,
+          "5,3": 0.2824,
+          "5,6": 0.4783,
+          "6,3": 0.3138,
+          "6,4": 0.3487,
+          "6,5": 0.3874,
+          "6,6": 0.4305
+        },
+        "timestamp": "2026-08-25T17:12:25.238325+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "14ab48834f27f235a4579a62ed2b7a205c9390c59174668e568959a34fca1c50",
+        "nonce": "342bfa76979f96adddc7e590bfa3416f",
+        "payload": {
+          "hint": "east",
+          "intent": "lie",
+          "move": "MOVE:W",
+          "position": [
+            2,
+            1
+          ],
+          "state": "grid=7x7;self=[2, 1];barriers=[]",
+          "step": 20
+        }
+      },
+      "step": 20,
+      "theirs": {
+        "capture_claim": [
+          2,
+          2
+        ],
+        "commit": "4b866db310452ba5f8a74925ec4772ac8f4a7222f1c3a4813d59e58f52abed6d",
+        "hint": "You can't hide forever.",
+        "sender": "police",
+        "smell_grid": {
+          "1,0": 0.1216,
+          "2,0": 0.1351,
+          "2,2": 0.9,
+          "3,0": 0.1501,
+          "3,2": 0.81,
+          "3,3": 0.729,
+          "3,4": 0.6561,
+          "3,5": 0.5905,
+          "3,6": 0.5314,
+          "4,0": 0.1668,
+          "4,1": 0.1853,
+          "4,2": 0.2059,
+          "4,3": 0.2288,
+          "4,6": 0.4783,
+          "5,3": 0.2542,
+          "5,6": 0.4305,
+          "6,3": 0.2824,
+          "6,4": 0.3138,
+          "6,5": 0.3487,
+          "6,6": 0.3874
+        },
+        "timestamp": "2026-08-25T17:12:27.058949+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "b01ebe777e298b4d847b3484af02e24daf3cacf8a10379265954f82bbd3bc123",
+        "nonce": "7a37c4c730e30d1899a55a3f922a970a",
+        "payload": {
+          "hint": "east",
+          "intent": "lie",
+          "move": "MOVE:W",
+          "position": [
+            2,
+            0
+          ],
+          "state": "grid=7x7;self=[2, 0];barriers=[]",
+          "step": 21
+        }
+      },
+      "step": 21,
+      "theirs": {
+        "capture_claim": [
+          2,
+          1
+        ],
+        "commit": "afa0f01d0ce2c119d7cb228c64ab1e3a99e658e066b9179708c7df03aa162723",
+        "hint": "I can practically smell your trail from here.",
+        "sender": "police",
+        "smell_grid": {
+          "1,0": 0.1094,
+          "2,0": 0.1216,
+          "2,1": 0.9,
+          "2,2": 0.81,
+          "3,0": 0.1351,
+          "3,2": 0.729,
+          "3,3": 0.6561,
+          "3,4": 0.5905,
+          "3,5": 0.5314,
+          "3,6": 0.4783,
+          "4,0": 0.1501,
+          "4,1": 0.1668,
+          "4,2": 0.1853,
+          "4,3": 0.2059,
+          "4,6": 0.4305,
+          "5,3": 0.2288,
+          "5,6": 0.3874,
+          "6,3": 0.2542,
+          "6,4": 0.2824,
+          "6,5": 0.3138,
+          "6,6": 0.3487
+        },
+        "timestamp": "2026-08-25T17:12:28.866938+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "727c3ab9de145983e991fddcc1db0cee8d418e39c6c5fc279241c3920bcfc236",
+        "nonce": "9e5126a8047c4a0fdb217a19e3528450",
+        "payload": {
+          "hint": "south",
+          "intent": "lie",
+          "move": "MOVE:N",
+          "position": [
+            1,
+            0
+          ],
+          "state": "grid=7x7;self=[1, 0];barriers=[]",
+          "step": 22
+        }
+      },
+      "step": 22,
+      "theirs": {
+        "capture_claim": [
+          2,
+          0
+        ],
+        "commit": "efcc9eb98c943688f358c0b6bb830a26ceccf1a35228ae408f332814fda3f748",
+        "hint": "Nowhere left to run in this city.",
+        "sender": "police",
+        "smell_grid": {
+          "1,0": 0.0985,
+          "2,0": 1.0094,
+          "2,1": 0.81,
+          "2,2": 0.729,
+          "3,0": 0.1216,
+          "3,2": 0.6561,
+          "3,3": 0.5905,
+          "3,4": 0.5314,
+          "3,5": 0.4783,
+          "3,6": 0.4305,
+          "4,0": 0.1351,
+          "4,1": 0.1501,
+          "4,2": 0.1668,
+          "4,3": 0.1853,
+          "4,6": 0.3874,
+          "5,3": 0.2059,
+          "5,6": 0.3487,
+          "6,3": 0.2288,
+          "6,4": 0.2542,
+          "6,5": 0.2824,
+          "6,6": 0.3138
+        },
+        "timestamp": "2026-08-25T17:12:30.687287+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "c8c4731b745a1c4a68029c714b33ee34678c32bf9b42d0a1e0c776f0ad8cd5c6",
+        "nonce": "00121c2cd6bf6a1009c0149e38545a2a",
+        "payload": {
+          "hint": "south",
+          "intent": "lie",
+          "move": "MOVE:N",
+          "position": [
+            0,
+            0
+          ],
+          "state": "grid=7x7;self=[0, 0];barriers=[]",
+          "step": 23
+        }
+      },
+      "step": 23,
+      "theirs": {
+        "capture_claim": [
+          1,
+          0
+        ],
+        "commit": "ecf14fa8f25d07e187f1738b6589eb4a74f31c77dba4e5f4b0bf7d177cb5ed97",
+        "hint": "Every step you take leaves a trace.",
+        "sender": "police",
+        "smell_grid": {
+          "1,0": 0.9886,
+          "2,0": 0.9085,
+          "2,1": 0.729,
+          "2,2": 0.6561,
+          "3,0": 0.1094,
+          "3,2": 0.5905,
+          "3,3": 0.5314,
+          "3,4": 0.4783,
+          "3,5": 0.4305,
+          "3,6": 0.3874,
+          "4,0": 0.1216,
+          "4,1": 0.1351,
+          "4,2": 0.1501,
+          "4,3": 0.1668,
+          "4,6": 0.3487,
+          "5,3": 0.1853,
+          "5,6": 0.3138,
+          "6,3": 0.2059,
+          "6,4": 0.2288,
+          "6,5": 0.2542,
+          "6,6": 0.2824
+        },
+        "timestamp": "2026-08-25T17:12:32.496627+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "4f59224834b3db202d081449e81d07d96270b73fa89f0aa6ca3c660b9d50dcf4",
+        "nonce": "44278930b901e921375c9a4584c347be",
+        "payload": {
+          "hint": "west",
+          "intent": "lie",
+          "move": "MOVE:E",
+          "position": [
+            0,
+            1
+          ],
+          "state": "grid=7x7;self=[0, 1];barriers=[]",
+          "step": 24
+        }
+      },
+      "step": 24,
+      "theirs": {
+        "capture_claim": [
+          0,
+          0
+        ],
+        "commit": "66719a8734a338758b0ddd7c2af4bd807d25db7acbbf4e118bb79bdf1187dd65",
+        "hint": "You can't hide forever.",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.9,
+          "1,0": 0.8898,
+          "2,0": 0.8176,
+          "2,1": 0.6561,
+          "2,2": 0.5905,
+          "3,0": 0.0985,
+          "3,2": 0.5314,
+          "3,3": 0.4783,
+          "3,4": 0.4305,
+          "3,5": 0.3874,
+          "3,6": 0.3487,
+          "4,0": 0.1094,
+          "4,1": 0.1216,
+          "4,2": 0.1351,
+          "4,3": 0.1501,
+          "4,6": 0.3138,
+          "5,3": 0.1668,
+          "5,6": 0.2824,
+          "6,3": 0.1853,
+          "6,4": 0.2059,
+          "6,5": 0.2288,
+          "6,6": 0.2542
+        },
+        "timestamp": "2026-08-25T17:12:34.321493+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "e2e13510fbe06d1d752655c20585551740a14bee1a93ad99dc244b921630b975",
+        "nonce": "027ab71ddcef0cbb94a6eda0c196d29e",
+        "payload": {
+          "hint": "west",
+          "intent": "lie",
+          "move": "MOVE:E",
+          "position": [
+            0,
+            2
+          ],
+          "state": "grid=7x7;self=[0, 2];barriers=[]",
+          "step": 25
+        }
+      },
+      "step": 25,
+      "theirs": {
+        "capture_claim": [
+          0,
+          1
+        ],
+        "commit": "65ad891cda1e004dafd3a3ab3af54f6723cdf20686fd125a5a1a79e6c44ae3fe",
+        "hint": "I can practically smell your trail from here.",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.81,
+          "0,1": 0.9,
+          "1,0": 0.8008,
+          "2,0": 0.7359,
+          "2,1": 0.5905,
+          "2,2": 0.5314,
+          "3,0": 0.0886,
+          "3,2": 0.4783,
+          "3,3": 0.4305,
+          "3,4": 0.3874,
+          "3,5": 0.3487,
+          "3,6": 0.3138,
+          "4,0": 0.0985,
+          "4,1": 0.1094,
+          "4,2": 0.1216,
+          "4,3": 0.1351,
+          "4,6": 0.2824,
+          "5,3": 0.1501,
+          "5,6": 0.2542,
+          "6,3": 0.1668,
+          "6,4": 0.1853,
+          "6,5": 0.2059,
+          "6,6": 0.2288
+        },
+        "timestamp": "2026-08-25T17:12:36.135600+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "e64dd5455a3dc904d131e4c1dcc3279e1423748aab8b96383022663554dd4197",
+        "nonce": "da0c7930aa66725155b4b5bc0d237215",
+        "payload": {
+          "hint": "west",
+          "intent": "lie",
+          "move": "MOVE:E",
+          "position": [
+            0,
+            3
+          ],
+          "state": "grid=7x7;self=[0, 3];barriers=[]",
+          "step": 26
+        }
+      },
+      "step": 26,
+      "theirs": {
+        "capture_claim": [
+          0,
+          2
+        ],
+        "commit": "3f00cfb923bf3ad2c62ed52691ae3aa5dcdbdcf446376489d093be7cc453a5e0",
+        "hint": "Nowhere left to run in this city.",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.729,
+          "0,1": 0.81,
+          "0,2": 0.9,
+          "1,0": 0.7207,
+          "2,0": 0.6623,
+          "2,1": 0.5314,
+          "2,2": 0.4783,
+          "3,0": 0.0798,
+          "3,2": 0.4305,
+          "3,3": 0.3874,
+          "3,4": 0.3487,
+          "3,5": 0.3138,
+          "3,6": 0.2824,
+          "4,0": 0.0886,
+          "4,1": 0.0985,
+          "4,2": 0.1094,
+          "4,3": 0.1216,
+          "4,6": 0.2542,
+          "5,3": 0.1351,
+          "5,6": 0.2288,
+          "6,3": 0.1501,
+          "6,4": 0.1668,
+          "6,5": 0.1853,
+          "6,6": 0.2059
+        },
+        "timestamp": "2026-08-25T17:12:37.955142+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "318285437271f134e78e93bdc2e5e7ceeddcb17df9badd5760b5754d55d807c3",
+        "nonce": "57e1504678b77811453fdb3e82930383",
+        "payload": {
+          "hint": "north",
+          "intent": "lie",
+          "move": "MOVE:S",
+          "position": [
+            1,
+            3
+          ],
+          "state": "grid=7x7;self=[1, 3];barriers=[]",
+          "step": 27
+        }
+      },
+      "step": 27,
+      "theirs": {
+        "capture_claim": [
+          0,
+          3
+        ],
+        "commit": "258d2f8d58ff1a56daa7b7d9912599f05b78104ced791a7a179a5da3cbb6fdba",
+        "hint": "Every step you take leaves a trace.",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.6561,
+          "0,1": 0.729,
+          "0,2": 0.81,
+          "0,3": 0.9,
+          "1,0": 0.6486,
+          "2,0": 0.5961,
+          "2,1": 0.4783,
+          "2,2": 0.4305,
+          "3,0": 0.0718,
+          "3,2": 0.3874,
+          "3,3": 0.3487,
+          "3,4": 0.3138,
+          "3,5": 0.2824,
+          "3,6": 0.2542,
+          "4,0": 0.0798,
+          "4,1": 0.0886,
+          "4,2": 0.0985,
+          "4,3": 0.1094,
+          "4,6": 0.2288,
+          "5,3": 0.1216,
+          "5,6": 0.2059,
+          "6,3": 0.1351,
+          "6,4": 0.1501,
+          "6,5": 0.1668,
+          "6,6": 0.1853
+        },
+        "timestamp": "2026-08-25T17:12:39.764331+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "45536a6323708fad48c7db330449ef6bcfaedeb6f199196548bb2aac78c8d452",
+        "nonce": "ef46badb6294eb8562efffddf13dbdbc",
+        "payload": {
+          "hint": "north",
+          "intent": "lie",
+          "move": "MOVE:S",
+          "position": [
+            2,
+            3
+          ],
+          "state": "grid=7x7;self=[2, 3];barriers=[]",
+          "step": 28
+        }
+      },
+      "step": 28,
+      "theirs": {
+        "capture_claim": [
+          1,
+          3
+        ],
+        "commit": "a07d3d85ad50e258886e9e035d594a46cba02d1ae66ed820db5f84edef537026",
+        "hint": "You can't hide forever.",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.5905,
+          "0,1": 0.6561,
+          "0,2": 0.729,
+          "0,3": 0.81,
+          "1,0": 0.5838,
+          "1,3": 0.9,
+          "2,0": 0.5364,
+          "2,1": 0.4305,
+          "2,2": 0.3874,
+          "3,0": 0.0646,
+          "3,2": 0.3487,
+          "3,3": 0.3138,
+          "3,4": 0.2824,
+          "3,5": 0.2542,
+          "3,6": 0.2288,
+          "4,0": 0.0718,
+          "4,1": 0.0798,
+          "4,2": 0.0886,
+          "4,3": 0.0985,
+          "4,6": 0.2059,
+          "5,3": 0.1094,
+          "5,6": 0.1853,
+          "6,3": 0.1216,
+          "6,4": 0.1351,
+          "6,5": 0.1501,
+          "6,6": 0.1668
+        },
+        "timestamp": "2026-08-25T17:12:41.622162+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "f302fc6de3558bf2b2e03e8be4300bc9d396980144bde54187d4a7be0f13ad07",
+        "nonce": "d2a085e2e8d72a8990a85ce5fe37a193",
+        "payload": {
+          "hint": "west",
+          "intent": "lie",
+          "move": "MOVE:E",
+          "position": [
+            2,
+            4
+          ],
+          "state": "grid=7x7;self=[2, 4];barriers=[]",
+          "step": 29
+        }
+      },
+      "step": 29,
+      "theirs": {
+        "capture_claim": [
+          2,
+          3
+        ],
+        "commit": "acd4c501262cc8163cbd8ce2f82e3cf903edbaff7c5a6bff73e53ad6349afb3a",
+        "hint": "I can practically smell your trail from here.",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.5314,
+          "0,1": 0.5905,
+          "0,2": 0.6561,
+          "0,3": 0.729,
+          "1,0": 0.5254,
+          "1,3": 0.81,
+          "2,0": 0.4828,
+          "2,1": 0.3874,
+          "2,2": 0.3487,
+          "2,3": 0.9,
+          "3,0": 0.0581,
+          "3,2": 0.3138,
+          "3,3": 0.2824,
+          "3,4": 0.2542,
+          "3,5": 0.2288,
+          "3,6": 0.2059,
+          "4,0": 0.0646,
+          "4,1": 0.0718,
+          "4,2": 0.0798,
+          "4,3": 0.0886,
+          "4,6": 0.1853,
+          "5,3": 0.0985,
+          "5,6": 0.1668,
+          "6,3": 0.1094,
+          "6,4": 0.1216,
+          "6,5": 0.1351,
+          "6,6": 0.1501
+        },
+        "timestamp": "2026-08-25T17:12:43.428256+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "0b9bf3570b28d1ca2aee3568dae24045af22d16f0b59a738ce9f0feea5cc7d0c",
+        "nonce": "eaae7bdc5866fa169c3ee8c684cd5ca6",
+        "payload": {
+          "hint": "west",
+          "intent": "lie",
+          "move": "MOVE:E",
+          "position": [
+            2,
+            5
+          ],
+          "state": "grid=7x7;self=[2, 5];barriers=[]",
+          "step": 30
+        }
+      },
+      "step": 30,
+      "theirs": {
+        "capture_claim": [
+          2,
+          4
+        ],
+        "commit": "4fd43f4ad0e25cffb76d9d5884df43a8c6244d9cebdae817f4db378f151fef3b",
+        "hint": "Nowhere left to run in this city.",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.4783,
+          "0,1": 0.5314,
+          "0,2": 0.5905,
+          "0,3": 0.6561,
+          "1,0": 0.4729,
+          "1,3": 0.729,
+          "2,0": 0.4345,
+          "2,1": 0.3487,
+          "2,2": 0.3138,
+          "2,3": 0.81,
+          "2,4": 0.9,
+          "3,0": 0.0523,
+          "3,2": 0.2824,
+          "3,3": 0.2542,
+          "3,4": 0.2288,
+          "3,5": 0.2059,
+          "3,6": 0.1853,
+          "4,0": 0.0581,
+          "4,1": 0.0646,
+          "4,2": 0.0718,
+          "4,3": 0.0798,
+          "4,6": 0.1668,
+          "5,3": 0.0886,
+          "5,6": 0.1501,
+          "6,3": 0.0985,
+          "6,4": 0.1094,
+          "6,5": 0.1216,
+          "6,6": 0.1351
+        },
+        "timestamp": "2026-08-25T17:12:45.226487+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "4f12879d38d8757dacb58831227e2afe40eb0b8de0bac91b14e338d370464de9",
+        "nonce": "cc587eb6db2e7f9583746cbc3bb7eeb7",
+        "payload": {
+          "hint": "south",
+          "intent": "lie",
+          "move": "MOVE:N",
+          "position": [
+            1,
+            5
+          ],
+          "state": "grid=7x7;self=[1, 5];barriers=[]",
+          "step": 31
+        }
+      },
+      "step": 31,
+      "theirs": {
+        "capture_claim": [
+          2,
+          5
+        ],
+        "commit": "39329a85c79b396352692d0a586bb7cc502ac2d3404df5fe04525b6d500516dd",
+        "hint": "Every step you take leaves a trace.",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.4305,
+          "0,1": 0.4783,
+          "0,2": 0.5314,
+          "0,3": 0.5905,
+          "1,0": 0.4256,
+          "1,3": 0.6561,
+          "2,0": 0.3911,
+          "2,1": 0.3138,
+          "2,2": 0.2824,
+          "2,3": 0.729,
+          "2,4": 0.81,
+          "2,5": 0.9,
+          "3,0": 0.0471,
+          "3,2": 0.2542,
+          "3,3": 0.2288,
+          "3,4": 0.2059,
+          "3,5": 0.1853,
+          "3,6": 0.1668,
+          "4,0": 0.0523,
+          "4,1": 0.0581,
+          "4,2": 0.0646,
+          "4,3": 0.0718,
+          "4,6": 0.1501,
+          "5,3": 0.0798,
+          "5,6": 0.1351,
+          "6,3": 0.0886,
+          "6,4": 0.0985,
+          "6,5": 0.1094,
+          "6,6": 0.1216
+        },
+        "timestamp": "2026-08-25T17:12:47.078060+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "c0ecbf1604dd46b7d0f17362357bdc0e6f9da6d0f927dbde90799f9d272be3b5",
+        "nonce": "4bee9891b26c4bdab54033b1a51e5244",
+        "payload": {
+          "hint": "south",
+          "intent": "lie",
+          "move": "MOVE:N",
+          "position": [
+            0,
+            5
+          ],
+          "state": "grid=7x7;self=[0, 5];barriers=[]",
+          "step": 32
+        }
+      },
+      "step": 32,
+      "theirs": {
+        "capture_claim": [
+          1,
+          5
+        ],
+        "commit": "15e09bf117ceffe748627bf53ef94f5c728e7c40472d3aa3a3810d45eb520995",
+        "hint": "You can't hide forever.",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.3874,
+          "0,1": 0.4305,
+          "0,2": 0.4783,
+          "0,3": 0.5314,
+          "1,0": 0.383,
+          "1,3": 0.5905,
+          "1,5": 0.9,
+          "2,0": 0.352,
+          "2,1": 0.2824,
+          "2,2": 0.2542,
+          "2,3": 0.6561,
+          "2,4": 0.729,
+          "2,5": 0.81,
+          "3,0": 0.0424,
+          "3,2": 0.2288,
+          "3,3": 0.2059,
+          "3,4": 0.1853,
+          "3,5": 0.1668,
+          "3,6": 0.1501,
+          "4,0": 0.0471,
+          "4,1": 0.0523,
+          "4,2": 0.0581,
+          "4,3": 0.0646,
+          "4,6": 0.1351,
+          "5,3": 0.0718,
+          "5,6": 0.1216,
+          "6,3": 0.0798,
+          "6,4": 0.0886,
+          "6,5": 0.0985,
+          "6,6": 0.1094
+        },
+        "timestamp": "2026-08-25T17:12:48.905896+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "32f6f8f906e98cbf9b2c2b166266700e73f64813496247d0bff6fd95aa25b24e",
+        "nonce": "19e3e60369c3cf0fed2ae7af04872881",
+        "payload": {
+          "hint": "west",
+          "intent": "lie",
+          "move": "MOVE:E",
+          "position": [
+            0,
+            6
+          ],
+          "state": "grid=7x7;self=[0, 6];barriers=[]",
+          "step": 33
+        }
+      },
+      "step": 33,
+      "theirs": {
+        "capture_claim": [
+          0,
+          5
+        ],
+        "commit": "3d2e7bf5dc754b29bfc8468ad942177821a5f9e8fb31b146fb22fca9d0683416",
+        "hint": "I can practically smell your trail from here.",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.3487,
+          "0,1": 0.3874,
+          "0,2": 0.4305,
+          "0,3": 0.4783,
+          "0,5": 0.9,
+          "1,0": 0.3447,
+          "1,3": 0.5314,
+          "1,5": 0.81,
+          "2,0": 0.3168,
+          "2,1": 0.2542,
+          "2,2": 0.2288,
+          "2,3": 0.5905,
+          "2,4": 0.6561,
+          "2,5": 0.729,
+          "3,0": 0.0382,
+          "3,2": 0.2059,
+          "3,3": 0.1853,
+          "3,4": 0.1668,
+          "3,5": 0.1501,
+          "3,6": 0.1351,
+          "4,0": 0.0424,
+          "4,1": 0.0471,
+          "4,2": 0.0523,
+          "4,3": 0.0581,
+          "4,6": 0.1216,
+          "5,3": 0.0646,
+          "5,6": 0.1094,
+          "6,3": 0.0718,
+          "6,4": 0.0798,
+          "6,5": 0.0886,
+          "6,6": 0.0985
+        },
+        "timestamp": "2026-08-25T17:12:50.722720+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "e86caf163319828f7efd9105a88f06f60bd5ff8bc187bd01c98dc5e0d4e2894a",
+        "nonce": "19f629d608ae1389494f72878e4e5922",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            0,
+            6
+          ],
+          "state": "grid=7x7;self=[0, 6];barriers=[]",
+          "step": 34
+        }
+      },
+      "step": 34,
+      "theirs": {
+        "capture_claim": [
+          0,
+          6
+        ],
+        "commit": "5383642c9dd7d66c79b57de6bdc4ed20573b7edb30d1e830c1abc9240556bf3f",
+        "hint": "Nowhere left to run in this city.",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.3138,
+          "0,1": 0.3487,
+          "0,2": 0.3874,
+          "0,3": 0.4305,
+          "0,5": 0.81,
+          "0,6": 0.9,
+          "1,0": 0.3102,
+          "1,3": 0.4783,
+          "1,5": 0.729,
+          "2,0": 0.2851,
+          "2,1": 0.2288,
+          "2,2": 0.2059,
+          "2,3": 0.5314,
+          "2,4": 0.5905,
+          "2,5": 0.6561,
+          "3,0": 0.0343,
+          "3,2": 0.1853,
+          "3,3": 0.1668,
+          "3,4": 0.1501,
+          "3,5": 0.1351,
+          "3,6": 0.1216,
+          "4,0": 0.0382,
+          "4,1": 0.0424,
+          "4,2": 0.0471,
+          "4,3": 0.0523,
+          "4,6": 0.1094,
+          "5,3": 0.0581,
+          "5,6": 0.0985,
+          "6,3": 0.0646,
+          "6,4": 0.0718,
+          "6,5": 0.0798,
+          "6,6": 0.0886
+        },
+        "timestamp": "2026-08-25T17:12:52.577648+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "00de2c2d336c804b043dddabbf4d7af2a241a568f94b55cbab50d327568c3d2d",
+        "nonce": "d7a3db008c0a5f677f65f378f029484e",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            0,
+            6
+          ],
+          "state": "grid=7x7;self=[0, 6];barriers=[]",
+          "step": 35
+        }
+      },
+      "step": 35,
+      "theirs": {
+        "capture_claim": [
+          0,
+          6
+        ],
+        "commit": "056d061b7db9bc1420a8d1d353ee2e66f7d8a19a643e079c046993f0bfd644ce",
+        "hint": "Every step you take leaves a trace.",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.2824,
+          "0,1": 0.3138,
+          "0,2": 0.3487,
+          "0,3": 0.3874,
+          "0,5": 0.729,
+          "0,6": 1.71,
+          "1,0": 0.2792,
+          "1,3": 0.4305,
+          "1,5": 0.6561,
+          "2,0": 0.2566,
+          "2,1": 0.2059,
+          "2,2": 0.1853,
+          "2,3": 0.4783,
+          "2,4": 0.5314,
+          "2,5": 0.5905,
+          "3,0": 0.0309,
+          "3,2": 0.1668,
+          "3,3": 0.1501,
+          "3,4": 0.1351,
+          "3,5": 0.1216,
+          "3,6": 0.1094,
+          "4,0": 0.0343,
+          "4,1": 0.0382,
+          "4,2": 0.0424,
+          "4,3": 0.0471,
+          "4,6": 0.0985,
+          "5,3": 0.0523,
+          "5,6": 0.0886,
+          "6,3": 0.0581,
+          "6,4": 0.0646,
+          "6,5": 0.0718,
+          "6,6": 0.0798
+        },
+        "timestamp": "2026-08-25T17:12:54.341175+00:00"
+      }
+    }
+  ],
+  "wire_shape": "reference-v3"
+}

@@ -1,0 +1,79 @@
+{
+  "artifact_version": 1,
+  "game_id": "aviayeli-vs-bb-ai-12",
+  "game_uid": "521727a1-e4d5-3c92-8f0a-82dc5a77e6fc",
+  "games": [
+    {
+      "captured": false,
+      "game_number": 1,
+      "our_role": "police",
+      "terminal_reason": "survival",
+      "turns": 35
+    },
+    {
+      "captured": true,
+      "game_number": 2,
+      "our_role": "thief",
+      "terminal_reason": "capture",
+      "turns": 35
+    }
+  ],
+  "github_commit": "1df58093e8fc4369ced0321d164388bbbe5d87e8",
+  "group_id": "aviayeli",
+  "mutual_agreement": {
+    "confirmed": true,
+    "consensus": {
+      "aggregate": {
+        "series_tie": false,
+        "sub_games_won": {
+          "aviayeli": 0,
+          "bb-ai-12": 2
+        },
+        "ties": 0,
+        "total_score": {
+          "aviayeli": 10,
+          "bb-ai-12": 30
+        },
+        "winner_group": "bb-ai-12"
+      },
+      "game_id": "aviayeli-vs-bb-ai-12",
+      "sub_games": [
+        {
+          "result": "survival",
+          "roles": {
+            "cop": "aviayeli",
+            "thief": "bb-ai-12"
+          },
+          "score": {
+            "aviayeli": 5,
+            "bb-ai-12": 10
+          },
+          "sub_game_number": 1,
+          "winner_group": "bb-ai-12"
+        },
+        {
+          "result": "capture",
+          "roles": {
+            "cop": "bb-ai-12",
+            "thief": "aviayeli"
+          },
+          "score": {
+            "aviayeli": 5,
+            "bb-ai-12": 20
+          },
+          "sub_game_number": 2,
+          "winner_group": "bb-ai-12"
+        }
+      ]
+    },
+    "handshake_counter_signed": true,
+    "method": "opponent re-hash of each side's sealed chain at submit_audit",
+    "sha256": "954ceb8dfa732b49df6fccd6e203c7e904bc76c6afd1487e4784df73104582c9",
+    "sub_games_audited": 2
+  },
+  "repos": {
+    "cop": "https://github.com/aviayeli/zero-trust-cop",
+    "thief": "https://github.com/aviayeli/zero-trust-thief"
+  },
+  "wire_shape": "reference-v3"
+}

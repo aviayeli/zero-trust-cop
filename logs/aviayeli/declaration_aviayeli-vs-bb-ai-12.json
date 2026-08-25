@@ -1,0 +1,27 @@
+{
+  "game_uid": "521727a1-e4d5-3c92-8f0a-82dc5a77e6fc",
+  "github_commit": "1df58093e8fc4369ced0321d164388bbbe5d87e8",
+  "github_commit_hash": "1df58093e8fc4369ced0321d164388bbbe5d87e8",
+  "group_name": "aviayeli",
+  "hardware": {
+    "cpu": "11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz",
+    "gpu_vram": "none",
+    "os": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "ram": "7 GB",
+    "type": "system_spec"
+  },
+  "mcp_servers": {
+    "cop": "http://127.0.0.1:8802/mcp",
+    "thief": "http://127.0.0.1:8801/mcp"
+  },
+  "members": [
+    "Avi Ayeli"
+  ],
+  "num_games": 6,
+  "repos": {
+    "cop": "https://github.com/aviayeli/zero-trust-cop",
+    "thief": "https://github.com/aviayeli/zero-trust-thief"
+  },
+  "timezone": "IDT",
+  "token_budget": 200000
+}
