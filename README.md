@@ -37,8 +37,8 @@ leaves behind are re-verifiable offline by a standalone replay verifier that
 certifies (`Verified OK`) or rejects (`TAMPERED!`) the record — cryptographically,
 not by trust.
 
-The system is evidenced rather than asserted: **1397 tests**, a mechanically
-enforced 150-line ceiling on every one of the **305** tracked Python files, and
+The system is evidenced rather than asserted: **1419 tests**, a mechanically
+enforced 150-line ceiling on every one of the **311** tracked Python files, and
 figures in this document that are re-derived from the tree by the suite itself
 (`tests/unit/test_readme_consistency.py`), so a stale number fails the build.
 
@@ -573,8 +573,8 @@ never produces an artifact.)
 
 | Discipline | State |
 |---|---|
-| Test suite | **1397 tests**, all passing (unit → live two-process HTTP) |
-| Line limit | every one of the **305** tracked Python files ≤ **150 lines** (max: 150) |
+| Test suite | **1419 tests**, all passing (unit → live two-process HTTP) |
+| Line limit | every one of the **311** tracked Python files ≤ **150 lines** (max: 150) |
 | TDD | strict red→green: every implementation change preceded by a confirmed failing test |
 | Hyperparameters | zero tunables inlined in Python — all in `config/game.json` / per-peer `game.toml` |
 | Lifecycle | PRD → PLAN → TODO under `docs/`, per phase |
@@ -632,7 +632,7 @@ configured for pytest; standalone scripts take `PYTHONPATH=src`.
 
 ```bash
 .venv/bin/python -m pytest -q
-# expected: 1397 passed
+# expected: 1419 passed
 # actually prints "919 passed, 1 skipped": one test in
 # tests/test_release_artifact.py asserts the submission TAG points at HEAD,
 # which is only meaningful during a release. Between a commit and a push the
@@ -743,6 +743,92 @@ reporter is reached: the four artifacts above, including
 and do not depend on email succeeding. The draft additionally embeds the
 decoded result, so the fallback is complete evidence rather than a stub. §8
 covers the mechanics.
+
+### 4b — Play a LIVE league series against another group
+
+Step 4 plays our two peers against each other. A *graded* league series is
+played against another group's peers over public tunnels, on the
+**reference-v3** wire, as **one process** — both our peers are served for the
+whole series because the sides swap every sub-game.
+
+**① Expose both peers.** Two ngrok agents, one tunnel each, under two
+separate accounts — the free tier allows a single simultaneous agent session
+per account, so one agent serving both tunnels needs a paid plan. Each agent
+pins its own `web_addr` (cop 4040, thief 4041); sharing one would make the
+second agent exit `address already in use` with its tunnel never coming up.
+
+The authtokens live in `scripts/ngrok_cop.yml` and `scripts/ngrok_thief.yml`,
+which are **gitignored** — they are live bearer credentials. Each file repeats
+its peer's port because ngrok cannot read TOML, so the script checks the two
+against `config/<role>/game.toml` and refuses to start on drift: tunnelling to
+a dead port is indistinguishable, from the opponent's side, from us being down.
+
+```bash
+scripts/league_up.sh
+# [ok] cop port 8802 agrees with scripts/ngrok_cop.yml
+# [ok] thief port 8801 agrees with scripts/ngrok_thief.yml
+# [..] cop agent pid 1234, api 127.0.0.1:4040
+# [..] thief agent pid 1235, api 127.0.0.1:4041
+# [ok] cop   https://<ours-cop>.ngrok-free.dev/mcp
+# [ok] thief https://<ours-thief>.ngrok-free.dev/mcp
+scripts/league_up.sh --stop   # stops both agents
+```
+
+Send the opponent **both** URLs. They dial the side they are playing
+*against*: as their thief they call our **cop** URL, as their cop our
+**thief** URL. Then advertise ours in the declaration they read:
+
+```bash
+PYTHONPATH=src .venv/bin/python -m scripts.setup_league_match \
+    --role police --public-url https://<ours-cop>.ngrok-free.dev
+PYTHONPATH=src .venv/bin/python -m scripts.setup_league_match \
+    --role thief  --public-url https://<ours-thief>.ngrok-free.dev
+```
+
+**② Check their endpoint before committing a series to it.** `netcheck` is
+read-only — it opens no sub-game (`sub_game_number = 0`, outside the
+1-indexed schedule either side plays), pushes no turn and writes no artifact:
+
+```bash
+PYTHONPATH=src .venv/bin/python -m scripts.netcheck \
+    --opponent-url https://<theirs>.ngrok-free.dev/mcp
+# netcheck https://<theirs>.ngrok-free.dev/mcp
+#   [ok  ] reachable: MCP session initialised
+#   [ok  ] surface: all 4 reference-v3 tools served
+#   [ok  ] handshake: accepted
+#   [ok  ] terms: all 14 agreed terms value-equal
+# READY                (exit 0; NOT READY exits 1, so this can gate a launch)
+```
+
+Each check runs only if the one before it passed. `terms` names the **first**
+differing term and both values — `num_games` is the one this league has
+actually hit — and a bare `{"accepted": true}` carrying no terms is reported
+as `UNVERIFIED`, never as a pass.
+
+**③ Play the series.** One terminal, one process, six sub-games with the
+sides alternating from `--first-role`:
+
+```bash
+PYTHONPATH=src .venv/bin/python -u -m scripts.run_reference_match \
+    --seed 20260825 --sub-games 6 --first-role police --wait-minutes 30 \
+    --opponent-id <their-group-id> \
+    --opponent-url https://<theirs>.ngrok-free.dev/mcp \
+    --email-mode send
+# sub_game=1 role=police steps=7 outcome=capture
+#   their_audit=accepted handshake=counter-signed
+# … declaration=/config=/log=/result= paths …
+# email_report=ok mode=send
+```
+
+An opponent running **two** processes replaces `--opponent-url` with
+`--opponent-cop-url` and `--opponent-thief-url` together; half a mapping
+would play half the series into an inbox nobody polls. Each sub-game's log is
+written the moment it closes, so a series that loses the opponent at sub-game
+4 still keeps the three that were played.
+
+`--email-mode send` overrides the shipped `auto` **for that run only**: on a
+graded series a dead OAuth token must print `email_report=FAILED` rather than
+write a draft nobody looks for (§8).
 
 ### 5 — Verify the match log cryptographically
 
@@ -919,6 +1005,17 @@ then fall back to on-disk evidence. The shipped recipient
 (`rmisegal+uoh26finalgame@gmail.com`) and mode are held in place by
 `tests/unit/test_shipped_email_config.py`, so neither can drift back before a
 graded run.
+
+**Every entry point reports, including the graded one.** `report_by_email`
+runs at the tail of `run_local_mcp_match`, `run_remote_mcp_match` and — since
+PRD_11 — `run_reference_match`, which is the one a league series actually
+uses. It runs only when artifacts were written (a `--no-artifacts` rehearsal
+has no result to report) and it **cannot fail the series it reports on**: six
+played sub-games and a dead OAuth token is a mail problem, so the tail prints
+`email_report=FAILED` and still returns the summaries beside four artifacts
+already on disk. `--email-mode {auto,draft,send}` overrides the configured
+mode for one run without editing config, which is how a graded series demands
+a real delivery while the shipped `auto` keeps CI unbreakable.
 
 **Mutual agreement is a precondition, not a label.** A result is reported only
 when `mutual_agreement.confirmed` is literally `true`, and that flag is

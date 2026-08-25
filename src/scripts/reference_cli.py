@@ -14,7 +14,8 @@ from __future__ import annotations
 import argparse
 
 from mcp_server.server import PEER_ROLES
-from scripts.match_report import group_id
+from reporting.email_sender import MODES
+from scripts.match_report import group_id, report_by_email
 from scripts.opponent_endpoints import resolve_endpoints
 from scripts.reference_writer import write_series_artifacts
 
@@ -54,6 +55,12 @@ def parse_args(argv=None):
     parser.add_argument("--logs-dir", default="logs",
                         help="where the four artifacts land, under "
                              "<logs-dir>/<group_id>/")
+    parser.add_argument("--email-mode", default=None, choices=MODES,
+                        help="override the peer's [email] mode for THIS run. "
+                             "Absent, the config decides -- which ships as "
+                             "'auto', drafting silently when the OAuth token "
+                             "has expired. A graded series should pass "
+                             "'send', which reports the failure instead")
     parser.add_argument("--no-artifacts", dest="write_artifacts",
                         action="store_false",
                         help="play without leaving the four files behind; a "
@@ -98,7 +105,24 @@ def main(argv=None):
         for kind, path in sorted(paths.items()):
             for one in (path if isinstance(path, list) else [path]):
                 print(f"{kind}={one}")
+        _report(paths["result"], args)
     return summaries
+
+
+def _report(result_path, args) -> None:
+    """Email the series -- and never let that failure discard the series.
+
+    Six played sub-games and a dead OAuth token is a MAIL problem: the four
+    artifacts are already on disk and re-sendable by hand. A traceback here
+    would throw away the summaries the caller returns and make a completed
+    graded run look like a crashed one.
+    """
+    try:
+        report_by_email(result_path, args.config_root, args.logs_dir,
+                        mode=args.email_mode)
+    except Exception as failure:  # noqa: BLE001 - reporting may not fail play
+        print(f"email_report=FAILED {type(failure).__name__}: {failure}",
+              flush=True)
 
 
 if __name__ == "__main__":

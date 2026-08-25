@@ -22,13 +22,21 @@ def group_id(config_root=None):
         return json.load(declared)["group_name"]
 
 
-def report_by_email(result_path, config_root, logs_dir):
-    """Post-game step: email the result, or leave a draft if it cannot send."""
+def report_by_email(result_path, config_root, logs_dir, mode=None):
+    """Post-game step: email the result, or leave a draft if it cannot send.
+
+    ``mode`` overrides the peer's configured ``[email] mode`` for ONE run.
+    Absent it the config still decides, so the shipped ``auto`` keeps
+    governing CI and local play -- where a missing credential must never
+    break the suite. A GRADED series passes ``send``, which reports a failure
+    rather than writing a draft nobody looks for.
+    """
     settings = load_email_settings(_REPORTING_ROLE, config_root)
+    chosen = mode or settings["mode"]
     handled = send_game_report(
         result_path,
         recipient=settings["recipient"],
-        config_mode=settings["mode"],
+        config_mode=chosen,
         draft_dir=logs_dir,
     )
-    print(f"email_report={'ok' if handled else 'FAILED'} mode={settings['mode']}")
+    print(f"email_report={'ok' if handled else 'FAILED'} mode={chosen}")
