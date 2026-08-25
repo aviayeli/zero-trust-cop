@@ -96,3 +96,85 @@ time pressure at the start of every match.
   outcomes and three non-zero exits.
 * The full suite is green and the README's self-checked figures move with
   the tree.
+
+---
+
+# PRD 11b — The unified single endpoint
+
+> **Scope note.** This is an architectural addition, not part of the phase
+> above, which is closed. It is appended here because the operator asked for it
+> here; a future reader should treat §11b as its own phase.
+
+## Problem
+
+We expose two tunnels — cop on 8802, thief on 8801 — and hand an opponent both
+URLs plus a rule for choosing between them: *dial the endpoint serving the role
+you are playing against*. That rule is stated in every message we send and it
+has still been the most reliable source of confusion in this league. Getting it
+backwards is not a crash: `opponent_endpoints` warns that pushing to the wrong
+one sends a whole sub-game to a peer playing the same side, "a pairing
+collision on their end, silence on ours, and thirty-five steps before either
+side finds out".
+
+It also costs us. Two tunnels means two ngrok agents, which on the free tier
+means two accounts and two authtokens, each with its own `web_addr`, its own
+pidfile, its own failure mode. bb-ai-12 serve both their roles from one URL and
+have had none of that friction.
+
+The league format already permits it. `opponent_endpoints.resolve_endpoints`
+accepts a single endpoint serving both roles as a first-class shape — we
+support it in the peers we *dial*, and not in the peer we *serve*.
+
+## What the code says (feasibility, checked)
+
+Three of the four reference-v3 tools carry a **required** `sender`, so an
+inbound message names its origin: `TURN_REQUIRED` and `AUDIT_REQUIRED` and
+`CONTROL_REQUIRED` all include it. `negotiate` does **not** —
+`NEGOTIATE_OPTIONAL = ("identity", "sub_game_number", "role")` — so the one
+message that opens a sub-game is the one that may arrive with no role at all.
+
+That rules out the obvious design. Routing by "the opposite of what they
+claim" fails on `negotiate`, and worse, it would destroy the only mispairing
+check we have: `pairing.pairing_refusal` refuses when `their_role == our_role`,
+and if our role is *derived* from theirs that comparison can never fire. The
+docstring is explicit that the handshake is "the ONLY place a mispairing can
+be caught", and it caught eight of ali-ahm1's calls.
+
+So the routing key must be **ours, not theirs**: the side we are playing this
+sub-game, which `claims_runner` already knows because it walks
+`role_schedule(sub_games, first_role)`.
+
+## Requirements
+
+* **FR1** — One process serves both our roles on one port at one `/mcp` route.
+* **FR2** — The unified surface dispatches on the role WE are playing, held
+  authoritatively by the server and set by the runner per sub-game. It must
+  never be inferred from the opponent's message.
+* **FR3** — `pairing_refusal` keeps a real `our_role` to compare against, so a
+  mispairing is still refused at the handshake.
+* **FR4** — A message whose `sender` equals our own active role is refused. On
+  a split-port setup that could not happen; on one endpoint it is the shape a
+  self-dial takes.
+* **FR5** — The two-port topology keeps working, unchanged and as the default.
+  This is opt-in until a live series has been played on it.
+* **FR6** — The unified port is configured, never inlined.
+* **FR7** — One ngrok config, one agent, one authtoken, one URL.
+* **FR8** — No file over 150 lines; a failing test before every line.
+
+## Out of scope
+
+* Unifying the **native** dialect (`submit_commitment`, `reveal_move`,
+  `get_observation`, `get_match_status`). Those are bound to a role's `gate`,
+  `match_state` and `GameEpisode`, and the local simulation that uses them runs
+  two processes on two ports by design. League play is reference-v3 only.
+* Retiring the split-port mode. Until a graded series has run on the unified
+  one, deleting the path that has actually worked would be trading evidence
+  for tidiness.
+* Changing the wire, the handshake, validation or any artifact schema.
+
+## Acceptance
+
+* A cop-addressed and a thief-addressed exchange both complete against one
+  port, with the artifacts indistinguishable from a split-port run.
+* A handshake declaring the same role we are playing is still refused.
+* `scripts/league_up.sh --unified` prints exactly one URL.

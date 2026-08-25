@@ -210,3 +210,73 @@ disproved both. Recorded because the reasoning error is the reusable lesson.
       server-side, and report inbox depth while `await_turn` is re-pushing, so
       "we are re-sending step 1 for the ninth time" is visible rather than
       silent. Needs its own PRD.
+
+# TODO 11b — The unified single endpoint
+
+Derived from `PLAN_11_League_Match_Ops.md` §11b.
+
+## 11b.1 Tests first (must fail before any implementation)
+
+- [ ] `tests/scripts/test_unified_endpoint.py` — the eight cases in PLAN §11b.5
+- [ ] Confirm they fail for the right reason (missing module), not a typo
+
+## 11b.2 The unified surface
+
+- [ ] `src/mcp_server/unified.py`, ≤150 lines
+- [ ] Composes `create_app(role)` for both roles; nothing in `server.py`,
+      `dialects.py`, `reference_surface.py` or `reference_tools.py` changes
+- [ ] Dispatch on OUR active role, never on the opponent's claim
+- [ ] `set_active(role)` is the only way it moves
+- [ ] A `sender` equal to our active role is refused at the tool (FR4)
+- [ ] `pairing_refusal` still sees a real `our_role` (FR3)
+
+## 11b.3 Configuration and exposure
+
+- [ ] `unified_port` in `[network]` of both `config/<role>/game.toml` (FR6)
+- [ ] `scripts/ngrok_unified.yml` — one tunnel, one authtoken, one URL
+- [ ] `scripts/league_up.sh --unified` — one agent, one URL printed
+
+## 11b.4 Gates
+
+- [ ] Full suite green; README/PLAN figures re-derived
+- [ ] Split-port mode still the default and still passing every existing test
+
+## 11b.5 Deliberately NOT done
+
+- [ ] ~~Unify the native dialect.~~ `submit_commitment` / `reveal_move` /
+      `get_observation` / `get_match_status` bind to a role's `gate`,
+      `match_state` and `GameEpisode`. The local simulation that uses them
+      runs two processes by design, and league play is reference-v3 only.
+- [ ] ~~Retire the split-port topology.~~ It is the path that has actually
+      carried a live exchange. Deleting it before the unified one has played
+      a graded series trades evidence for tidiness.
+- [ ] ~~Route on the opponent's declared role.~~ `negotiate` may legally omit
+      it, and deriving our side from theirs makes `pairing_refusal`
+      tautological — destroying the only mispairing check in the system.
+
+## 11b.6 Done, and what is NOT
+
+- [x] `src/mcp_server/unified.py`, 143 lines. Composes both `create_app`
+      peers behind one FastMCP; dispatches on OUR active role.
+- [x] `unified_port = 8800` in `[network]` of both role configs, loaded via
+      `transport.NetworkSettings.unified_port` (defaulted to 0, so a workspace
+      written before this phase still loads).
+- [x] `src/scripts/unified_serve.py` — binds and answers, for handshake
+      verification. It does NOT play.
+- [x] `scripts/ngrok_unified.yml` (gitignored, holds a live token) and
+      `scripts/league_up.sh --unified`, with the same port-drift guard.
+- [x] Verified live over real HTTP on :8800 — `netcheck` READY on all four
+      checks as their thief, and the mispairing REFUSED when probed as police.
+- [x] Full suite green with the ports free: 1439 passed, 1 skipped.
+
+- [ ] **NOT DONE: the runner does not use it yet.** `reference_run` still
+      builds two `create_app` peers on two ports, and `claims_runner` never
+      calls `set_active`. So a live series still runs split-port. Wiring it in
+      means changing the path that is currently mid-match against bb-ai-12,
+      and PRD_11b FR5 says unified stays opt-in until a graded series has been
+      played on it. That wiring is the next step and is deliberately not taken
+      here.
+- [ ] **Known cosmetic defect:** `pairing.pairing_refusal`'s message ends
+      "our two peers listen on different ports", which is false in unified
+      mode. It is shared by both topologies, so it needs a wording that is
+      true of each rather than a quick edit.

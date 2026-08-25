@@ -14,39 +14,52 @@
 # configs because ngrok cannot read TOML, so this script CHECKS the two agree
 # and refuses to start on drift rather than tunnelling to a dead port.
 #
-#   scripts/league_up.sh          # start both agents, print both URLs
-#   scripts/league_up.sh --stop   # stop both agents this script started
+#   scripts/league_up.sh            # split ports: two agents, two URLs
+#   scripts/league_up.sh --unified  # PRD_11b: ONE agent, ONE URL
+#   scripts/league_up.sh --stop     # stop whatever this script started
+#
+# Unified mode is opt-in. The split-port topology is the one that has actually
+# carried a live exchange, and it stays the default until the unified one has
+# played a graded series.
 set -euo pipefail
 
 ROOT=${ZTC_CONFIG_ROOT:-config}
 PY=${PYTHON:-.venv/bin/python}
 COP_CONFIG=${COP_CONFIG:-scripts/ngrok_cop.yml}
 THIEF_CONFIG=${THIEF_CONFIG:-scripts/ngrok_thief.yml}
+UNIFIED_CONFIG=${UNIFIED_CONFIG:-scripts/ngrok_unified.yml}
 WAIT_SECONDS=${NGROK_WAIT_SECONDS:-30}
 
-# role : config file : engine-side name : pidfile : logfile
+UNIFIED=0
+[[ ${1:-} == "--unified" ]] && { UNIFIED=1; shift; }
+
+# The port key each mode binds, and the tunnels it expects.
+PORT_KEY=my_port
 AGENTS=("police:$COP_CONFIG:cop" "thief:$THIEF_CONFIG:thief")
+NAMES=(cop thief)
+if [[ $UNIFIED == 1 ]]; then
+  PORT_KEY=unified_port
+  AGENTS=("police:$UNIFIED_CONFIG:unified")
+  NAMES=(unified)
+fi
 
 if [[ ${1:-} == "--stop" ]]; then
-  for spec in "${AGENTS[@]}"; do
-    name=${spec##*:}
+  for name in cop thief unified; do
     pidfile=".ngrok-$name.pid"
     if [[ -f $pidfile ]]; then
       kill "$(cat "$pidfile")" 2>/dev/null || true
       rm -f "$pidfile"
       echo "[ok] $name agent stopped"
-    else
-      echo "[--] no $name agent recorded in $pidfile"
     fi
   done
   exit 0
 fi
 
-toml_port() {  # role -> that peer's configured listening port
-  "$PY" - "$ROOT/$1/game.toml" <<'PY'
+toml_port() {  # role, key -> the port this mode binds for that peer
+  "$PY" - "$ROOT/$1/game.toml" "$2" <<'PY'
 import sys, tomllib
 with open(sys.argv[1], "rb") as handle:
-    print(tomllib.load(handle)["network"]["my_port"])
+    print(tomllib.load(handle)["network"][sys.argv[2]])
 PY
 }
 
@@ -66,11 +79,11 @@ PY
 for spec in "${AGENTS[@]}"; do
   IFS=: read -r role config name <<< "$spec"
   [[ -f $config ]] || { echo "[!!] missing $config"; exit 1; }
-  configured=$(toml_port "$role")
+  configured=$(toml_port "$role" "$PORT_KEY")
   tunnelled=$(yaml_field "$config" "$name" addr)
   if [[ $configured != "$tunnelled" ]]; then
     echo "[!!] $name: $config tunnels port $tunnelled, but"
-    echo "     $ROOT/$role/game.toml says my_port = $configured."
+    echo "     $ROOT/$role/game.toml says $PORT_KEY = $configured."
     echo "     Fix one of them; tunnelling to a dead port looks exactly like"
     echo "     the opponent being unreachable, from their side."
     exit 1
@@ -102,7 +115,7 @@ done
 # and one that never comes up must say so rather than leaving a URL-shaped
 # blank in the operator's hand.
 declare -A PUBLIC
-for name in cop thief; do
+for name in "${NAMES[@]}"; do
   for _ in $(seq "$WAIT_SECONDS"); do
     url=$("$PY" - "${API[$name]}" "$name" <<'PY' || true
 import json, sys, urllib.request
@@ -130,12 +143,24 @@ PY
 done
 
 echo
-echo "[ok] cop   ${PUBLIC[cop]}/mcp"
-echo "[ok] thief ${PUBLIC[thief]}/mcp"
-echo
-echo "SEND BOTH TO THE OPPONENT. They dial the side they are playing AGAINST:"
-echo "as their thief they call our cop URL, as their cop our thief URL."
-echo
-echo "Advertise them in the declaration they read:"
-echo "  PYTHONPATH=src $PY -m scripts.setup_league_match --role police --public-url ${PUBLIC[cop]}"
-echo "  PYTHONPATH=src $PY -m scripts.setup_league_match --role thief  --public-url ${PUBLIC[thief]}"
+if [[ $UNIFIED == 1 ]]; then
+  echo "[ok] unified ${PUBLIC[unified]}/mcp"
+  echo
+  echo "SEND THAT ONE URL. Both our roles answer it, so there is no rule for"
+  echo "the opponent to get backwards. Serve it with:"
+  echo "  PYTHONPATH=src $PY -m scripts.unified_serve --first-role police"
+  echo
+  echo "Advertise it for BOTH roles in the declaration they read:"
+  echo "  PYTHONPATH=src $PY -m scripts.setup_league_match --role police --public-url ${PUBLIC[unified]}"
+  echo "  PYTHONPATH=src $PY -m scripts.setup_league_match --role thief  --public-url ${PUBLIC[unified]}"
+else
+  echo "[ok] cop   ${PUBLIC[cop]}/mcp"
+  echo "[ok] thief ${PUBLIC[thief]}/mcp"
+  echo
+  echo "SEND BOTH TO THE OPPONENT. They dial the side they are playing AGAINST:"
+  echo "as their thief they call our cop URL, as their cop our thief URL."
+  echo
+  echo "Advertise them in the declaration they read:"
+  echo "  PYTHONPATH=src $PY -m scripts.setup_league_match --role police --public-url ${PUBLIC[cop]}"
+  echo "  PYTHONPATH=src $PY -m scripts.setup_league_match --role thief  --public-url ${PUBLIC[thief]}"
+fi

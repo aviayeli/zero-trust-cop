@@ -148,3 +148,107 @@ shell → README figures → full suite green.
 The README's self-checked figures (`tests/unit/test_readme_consistency.py`)
 move last, because the test counts what exists once everything else does, and
 the tracked-file count only agrees after the new files are staged.
+
+---
+
+# PLAN 11b — Migrating from split ports to one endpoint
+
+Derived from `PRD_11_League_Match_Ops.md` §11b. Approved shape before any code.
+
+## 1. The routing key is ours, not theirs
+
+This is the whole design, and it is settled by two facts in the code rather
+than by preference:
+
+```
+receive_turn    sender REQUIRED  (wire_v3.TURN_REQUIRED)
+submit_audit    sender REQUIRED  (wire_v3_session.AUDIT_REQUIRED)
+receive_control sender REQUIRED  (wire_v3_session.CONTROL_REQUIRED)
+negotiate       role   OPTIONAL  (wire_v3_session.NEGOTIATE_OPTIONAL)  <-- !
+```
+
+`negotiate` is the message that OPENS a sub-game and the one that may carry no
+role. So dispatch cannot key on what the opponent claims.
+
+And it must not, even where it could. `pairing.pairing_refusal` refuses when
+`their_role == our_role`; derive ours from theirs and that comparison is
+tautological forever. That check is described in its own docstring as the only
+place a mispairing can be caught, and a mispairing is otherwise played through
+coherently by both engines for thirty-five steps.
+
+So the unified server holds an **active role** of its own. `claims_runner`
+already walks `role_schedule(sub_games, first_role)` and knows, per sub-game,
+which side we are playing. It sets it; the server obeys it; the opponent's
+claim is only ever *checked* against it.
+
+## 2. Composition, not rewrite
+
+`create_app(role)` binds a role into nine things — `own_role`, `gate`,
+`policy`, `episode`, `match_state`, the public keys, the identity block, the
+inbox, and `our_role` inside `negotiate`. Rewriting that to be role-agnostic
+would touch every one of them and put the native dialect at risk for no
+league benefit.
+
+Instead the unified app **composes the two peers it already builds**:
+
+```
+create_unified_app(config_root)
+├── peers = {role: create_app(role) for role in PEER_ROLES}   # unchanged
+│      each keeps its own inbox, audits, identity, terms, our_role
+├── mcp = FastMCP(port=unified_port)                          # ONE listener
+└── four dispatching tools -> peers[active].<tool>
+```
+
+`create_app` builds a `FastMCP` but does not bind until it is run, so the two
+inner apps cost nothing but their own state. Nothing in `server.py`,
+`dialects.py`, `reference_surface.py` or `reference_tools.py` changes at all —
+which is what keeps the split-port path (FR5) provably intact: it is the same
+code, reached the same way.
+
+The runner needs no change either. It is handed `peers`, the same
+`{role: app}` mapping it takes today, and polls `app.inbox` as it always has.
+
+## 3. The self-dial refusal (FR4)
+
+On two ports a message from our own side could not arrive: our cop's port was
+not our thief's. On one port it can, and it is exactly the shape a self-dial
+takes — `--opponent-url` pointed at our own tunnel. `await_turn` already
+raises on our own turn appearing in our own inbox; the unified surface refuses
+it one layer earlier, at the tool, so it never reaches the inbox at all.
+
+## 4. Modules
+
+| module | holds | budget |
+| --- | --- | --- |
+| `src/mcp_server/unified.py` | `create_unified_app`, the four dispatchers, the active-role holder | ≤150 |
+| `config/<role>/game.toml` | `unified_port` in `[network]` (FR6) | +1 line each |
+| `scripts/ngrok_unified.yml` | one tunnel, one authtoken | new |
+| `scripts/league_up.sh` | `--unified` mode | +~25 |
+
+No change to `server.py`, `dialects.py`, `reference_surface.py`,
+`reference_tools.py`, `claims_runner.py` or `claims_match_loop.py`.
+
+## 5. Test plan (written first)
+
+`tests/scripts/test_unified_endpoint.py`:
+
+1. one app serves all four reference-v3 tools on one port
+2. a turn arrives while we play police -> lands in the POLICE inbox
+3. the sides swap -> the same tool now lands it in the THIEF inbox
+4. a turn whose `sender` is our own active role is REFUSED, not stored (FR4)
+5. `negotiate` with no `role` at all is still answered (it is optional)
+6. `negotiate` declaring the role WE are playing is still refused (FR3)
+7. the unified port comes from config, not from a literal (FR6)
+8. the two-port `create_app` path is untouched — same tools, same inboxes (FR5)
+
+(6) is the one to get right. It is the check the obvious design would have
+silently destroyed.
+
+## 6. Migration, and what stays
+
+Split ports remain the default and the shipped topology. Unified is opt-in
+until a graded series has been played on it, because the path that has
+actually carried a match is evidence and the new one is not yet.
+
+Order: docs -> tests -> `unified.py` -> config -> ngrok -> `league_up.sh` ->
+figures -> suite green.

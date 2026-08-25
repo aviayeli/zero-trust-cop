@@ -36,6 +36,10 @@ match_policy_mode = "manhattan_primary"
 [network]
 host = "0.0.0.0"
 my_port = 8801
+# The SINGLE port both our roles share when the peer is served unified
+# (PRD_11b). Only `scripts.unified_serve` binds it; the split-port topology
+# above is untouched and remains the default.
+unified_port = 8800
 # The police peer on this machine. League play repoints this at the
 # opponent's tunnel via --opponent-url; the shipped default is loopback,
 # so the pair runs out-of-the-box with no external dependency.

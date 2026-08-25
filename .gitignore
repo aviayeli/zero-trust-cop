@@ -40,5 +40,6 @@ config/*/signing_key*
 # one run's runtime state.
 scripts/ngrok_cop.yml
 scripts/ngrok_thief.yml
+scripts/ngrok_unified.yml
 .ngrok-*.pid
 .ngrok-*.log

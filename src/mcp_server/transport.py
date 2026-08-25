@@ -39,6 +39,10 @@ class NetworkSettings:
     # hyperparameter the [network] block exists to avoid.
     poll_interval_sec: float
     public_url: str = ""
+    # The one port both our roles share when served unified (PRD_11b).
+    # Defaulted, because a workspace written before that phase has no such
+    # key and must still load -- the split-port topology is the default.
+    unified_port: int = 0
 
     @property
     def dial_host(self) -> str:
@@ -58,4 +62,5 @@ def load_network_settings(
         opponent_url=network["opponent_url"],
         poll_interval_sec=network["poll_interval_sec"],
         public_url=parse_public_url(network.get("public_url", "")),
+        unified_port=network.get("unified_port", 0),
     )
