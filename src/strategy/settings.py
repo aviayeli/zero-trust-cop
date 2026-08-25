@@ -30,6 +30,9 @@ class StrategySettings:
     match_exploration_rate: float
     policy_mode: str
     match_policy_mode: str
+    # Defaulted so a workspace or test double written before PRD_18 still
+    # constructs; both shipped configs set it explicitly.
+    max_consecutive_stay: int = 3
 
 
 def strategy_settings_path(role: str, config_root: str | None = None) -> str:
@@ -61,4 +64,8 @@ def load_strategy_settings(
         match_exploration_rate=strategy["match_exploration_rate"],
         policy_mode=strategy["policy_mode"],
         match_policy_mode=strategy["match_policy_mode"],
+        # Optional so a workspace written before PRD_18 still loads. The
+        # default lives on the dataclass alone, never duplicated here.
+        **({"max_consecutive_stay": strategy["max_consecutive_stay"]}
+           if "max_consecutive_stay" in strategy else {}),
     )

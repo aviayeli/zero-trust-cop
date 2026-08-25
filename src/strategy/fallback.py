@@ -49,7 +49,8 @@ def _resulting_distance(relative: tuple[int, int], delta: tuple[int, int]) -> in
     return abs(relative[0] - delta[0]) + abs(relative[1] - delta[1])
 
 
-def _optimal_steps(state: tuple, move_set: list[str], role: str) -> list[str]:
+def _optimal_steps(state: tuple, move_set: list[str], role: str,
+                   forbid=()) -> list[str]:
     """Every legal move that ties for the best resulting distance, in move-set order.
 
     Raises:
@@ -62,6 +63,10 @@ def _optimal_steps(state: tuple, move_set: list[str], role: str) -> list[str]:
         return []
     steps = []
     for action in move_set:
+        # Excluded BEFORE the distance rule runs, never after: post-filtering
+        # a chosen move would substitute one the rule never sanctioned.
+        if action in forbid:
+            continue
         delta = action_delta(parse_action(action))
         if not _is_blocked(delta, mask):
             steps.append((action, _resulting_distance(relative, delta)))
@@ -84,7 +89,7 @@ def greedy_distance_action(state: tuple, move_set: list[str], role: str) -> str 
 
 
 def manhattan_primary_action(
-    state: tuple, move_set: list[str], role: str, q_value
+    state: tuple, move_set: list[str], role: str, q_value, forbid=()
 ) -> str | None:
     """Distance decides; the learned table chooses among equally-good moves.
 
@@ -93,7 +98,7 @@ def manhattan_primary_action(
     escape, however large -- and the table ranks what is left. ``max`` returns
     the first maximum, so a flat tie still resolves in ``move_set`` order.
     """
-    optimal = _optimal_steps(state, move_set, role)
+    optimal = _optimal_steps(state, move_set, role, forbid)
     if not optimal:
         return None
     return max(optimal, key=lambda action: q_value(state, action))
@@ -112,7 +117,7 @@ def tiebreak_action(state: tuple, move_set: list[str], role, q_value) -> str | N
     return greedy_distance_action(state, move_set, role)
 
 
-def policy_action(values, state: tuple) -> str | None:
+def policy_action(values, state: tuple, forbid=()) -> str | None:
     """Resolve one decision for a table's configured ``policy_mode``.
 
     Returns None to defer to ``best_action``'s plain greedy read -- which is
@@ -130,7 +135,10 @@ def policy_action(values, state: tuple) -> str | None:
     move_set = values.config.move_set
     mode = values.settings.policy_mode
     if mode == MANHATTAN_PRIMARY:
-        return manhattan_primary_action(state, move_set, values.role, values.q_value)
+        return manhattan_primary_action(state, move_set, values.role,
+                                        values.q_value, forbid)
     if mode != QTABLE_PRIMARY:
         raise ValueError(f"unknown policy_mode: {mode!r}")
-    return tiebreak_action(state, move_set, values.role, values.q_value)
+    allowed = [action for action in move_set if action not in forbid]
+    return tiebreak_action(state, allowed or move_set, values.role,
+                           values.q_value)

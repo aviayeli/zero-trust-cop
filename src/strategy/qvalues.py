@@ -13,10 +13,9 @@ from pathlib import Path
 
 from engine.config import GameConfig
 from strategy.fallback import BARRIER_BIT_DIRECTIONS, policy_action
+from strategy.qtable_io import STATE_LAYOUT_VERSION, load_table, save_table
 from strategy.settings import StrategySettings
 
-
-STATE_LAYOUT_VERSION = 1
 
 
 class QValues:
@@ -95,14 +94,18 @@ class QValues:
         except KeyError as error:
             raise ValueError(f"unknown role or outcome: {role!r}, {outcome!r}") from error
 
-    def best_action(self, state: tuple) -> str:
-        """Return the policy's move; the plain greedy read is only its fallback."""
+    def best_action(self, state: tuple, forbid=()) -> str:
+        """Return the policy's move; the plain greedy read is only its fallback.
+
+        ``forbid`` drops refuted moves (PRD_18) BEFORE either mode ranks
+        anything: filtering afterwards substitutes an unsanctioned move.
+        """
         if not self.config.move_set:
             raise ValueError("move_set must contain at least one action")
-        chosen = policy_action(self, state)
+        chosen = policy_action(self, state, forbid)
         if chosen is not None:
             return chosen
-        return max(self.config.move_set, key=lambda action: self.q_value(state, action))
+        return max(self._allowed(forbid), key=lambda a: self.q_value(state, a))
 
     def decay_epsilon(self) -> None:
         """Apply one decay step, clamped at epsilon_floor."""
@@ -114,33 +117,21 @@ class QValues:
         """Read the current mutable epsilon value."""
         return self._epsilon
 
-    def select_action(self, state: tuple, rng) -> str:
-        """Choose epsilon-greedily using the caller-provided random generator."""
+    def select_action(self, state: tuple, rng, forbid=()) -> str:
+        """Choose epsilon-greedily using the caller-provided generator."""
         if rng.random() < self._epsilon:
-            return rng.choice(self.config.move_set)
-        return self.best_action(state)
+            return rng.choice(self._allowed(forbid))
+        return self.best_action(state, forbid)
+
+    def _allowed(self, forbid) -> list:
+        """The move set minus refused moves, never empty."""
+        return [a for a in self.config.move_set if a not in forbid] \
+            or list(self.config.move_set)
 
     def save(self, path: str | Path | None = None) -> None:
-        """Write the table and state-layout version as reversible JSON records."""
-        destination = Path(self.settings.qtable_path if path is None else path)
-        destination.parent.mkdir(parents=True, exist_ok=True)
-        entries = []
-        for (state, action), value in self.q_table.items():
-            relative, mask = state
-            encoded_relative = None if relative is None else list(relative)
-            entries.append([encoded_relative, mask, action, value])
-        destination.write_text(
-            json.dumps({"state_layout_version": STATE_LAYOUT_VERSION, "q_values": entries})
-        )
+        """Persist the table; see ``strategy.qtable_io``."""
+        save_table(self.q_table, self.settings, path)
 
     def load(self, path: str | Path | None = None) -> None:
-        """Replace this table from JSON after verifying its state-layout version."""
-        source = Path(self.settings.qtable_path if path is None else path)
-        payload = json.loads(source.read_text())
-        if payload["state_layout_version"] != STATE_LAYOUT_VERSION:
-            raise ValueError("Q-table state layout version does not match")
-        loaded: dict[tuple[tuple[tuple[int, int] | None, int], str], float] = {}
-        for relative, mask, action, value in payload["q_values"]:
-            state = (None if relative is None else tuple(relative), mask)
-            loaded[(state, action)] = value
-        self.q_table = loaded
+        """Replace the table from disk; see ``strategy.qtable_io``."""
+        self.q_table = load_table(self.settings, path)

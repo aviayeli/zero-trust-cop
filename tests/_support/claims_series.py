@@ -28,9 +28,16 @@ from scripts.claims_runner import play_series
 class StubPolicy:
     """The policy surface the runner actually uses, and nothing else."""
 
-    def __init__(self):
+    def __init__(self, role="cop", max_consecutive_stay=3):
         self.deposits = []
         self.pheromones = SimpleNamespace(advance=self._advance, strongest=lambda: None)
+        # Added for PRD_18: the runner builds a `Thaw` per sub-game and needs
+        # the ENGINE role ("cop"/"thief") and the configured STAY bound. The
+        # narrowness above is deliberate, so this widening is deliberate too:
+        # both members exist on the real `AgentPolicy`.
+        self.role = role
+        self.settings = SimpleNamespace(
+            max_consecutive_stay=max_consecutive_stay, hint_max_words=15)
 
     def _advance(self, deposits=()):
         self.deposits.extend(deposits)
@@ -38,8 +45,10 @@ class StubPolicy:
     def state_key(self, own, opponent, board):
         return (opponent, own)
 
-    def decide(self, state, rng):
-        return "STAY", "staying put"
+    def decide(self, state, rng, forbid=()):
+        # Honour the thaw the way the real policy does, so a test that forbids
+        # STAY sees a different move rather than a silently ignored refusal.
+        return ("N" if "STAY" in forbid else "STAY"), "staying put"
 
     def intent_for_move(self, token):
         return "stay"

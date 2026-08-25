@@ -22,6 +22,10 @@ epsilon_floor = 0.01
 num_games = 2000
 hint_max_words = 15
 match_exploration_rate = 0.0
+# Upper bound on a run of STAY, per sub-game (PRD_18). A floor under any
+# belief failure: three graded cop sub-games froze for 16 turns each on a
+# target the opponent's own transmitted grid had parked at a corner.
+max_consecutive_stay = 3
 # Distance decides, the trained table breaks ties among equally-evasive
 # moves — the same priority the cop ships (PLAN.md §10.10). The evader
 # kept qtable_primary until the audit measured it: 9.5% survival against
