@@ -1,0 +1,74 @@
+{
+  "A_random": {
+    "thawed": {
+      "games": 125,
+      "capture_rate": 100.0,
+      "mean_steps_to_capture": 10.5,
+      "stay_moves": 0,
+      "longest_stay_run": 0,
+      "thaw_fired": 171
+    },
+    "unthawed": {
+      "games": 125,
+      "capture_rate": 99.2,
+      "mean_steps_to_capture": 8.9,
+      "stay_moves": 166,
+      "longest_stay_run": 4,
+      "thaw_fired": 0
+    }
+  },
+  "B_greedy": {
+    "thawed": {
+      "games": 125,
+      "capture_rate": 0.0,
+      "mean_steps_to_capture": null,
+      "stay_moves": 0,
+      "longest_stay_run": 0,
+      "thaw_fired": 500
+    },
+    "unthawed": {
+      "games": 125,
+      "capture_rate": 0.0,
+      "mean_steps_to_capture": null,
+      "stay_moves": 1000,
+      "longest_stay_run": 6,
+      "thaw_fired": 0
+    }
+  },
+  "C_bluffer": {
+    "thawed": {
+      "games": 125,
+      "capture_rate": 0.0,
+      "mean_steps_to_capture": null,
+      "stay_moves": 0,
+      "longest_stay_run": 0,
+      "thaw_fired": 1500
+    },
+    "unthawed": {
+      "games": 125,
+      "capture_rate": 0.0,
+      "mean_steps_to_capture": null,
+      "stay_moves": 2875,
+      "longest_stay_run": 23,
+      "thaw_fired": 0
+    }
+  },
+  "D_corner": {
+    "thawed": {
+      "games": 125,
+      "capture_rate": 100.0,
+      "mean_steps_to_capture": 12.0,
+      "stay_moves": 0,
+      "longest_stay_run": 0,
+      "thaw_fired": 0
+    },
+    "unthawed": {
+      "games": 125,
+      "capture_rate": 100.0,
+      "mean_steps_to_capture": 12.0,
+      "stay_moves": 0,
+      "longest_stay_run": 0,
+      "thaw_fired": 0
+    }
+  }
+}
