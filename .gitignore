@@ -18,6 +18,7 @@ venv/
 
 # Google OAuth artifacts — bearer credentials, never committed
 token.json
+token.json.*
 credentials.json
 config/*/token.json
 config/*/credentials.json
@@ -32,3 +33,12 @@ config/*/signing_key*
 
 # Claude Code local config and throwaway Builder worktrees
 .claude/
+
+# ngrok league exposure. The two agent configs hold LIVE bearer authtokens —
+# one per account, since the free tier allows a single agent session each —
+# so they are kept on disk and out of the history. The pidfiles and logs are
+# one run's runtime state.
+scripts/ngrok_cop.yml
+scripts/ngrok_thief.yml
+.ngrok-*.pid
+.ngrok-*.log
