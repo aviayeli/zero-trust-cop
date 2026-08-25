@@ -92,3 +92,36 @@ submit_audit REFUSED step=None sender='thief': result_claim: required object
 
 Nothing here needed a new experiment, a new probe or another round of
 correspondence. Two lines of diagnostic output, once.
+
+## 12.8 The fault was OURS, and bb-ai-12 found it (2026-08-25)
+
+I read `inbox: 1 msg, steps=[2]` and concluded their first turn was numbered 2.
+It was not. They came back with message-level logging showing our server had
+answered `{"status":"accepted","step":1}` to their step 1 -- and both records
+were true at once.
+
+- [x] **`claims_runner` cleared the inbox AFTER the handshake.**
+
+          handshake = await negotiate(...)   # a network round-trip
+          app.inbox.clear()                  # unconditional
+
+      Our server is bound and answering throughout. A peer that negotiates and
+      pushes immediately lands its step 1 DURING that round-trip, and the clear
+      destroys it. We then wait for a step 1 we had already accepted and
+      deleted; they wait for the step 2 we will not send until we see it.
+      Neither side errors and both re-push forever.
+- [x] Fixed by clearing FIRST, before anything that awaits. The clear itself is
+      right -- a turn from the previous sub-game must not satisfy this one's
+      step 1, and `test_the_previous_sub_games_residue_is_still_dropped` keeps
+      that honest. What was wrong was doing it after a call the opponent can
+      push into.
+- [x] `tests/scripts/test_inbox_race.py` reproduces the live deadlock with an
+      opponent that pushes during the handshake and then answers nothing.
+
+**The lesson, which is mine.** The diagnostic told me the inbox held step 2 and
+nothing else. That is evidence about the inbox, not about what they sent -- and
+I read it as the latter. A second read of `claims_runner` before writing to
+them would have caught it; instead I sent a confident, wrong diagnosis and they
+had to disprove it with their own logs. Third time in this exchange I asserted
+past my evidence. The diagnostics are only as good as the care taken reading
+them.

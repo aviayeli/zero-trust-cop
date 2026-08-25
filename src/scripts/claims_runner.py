@@ -102,6 +102,12 @@ async def play_series(apps: dict, call, sub_games: int, seed: int, wait,
 
     for index, role in enumerate(schedule, start=1):
         app = apps[role]
+        # FIRST, before anything that awaits. Clearing AFTER the handshake
+        # deleted turns that had just arrived: our server answers throughout,
+        # so a peer that negotiates and pushes at once lands its step 1 DURING
+        # our negotiate round-trip. That deadlocked a live series on
+        # 2026-08-25: we waited for a step 1 we had accepted and deleted.
+        app.inbox.clear()
         reach = call
         if call_for is not None:
             reach = call_for(role)
@@ -113,9 +119,6 @@ async def play_series(apps: dict, call, sub_games: int, seed: int, wait,
         # game loop will not read that queue until the handshake completes,
         # so a turn sent first sits unread and reads to us as a slow peer.
         handshake = await negotiate(reach, app.terms, app.identity(), role, index)
-        # A turn surviving this boundary would satisfy the next sub-game's
-        # step 1 with a message about the previous one.
-        app.inbox.clear()
         # Both peers derive the identical layout from the contract's
         # barrier_seed, so the board needs no wire message (PLAN.md 4.3).
         board = populated_board(app.config)
