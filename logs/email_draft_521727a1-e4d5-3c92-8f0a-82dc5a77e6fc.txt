@@ -6,8 +6,8 @@ zero-trust match report for game_uid=521727a1-e4d5-3c92-8f0a-82dc5a77e6fc
 
 mutual agreement confirmed: True
 turns cross-checked: n/a
-games in series: 2
-commit: 1df58093e8fc4369ced0321d164388bbbe5d87e8
+games in series: 6
+commit: 032dde020f8ce0fc3a437251779420f40e132856
 
 The full result is attached as result_521727a1-e4d5-3c92-8f0a-82dc5a77e6fc.json (application/json).
 
@@ -29,9 +29,37 @@ The full result is attached as result_521727a1-e4d5-3c92-8f0a-82dc5a77e6fc.json 
       "our_role": "thief",
       "terminal_reason": "capture",
       "turns": 35
+    },
+    {
+      "captured": false,
+      "game_number": 3,
+      "our_role": "police",
+      "terminal_reason": "survival",
+      "turns": 35
+    },
+    {
+      "captured": true,
+      "game_number": 4,
+      "our_role": "thief",
+      "terminal_reason": "capture",
+      "turns": 19
+    },
+    {
+      "captured": false,
+      "game_number": 5,
+      "our_role": "police",
+      "terminal_reason": "survival",
+      "turns": 35
+    },
+    {
+      "captured": true,
+      "game_number": 6,
+      "our_role": "thief",
+      "terminal_reason": "capture",
+      "turns": 19
     }
   ],
-  "github_commit": "1df58093e8fc4369ced0321d164388bbbe5d87e8",
+  "github_commit": "032dde020f8ce0fc3a437251779420f40e132856",
   "group_id": "aviayeli",
   "mutual_agreement": {
     "confirmed": true,
@@ -40,12 +68,12 @@ The full result is attached as result_521727a1-e4d5-3c92-8f0a-82dc5a77e6fc.json 
         "series_tie": false,
         "sub_games_won": {
           "aviayeli": 0,
-          "bb-ai-12": 2
+          "bb-ai-12": 6
         },
         "ties": 0,
         "total_score": {
-          "aviayeli": 10,
-          "bb-ai-12": 30
+          "aviayeli": 30,
+          "bb-ai-12": 90
         },
         "winner_group": "bb-ai-12"
       },
@@ -76,13 +104,65 @@ The full result is attached as result_521727a1-e4d5-3c92-8f0a-82dc5a77e6fc.json 
           },
           "sub_game_number": 2,
           "winner_group": "bb-ai-12"
+        },
+        {
+          "result": "survival",
+          "roles": {
+            "cop": "aviayeli",
+            "thief": "bb-ai-12"
+          },
+          "score": {
+            "aviayeli": 5,
+            "bb-ai-12": 10
+          },
+          "sub_game_number": 3,
+          "winner_group": "bb-ai-12"
+        },
+        {
+          "result": "capture",
+          "roles": {
+            "cop": "bb-ai-12",
+            "thief": "aviayeli"
+          },
+          "score": {
+            "aviayeli": 5,
+            "bb-ai-12": 20
+          },
+          "sub_game_number": 4,
+          "winner_group": "bb-ai-12"
+        },
+        {
+          "result": "survival",
+          "roles": {
+            "cop": "aviayeli",
+            "thief": "bb-ai-12"
+          },
+          "score": {
+            "aviayeli": 5,
+            "bb-ai-12": 10
+          },
+          "sub_game_number": 5,
+          "winner_group": "bb-ai-12"
+        },
+        {
+          "result": "capture",
+          "roles": {
+            "cop": "bb-ai-12",
+            "thief": "aviayeli"
+          },
+          "score": {
+            "aviayeli": 5,
+            "bb-ai-12": 20
+          },
+          "sub_game_number": 6,
+          "winner_group": "bb-ai-12"
         }
       ]
     },
     "handshake_counter_signed": true,
     "method": "opponent re-hash of each side's sealed chain at submit_audit",
-    "sha256": "954ceb8dfa732b49df6fccd6e203c7e904bc76c6afd1487e4784df73104582c9",
-    "sub_games_audited": 2
+    "sha256": "418b5c0253f4e7604c309dc31bfcf623d20b953ea6aeeb34a739b2456f287271",
+    "sub_games_audited": 6
   },
   "repos": {
     "cop": "https://github.com/aviayeli/zero-trust-cop",
