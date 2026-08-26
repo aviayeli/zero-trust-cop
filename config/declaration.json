@@ -1,14 +1,14 @@
 {
   "group_name": "aviayeli",
+  "mcp_servers": {
+    "cop": "https://luxury-pregnancy-wilder.ngrok-free.dev/mcp",
+    "thief": "https://cardinal-shell-moistness.ngrok-free.dev/mcp"
+  },
   "members": [
     "Avi Ayeli"
   ],
   "repos": {
     "cop": "https://github.com/aviayeli/zero-trust-cop",
     "thief": "https://github.com/aviayeli/zero-trust-thief"
-  },
-  "mcp_servers": {
-    "cop": "http://127.0.0.1:8802/mcp",
-    "thief": "http://127.0.0.1:8801/mcp"
   }
 }
