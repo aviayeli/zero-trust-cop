@@ -146,8 +146,11 @@ lags were $4$, $6$ and $6$, and the measured lags were $4$, $6$ and $6$.
 \subsection{Cheap talk}
 
 The signal enters no utility and no transition:
-$u_i(p_{1:T}, e_{1:T}, \sigma_{1:T}) = u_i(p_{1:T}, e_{1:T})$ for both
-players. It is therefore \emph{cheap talk}. In a strictly adversarial game the
+\begin{equation}
+u_i(p_{1:T}, e_{1:T}, \sigma_{1:T}) = u_i(p_{1:T}, e_{1:T}),
+\quad i \in \{p, e\}.
+\end{equation}
+It is therefore \emph{cheap talk}. In a strictly adversarial game the
 players' interests are opposed, and the only sequential equilibrium under
 Perfect Bayesian Equilibrium is the \textbf{babbling equilibrium}: the sender
 transmits uninformative signals and a rational receiver assigns them no
@@ -222,11 +225,18 @@ board.
 
 \section{Protocol: Unified Endpoint and Commit--Reveal}
 
-Each half-turn carries $\mathrm{commit} = \mathrm{SHA256}(
-\mathrm{canonical}(r) \,\|\, \nu)$ over the sealed record
-$r = \{\text{step}, \text{state}, \text{position}, \text{move},
-\text{intent}, \text{hint}\}$ with a fresh nonce $\nu$; records and nonces are
-disclosed only at the closing audit, where the opponent re-hashes each against
+Each half-turn carries
+\begin{equation}
+\mathrm{commit} = \mathrm{SHA256}\!\left(
+\mathrm{canonical}(r) \,\|\, \nu \right)
+\end{equation}
+over the sealed record
+\begin{equation}
+r = \{\text{step}, \text{state}, \text{position}, \text{move},
+\text{intent}, \text{hint}\}
+\end{equation}
+with a fresh nonce $\nu$. Records and nonces are disclosed only at the
+closing audit, where the opponent re-hashes each against
 the digest pushed at the time. Self-consistency alone would be a checksum---a
 peer rewriting its whole chain passes it---so it is the comparison against the
 \emph{pushed} digest that makes the seal binding.
