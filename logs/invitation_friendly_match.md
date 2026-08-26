@@ -152,13 +152,27 @@ can tell you which field within seconds.
    must be shorter than your handshake timeout, or you will abandon before we
    dial).
 
-## The plan
+## The plan: the full six
 
-Friendly first: **2 sub-games**, sides alternating, artifacts written, and
-**nothing emailed to the course inbox**. We take cop in sub-game 1 unless you
-would rather start as cop — either is fine, just say which.
+`num_games: 6` is one of the fourteen SIGNED terms, so a series must be six
+sub-games or the result artifact contradicts the contract shipped beside it.
+We are proposing the full six, sides alternating, and we take cop in sub-game
+1 unless you would rather — either is fine, just say which.
 
-Once we have both crossed a clean sub-game boundary, we can talk about a
-longer series.
+**Before the clock starts**, we would like to run one read-only pre-flight
+against your endpoint. It opens no sub-game and pushes no turn: a single
+`negotiate` at `sub_game_number = 0`, which appears in no schedule either side
+plays. It confirms four things in about a second — you are reachable, you
+serve all four tools, the handshake is accepted, and all fourteen terms
+value-match. You are very welcome to point an equivalent probe at ours.
+
+That is the whole warm-up. Five attempts against our previous opponent died on
+coordination before a single sub-game completed, and every one of those
+failures would have been visible in that one-second check.
+
+Our run will write artifacts and **draft** the report rather than sending it,
+so nothing reaches the course inbox until we have both compared our settlement
+hashes and agreed the result. If your side sends automatically, point it at
+your own address for this run.
 
 Send your details and we will be up and answering within a minute.
