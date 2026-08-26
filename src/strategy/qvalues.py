@@ -92,7 +92,7 @@ class QValues:
         except KeyError as error:
             raise ValueError(f"unknown role or outcome: {role!r}, {outcome!r}") from error
 
-    def best_action(self, state: tuple, forbid=()) -> str:
+    def best_action(self, state: tuple, forbid=(), prefer=None) -> str:
         """Return the policy's move; the plain greedy read is only its fallback.
 
         ``forbid`` drops refuted moves (PRD_18) BEFORE either mode ranks
@@ -100,7 +100,7 @@ class QValues:
         """
         if not self.config.move_set:
             raise ValueError("move_set must contain at least one action")
-        chosen = policy_action(self, state, forbid)
+        chosen = policy_action(self, state, forbid, prefer)
         if chosen is not None:
             return chosen
         return max(self._allowed(forbid), key=lambda a: self.q_value(state, a))
@@ -115,11 +115,11 @@ class QValues:
         """Read the current mutable epsilon value."""
         return self._epsilon
 
-    def select_action(self, state: tuple, rng, forbid=()) -> str:
+    def select_action(self, state: tuple, rng, forbid=(), prefer=None) -> str:
         """Choose epsilon-greedily using the caller-provided generator."""
         if rng.random() < self._epsilon:
             return rng.choice(self._allowed(forbid))
-        return self.best_action(state, forbid)
+        return self.best_action(state, forbid, prefer)
 
     def _allowed(self, forbid) -> list:
         """The move set minus refused moves, never empty."""

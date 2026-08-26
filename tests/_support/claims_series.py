@@ -45,9 +45,11 @@ class StubPolicy:
     def state_key(self, own, opponent, board):
         return (opponent, own)
 
-    def decide(self, state, rng, forbid=()):
+    def decide(self, state, rng, forbid=(), prefer=None):
         # Honour the thaw the way the real policy does, so a test that forbids
         # STAY sees a different move rather than a silently ignored refusal.
+        # `prefer` is the scent tie-break; the stub takes it and ignores it,
+        # because there is only ever one candidate here to break a tie among.
         return ("N" if "STAY" in forbid else "STAY"), "staying put"
 
     def intent_for_move(self, token):

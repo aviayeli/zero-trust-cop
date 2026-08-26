@@ -55,13 +55,13 @@ class AgentPolicy:
         words = text.split()
         return " ".join(words[:max_words])
 
-    def decide(self, state, rng, forbid=()):
+    def decide(self, state, rng, forbid=(), prefer=None):
         """Return (move, truncated_intent) for the state.
 
         ``forbid`` is the thaw's verdict for this step (PRD_18): moves the
         caller has refuted, excluded before the table ranks anything.
         """
-        move = self.qvalues.select_action(state, rng, forbid)
+        move = self.qvalues.select_action(state, rng, forbid, prefer)
         intent = self.intent_for_move(move)
         truncated = self.truncate_intent(intent, self.settings.hint_max_words)
         return move, truncated

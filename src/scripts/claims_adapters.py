@@ -15,6 +15,7 @@ from __future__ import annotations
 
 from mcp_server.directions import LIE, TRUTH, encode, token_for_claim
 from mcp_server.smell_trail import strongest_cell
+from strategy.scent import densest
 
 
 def _chooser(app, side, rng, board, thaw):
@@ -30,7 +31,13 @@ def _chooser(app, side, rng, board, thaw):
         state_key = app.policy.state_key(side.position, None, board)
         belief = app.policy.pheromones.strongest()
         forbid = thaw.forbid(position=side.position, belief=belief)
-        token, hint = app.policy.decide(state_key, rng, forbid)
+        # Ties among distance-optimal moves ranked on live belief mass rather
+        # than a table trained against true positions (strategy.scent).
+        token, hint = app.policy.decide(
+            state_key, rng, forbid,
+            prefer=lambda moves: densest(side.position, moves,
+                                         app.policy.pheromones._field,
+                                         side.config.grid_size))
         thaw.took(token, position=side.position)
         claimed = token_for_claim(app.policy.intent_for_move(token))
         return encode(token), hint, TRUTH if claimed == token else LIE
