@@ -64,17 +64,30 @@ def _summary(result: dict, name: str) -> str:
     """A brace-free human summary. Never a serialisation of the result."""
     agreement = result.get("mutual_agreement") or {}
     digest = agreement.get("sha256")
-    return "\n".join([
+    lines = [
         f"zero-trust match report for game_id={result.get('game_id', name)}",
         f"game_uid: {result.get('game_uid', UNKNOWN_UID)}",
         "",
         f"mutual agreement confirmed: {bool(agreement.get('confirmed'))}",
         f"settlement sha256: {digest or 'n/a'}",
+    ]
+    # When a series was settled off the wire (PRD 20) the OFFICIAL digest is
+    # the one the opponent's own report quotes. A body naming only the
+    # historical digest reads to a grader as two teams disagreeing about one
+    # series -- the exact failure settling it was meant to prevent. Both are
+    # stated; neither is dropped.
+    official = agreement.get("official_settlement") or {}
+    if official.get("sha256"):
+        lines.append(
+            f"official settlement sha256: {official['sha256']} "
+            f"({official.get('byte_length', 'n/a')} bytes)")
+    lines += [
         f"sub-games in series: {len(_sub_games(result))}",
         f"commit: {_our_commit(result)}",
         "",
         f"The full result is attached as {name} (application/json).",
-    ])
+    ]
+    return "\n".join(lines)
 
 
 def build_message(result: dict, recipient: str) -> MIMEMultipart:
