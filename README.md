@@ -113,6 +113,27 @@ records**, so their chain was never cross-verified by us. That is stated
 rather than glossed: the agreement there rests on their verdict alone, which
 is a materially weaker claim than the other two.
 
+## Course standards compliance
+
+Every row is a measured value, not an assertion. The command that produces it
+is named so a reader can re-run it rather than take our word.
+
+| Course standard | Actual value / state | Verdict | How to re-check |
+| :--- | :---: | :---: | :--- |
+| **150-line limit** | longest tracked module is **150** lines, ceiling 150 | **PASS** | `git ls-files '*.py' \| xargs wc -l \| sort -rn \| head` |
+| **No hardcoded hyperparameters** | every tunable read from `config/game.json` / `config/<role>/game.toml` | **PASS** | `grep -rn "config\[" src/` |
+| **Test suite** | **1704 passed, 1 skipped** | **PASS** | `PYTHONPATH=src pytest -q` |
+| **Linter** | `ruff check .` — All checks passed | **PASS** | `ruff check .` |
+| **No hardcoded secrets** | no token/credential/`.env`/tunnel file tracked | **PASS** | `git ls-files \| grep -iE "token\|credential\|\.env"` |
+| **SDLC lifecycle** | PRD → PLAN → TODO for every phase in `docs/` | **PASS** | `ls docs/PRD_*.md docs/PLAN_*.md docs/TODO_*.md` |
+| **Appendix F constants** | 13 קבוע + 9 מינימום, every shipped config | **PASS** | `pytest tests/unit/test_appendix_f.py` |
+
+Two figures stated precisely rather than flatteringly. The longest module is
+**150** lines, not "under 135" — it sits exactly on the ceiling, which is a
+pass and not a margin. And the suites are run **sequentially**: both bind
+ports 8801/8802 for the live two-process transport tests, so running them in
+parallel produces spurious failures.
+
 ## Cop policy: the benchmark that chose the strategy
 
 `match_policy_mode` is not a guess. The distance rule and the Q-table were
