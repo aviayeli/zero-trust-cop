@@ -53,18 +53,28 @@ async def lazy_opponents(endpoints: dict, config, dial=None,
     # that one", so no session could be dropped at a boundary.
     stacks: dict = {}
 
+    async def drop(url):
+        """Close and FORGET one endpoint.
+
+        The far side is EXPECTED to be gone, so a raising close is normal and
+        suppressed; one we could not close politely is still one we must
+        never reuse. Popping BEFORE the close keeps a raising aclose from
+        leaving the dead entry in the pool.
+        """
+        sub = stacks.pop(url, None)
+        calls.pop(url, None)
+        if sub is not None:
+            with contextlib.suppress(BaseException):
+                await sub.aclose()
+
     async def release():
         """Close and FORGET every open endpoint (PRD_15).
 
-        Called at a boundary, before a pause. The far side is EXPECTED to be
-        gone, so a raising close is normal and suppressed per URL; one we
-        could not close politely is still one we must never reuse.
+        Called at a boundary, before a pause. The far side is expected to be
+        gone by then, which is the whole reason the window exists.
         """
-        for url, sub in list(stacks.items()):
-            with contextlib.suppress(BaseException):
-                await sub.aclose()
-            stacks.pop(url, None)
-            calls.pop(url, None)
+        for url in list(stacks):
+            await drop(url)
 
     async with contextlib.AsyncExitStack() as stack:
         stack.push_async_callback(release)
@@ -106,6 +116,13 @@ async def lazy_opponents(endpoints: dict, config, dial=None,
                 except BaseException as failure:
                     if isinstance(failure, (KeyboardInterrupt, SystemExit)):
                         raise
+                    # Close the dead one FIRST. Overwriting `stacks[url]`
+                    # left the old session open to be finalised later, out
+                    # of band, and anyio then cancelled whatever task was
+                    # running -- which is the task that opened the
+                    # replacement. Three live series died at the sub-game 1
+                    # boundary this way before the order was fixed.
+                    await drop(url)
                     calls[url] = await _open(url)
                     return await calls[url](tool, **kwargs)
 
