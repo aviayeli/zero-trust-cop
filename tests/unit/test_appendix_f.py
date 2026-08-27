@@ -92,3 +92,39 @@ def test_the_unmandated_pheromone_field_is_not_checked():
 def test_all_thirteen_permanent_and_nine_floor_fields_are_declared():
     assert len(appendix_f.FIXED) == 13
     assert len(appendix_f.FLOORS) == 9
+
+
+# --- the boundary: live configs are checked, filed artifacts are not ---------
+
+def test_the_checker_covers_every_live_config_and_only_those():
+    """SMNGRP05 ran this design against their own tree -- 30 game.json, 660
+    values, 2 deviations -- and the "check every config" point is why it
+    found them. Ours has three and all three are covered.
+
+    A game.json outside config/ would be invisible to the glob, so this
+    asserts the glob and the filesystem agree.
+    """
+    on_disk = {p for p in Path(".").glob("**/game.json")
+               if ".git" not in p.parts and "node_modules" not in p.parts}
+
+    assert set(CONFIGS) == on_disk, (
+        f"a game.json exists outside the checked glob: {on_disk - set(CONFIGS)}")
+
+
+def test_filed_series_artifacts_are_deliberately_out_of_scope():
+    """Filed configs under logs/ record what was AGREED for a past series.
+    Twenty-one of them carry min_games_to_pass = 1, from before the fix.
+
+    They are excluded on purpose. Editing them would falsify the record and
+    break hashes an opponent independently verified; failing on them would
+    force exactly that edit to get the suite green. The deviation in them is
+    disclosed, not corrected.
+
+    This test exists so a future contributor widening the glob discovers the
+    reason here rather than reaching for the artifacts.
+    """
+    filed = list(Path("logs").glob("**/config_*_series.json"))
+    if not filed:
+        pytest.skip("no filed series artifacts in this checkout")
+
+    assert not (set(CONFIGS) & set(filed)), "filed artifacts must not be checked"
