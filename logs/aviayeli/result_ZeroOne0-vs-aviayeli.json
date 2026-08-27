@@ -1,0 +1,166 @@
+{
+  "artifact_version": 1,
+  "game_id": "ZeroOne0-vs-aviayeli",
+  "game_uid": "ff90bd18-f873-981a-e1ca-0b89e6f9f03c",
+  "games": [
+    {
+      "captured": true,
+      "game_number": 1,
+      "our_role": "police",
+      "terminal_reason": "capture",
+      "turns": 25
+    },
+    {
+      "captured": false,
+      "game_number": 2,
+      "our_role": "thief",
+      "terminal_reason": "survival",
+      "turns": 35
+    },
+    {
+      "captured": false,
+      "game_number": 3,
+      "our_role": "police",
+      "terminal_reason": "survival",
+      "turns": 35
+    },
+    {
+      "captured": false,
+      "game_number": 4,
+      "our_role": "thief",
+      "terminal_reason": "survival",
+      "turns": 35
+    },
+    {
+      "captured": false,
+      "game_number": 5,
+      "our_role": "police",
+      "terminal_reason": "survival",
+      "turns": 35
+    },
+    {
+      "captured": false,
+      "game_number": 6,
+      "our_role": "thief",
+      "terminal_reason": "survival",
+      "turns": 35
+    }
+  ],
+  "github_commit": "b32ffb1cd752f623a72fcfe60c6717fc7e8d07b8",
+  "group_id": "aviayeli",
+  "mutual_agreement": {
+    "confirmed": true,
+    "consensus": {
+      "aggregate": {
+        "series_tie": false,
+        "sub_games_won": {
+          "ZeroOne0": 2,
+          "aviayeli": 4
+        },
+        "ties": 0,
+        "total_score": {
+          "ZeroOne0": 40,
+          "aviayeli": 60
+        },
+        "winner_group": "aviayeli"
+      },
+      "game_id": "ZeroOne0-vs-aviayeli",
+      "sub_games": [
+        {
+          "result": "capture",
+          "roles": {
+            "cop": "aviayeli",
+            "thief": "ZeroOne0"
+          },
+          "score": {
+            "ZeroOne0": 5,
+            "aviayeli": 20
+          },
+          "sub_game_number": 1,
+          "winner_group": "aviayeli"
+        },
+        {
+          "result": "survival",
+          "roles": {
+            "cop": "ZeroOne0",
+            "thief": "aviayeli"
+          },
+          "score": {
+            "ZeroOne0": 5,
+            "aviayeli": 10
+          },
+          "sub_game_number": 2,
+          "winner_group": "aviayeli"
+        },
+        {
+          "result": "survival",
+          "roles": {
+            "cop": "aviayeli",
+            "thief": "ZeroOne0"
+          },
+          "score": {
+            "ZeroOne0": 10,
+            "aviayeli": 5
+          },
+          "sub_game_number": 3,
+          "winner_group": "ZeroOne0"
+        },
+        {
+          "result": "survival",
+          "roles": {
+            "cop": "ZeroOne0",
+            "thief": "aviayeli"
+          },
+          "score": {
+            "ZeroOne0": 5,
+            "aviayeli": 10
+          },
+          "sub_game_number": 4,
+          "winner_group": "aviayeli"
+        },
+        {
+          "result": "survival",
+          "roles": {
+            "cop": "aviayeli",
+            "thief": "ZeroOne0"
+          },
+          "score": {
+            "ZeroOne0": 10,
+            "aviayeli": 5
+          },
+          "sub_game_number": 5,
+          "winner_group": "ZeroOne0"
+        },
+        {
+          "result": "survival",
+          "roles": {
+            "cop": "ZeroOne0",
+            "thief": "aviayeli"
+          },
+          "score": {
+            "ZeroOne0": 5,
+            "aviayeli": 10
+          },
+          "sub_game_number": 6,
+          "winner_group": "aviayeli"
+        }
+      ]
+    },
+    "handshake_counter_signed": true,
+    "method": "opponent re-hash of each side's sealed chain at submit_audit",
+    "official_settlement": {
+      "byte_length": 3997,
+      "channel": "off-the-wire settlement, not earned at submit_audit",
+      "method": "independent derivation from our own artifacts, digests compared",
+      "serialization": "json.dumps(scope, sort_keys=True, ensure_ascii=False)",
+      "sha256": "5077306a3703467941ce7593bcf805a022c9f162588acc4f3feca97a045b0373"
+    },
+    "sha256": "c39d331ce8c45e30823baf2aeae58053020836542aa6e14d584fa2a58af23ee6",
+    "sub_games_audited": 6
+  },
+  "repos": {
+    "cop": "https://github.com/aviayeli/zero-trust-cop",
+    "thief": "https://github.com/aviayeli/zero-trust-thief"
+  },
+  "wire_shape": "reference-v3"
+}
