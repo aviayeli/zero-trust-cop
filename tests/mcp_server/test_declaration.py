@@ -13,6 +13,8 @@ EXPECTED_KEYS = {
     "group_name", "members", "repos", "mcp_servers", "hardware",
     "github_commit_hash",
     "github_commit", "timezone", "token_budget", "num_games",
+    # Required, never defaulted -- see tests/unit/test_declaration_counted_games.
+    "counted_games_played",
 }
 
 
@@ -56,6 +58,7 @@ def test_declaration_fields_are_loaded_from_config_file(tmp_path):
         "repos": {"cop": "https://cop.example", "thief": "https://thief.example"},
         "mcp_servers": {"cop": "https://cop-mcp.example", "thief": "https://thief-mcp.example"},
     }
+    values["counted_games_played"] = 2
     (config_root / "declaration.json").write_text(json.dumps(values), encoding="utf-8")
     payload = declaration.build_declaration(str(config_root))
     for key, value in values.items():

@@ -10,5 +10,6 @@
   "repos": {
     "cop": "https://github.com/aviayeli/zero-trust-cop",
     "thief": "https://github.com/aviayeli/zero-trust-thief"
-  }
+  },
+  "counted_games_played": 2
 }

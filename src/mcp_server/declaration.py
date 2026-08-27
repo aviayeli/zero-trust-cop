@@ -126,6 +126,8 @@ def build_declaration(config_root: str | None = None) -> dict:
         ),
         "token_budget": league["token_budget_per_series"],
         "num_games": league["num_games"],
+        # Count BEFORE this series; a missing field files as 0, not absent.
+        "counted_games_played": declared["counted_games_played"],
     }
 
 
