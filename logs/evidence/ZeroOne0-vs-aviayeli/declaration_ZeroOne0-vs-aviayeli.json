@@ -1,0 +1,27 @@
+{
+  "game_uid": "ff90bd18-f873-981a-e1ca-0b89e6f9f03c",
+  "github_commit": "b32ffb1cd752f623a72fcfe60c6717fc7e8d07b8",
+  "github_commit_hash": "b32ffb1cd752f623a72fcfe60c6717fc7e8d07b8",
+  "group_name": "aviayeli",
+  "hardware": {
+    "cpu": "11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz",
+    "gpu_vram": "none",
+    "os": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "ram": "7 GB",
+    "type": "system_spec"
+  },
+  "mcp_servers": {
+    "cop": "https://luxury-pregnancy-wilder.ngrok-free.dev/mcp",
+    "thief": "https://cardinal-shell-moistness.ngrok-free.dev/mcp"
+  },
+  "members": [
+    "Avi Ayeli"
+  ],
+  "num_games": 6,
+  "repos": {
+    "cop": "https://github.com/aviayeli/zero-trust-cop",
+    "thief": "https://github.com/aviayeli/zero-trust-thief"
+  },
+  "timezone": "IDT",
+  "token_budget": 200000
+}

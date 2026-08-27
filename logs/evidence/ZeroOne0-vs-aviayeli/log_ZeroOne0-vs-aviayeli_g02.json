@@ -1,0 +1,2920 @@
+{
+  "artifact_version": 1,
+  "barriers": [],
+  "game_id": "ZeroOne0-vs-aviayeli",
+  "game_number": 2,
+  "game_uid": "ff90bd18-f873-981a-e1ca-0b89e6f9f03c",
+  "group_id": "aviayeli",
+  "handshake_counter_signed": true,
+  "our_role": "thief",
+  "result_claim": {
+    "outcome": "survival",
+    "steps": 35
+  },
+  "their_audit_response": {
+    "records": [
+      {
+        "commit": "f17c49cc71ef7817b723325afb7da367a3ac5e18f3d96426d03500f5408fcc38",
+        "nonce": "71e3d0454832043b6a1be467a608d2e3",
+        "payload": {
+          "intent": "declare",
+          "sender": "police",
+          "step": 0
+        }
+      },
+      {
+        "commit": "f0b2188411f018dfaea1e27fad3750b51ceae6d99589ea5618a23edb2e62964a",
+        "nonce": "85181c3933799ffe8eff460ff6e2c70b",
+        "payload": {
+          "barrier_cell": null,
+          "capture_claim": [
+            1,
+            0
+          ],
+          "fallback": false,
+          "hint": "I am here",
+          "intent": "chase",
+          "move": "MOVE:S",
+          "position": [
+            1,
+            0
+          ],
+          "prompt_text": "",
+          "reasoning": "",
+          "response_seconds": 0.0,
+          "sender": "police",
+          "smell_grid": {
+            "0,0": 0.5,
+            "0,1": 0.5,
+            "0,2": 0.2,
+            "1,0": 0.8,
+            "1,1": 0.5,
+            "1,2": 0.2,
+            "2,0": 0.5,
+            "2,1": 0.5,
+            "2,2": 0.2,
+            "3,0": 0.2,
+            "3,1": 0.2,
+            "3,2": 0.2
+          },
+          "state": "grid=7x7;self=[1, 0];barriers=[]",
+          "step": 1,
+          "timestamp": "2026-08-26T22:29:56.309276+00:00",
+          "verdict": "truth"
+        }
+      },
+      {
+        "commit": "81bf1d403e49cd25bb3a618823284257e27bf1d966040699293b33749b528d6d",
+        "nonce": "814cefb765e87c834524d4d7d8950d68",
+        "payload": {
+          "barrier_cell": null,
+          "capture_claim": [
+            0,
+            0
+          ],
+          "fallback": false,
+          "hint": "I am here",
+          "intent": "chase",
+          "move": "MOVE:N",
+          "position": [
+            0,
+            0
+          ],
+          "prompt_text": "",
+          "reasoning": "",
+          "response_seconds": 0.0,
+          "sender": "police",
+          "smell_grid": {
+            "0,0": 0.8,
+            "0,1": 0.5,
+            "0,2": 0.2,
+            "1,0": 0.7,
+            "1,1": 0.5,
+            "1,2": 0.2,
+            "2,0": 0.4,
+            "2,1": 0.4,
+            "2,2": 0.2,
+            "3,0": 0.1,
+            "3,1": 0.1,
+            "3,2": 0.1
+          },
+          "state": "grid=7x7;self=[0, 0];barriers=[]",
+          "step": 2,
+          "timestamp": "2026-08-26T22:29:57.841128+00:00",
+          "verdict": "truth"
+        }
+      },
+      {
+        "commit": "14d61f0b0ba6098c1bd4652499e25054a6b1d07fe0cb026b9123ea47ac602b7f",
+        "nonce": "cd5b271666d9f8baa0f104339881c955",
+        "payload": {
+          "barrier_cell": null,
+          "capture_claim": [
+            1,
+            0
+          ],
+          "fallback": false,
+          "hint": "I am here",
+          "intent": "chase",
+          "move": "MOVE:S",
+          "position": [
+            1,
+            0
+          ],
+          "prompt_text": "",
+          "reasoning": "",
+          "response_seconds": 0.0,
+          "sender": "police",
+          "smell_grid": {
+            "0,0": 0.7,
+            "0,1": 0.5,
+            "0,2": 0.2,
+            "1,0": 0.8,
+            "1,1": 0.5,
+            "1,2": 0.2,
+            "2,0": 0.5,
+            "2,1": 0.5,
+            "2,2": 0.2,
+            "3,0": 0.2,
+            "3,1": 0.2,
+            "3,2": 0.2
+          },
+          "state": "grid=7x7;self=[1, 0];barriers=[]",
+          "step": 3,
+          "timestamp": "2026-08-26T22:29:59.669132+00:00",
+          "verdict": "truth"
+        }
+      },
+      {
+        "commit": "6c862d09e7731c7df3f23807809f2f537ec11f93af5dcaf43de90a7e7040ef18",
+        "nonce": "ac24b5a424661076ea2c6abf54514e7e",
+        "payload": {
+          "barrier_cell": null,
+          "capture_claim": [
+            0,
+            0
+          ],
+          "fallback": false,
+          "hint": "I am here",
+          "intent": "chase",
+          "move": "MOVE:N",
+          "position": [
+            0,
+            0
+          ],
+          "prompt_text": "",
+          "reasoning": "",
+          "response_seconds": 0.0,
+          "sender": "police",
+          "smell_grid": {
+            "0,0": 0.8,
+            "0,1": 0.5,
+            "0,2": 0.2,
+            "1,0": 0.7,
+            "1,1": 0.5,
+            "1,2": 0.2,
+            "2,0": 0.4,
+            "2,1": 0.4,
+            "2,2": 0.2,
+            "3,0": 0.1,
+            "3,1": 0.1,
+            "3,2": 0.1
+          },
+          "state": "grid=7x7;self=[0, 0];barriers=[]",
+          "step": 4,
+          "timestamp": "2026-08-26T22:30:01.488577+00:00",
+          "verdict": "truth"
+        }
+      },
+      {
+        "commit": "5ce7eb05463680376f4da01bbf0c75c2f0acf127c2502185e7304b847b800921",
+        "nonce": "dc0a47f21953c8c40689d17034c9d360",
+        "payload": {
+          "barrier_cell": null,
+          "capture_claim": [
+            1,
+            0
+          ],
+          "fallback": false,
+          "hint": "I am here",
+          "intent": "chase",
+          "move": "MOVE:S",
+          "position": [
+            1,
+            0
+          ],
+          "prompt_text": "",
+          "reasoning": "",
+          "response_seconds": 0.0,
+          "sender": "police",
+          "smell_grid": {
+            "0,0": 0.7,
+            "0,1": 0.5,
+            "0,2": 0.2,
+            "1,0": 0.8,
+            "1,1": 0.5,
+            "1,2": 0.2,
+            "2,0": 0.5,
+            "2,1": 0.5,
+            "2,2": 0.2,
+            "3,0": 0.2,
+            "3,1": 0.2,
+            "3,2": 0.2
+          },
+          "state": "grid=7x7;self=[1, 0];barriers=[]",
+          "step": 5,
+          "timestamp": "2026-08-26T22:30:03.285805+00:00",
+          "verdict": "truth"
+        }
+      },
+      {
+        "commit": "1b6efc256dd6a795f4252c9a193ef623cd661fa8af7bdaeeef7f197d97ccd9d6",
+        "nonce": "95a4f12af7509b0837b3b07b80532732",
+        "payload": {
+          "barrier_cell": null,
+          "capture_claim": [
+            0,
+            0
+          ],
+          "fallback": false,
+          "hint": "I am here",
+          "intent": "chase",
+          "move": "MOVE:N",
+          "position": [
+            0,
+            0
+          ],
+          "prompt_text": "",
+          "reasoning": "",
+          "response_seconds": 0.0,
+          "sender": "police",
+          "smell_grid": {
+            "0,0": 0.8,
+            "0,1": 0.5,
+            "0,2": 0.2,
+            "1,0": 0.7,
+            "1,1": 0.5,
+            "1,2": 0.2,
+            "2,0": 0.4,
+            "2,1": 0.4,
+            "2,2": 0.2,
+            "3,0": 0.1,
+            "3,1": 0.1,
+            "3,2": 0.1
+          },
+          "state": "grid=7x7;self=[0, 0];barriers=[]",
+          "step": 6,
+          "timestamp": "2026-08-26T22:30:05.121221+00:00",
+          "verdict": "truth"
+        }
+      },
+      {
+        "commit": "c10228e4b4b0cd52cc99ed084506e33a10fe0ea90dbeef65d961048fc4bb87ff",
+        "nonce": "e509d6fab42ea7546cd93c0896985592",
+        "payload": {
+          "barrier_cell": null,
+          "capture_claim": [
+            1,
+            0
+          ],
+          "fallback": false,
+          "hint": "I am here",
+          "intent": "chase",
+          "move": "MOVE:S",
+          "position": [
+            1,
+            0
+          ],
+          "prompt_text": "",
+          "reasoning": "",
+          "response_seconds": 0.0,
+          "sender": "police",
+          "smell_grid": {
+            "0,0": 0.7,
+            "0,1": 0.5,
+            "0,2": 0.2,
+            "1,0": 0.8,
+            "1,1": 0.5,
+            "1,2": 0.2,
+            "2,0": 0.5,
+            "2,1": 0.5,
+            "2,2": 0.2,
+            "3,0": 0.2,
+            "3,1": 0.2,
+            "3,2": 0.2
+          },
+          "state": "grid=7x7;self=[1, 0];barriers=[]",
+          "step": 7,
+          "timestamp": "2026-08-26T22:30:06.931830+00:00",
+          "verdict": "truth"
+        }
+      },
+      {
+        "commit": "2c4b42a3ad7781d866df8531ad5bfdfe8c407772a2604f7646e35054195e4f9b",
+        "nonce": "ae6d21e8eace4db658dcbc86fb15f030",
+        "payload": {
+          "barrier_cell": null,
+          "capture_claim": [
+            0,
+            0
+          ],
+          "fallback": false,
+          "hint": "I am here",
+          "intent": "chase",
+          "move": "MOVE:N",
+          "position": [
+            0,
+            0
+          ],
+          "prompt_text": "",
+          "reasoning": "",
+          "response_seconds": 0.0,
+          "sender": "police",
+          "smell_grid": {
+            "0,0": 0.8,
+            "0,1": 0.5,
+            "0,2": 0.2,
+            "1,0": 0.7,
+            "1,1": 0.5,
+            "1,2": 0.2,
+            "2,0": 0.4,
+            "2,1": 0.4,
+            "2,2": 0.2,
+            "3,0": 0.1,
+            "3,1": 0.1,
+            "3,2": 0.1
+          },
+          "state": "grid=7x7;self=[0, 0];barriers=[]",
+          "step": 8,
+          "timestamp": "2026-08-26T22:30:08.752917+00:00",
+          "verdict": "truth"
+        }
+      },
+      {
+        "commit": "861883086370a7a3e3de815e14de97dea0716db5c022114355029427a1f07655",
+        "nonce": "9c100a6001aae434ee5e684f9f96f0dc",
+        "payload": {
+          "barrier_cell": null,
+          "capture_claim": [
+            1,
+            0
+          ],
+          "fallback": false,
+          "hint": "I am here",
+          "intent": "chase",
+          "move": "MOVE:S",
+          "position": [
+            1,
+            0
+          ],
+          "prompt_text": "",
+          "reasoning": "",
+          "response_seconds": 0.0,
+          "sender": "police",
+          "smell_grid": {
+            "0,0": 0.7,
+            "0,1": 0.5,
+            "0,2": 0.2,
+            "1,0": 0.8,
+            "1,1": 0.5,
+            "1,2": 0.2,
+            "2,0": 0.5,
+            "2,1": 0.5,
+            "2,2": 0.2,
+            "3,0": 0.2,
+            "3,1": 0.2,
+            "3,2": 0.2
+          },
+          "state": "grid=7x7;self=[1, 0];barriers=[]",
+          "step": 9,
+          "timestamp": "2026-08-26T22:30:10.591334+00:00",
+          "verdict": "truth"
+        }
+      },
+      {
+        "commit": "b0815b3b9d1b342cfbf3637343ede7b02cad874c89784dc4abb6ea60123b7f86",
+        "nonce": "1fb91ccfbd0d657369fda9af889474a5",
+        "payload": {
+          "barrier_cell": null,
+          "capture_claim": [
+            0,
+            0
+          ],
+          "fallback": false,
+          "hint": "I am here",
+          "intent": "chase",
+          "move": "MOVE:N",
+          "position": [
+            0,
+            0
+          ],
+          "prompt_text": "",
+          "reasoning": "",
+          "response_seconds": 0.0,
+          "sender": "police",
+          "smell_grid": {
+            "0,0": 0.8,
+            "0,1": 0.5,
+            "0,2": 0.2,
+            "1,0": 0.7,
+            "1,1": 0.5,
+            "1,2": 0.2,
+            "2,0": 0.4,
+            "2,1": 0.4,
+            "2,2": 0.2,
+            "3,0": 0.1,
+            "3,1": 0.1,
+            "3,2": 0.1
+          },
+          "state": "grid=7x7;self=[0, 0];barriers=[]",
+          "step": 10,
+          "timestamp": "2026-08-26T22:30:12.412523+00:00",
+          "verdict": "truth"
+        }
+      },
+      {
+        "commit": "2419d694efd1d36f71dc19ba4532576b95bf71e2b9d12c59d3a0a79948cb3972",
+        "nonce": "bc9cb8b70c3825dbcdcd3bd6b8b886b4",
+        "payload": {
+          "barrier_cell": null,
+          "capture_claim": [
+            1,
+            0
+          ],
+          "fallback": false,
+          "hint": "I am here",
+          "intent": "chase",
+          "move": "MOVE:S",
+          "position": [
+            1,
+            0
+          ],
+          "prompt_text": "",
+          "reasoning": "",
+          "response_seconds": 0.0,
+          "sender": "police",
+          "smell_grid": {
+            "0,0": 0.7,
+            "0,1": 0.5,
+            "0,2": 0.2,
+            "1,0": 0.8,
+            "1,1": 0.5,
+            "1,2": 0.2,
+            "2,0": 0.5,
+            "2,1": 0.5,
+            "2,2": 0.2,
+            "3,0": 0.2,
+            "3,1": 0.2,
+            "3,2": 0.2
+          },
+          "state": "grid=7x7;self=[1, 0];barriers=[]",
+          "step": 11,
+          "timestamp": "2026-08-26T22:30:14.246586+00:00",
+          "verdict": "truth"
+        }
+      },
+      {
+        "commit": "a881ebc5273e5231ef111f31e2ea908307963d77748ad134d68c9ee1e0b112e6",
+        "nonce": "5f3f39f092e93d1dda5a4fe9b5868a73",
+        "payload": {
+          "barrier_cell": null,
+          "capture_claim": [
+            0,
+            0
+          ],
+          "fallback": false,
+          "hint": "I am here",
+          "intent": "chase",
+          "move": "MOVE:N",
+          "position": [
+            0,
+            0
+          ],
+          "prompt_text": "",
+          "reasoning": "",
+          "response_seconds": 0.0,
+          "sender": "police",
+          "smell_grid": {
+            "0,0": 0.8,
+            "0,1": 0.5,
+            "0,2": 0.2,
+            "1,0": 0.7,
+            "1,1": 0.5,
+            "1,2": 0.2,
+            "2,0": 0.4,
+            "2,1": 0.4,
+            "2,2": 0.2,
+            "3,0": 0.1,
+            "3,1": 0.1,
+            "3,2": 0.1
+          },
+          "state": "grid=7x7;self=[0, 0];barriers=[]",
+          "step": 12,
+          "timestamp": "2026-08-26T22:30:16.097798+00:00",
+          "verdict": "truth"
+        }
+      },
+      {
+        "commit": "ac44e8a439a0654a756825886fcac701a12c7721823cc2adc6390a951163eb41",
+        "nonce": "3de42635d16c5a7eb51b6275b667c691",
+        "payload": {
+          "barrier_cell": null,
+          "capture_claim": [
+            1,
+            0
+          ],
+          "fallback": false,
+          "hint": "I am here",
+          "intent": "chase",
+          "move": "MOVE:S",
+          "position": [
+            1,
+            0
+          ],
+          "prompt_text": "",
+          "reasoning": "",
+          "response_seconds": 0.0,
+          "sender": "police",
+          "smell_grid": {
+            "0,0": 0.7,
+            "0,1": 0.5,
+            "0,2": 0.2,
+            "1,0": 0.8,
+            "1,1": 0.5,
+            "1,2": 0.2,
+            "2,0": 0.5,
+            "2,1": 0.5,
+            "2,2": 0.2,
+            "3,0": 0.2,
+            "3,1": 0.2,
+            "3,2": 0.2
+          },
+          "state": "grid=7x7;self=[1, 0];barriers=[]",
+          "step": 13,
+          "timestamp": "2026-08-26T22:30:17.865896+00:00",
+          "verdict": "truth"
+        }
+      },
+      {
+        "commit": "02b65a3daa460752df2cbb187adb83bf94348c4fb386c21197eb3ec6ebf959a6",
+        "nonce": "3aeaac92a377c5e6ea5002db33b5f729",
+        "payload": {
+          "barrier_cell": null,
+          "capture_claim": [
+            0,
+            0
+          ],
+          "fallback": false,
+          "hint": "I am here",
+          "intent": "chase",
+          "move": "MOVE:N",
+          "position": [
+            0,
+            0
+          ],
+          "prompt_text": "",
+          "reasoning": "",
+          "response_seconds": 0.0,
+          "sender": "police",
+          "smell_grid": {
+            "0,0": 0.8,
+            "0,1": 0.5,
+            "0,2": 0.2,
+            "1,0": 0.7,
+            "1,1": 0.5,
+            "1,2": 0.2,
+            "2,0": 0.4,
+            "2,1": 0.4,
+            "2,2": 0.2,
+            "3,0": 0.1,
+            "3,1": 0.1,
+            "3,2": 0.1
+          },
+          "state": "grid=7x7;self=[0, 0];barriers=[]",
+          "step": 14,
+          "timestamp": "2026-08-26T22:30:19.704331+00:00",
+          "verdict": "truth"
+        }
+      },
+      {
+        "commit": "3b6ec681fd59b8c0738bdc116ca192c25b4687e532a124a6575801627a6701c1",
+        "nonce": "f59a201590d37562bb843682d9363266",
+        "payload": {
+          "barrier_cell": null,
+          "capture_claim": [
+            1,
+            0
+          ],
+          "fallback": false,
+          "hint": "I am here",
+          "intent": "chase",
+          "move": "MOVE:S",
+          "position": [
+            1,
+            0
+          ],
+          "prompt_text": "",
+          "reasoning": "",
+          "response_seconds": 0.0,
+          "sender": "police",
+          "smell_grid": {
+            "0,0": 0.7,
+            "0,1": 0.5,
+            "0,2": 0.2,
+            "1,0": 0.8,
+            "1,1": 0.5,
+            "1,2": 0.2,
+            "2,0": 0.5,
+            "2,1": 0.5,
+            "2,2": 0.2,
+            "3,0": 0.2,
+            "3,1": 0.2,
+            "3,2": 0.2
+          },
+          "state": "grid=7x7;self=[1, 0];barriers=[]",
+          "step": 15,
+          "timestamp": "2026-08-26T22:30:21.529855+00:00",
+          "verdict": "truth"
+        }
+      },
+      {
+        "commit": "a5c8afc25fc0abcdae95968a9b327cc5bdcf1fa70dadf0cf6c183d0dca80d14a",
+        "nonce": "1b822da188c3836e5cdb91f9aa4c8bf8",
+        "payload": {
+          "barrier_cell": null,
+          "capture_claim": [
+            0,
+            0
+          ],
+          "fallback": false,
+          "hint": "I am here",
+          "intent": "chase",
+          "move": "MOVE:N",
+          "position": [
+            0,
+            0
+          ],
+          "prompt_text": "",
+          "reasoning": "",
+          "response_seconds": 0.0,
+          "sender": "police",
+          "smell_grid": {
+            "0,0": 0.8,
+            "0,1": 0.5,
+            "0,2": 0.2,
+            "1,0": 0.7,
+            "1,1": 0.5,
+            "1,2": 0.2,
+            "2,0": 0.4,
+            "2,1": 0.4,
+            "2,2": 0.2,
+            "3,0": 0.1,
+            "3,1": 0.1,
+            "3,2": 0.1
+          },
+          "state": "grid=7x7;self=[0, 0];barriers=[]",
+          "step": 16,
+          "timestamp": "2026-08-26T22:30:23.338779+00:00",
+          "verdict": "truth"
+        }
+      },
+      {
+        "commit": "36d11278c53b6c8555088e35a10b421f3d6358a3a639b4b3b0a5df56c4768dc3",
+        "nonce": "3d473b2a418bb1fec6cbd672ea5294f8",
+        "payload": {
+          "barrier_cell": null,
+          "capture_claim": [
+            1,
+            0
+          ],
+          "fallback": false,
+          "hint": "I am here",
+          "intent": "chase",
+          "move": "MOVE:S",
+          "position": [
+            1,
+            0
+          ],
+          "prompt_text": "",
+          "reasoning": "",
+          "response_seconds": 0.0,
+          "sender": "police",
+          "smell_grid": {
+            "0,0": 0.7,
+            "0,1": 0.5,
+            "0,2": 0.2,
+            "1,0": 0.8,
+            "1,1": 0.5,
+            "1,2": 0.2,
+            "2,0": 0.5,
+            "2,1": 0.5,
+            "2,2": 0.2,
+            "3,0": 0.2,
+            "3,1": 0.2,
+            "3,2": 0.2
+          },
+          "state": "grid=7x7;self=[1, 0];barriers=[]",
+          "step": 17,
+          "timestamp": "2026-08-26T22:30:25.161383+00:00",
+          "verdict": "truth"
+        }
+      },
+      {
+        "commit": "9ff7a143bf6f3ce2de52fa09a757b7d9eb57d4398a2d62a0720839ec09dd4ad3",
+        "nonce": "0d4c67974ef84bf53c0859147a031502",
+        "payload": {
+          "barrier_cell": null,
+          "capture_claim": [
+            0,
+            0
+          ],
+          "fallback": false,
+          "hint": "I am here",
+          "intent": "chase",
+          "move": "MOVE:N",
+          "position": [
+            0,
+            0
+          ],
+          "prompt_text": "",
+          "reasoning": "",
+          "response_seconds": 0.0,
+          "sender": "police",
+          "smell_grid": {
+            "0,0": 0.8,
+            "0,1": 0.5,
+            "0,2": 0.2,
+            "1,0": 0.7,
+            "1,1": 0.5,
+            "1,2": 0.2,
+            "2,0": 0.4,
+            "2,1": 0.4,
+            "2,2": 0.2,
+            "3,0": 0.1,
+            "3,1": 0.1,
+            "3,2": 0.1
+          },
+          "state": "grid=7x7;self=[0, 0];barriers=[]",
+          "step": 18,
+          "timestamp": "2026-08-26T22:30:26.985622+00:00",
+          "verdict": "truth"
+        }
+      },
+      {
+        "commit": "0dfb37abd88305174948d131c4b46b9d1634a7c6358ecf8d440e9725d08c8cbb",
+        "nonce": "19affd4c5f4c0b14baf46a834f246338",
+        "payload": {
+          "barrier_cell": null,
+          "capture_claim": [
+            1,
+            0
+          ],
+          "fallback": false,
+          "hint": "I am here",
+          "intent": "chase",
+          "move": "MOVE:S",
+          "position": [
+            1,
+            0
+          ],
+          "prompt_text": "",
+          "reasoning": "",
+          "response_seconds": 0.0,
+          "sender": "police",
+          "smell_grid": {
+            "0,0": 0.7,
+            "0,1": 0.5,
+            "0,2": 0.2,
+            "1,0": 0.8,
+            "1,1": 0.5,
+            "1,2": 0.2,
+            "2,0": 0.5,
+            "2,1": 0.5,
+            "2,2": 0.2,
+            "3,0": 0.2,
+            "3,1": 0.2,
+            "3,2": 0.2
+          },
+          "state": "grid=7x7;self=[1, 0];barriers=[]",
+          "step": 19,
+          "timestamp": "2026-08-26T22:30:28.811747+00:00",
+          "verdict": "truth"
+        }
+      },
+      {
+        "commit": "7218caa20a43efdf43a6886233f0ec7d10e5dc5d85650eac423c4234ec1df92f",
+        "nonce": "152fc9d270610992df42a257d73b3146",
+        "payload": {
+          "barrier_cell": null,
+          "capture_claim": [
+            0,
+            0
+          ],
+          "fallback": false,
+          "hint": "I am here",
+          "intent": "chase",
+          "move": "MOVE:N",
+          "position": [
+            0,
+            0
+          ],
+          "prompt_text": "",
+          "reasoning": "",
+          "response_seconds": 0.0,
+          "sender": "police",
+          "smell_grid": {
+            "0,0": 0.8,
+            "0,1": 0.5,
+            "0,2": 0.2,
+            "1,0": 0.7,
+            "1,1": 0.5,
+            "1,2": 0.2,
+            "2,0": 0.4,
+            "2,1": 0.4,
+            "2,2": 0.2,
+            "3,0": 0.1,
+            "3,1": 0.1,
+            "3,2": 0.1
+          },
+          "state": "grid=7x7;self=[0, 0];barriers=[]",
+          "step": 20,
+          "timestamp": "2026-08-26T22:30:30.625374+00:00",
+          "verdict": "truth"
+        }
+      },
+      {
+        "commit": "eff03f8899300a2d90133e0d7490097d8bb980b260baabc5e6bdf007e5943426",
+        "nonce": "271bc967a9d35af9453eaa31ddd2384f",
+        "payload": {
+          "barrier_cell": null,
+          "capture_claim": [
+            1,
+            0
+          ],
+          "fallback": false,
+          "hint": "I am here",
+          "intent": "chase",
+          "move": "MOVE:S",
+          "position": [
+            1,
+            0
+          ],
+          "prompt_text": "",
+          "reasoning": "",
+          "response_seconds": 0.0,
+          "sender": "police",
+          "smell_grid": {
+            "0,0": 0.7,
+            "0,1": 0.5,
+            "0,2": 0.2,
+            "1,0": 0.8,
+            "1,1": 0.5,
+            "1,2": 0.2,
+            "2,0": 0.5,
+            "2,1": 0.5,
+            "2,2": 0.2,
+            "3,0": 0.2,
+            "3,1": 0.2,
+            "3,2": 0.2
+          },
+          "state": "grid=7x7;self=[1, 0];barriers=[]",
+          "step": 21,
+          "timestamp": "2026-08-26T22:30:32.461977+00:00",
+          "verdict": "truth"
+        }
+      },
+      {
+        "commit": "5b5ce8046ff0d3754856daebb04506ad265f937fbff518d647bde3b7885dc456",
+        "nonce": "722aef0a8ad574007372f8015ebe2f01",
+        "payload": {
+          "barrier_cell": null,
+          "capture_claim": [
+            0,
+            0
+          ],
+          "fallback": false,
+          "hint": "I am here",
+          "intent": "chase",
+          "move": "MOVE:N",
+          "position": [
+            0,
+            0
+          ],
+          "prompt_text": "",
+          "reasoning": "",
+          "response_seconds": 0.0,
+          "sender": "police",
+          "smell_grid": {
+            "0,0": 0.8,
+            "0,1": 0.5,
+            "0,2": 0.2,
+            "1,0": 0.7,
+            "1,1": 0.5,
+            "1,2": 0.2,
+            "2,0": 0.4,
+            "2,1": 0.4,
+            "2,2": 0.2,
+            "3,0": 0.1,
+            "3,1": 0.1,
+            "3,2": 0.1
+          },
+          "state": "grid=7x7;self=[0, 0];barriers=[]",
+          "step": 22,
+          "timestamp": "2026-08-26T22:30:34.284016+00:00",
+          "verdict": "truth"
+        }
+      },
+      {
+        "commit": "6dc28c0a95994c441f86c9a18f3652b7535860b0ab1cb7a2db963cdf0983cca8",
+        "nonce": "48888b2019d9544c5069591cbf9168e4",
+        "payload": {
+          "barrier_cell": null,
+          "capture_claim": [
+            1,
+            0
+          ],
+          "fallback": false,
+          "hint": "I am here",
+          "intent": "chase",
+          "move": "MOVE:S",
+          "position": [
+            1,
+            0
+          ],
+          "prompt_text": "",
+          "reasoning": "",
+          "response_seconds": 0.0,
+          "sender": "police",
+          "smell_grid": {
+            "0,0": 0.7,
+            "0,1": 0.5,
+            "0,2": 0.2,
+            "1,0": 0.8,
+            "1,1": 0.5,
+            "1,2": 0.2,
+            "2,0": 0.5,
+            "2,1": 0.5,
+            "2,2": 0.2,
+            "3,0": 0.2,
+            "3,1": 0.2,
+            "3,2": 0.2
+          },
+          "state": "grid=7x7;self=[1, 0];barriers=[]",
+          "step": 23,
+          "timestamp": "2026-08-26T22:30:36.099694+00:00",
+          "verdict": "truth"
+        }
+      },
+      {
+        "commit": "888c0535b4893144f1b7a5946e3b4e0eebd8d8cd6e920c8bb71986724dd00517",
+        "nonce": "6544683e1db7d805c98e5446cfd13ea1",
+        "payload": {
+          "barrier_cell": null,
+          "capture_claim": [
+            0,
+            0
+          ],
+          "fallback": false,
+          "hint": "I am here",
+          "intent": "chase",
+          "move": "MOVE:N",
+          "position": [
+            0,
+            0
+          ],
+          "prompt_text": "",
+          "reasoning": "",
+          "response_seconds": 0.0,
+          "sender": "police",
+          "smell_grid": {
+            "0,0": 0.8,
+            "0,1": 0.5,
+            "0,2": 0.2,
+            "1,0": 0.7,
+            "1,1": 0.5,
+            "1,2": 0.2,
+            "2,0": 0.4,
+            "2,1": 0.4,
+            "2,2": 0.2,
+            "3,0": 0.1,
+            "3,1": 0.1,
+            "3,2": 0.1
+          },
+          "state": "grid=7x7;self=[0, 0];barriers=[]",
+          "step": 24,
+          "timestamp": "2026-08-26T22:30:37.913639+00:00",
+          "verdict": "truth"
+        }
+      },
+      {
+        "commit": "4185fce6cd9376ff31db22ccfa11699d73be8237f86607a3345cfb3b7cda9a1b",
+        "nonce": "b2c5b483c843a0e5e471f73bf7d203e3",
+        "payload": {
+          "barrier_cell": null,
+          "capture_claim": [
+            1,
+            0
+          ],
+          "fallback": false,
+          "hint": "I am here",
+          "intent": "chase",
+          "move": "MOVE:S",
+          "position": [
+            1,
+            0
+          ],
+          "prompt_text": "",
+          "reasoning": "",
+          "response_seconds": 0.0,
+          "sender": "police",
+          "smell_grid": {
+            "0,0": 0.7,
+            "0,1": 0.5,
+            "0,2": 0.2,
+            "1,0": 0.8,
+            "1,1": 0.5,
+            "1,2": 0.2,
+            "2,0": 0.5,
+            "2,1": 0.5,
+            "2,2": 0.2,
+            "3,0": 0.2,
+            "3,1": 0.2,
+            "3,2": 0.2
+          },
+          "state": "grid=7x7;self=[1, 0];barriers=[]",
+          "step": 25,
+          "timestamp": "2026-08-26T22:30:39.759862+00:00",
+          "verdict": "truth"
+        }
+      },
+      {
+        "commit": "874952e8efdf772275723aca8d102d544979a10c35982b333789b252f6d1566d",
+        "nonce": "086a523b6235efc6b0f3e12002f9599f",
+        "payload": {
+          "barrier_cell": null,
+          "capture_claim": [
+            0,
+            0
+          ],
+          "fallback": false,
+          "hint": "I am here",
+          "intent": "chase",
+          "move": "MOVE:N",
+          "position": [
+            0,
+            0
+          ],
+          "prompt_text": "",
+          "reasoning": "",
+          "response_seconds": 0.0,
+          "sender": "police",
+          "smell_grid": {
+            "0,0": 0.8,
+            "0,1": 0.5,
+            "0,2": 0.2,
+            "1,0": 0.7,
+            "1,1": 0.5,
+            "1,2": 0.2,
+            "2,0": 0.4,
+            "2,1": 0.4,
+            "2,2": 0.2,
+            "3,0": 0.1,
+            "3,1": 0.1,
+            "3,2": 0.1
+          },
+          "state": "grid=7x7;self=[0, 0];barriers=[]",
+          "step": 26,
+          "timestamp": "2026-08-26T22:30:41.562040+00:00",
+          "verdict": "truth"
+        }
+      },
+      {
+        "commit": "81b7c39d8f33a6861cff14e37dc0813a6ae226614728b947eefc847d9185aef8",
+        "nonce": "c047c5088200c9c4b35ee7b3f271d84c",
+        "payload": {
+          "barrier_cell": null,
+          "capture_claim": [
+            1,
+            0
+          ],
+          "fallback": false,
+          "hint": "I am here",
+          "intent": "chase",
+          "move": "MOVE:S",
+          "position": [
+            1,
+            0
+          ],
+          "prompt_text": "",
+          "reasoning": "",
+          "response_seconds": 0.0,
+          "sender": "police",
+          "smell_grid": {
+            "0,0": 0.7,
+            "0,1": 0.5,
+            "0,2": 0.2,
+            "1,0": 0.8,
+            "1,1": 0.5,
+            "1,2": 0.2,
+            "2,0": 0.5,
+            "2,1": 0.5,
+            "2,2": 0.2,
+            "3,0": 0.2,
+            "3,1": 0.2,
+            "3,2": 0.2
+          },
+          "state": "grid=7x7;self=[1, 0];barriers=[]",
+          "step": 27,
+          "timestamp": "2026-08-26T22:30:43.386755+00:00",
+          "verdict": "truth"
+        }
+      },
+      {
+        "commit": "ae9c8292fd725cf7454d9837b5c796912bd0c2f1328d7c1ac42647923acd2bd4",
+        "nonce": "6697fc2aa359c0175e95a8860f9266bb",
+        "payload": {
+          "barrier_cell": null,
+          "capture_claim": [
+            0,
+            0
+          ],
+          "fallback": false,
+          "hint": "I am here",
+          "intent": "chase",
+          "move": "MOVE:N",
+          "position": [
+            0,
+            0
+          ],
+          "prompt_text": "",
+          "reasoning": "",
+          "response_seconds": 0.0,
+          "sender": "police",
+          "smell_grid": {
+            "0,0": 0.8,
+            "0,1": 0.5,
+            "0,2": 0.2,
+            "1,0": 0.7,
+            "1,1": 0.5,
+            "1,2": 0.2,
+            "2,0": 0.4,
+            "2,1": 0.4,
+            "2,2": 0.2,
+            "3,0": 0.1,
+            "3,1": 0.1,
+            "3,2": 0.1
+          },
+          "state": "grid=7x7;self=[0, 0];barriers=[]",
+          "step": 28,
+          "timestamp": "2026-08-26T22:30:45.200713+00:00",
+          "verdict": "truth"
+        }
+      },
+      {
+        "commit": "cd41746d4fb5826e9944fb18816f38593f5c51b4b3cfac31a869c33e90b5393d",
+        "nonce": "ef7dca12d82f384da471dc25ea1e4733",
+        "payload": {
+          "barrier_cell": null,
+          "capture_claim": [
+            1,
+            0
+          ],
+          "fallback": false,
+          "hint": "I am here",
+          "intent": "chase",
+          "move": "MOVE:S",
+          "position": [
+            1,
+            0
+          ],
+          "prompt_text": "",
+          "reasoning": "",
+          "response_seconds": 0.0,
+          "sender": "police",
+          "smell_grid": {
+            "0,0": 0.7,
+            "0,1": 0.5,
+            "0,2": 0.2,
+            "1,0": 0.8,
+            "1,1": 0.5,
+            "1,2": 0.2,
+            "2,0": 0.5,
+            "2,1": 0.5,
+            "2,2": 0.2,
+            "3,0": 0.2,
+            "3,1": 0.2,
+            "3,2": 0.2
+          },
+          "state": "grid=7x7;self=[1, 0];barriers=[]",
+          "step": 29,
+          "timestamp": "2026-08-26T22:30:47.036923+00:00",
+          "verdict": "truth"
+        }
+      },
+      {
+        "commit": "ed3f7f0f90602943dd9e21b94309f6fae69b54454c25631b25b301d8d98238f0",
+        "nonce": "57b63c7d82b69cbc322518a70c461b22",
+        "payload": {
+          "barrier_cell": null,
+          "capture_claim": [
+            0,
+            0
+          ],
+          "fallback": false,
+          "hint": "I am here",
+          "intent": "chase",
+          "move": "MOVE:N",
+          "position": [
+            0,
+            0
+          ],
+          "prompt_text": "",
+          "reasoning": "",
+          "response_seconds": 0.0,
+          "sender": "police",
+          "smell_grid": {
+            "0,0": 0.8,
+            "0,1": 0.5,
+            "0,2": 0.2,
+            "1,0": 0.7,
+            "1,1": 0.5,
+            "1,2": 0.2,
+            "2,0": 0.4,
+            "2,1": 0.4,
+            "2,2": 0.2,
+            "3,0": 0.1,
+            "3,1": 0.1,
+            "3,2": 0.1
+          },
+          "state": "grid=7x7;self=[0, 0];barriers=[]",
+          "step": 30,
+          "timestamp": "2026-08-26T22:30:48.839829+00:00",
+          "verdict": "truth"
+        }
+      },
+      {
+        "commit": "d0ff7c8d1d4f543ce56f3ea5f370147c0baa3e7de55cd9abd6797c4aad3dd053",
+        "nonce": "43488f920b89f54bc2b8f41a8c5ac66e",
+        "payload": {
+          "barrier_cell": null,
+          "capture_claim": [
+            1,
+            0
+          ],
+          "fallback": false,
+          "hint": "I am here",
+          "intent": "chase",
+          "move": "MOVE:S",
+          "position": [
+            1,
+            0
+          ],
+          "prompt_text": "",
+          "reasoning": "",
+          "response_seconds": 0.0,
+          "sender": "police",
+          "smell_grid": {
+            "0,0": 0.7,
+            "0,1": 0.5,
+            "0,2": 0.2,
+            "1,0": 0.8,
+            "1,1": 0.5,
+            "1,2": 0.2,
+            "2,0": 0.5,
+            "2,1": 0.5,
+            "2,2": 0.2,
+            "3,0": 0.2,
+            "3,1": 0.2,
+            "3,2": 0.2
+          },
+          "state": "grid=7x7;self=[1, 0];barriers=[]",
+          "step": 31,
+          "timestamp": "2026-08-26T22:30:50.666803+00:00",
+          "verdict": "truth"
+        }
+      },
+      {
+        "commit": "8c5a8a3019947869f2a3972be2a0582ef5237b763c411db22ef58cbfe0bc9eb7",
+        "nonce": "d9311a4d38978254ab9bf616d444b132",
+        "payload": {
+          "barrier_cell": null,
+          "capture_claim": [
+            0,
+            0
+          ],
+          "fallback": false,
+          "hint": "I am here",
+          "intent": "chase",
+          "move": "MOVE:N",
+          "position": [
+            0,
+            0
+          ],
+          "prompt_text": "",
+          "reasoning": "",
+          "response_seconds": 0.0,
+          "sender": "police",
+          "smell_grid": {
+            "0,0": 0.8,
+            "0,1": 0.5,
+            "0,2": 0.2,
+            "1,0": 0.7,
+            "1,1": 0.5,
+            "1,2": 0.2,
+            "2,0": 0.4,
+            "2,1": 0.4,
+            "2,2": 0.2,
+            "3,0": 0.1,
+            "3,1": 0.1,
+            "3,2": 0.1
+          },
+          "state": "grid=7x7;self=[0, 0];barriers=[]",
+          "step": 32,
+          "timestamp": "2026-08-26T22:30:52.503699+00:00",
+          "verdict": "truth"
+        }
+      },
+      {
+        "commit": "ec789e3c1169773737601580fec1b636b3cb0285430d65f84e40116e31f7b519",
+        "nonce": "24104a1d9fcc0a784b48dec44d52a5a7",
+        "payload": {
+          "barrier_cell": null,
+          "capture_claim": [
+            1,
+            0
+          ],
+          "fallback": false,
+          "hint": "I am here",
+          "intent": "chase",
+          "move": "MOVE:S",
+          "position": [
+            1,
+            0
+          ],
+          "prompt_text": "",
+          "reasoning": "",
+          "response_seconds": 0.0,
+          "sender": "police",
+          "smell_grid": {
+            "0,0": 0.7,
+            "0,1": 0.5,
+            "0,2": 0.2,
+            "1,0": 0.8,
+            "1,1": 0.5,
+            "1,2": 0.2,
+            "2,0": 0.5,
+            "2,1": 0.5,
+            "2,2": 0.2,
+            "3,0": 0.2,
+            "3,1": 0.2,
+            "3,2": 0.2
+          },
+          "state": "grid=7x7;self=[1, 0];barriers=[]",
+          "step": 33,
+          "timestamp": "2026-08-26T22:30:54.318733+00:00",
+          "verdict": "truth"
+        }
+      },
+      {
+        "commit": "998ac9b1787bd6a787c227184460f15e9c7e8d4d5cf6761202de6fc0d023b8f2",
+        "nonce": "1f9fc5f5b39b537c5037d263f4fc7466",
+        "payload": {
+          "barrier_cell": null,
+          "capture_claim": [
+            0,
+            0
+          ],
+          "fallback": false,
+          "hint": "I am here",
+          "intent": "chase",
+          "move": "MOVE:N",
+          "position": [
+            0,
+            0
+          ],
+          "prompt_text": "",
+          "reasoning": "",
+          "response_seconds": 0.0,
+          "sender": "police",
+          "smell_grid": {
+            "0,0": 0.8,
+            "0,1": 0.5,
+            "0,2": 0.2,
+            "1,0": 0.7,
+            "1,1": 0.5,
+            "1,2": 0.2,
+            "2,0": 0.4,
+            "2,1": 0.4,
+            "2,2": 0.2,
+            "3,0": 0.1,
+            "3,1": 0.1,
+            "3,2": 0.1
+          },
+          "state": "grid=7x7;self=[0, 0];barriers=[]",
+          "step": 34,
+          "timestamp": "2026-08-26T22:30:56.136024+00:00",
+          "verdict": "truth"
+        }
+      },
+      {
+        "commit": "9b03c8d6e43d472ff4eb0dfd904d31bec6faa6e895ddd2753d17da0a0dc0af2f",
+        "nonce": "3c767588ea346bc9c2bc9d0b829fcc13",
+        "payload": {
+          "hint": "",
+          "intent": "chase",
+          "move": "STAY",
+          "position": [
+            0,
+            0
+          ],
+          "sender": "police",
+          "smell_grid": {
+            "0,0": 0.8,
+            "0,1": 0.5,
+            "0,2": 0.2,
+            "1,0": 0.6,
+            "1,1": 0.5,
+            "1,2": 0.2,
+            "2,0": 0.3,
+            "2,1": 0.3,
+            "2,2": 0.2
+          },
+          "state": "grid=7x7;self=[0, 0];barriers=[]",
+          "step": 35,
+          "timestamp": "2026-08-26T22:30:57.952053+00:00"
+        }
+      }
+    ],
+    "result_claim": {
+      "outcome": "escape",
+      "steps": 35
+    },
+    "sender": "police"
+  },
+  "turns": [
+    {
+      "ours": {
+        "commit": "a5f3d9dbf4f6f170f60c9d80854303c733a8ea470ca74b7752eb17e974301bcc",
+        "nonce": "7c5185ab9d6b596b9c16b12f9bf11022",
+        "payload": {
+          "hint": "south",
+          "intent": "lie",
+          "move": "MOVE:N",
+          "position": [
+            2,
+            3
+          ],
+          "state": "grid=7x7;self=[2, 3];barriers=[]",
+          "step": 1
+        }
+      },
+      "step": 1,
+      "theirs": {
+        "capture_claim": [
+          1,
+          0
+        ],
+        "commit": "f0b2188411f018dfaea1e27fad3750b51ceae6d99589ea5618a23edb2e62964a",
+        "hint": "I am here",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.5,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.8,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.5,
+          "2,1": 0.5,
+          "2,2": 0.2,
+          "3,0": 0.2,
+          "3,1": 0.2,
+          "3,2": 0.2
+        },
+        "timestamp": "2026-08-26T22:29:56.309276+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "d4bfdb3837dfbbefdc36e126da4d8b453107b0fd4beaf235e60289a38cac64d5",
+        "nonce": "5eee5fc6042dabf568ca02dbddde5a39",
+        "payload": {
+          "hint": "north",
+          "intent": "lie",
+          "move": "MOVE:S",
+          "position": [
+            3,
+            3
+          ],
+          "state": "grid=7x7;self=[3, 3];barriers=[]",
+          "step": 2
+        }
+      },
+      "step": 2,
+      "theirs": {
+        "capture_claim": [
+          0,
+          0
+        ],
+        "commit": "81bf1d403e49cd25bb3a618823284257e27bf1d966040699293b33749b528d6d",
+        "hint": "I am here",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.8,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.7,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.4,
+          "2,1": 0.4,
+          "2,2": 0.2,
+          "3,0": 0.1,
+          "3,1": 0.1,
+          "3,2": 0.1
+        },
+        "timestamp": "2026-08-26T22:29:57.841128+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "adfa343756ddaee06d7059b597f72c1791633675eca65d6c2024ce95c17f8d83",
+        "nonce": "c8c08578078b1395dbeea0e7ba275d8d",
+        "payload": {
+          "hint": "north",
+          "intent": "lie",
+          "move": "MOVE:S",
+          "position": [
+            4,
+            3
+          ],
+          "state": "grid=7x7;self=[4, 3];barriers=[]",
+          "step": 3
+        }
+      },
+      "step": 3,
+      "theirs": {
+        "capture_claim": [
+          1,
+          0
+        ],
+        "commit": "14d61f0b0ba6098c1bd4652499e25054a6b1d07fe0cb026b9123ea47ac602b7f",
+        "hint": "I am here",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.7,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.8,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.5,
+          "2,1": 0.5,
+          "2,2": 0.2,
+          "3,0": 0.2,
+          "3,1": 0.2,
+          "3,2": 0.2
+        },
+        "timestamp": "2026-08-26T22:29:59.669132+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "c070b5875c238bdf6492039fa6c90c4f7f03ea30e9d3d20a17d0f1a21073e812",
+        "nonce": "bc504aa3fd515ada4ce9d80927b242bc",
+        "payload": {
+          "hint": "north",
+          "intent": "lie",
+          "move": "MOVE:S",
+          "position": [
+            5,
+            3
+          ],
+          "state": "grid=7x7;self=[5, 3];barriers=[]",
+          "step": 4
+        }
+      },
+      "step": 4,
+      "theirs": {
+        "capture_claim": [
+          0,
+          0
+        ],
+        "commit": "6c862d09e7731c7df3f23807809f2f537ec11f93af5dcaf43de90a7e7040ef18",
+        "hint": "I am here",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.8,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.7,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.4,
+          "2,1": 0.4,
+          "2,2": 0.2,
+          "3,0": 0.1,
+          "3,1": 0.1,
+          "3,2": 0.1
+        },
+        "timestamp": "2026-08-26T22:30:01.488577+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "2c09d283c246f1759f502271962addbab8701bb5398c7942a900bb6df488ea99",
+        "nonce": "d7bcf998a596c0a2d9d9b65defdd133b",
+        "payload": {
+          "hint": "north",
+          "intent": "lie",
+          "move": "MOVE:S",
+          "position": [
+            6,
+            3
+          ],
+          "state": "grid=7x7;self=[6, 3];barriers=[]",
+          "step": 5
+        }
+      },
+      "step": 5,
+      "theirs": {
+        "capture_claim": [
+          1,
+          0
+        ],
+        "commit": "5ce7eb05463680376f4da01bbf0c75c2f0acf127c2502185e7304b847b800921",
+        "hint": "I am here",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.7,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.8,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.5,
+          "2,1": 0.5,
+          "2,2": 0.2,
+          "3,0": 0.2,
+          "3,1": 0.2,
+          "3,2": 0.2
+        },
+        "timestamp": "2026-08-26T22:30:03.285805+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "483c1ef951fef69b1d02da56fe6714b7d41db1166a4355dc4748b326d06bde2e",
+        "nonce": "6117dfc89ad8350bf06e5dcc86dc9ef6",
+        "payload": {
+          "hint": "west",
+          "intent": "lie",
+          "move": "MOVE:E",
+          "position": [
+            6,
+            4
+          ],
+          "state": "grid=7x7;self=[6, 4];barriers=[]",
+          "step": 6
+        }
+      },
+      "step": 6,
+      "theirs": {
+        "capture_claim": [
+          0,
+          0
+        ],
+        "commit": "1b6efc256dd6a795f4252c9a193ef623cd661fa8af7bdaeeef7f197d97ccd9d6",
+        "hint": "I am here",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.8,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.7,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.4,
+          "2,1": 0.4,
+          "2,2": 0.2,
+          "3,0": 0.1,
+          "3,1": 0.1,
+          "3,2": 0.1
+        },
+        "timestamp": "2026-08-26T22:30:05.121221+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "7eb9148316d38899d79e488c7bdd947422ce96c5572715594504ec6b5a68be4a",
+        "nonce": "db3c826437cfb1c521cb6bae28f8d63b",
+        "payload": {
+          "hint": "west",
+          "intent": "lie",
+          "move": "MOVE:E",
+          "position": [
+            6,
+            5
+          ],
+          "state": "grid=7x7;self=[6, 5];barriers=[]",
+          "step": 7
+        }
+      },
+      "step": 7,
+      "theirs": {
+        "capture_claim": [
+          1,
+          0
+        ],
+        "commit": "c10228e4b4b0cd52cc99ed084506e33a10fe0ea90dbeef65d961048fc4bb87ff",
+        "hint": "I am here",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.7,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.8,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.5,
+          "2,1": 0.5,
+          "2,2": 0.2,
+          "3,0": 0.2,
+          "3,1": 0.2,
+          "3,2": 0.2
+        },
+        "timestamp": "2026-08-26T22:30:06.931830+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "85f1c73a7b546adf894b04a00b0f8df6207f11b9c5819891f3eabcb1b6f1c230",
+        "nonce": "0f71cb0f02eb4ee68bcc26752fd984ef",
+        "payload": {
+          "hint": "west",
+          "intent": "lie",
+          "move": "MOVE:E",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 8
+        }
+      },
+      "step": 8,
+      "theirs": {
+        "capture_claim": [
+          0,
+          0
+        ],
+        "commit": "2c4b42a3ad7781d866df8531ad5bfdfe8c407772a2604f7646e35054195e4f9b",
+        "hint": "I am here",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.8,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.7,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.4,
+          "2,1": 0.4,
+          "2,2": 0.2,
+          "3,0": 0.1,
+          "3,1": 0.1,
+          "3,2": 0.1
+        },
+        "timestamp": "2026-08-26T22:30:08.752917+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "a013c604cb7f63a4b7311778fa1a56ae56d8daabe221999bda9b19dde325a64c",
+        "nonce": "74b2b626eaa02d9f8ab606aa629ba388",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 9
+        }
+      },
+      "step": 9,
+      "theirs": {
+        "capture_claim": [
+          1,
+          0
+        ],
+        "commit": "861883086370a7a3e3de815e14de97dea0716db5c022114355029427a1f07655",
+        "hint": "I am here",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.7,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.8,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.5,
+          "2,1": 0.5,
+          "2,2": 0.2,
+          "3,0": 0.2,
+          "3,1": 0.2,
+          "3,2": 0.2
+        },
+        "timestamp": "2026-08-26T22:30:10.591334+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "03964c7569b8c7b93c8931fc2ac37d929162a42d14249dacca276f8e3e234f39",
+        "nonce": "0a7b4e3359a202578978b98efe6068b8",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 10
+        }
+      },
+      "step": 10,
+      "theirs": {
+        "capture_claim": [
+          0,
+          0
+        ],
+        "commit": "b0815b3b9d1b342cfbf3637343ede7b02cad874c89784dc4abb6ea60123b7f86",
+        "hint": "I am here",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.8,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.7,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.4,
+          "2,1": 0.4,
+          "2,2": 0.2,
+          "3,0": 0.1,
+          "3,1": 0.1,
+          "3,2": 0.1
+        },
+        "timestamp": "2026-08-26T22:30:12.412523+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "edde5c3ef544a6008c41751b29cc123a34cb14a60b7a27f1694cdc27a042b558",
+        "nonce": "11bfb3d6ac4829b352090992ad71eb34",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 11
+        }
+      },
+      "step": 11,
+      "theirs": {
+        "capture_claim": [
+          1,
+          0
+        ],
+        "commit": "2419d694efd1d36f71dc19ba4532576b95bf71e2b9d12c59d3a0a79948cb3972",
+        "hint": "I am here",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.7,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.8,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.5,
+          "2,1": 0.5,
+          "2,2": 0.2,
+          "3,0": 0.2,
+          "3,1": 0.2,
+          "3,2": 0.2
+        },
+        "timestamp": "2026-08-26T22:30:14.246586+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "1d06050c53537ccecc6845b9e0ae5a8c50ea839039e58e31a8df2fca5616896c",
+        "nonce": "9826e94ad4537d0b93175d93e13f91d6",
+        "payload": {
+          "hint": "south",
+          "intent": "lie",
+          "move": "MOVE:N",
+          "position": [
+            5,
+            6
+          ],
+          "state": "grid=7x7;self=[5, 6];barriers=[]",
+          "step": 12
+        }
+      },
+      "step": 12,
+      "theirs": {
+        "capture_claim": [
+          0,
+          0
+        ],
+        "commit": "a881ebc5273e5231ef111f31e2ea908307963d77748ad134d68c9ee1e0b112e6",
+        "hint": "I am here",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.8,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.7,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.4,
+          "2,1": 0.4,
+          "2,2": 0.2,
+          "3,0": 0.1,
+          "3,1": 0.1,
+          "3,2": 0.1
+        },
+        "timestamp": "2026-08-26T22:30:16.097798+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "218a50ed69b08e1d6911bdc0cf5a3b1620f38abb1869a020df21bc8f51c11ed7",
+        "nonce": "bbf772380611c16d76806747812c8dbf",
+        "payload": {
+          "hint": "north",
+          "intent": "lie",
+          "move": "MOVE:S",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 13
+        }
+      },
+      "step": 13,
+      "theirs": {
+        "capture_claim": [
+          1,
+          0
+        ],
+        "commit": "ac44e8a439a0654a756825886fcac701a12c7721823cc2adc6390a951163eb41",
+        "hint": "I am here",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.7,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.8,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.5,
+          "2,1": 0.5,
+          "2,2": 0.2,
+          "3,0": 0.2,
+          "3,1": 0.2,
+          "3,2": 0.2
+        },
+        "timestamp": "2026-08-26T22:30:17.865896+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "4c27490ebb73753f235fee61a72b18f30e0fe4d06e9270d1e815fc5fc343096d",
+        "nonce": "82b015c4f95dc4d251451756b3678141",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 14
+        }
+      },
+      "step": 14,
+      "theirs": {
+        "capture_claim": [
+          0,
+          0
+        ],
+        "commit": "02b65a3daa460752df2cbb187adb83bf94348c4fb386c21197eb3ec6ebf959a6",
+        "hint": "I am here",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.8,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.7,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.4,
+          "2,1": 0.4,
+          "2,2": 0.2,
+          "3,0": 0.1,
+          "3,1": 0.1,
+          "3,2": 0.1
+        },
+        "timestamp": "2026-08-26T22:30:19.704331+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "050cf809af6e23e0117c0c8aeae9685c2fe64a683ae5355c911dc1c2f4cb6554",
+        "nonce": "b048afdf1ded189a09f5828633477aa9",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 15
+        }
+      },
+      "step": 15,
+      "theirs": {
+        "capture_claim": [
+          1,
+          0
+        ],
+        "commit": "3b6ec681fd59b8c0738bdc116ca192c25b4687e532a124a6575801627a6701c1",
+        "hint": "I am here",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.7,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.8,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.5,
+          "2,1": 0.5,
+          "2,2": 0.2,
+          "3,0": 0.2,
+          "3,1": 0.2,
+          "3,2": 0.2
+        },
+        "timestamp": "2026-08-26T22:30:21.529855+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "75ece8745f73ab6972f3186648fd6ae82b708ddfcad657e10e9d288735730045",
+        "nonce": "938e51f87bc688dd905bf3bfded2cb99",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 16
+        }
+      },
+      "step": 16,
+      "theirs": {
+        "capture_claim": [
+          0,
+          0
+        ],
+        "commit": "a5c8afc25fc0abcdae95968a9b327cc5bdcf1fa70dadf0cf6c183d0dca80d14a",
+        "hint": "I am here",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.8,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.7,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.4,
+          "2,1": 0.4,
+          "2,2": 0.2,
+          "3,0": 0.1,
+          "3,1": 0.1,
+          "3,2": 0.1
+        },
+        "timestamp": "2026-08-26T22:30:23.338779+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "801e6a07483e1930bd9f6e21a97a7ef9edb5baa09bfa2a39cd79cb30f5b12bdf",
+        "nonce": "b26f4252b61d9ce712ee1c6657d70724",
+        "payload": {
+          "hint": "south",
+          "intent": "lie",
+          "move": "MOVE:N",
+          "position": [
+            5,
+            6
+          ],
+          "state": "grid=7x7;self=[5, 6];barriers=[]",
+          "step": 17
+        }
+      },
+      "step": 17,
+      "theirs": {
+        "capture_claim": [
+          1,
+          0
+        ],
+        "commit": "36d11278c53b6c8555088e35a10b421f3d6358a3a639b4b3b0a5df56c4768dc3",
+        "hint": "I am here",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.7,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.8,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.5,
+          "2,1": 0.5,
+          "2,2": 0.2,
+          "3,0": 0.2,
+          "3,1": 0.2,
+          "3,2": 0.2
+        },
+        "timestamp": "2026-08-26T22:30:25.161383+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "dc30636720325f415b1fc9c1b3b1865c612ad7b16080785181e03d6ccce389dd",
+        "nonce": "d36b95a08a4bf51d4a45bb7fea148528",
+        "payload": {
+          "hint": "north",
+          "intent": "lie",
+          "move": "MOVE:S",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 18
+        }
+      },
+      "step": 18,
+      "theirs": {
+        "capture_claim": [
+          0,
+          0
+        ],
+        "commit": "9ff7a143bf6f3ce2de52fa09a757b7d9eb57d4398a2d62a0720839ec09dd4ad3",
+        "hint": "I am here",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.8,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.7,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.4,
+          "2,1": 0.4,
+          "2,2": 0.2,
+          "3,0": 0.1,
+          "3,1": 0.1,
+          "3,2": 0.1
+        },
+        "timestamp": "2026-08-26T22:30:26.985622+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "9b329875ba1131d6d7d1a3b561bde62711ade5cd132261d503f7a988f02b16e8",
+        "nonce": "03685e35ba769d0f3bd0b271fcb68df8",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 19
+        }
+      },
+      "step": 19,
+      "theirs": {
+        "capture_claim": [
+          1,
+          0
+        ],
+        "commit": "0dfb37abd88305174948d131c4b46b9d1634a7c6358ecf8d440e9725d08c8cbb",
+        "hint": "I am here",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.7,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.8,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.5,
+          "2,1": 0.5,
+          "2,2": 0.2,
+          "3,0": 0.2,
+          "3,1": 0.2,
+          "3,2": 0.2
+        },
+        "timestamp": "2026-08-26T22:30:28.811747+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "f661a1e3efe676eb00eb42abc5e92338c0ff5a22b6abff55ee03518d8e1cd972",
+        "nonce": "0a9774e9f67e9b607d9d2a9aba74ade4",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 20
+        }
+      },
+      "step": 20,
+      "theirs": {
+        "capture_claim": [
+          0,
+          0
+        ],
+        "commit": "7218caa20a43efdf43a6886233f0ec7d10e5dc5d85650eac423c4234ec1df92f",
+        "hint": "I am here",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.8,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.7,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.4,
+          "2,1": 0.4,
+          "2,2": 0.2,
+          "3,0": 0.1,
+          "3,1": 0.1,
+          "3,2": 0.1
+        },
+        "timestamp": "2026-08-26T22:30:30.625374+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "838f0d091f3dc07e8f790f418fe9a3ab58e99bdfc2463d2fe4c79877672894a7",
+        "nonce": "c96820793de6ed5ee4a818d27ce17fcc",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 21
+        }
+      },
+      "step": 21,
+      "theirs": {
+        "capture_claim": [
+          1,
+          0
+        ],
+        "commit": "eff03f8899300a2d90133e0d7490097d8bb980b260baabc5e6bdf007e5943426",
+        "hint": "I am here",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.7,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.8,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.5,
+          "2,1": 0.5,
+          "2,2": 0.2,
+          "3,0": 0.2,
+          "3,1": 0.2,
+          "3,2": 0.2
+        },
+        "timestamp": "2026-08-26T22:30:32.461977+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "19f07b55d4a2a03e32a5618cedcf3ff0112d2a06c25b6aecedc3d021d56a077d",
+        "nonce": "e006813a7d8784b9d4dc9da9684da049",
+        "payload": {
+          "hint": "south",
+          "intent": "lie",
+          "move": "MOVE:N",
+          "position": [
+            5,
+            6
+          ],
+          "state": "grid=7x7;self=[5, 6];barriers=[]",
+          "step": 22
+        }
+      },
+      "step": 22,
+      "theirs": {
+        "capture_claim": [
+          0,
+          0
+        ],
+        "commit": "5b5ce8046ff0d3754856daebb04506ad265f937fbff518d647bde3b7885dc456",
+        "hint": "I am here",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.8,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.7,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.4,
+          "2,1": 0.4,
+          "2,2": 0.2,
+          "3,0": 0.1,
+          "3,1": 0.1,
+          "3,2": 0.1
+        },
+        "timestamp": "2026-08-26T22:30:34.284016+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "b8452464a0bbdac3a490512c87a514bd7c8d16007499a6b556dbbd1b062776da",
+        "nonce": "1a3096e3eb853f1c8ba2715bf6ea493a",
+        "payload": {
+          "hint": "north",
+          "intent": "lie",
+          "move": "MOVE:S",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 23
+        }
+      },
+      "step": 23,
+      "theirs": {
+        "capture_claim": [
+          1,
+          0
+        ],
+        "commit": "6dc28c0a95994c441f86c9a18f3652b7535860b0ab1cb7a2db963cdf0983cca8",
+        "hint": "I am here",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.7,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.8,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.5,
+          "2,1": 0.5,
+          "2,2": 0.2,
+          "3,0": 0.2,
+          "3,1": 0.2,
+          "3,2": 0.2
+        },
+        "timestamp": "2026-08-26T22:30:36.099694+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "56249e15b6e274e505feb9ad89a25add1456cba3a45f9bfc36a18c40bec0d2db",
+        "nonce": "e1cd0245c2dc0ed5fda82efb2c22188f",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 24
+        }
+      },
+      "step": 24,
+      "theirs": {
+        "capture_claim": [
+          0,
+          0
+        ],
+        "commit": "888c0535b4893144f1b7a5946e3b4e0eebd8d8cd6e920c8bb71986724dd00517",
+        "hint": "I am here",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.8,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.7,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.4,
+          "2,1": 0.4,
+          "2,2": 0.2,
+          "3,0": 0.1,
+          "3,1": 0.1,
+          "3,2": 0.1
+        },
+        "timestamp": "2026-08-26T22:30:37.913639+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "ccfc32d3c7b7ecf6386313ea00f3fbadb93cb1659f6b9b94ff9d80726bbc4ec8",
+        "nonce": "37e769f3be6bd9c873d08770297e59b3",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 25
+        }
+      },
+      "step": 25,
+      "theirs": {
+        "capture_claim": [
+          1,
+          0
+        ],
+        "commit": "4185fce6cd9376ff31db22ccfa11699d73be8237f86607a3345cfb3b7cda9a1b",
+        "hint": "I am here",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.7,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.8,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.5,
+          "2,1": 0.5,
+          "2,2": 0.2,
+          "3,0": 0.2,
+          "3,1": 0.2,
+          "3,2": 0.2
+        },
+        "timestamp": "2026-08-26T22:30:39.759862+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "8090c44f34db28c785546bfecf187214b3db6e0285f10b7a7770d7a676c66df1",
+        "nonce": "0c62c4f278b64ebb91ba5ce4f8d77d8a",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 26
+        }
+      },
+      "step": 26,
+      "theirs": {
+        "capture_claim": [
+          0,
+          0
+        ],
+        "commit": "874952e8efdf772275723aca8d102d544979a10c35982b333789b252f6d1566d",
+        "hint": "I am here",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.8,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.7,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.4,
+          "2,1": 0.4,
+          "2,2": 0.2,
+          "3,0": 0.1,
+          "3,1": 0.1,
+          "3,2": 0.1
+        },
+        "timestamp": "2026-08-26T22:30:41.562040+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "ba56d94c2dd747d49ccd06d17c07bc44e3b1af339d69ed5bdfa6a94c080311e7",
+        "nonce": "692ced48099dceaa64d55f504da61e98",
+        "payload": {
+          "hint": "south",
+          "intent": "lie",
+          "move": "MOVE:N",
+          "position": [
+            5,
+            6
+          ],
+          "state": "grid=7x7;self=[5, 6];barriers=[]",
+          "step": 27
+        }
+      },
+      "step": 27,
+      "theirs": {
+        "capture_claim": [
+          1,
+          0
+        ],
+        "commit": "81b7c39d8f33a6861cff14e37dc0813a6ae226614728b947eefc847d9185aef8",
+        "hint": "I am here",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.7,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.8,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.5,
+          "2,1": 0.5,
+          "2,2": 0.2,
+          "3,0": 0.2,
+          "3,1": 0.2,
+          "3,2": 0.2
+        },
+        "timestamp": "2026-08-26T22:30:43.386755+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "64069a19102cc80be03f75cfbce7dbf96920100f20a5623922c30eb70dce52cf",
+        "nonce": "02f1366e6c5c38a68cba13de61e3b185",
+        "payload": {
+          "hint": "north",
+          "intent": "lie",
+          "move": "MOVE:S",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 28
+        }
+      },
+      "step": 28,
+      "theirs": {
+        "capture_claim": [
+          0,
+          0
+        ],
+        "commit": "ae9c8292fd725cf7454d9837b5c796912bd0c2f1328d7c1ac42647923acd2bd4",
+        "hint": "I am here",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.8,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.7,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.4,
+          "2,1": 0.4,
+          "2,2": 0.2,
+          "3,0": 0.1,
+          "3,1": 0.1,
+          "3,2": 0.1
+        },
+        "timestamp": "2026-08-26T22:30:45.200713+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "f6a1a25a23f6337cb6b149093a25802c0db8a8d534fc7ecdc2f176951ae8714d",
+        "nonce": "d18c598bcdc938daa57cbbd3fd76b3a0",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 29
+        }
+      },
+      "step": 29,
+      "theirs": {
+        "capture_claim": [
+          1,
+          0
+        ],
+        "commit": "cd41746d4fb5826e9944fb18816f38593f5c51b4b3cfac31a869c33e90b5393d",
+        "hint": "I am here",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.7,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.8,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.5,
+          "2,1": 0.5,
+          "2,2": 0.2,
+          "3,0": 0.2,
+          "3,1": 0.2,
+          "3,2": 0.2
+        },
+        "timestamp": "2026-08-26T22:30:47.036923+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "66fdda7b0507f784ba586729b5f145a7e37fddee35cde00db1ca7729cbc468a0",
+        "nonce": "af5fe3bb275dd3da1bcbf8218972a234",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 30
+        }
+      },
+      "step": 30,
+      "theirs": {
+        "capture_claim": [
+          0,
+          0
+        ],
+        "commit": "ed3f7f0f90602943dd9e21b94309f6fae69b54454c25631b25b301d8d98238f0",
+        "hint": "I am here",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.8,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.7,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.4,
+          "2,1": 0.4,
+          "2,2": 0.2,
+          "3,0": 0.1,
+          "3,1": 0.1,
+          "3,2": 0.1
+        },
+        "timestamp": "2026-08-26T22:30:48.839829+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "6c22b3ea1f250ca934a68489d29a408bc4fc7ba5090ae607e0ee4559829f5acf",
+        "nonce": "7d340360da928ed96f1433b6d66d8c8a",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 31
+        }
+      },
+      "step": 31,
+      "theirs": {
+        "capture_claim": [
+          1,
+          0
+        ],
+        "commit": "d0ff7c8d1d4f543ce56f3ea5f370147c0baa3e7de55cd9abd6797c4aad3dd053",
+        "hint": "I am here",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.7,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.8,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.5,
+          "2,1": 0.5,
+          "2,2": 0.2,
+          "3,0": 0.2,
+          "3,1": 0.2,
+          "3,2": 0.2
+        },
+        "timestamp": "2026-08-26T22:30:50.666803+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "063fb237c69f422a190c0b98be196f9331002cb4bc87126151439601eceb6e82",
+        "nonce": "2edcff00357d3cc2f98887396f3b0cd5",
+        "payload": {
+          "hint": "south",
+          "intent": "lie",
+          "move": "MOVE:N",
+          "position": [
+            5,
+            6
+          ],
+          "state": "grid=7x7;self=[5, 6];barriers=[]",
+          "step": 32
+        }
+      },
+      "step": 32,
+      "theirs": {
+        "capture_claim": [
+          0,
+          0
+        ],
+        "commit": "8c5a8a3019947869f2a3972be2a0582ef5237b763c411db22ef58cbfe0bc9eb7",
+        "hint": "I am here",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.8,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.7,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.4,
+          "2,1": 0.4,
+          "2,2": 0.2,
+          "3,0": 0.1,
+          "3,1": 0.1,
+          "3,2": 0.1
+        },
+        "timestamp": "2026-08-26T22:30:52.503699+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "f76e424092eabb59c1cdedce1c586fd814cc25aaf57df600678d2ba2ac333de1",
+        "nonce": "11dabcd929bfa193a354d581489dc1b9",
+        "payload": {
+          "hint": "north",
+          "intent": "lie",
+          "move": "MOVE:S",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 33
+        }
+      },
+      "step": 33,
+      "theirs": {
+        "capture_claim": [
+          1,
+          0
+        ],
+        "commit": "ec789e3c1169773737601580fec1b636b3cb0285430d65f84e40116e31f7b519",
+        "hint": "I am here",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.7,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.8,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.5,
+          "2,1": 0.5,
+          "2,2": 0.2,
+          "3,0": 0.2,
+          "3,1": 0.2,
+          "3,2": 0.2
+        },
+        "timestamp": "2026-08-26T22:30:54.318733+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "210294383668c05b75d7d07fc98527ad458003cb30399dd0e9c8da5a74e46cb1",
+        "nonce": "a2d6c35f733964981744549915e7ffe0",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 34
+        }
+      },
+      "step": 34,
+      "theirs": {
+        "capture_claim": [
+          0,
+          0
+        ],
+        "commit": "998ac9b1787bd6a787c227184460f15e9c7e8d4d5cf6761202de6fc0d023b8f2",
+        "hint": "I am here",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.8,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.7,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.4,
+          "2,1": 0.4,
+          "2,2": 0.2,
+          "3,0": 0.1,
+          "3,1": 0.1,
+          "3,2": 0.1
+        },
+        "timestamp": "2026-08-26T22:30:56.136024+00:00"
+      }
+    },
+    {
+      "ours": {
+        "commit": "02467f6ce6d986bae57b407ac2e4af19be6a0886675f292c744d40cddb131119",
+        "nonce": "ce7c7a78d48c824e0ad4ed36a6b5defe",
+        "payload": {
+          "hint": "stay",
+          "intent": "truth",
+          "move": "MOVE:STAY",
+          "position": [
+            6,
+            6
+          ],
+          "state": "grid=7x7;self=[6, 6];barriers=[]",
+          "step": 35
+        }
+      },
+      "step": 35,
+      "theirs": {
+        "commit": "9b03c8d6e43d472ff4eb0dfd904d31bec6faa6e895ddd2753d17da0a0dc0af2f",
+        "hint": "",
+        "sender": "police",
+        "smell_grid": {
+          "0,0": 0.8,
+          "0,1": 0.5,
+          "0,2": 0.2,
+          "1,0": 0.6,
+          "1,1": 0.5,
+          "1,2": 0.2,
+          "2,0": 0.3,
+          "2,1": 0.3,
+          "2,2": 0.2
+        },
+        "timestamp": "2026-08-26T22:30:57.952053+00:00"
+      }
+    }
+  ],
+  "wire_shape": "reference-v3"
+}
