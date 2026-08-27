@@ -52,3 +52,30 @@ def test_it_counts_series_played_not_including_the_next_one():
     played = ["aviayeli-vs-bb-ai-12", "ZeroOne0-vs-aviayeli"]
 
     assert build_declaration()["counted_games_played"] == len(played)
+
+
+# --- the WIRE, which is what the opponent actually records -------------------
+
+def test_the_greeting_carries_counted_games_played():
+    """SMNGRP05 verify this from the wire, not from the attachment: "what
+    your greeting actually carries is what our reporter records".
+
+    build_declaration carrying the field is NOT enough. `identity_block`
+    cherry-picks a subset for `negotiate`, and the field was not in it -- so
+    the artifact would have said 2 while the handshake said nothing, their
+    reader would have defaulted it to 0, and the two sides would have filed
+    0 and 3 for one counted match. That is the bb-ai-12 failure exactly.
+    """
+    from mcp_server.reference_surface import identity_block
+
+    assert identity_block("police")["counted_games_played"] == COUNTED
+    assert identity_block("thief")["counted_games_played"] == COUNTED
+
+
+def test_the_wire_and_the_artifact_agree():
+    """A config left at one value while the greeting carries another is the
+    split SMNGRP05 warned produces two reports that disagree."""
+    from mcp_server.reference_surface import identity_block
+
+    assert (identity_block("police")["counted_games_played"]
+            == build_declaration()["counted_games_played"])

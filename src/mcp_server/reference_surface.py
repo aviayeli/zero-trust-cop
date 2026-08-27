@@ -40,6 +40,11 @@ def identity_block(role: str, config_root: str | None = None) -> dict:
         "group_id": declared["group_name"],
         "group_name": declared["group_name"],
         "members": declared["members"],
+        # The opponent records what the GREETING carries, not what our
+        # artifact says. Carrying it only in the declaration would have the
+        # attachment read 2 while the handshake read nothing, and a reader
+        # that defaults a missing field to 0 files the disagreement.
+        "counted_games_played": declared["counted_games_played"],
         "wire_shape": WIRE_SHAPE,
         "role": role,
     }
