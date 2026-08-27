@@ -86,7 +86,7 @@ def test_an_audit_carries_its_nonces():
 
 def test_an_audit_with_no_records_is_refused():
     assert wire_v3_session.validate_audit_payload(
-        {"sender": "police", "records": [], "result_claim": {}}
+        {"sender": "police", "records": [], "result_claim": "survival"}
     ) == "records: required non-empty list"
 
 

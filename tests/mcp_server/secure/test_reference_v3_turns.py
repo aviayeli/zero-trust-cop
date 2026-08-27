@@ -100,7 +100,7 @@ def test_a_tampered_record_in_the_agreed_shape_is_named_not_a_crash(app):
     nonce = "ab"
     result = asyncio.run(app.submit_audit({
         "sender": "thief",
-        "result_claim": {},
+        "result_claim": "survival",
         "records": [
             {"payload": good, "nonce": nonce, "commit": interop.commit(good, nonce)},
             {"payload": {"step": 2, "move": "MOVE:S"}, "nonce": nonce,
@@ -115,7 +115,7 @@ def test_a_tampered_record_in_the_agreed_shape_is_named_not_a_crash(app):
 def test_a_tampered_record_is_named_even_with_no_step_anywhere(app):
     """Fall back to position in the chain rather than raising."""
     result = asyncio.run(app.submit_audit({
-        "sender": "thief", "result_claim": {},
+        "sender": "thief", "result_claim": "survival",
         "records": [{"payload": {"move": "MOVE:N"}, "nonce": "ab",
                      "commit": "c" * 64}],
     }))
@@ -126,7 +126,7 @@ def test_a_tampered_record_is_named_even_with_no_step_anywhere(app):
 
 def test_a_malformed_audit_is_refused_before_rehashing(app):
     result = asyncio.run(app.submit_audit(
-        {"sender": "thief", "records": [], "result_claim": {}}))
+        {"sender": "thief", "records": [], "result_claim": "survival"}))
 
     assert result["status"] == "refused"
     assert result["reason"] == "records: required non-empty list"

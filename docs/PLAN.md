@@ -22,13 +22,13 @@ invariants; where it and a phase document disagree, this file wins.
   and `log_shape.py` out of `replay_match.py`, `mime_report.py` out of
   `email_sender.py`, `action_buffer.py` out of `match_state.py`,
   `match_report.py` out of `run_local_mcp_match.py`. The longest tracked
-  module is `reporting/settlement.py` at 150 lines.
+  module is `scripts/netcheck.py` at 150 lines.
 - **No hardcoded hyperparameters**: every tunable lives in `config/game.json`
   (shared contract) or `config/<role>/game.toml` (per-peer strategy and
   networking). `engine/config.py` and `strategy/settings.py` are the only
   modules permitted to know those paths.
 - **Strict TDD**: every module below was specified precisely enough that a
-  failing test could be written before it existed. Current state: **1621 tests
+  failing test could be written before it existed. Current state: **1668 tests
   passing**.
 
 ## FR5 Turn-Resolution & Tie-Break Rule (locked)
@@ -106,7 +106,7 @@ zero-trust-cop/
 │       ├── board_agreement.py   # pre-match board/axis check (§2, audit T-1)
 │       ├── opponent_pool.py     # weighted per-episode opponent selection
 │       └── train_diverse.py     # the shipped opponent-diverse trainer
-└── tests/                       # 1621 tests, mirroring the src/ layout
+└── tests/                       # 1668 tests, mirroring the src/ layout
 ```
 
 ## 1. Engine Layer — Module Responsibilities & Interfaces
@@ -1129,7 +1129,7 @@ close it.
 
 Every module was built test-first per `CLAUDE.md`; `docs/TODO.md` records the
 sequencing and the evidence. The suite mirrors `src/` and currently stands at
-**1621 passing tests**. The load-bearing cases, by layer:
+**1668 passing tests**. The load-bearing cases, by layer:
 
 - **Engine** — the six FR5 scenarios (both unobstructed, bounds-blocked,
   barrier-blocked, same-cell capture, swap capture, adjacent near-miss), plus

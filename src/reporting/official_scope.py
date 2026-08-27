@@ -22,6 +22,8 @@ import hashlib
 import json
 from datetime import datetime, timedelta, timezone
 
+from reporting.series_tie import award_series_tie, winner_of
+
 # Appendix-F role vocabulary. Deliberately NOT settlement.py's police -> cop
 # alias: that alias belongs to the historical scope and leaking it here would
 # change the official digest.
@@ -57,14 +59,6 @@ def _earned(captured: bool, scoring: dict) -> dict:
     return {POLICE: scoring["survival_cop"], THIEF: scoring["survival_thief"]}
 
 
-def _winner(score: dict):
-    """The higher-scoring group, or None on a tie."""
-    ranked = sorted(score.items(), key=lambda pair: pair[1], reverse=True)
-    if len(ranked) > 1 and ranked[0][1] == ranked[1][1]:
-        return None
-    return ranked[0][0]
-
-
 def _row(game: dict, log: dict, config: dict, groups: tuple, commits: dict) -> dict:
     """One Appendix-F sub-game row, every value recomputed."""
     us, them = groups
@@ -72,7 +66,7 @@ def _row(game: dict, log: dict, config: dict, groups: tuple, commits: dict) -> d
     their_role = THIEF if our_role == POLICE else POLICE
     earned = _earned(game["captured"], config["scoring"])
     score = {us: earned[our_role], them: earned[their_role]}
-    winner = _winner(score)
+    winner = winner_of(score)
     stamps = _stamps(log)
     filename = f"log_{config_game_id(config, groups)}_g0{game['game_number']}.json"
     return {
@@ -96,7 +90,7 @@ def config_game_id(config: dict, groups: tuple) -> str:
     return "-vs-".join(sorted(config.get("agreed_between") or groups))
 
 
-def _aggregate(rows: list, groups: tuple) -> dict:
+def _aggregate(rows: list, groups: tuple, scoring: dict) -> dict:
     total = dict.fromkeys(groups, 0)
     won = dict.fromkeys(groups, 0)
     ties = 0
@@ -107,7 +101,9 @@ def _aggregate(rows: list, groups: tuple) -> dict:
             ties += 1
         else:
             won[row["winner_group"]] += 1
-    overall = _winner(total)
+    # PRD 21 Part 3: same award, same trigger, so both scopes agree.
+    total = award_series_tie(total, scoring["tie_score"])
+    overall = winner_of(total)
     return {
         "series_tie": overall is None,
         "sub_games_won": won,
@@ -128,7 +124,7 @@ def build(result: dict, config: dict, logs: dict, their_commit: str) -> dict:
         for game in result["games"]
     ]
     return {
-        "aggregate": _aggregate(rows, (us, them)),
+        "aggregate": _aggregate(rows, (us, them), config["scoring"]),
         "game_id": result["game_id"],
         "sub_games": rows,
     }

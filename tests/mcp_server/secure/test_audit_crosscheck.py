@@ -36,7 +36,7 @@ def _record(step, move="MOVE:N", nonce="112233445566778899aabbccddeeff00"):
 
 def _audit(app, records, sender="thief"):
     return asyncio.run(app.submit_audit({
-        "sender": sender, "records": records, "result_claim": {},
+        "sender": sender, "records": records, "result_claim": "survival",
     }))
 
 

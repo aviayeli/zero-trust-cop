@@ -13,6 +13,7 @@ the arity is part of the contract, not an implementation detail.
 
 from __future__ import annotations
 
+from mcp_server import wire_vocab
 from mcp_server.wire_v3 import ACCEPT, _check, _sender_ok
 
 AUDIT_REQUIRED = ("sender", "records", "result_claim")
@@ -58,10 +59,19 @@ def validate_audit_payload(payload) -> str:
     ``result_claim`` is what this side believes the sub-game ended as. The
     opponent's audit settles it -- never the claim.
     """
+    # PRD 21 Part 2: an AUDIT is a filing by a TEAM, and the role alternates
+    # every sub-game -- so a role there does not identify who filed. Both
+    # spellings are accepted, and the terminal word is read through the
+    # cross-group vocabulary. The turn-level sender rule in `wire_v3` is
+    # deliberately NOT relaxed: that one names a seat and is inside the
+    # hashed turn payload.
     verdict = _check(payload, {
-        "sender": (_sender_ok, "sender: required 'police' | 'thief'"),
+        "sender": (wire_vocab.sender_ok,
+                   "sender: required a non-empty role or group id"),
         "records": (_records_ok, "records: required non-empty list"),
-        "result_claim": (lambda v: isinstance(v, dict), "result_claim: required object"),
+        "result_claim": (lambda v: wire_vocab.outcome_of(v) is not None,
+                         "result_claim: required 'capture' | 'survival' | "
+                         "'timeout' (string or {outcome: ...})"),
     })
     if verdict != ACCEPT:
         return verdict

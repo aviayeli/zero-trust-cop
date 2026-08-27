@@ -60,7 +60,7 @@ def test_a_REFUSED_audit_is_not_retained(app):
     """Refusal happens before any state change, as everywhere else on this
     surface — a malformed payload must not enter the record."""
     asyncio.run(app.submit_audit({"sender": "thief", "records": [],
-                                  "result_claim": {}}))
+                                  "result_claim": "survival"}))
 
     assert app.audits == []
 

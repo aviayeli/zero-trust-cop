@@ -49,7 +49,7 @@ def _audit(**overrides):
     payload = {"sender": "thief",
                "records": [{"payload": record, "nonce": nonce,
                             "commit": interop.commit(record, nonce)}],
-               "result_claim": {"outcome": "ongoing"}}
+               "result_claim": {"outcome": "survival"}}
     payload.update(overrides)
     return payload
 

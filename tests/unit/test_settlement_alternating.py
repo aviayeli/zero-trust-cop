@@ -60,14 +60,23 @@ def test_the_same_outcome_scores_to_the_OTHER_group_when_we_swapped(config):
 
 
 def test_the_aggregate_adds_up_across_swapped_sides(config):
+    """Capture as cop then capture as thief is 20 + 5 on BOTH sides -- a level
+    series, so Appendix F's tie award applies (PRD 21 Part 3).
+
+    This test previously expected 25 and silently encoded the missing rule:
+    two teams would have filed 25 and 27 for one match. The award is now part
+    of the expectation rather than absent from it.
+    """
     scoring = config["scoring"]
     consensus = _consensus(config, [_game(1, True, our_role="cop"),
                                     _game(2, True, our_role="thief")])
+    earned = scoring["capture_cop"] + scoring["capture_thief"]
+    awarded = earned + scoring["tie_score"]
 
-    assert consensus["aggregate"]["total_score"][US] == \
-        scoring["capture_cop"] + scoring["capture_thief"]
-    assert consensus["aggregate"]["total_score"][THEM] == \
-        scoring["capture_thief"] + scoring["capture_cop"]
+    assert consensus["aggregate"]["total_score"][US] == awarded
+    assert consensus["aggregate"]["total_score"][THEM] == awarded
+    assert consensus["aggregate"]["series_tie"] is True
+    assert consensus["aggregate"]["winner_group"] is None
 
 
 def test_the_wire_spelling_police_is_accepted_in_a_row(config):

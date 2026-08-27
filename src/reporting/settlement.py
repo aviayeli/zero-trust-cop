@@ -21,6 +21,7 @@ which is exactly what ``test_settlement`` pins by building both sides.
 from __future__ import annotations
 
 from mcp_server import interop
+from reporting.series_tie import award_series_tie, winner_of
 
 # The five keys the hashed sub-game row carries. NOT six: `tie` belongs to the
 # document row, never to the preimage -- every hash ever settled live
@@ -58,15 +59,6 @@ def _sub_game_score(game: dict, scoring: dict, roles: dict) -> dict:
     return {roles[role]: points for role, points in earned.items()}
 
 
-def _winner(score: dict) -> str | None:
-    """The higher-scoring group, or None on a tie (which is what makes the
-    document row's ``tie`` derivable rather than worth signing)."""
-    ranked = sorted(score.items(), key=lambda pair: pair[1], reverse=True)
-    if len(ranked) > 1 and ranked[0][1] == ranked[1][1]:
-        return None
-    return ranked[0][0]
-
-
 def _roles_for(game: dict, group_id: str, opponent_id: str,
                series_roles: dict) -> dict:
     """The side-to-group map for THIS sub-game.
@@ -94,12 +86,12 @@ def _sub_game_row(game: dict, scoring: dict, roles: dict) -> dict:
         "sub_game_number": game["game_number"],
         "roles": roles,
         "result": game["terminal_reason"],
-        "winner_group": _winner(score),
+        "winner_group": winner_of(score),
         "score": score,
     }
 
 
-def _aggregate(rows: list, groups: tuple) -> dict:
+def _aggregate(rows: list, groups: tuple, scoring: dict) -> dict:
     total = dict.fromkeys(groups, 0)
     won = dict.fromkeys(groups, 0)
     ties = 0
@@ -110,7 +102,10 @@ def _aggregate(rows: list, groups: tuple) -> dict:
             ties += 1
         else:
             won[row["winner_group"]] += 1
-    winner = _winner(total)
+    # PRD 21 Part 3: level series pays tie_score to each side, in the totals
+    # both teams file, so the digests agree.
+    total = award_series_tie(total, scoring["tie_score"])
+    winner = winner_of(total)
     return {
         "total_score": total,
         "sub_games_won": won,
@@ -140,7 +135,7 @@ def build_consensus(
     ]
     return {
         "game_id": result.get("game_id") or interop.game_id(group_id, opponent_id),
-        "aggregate": _aggregate(rows, (group_id, opponent_id)),
+        "aggregate": _aggregate(rows, (group_id, opponent_id), scoring),
         "sub_games": rows,
     }
 
