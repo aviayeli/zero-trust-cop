@@ -36,7 +36,7 @@ def _records_verify(logs: dict) -> str:
         records = logs[number]["their_audit_response"]["records"]
         for index, record in enumerate(records):
             preimage = (f"{canonical_str(record['payload'])}"
-                        f"{NONCE_SEPARATOR}{record['nonce']}").encode("utf-8")
+                        f"{NONCE_SEPARATOR}{record['nonce']}").encode()
             if hashlib.sha256(preimage).hexdigest() != record["commit"]:
                 return (f"record {index} of sub-game {number} does not re-hash "
                         f"to its commit")

@@ -17,7 +17,6 @@ The peer doubles live in `tests/_support/session_revive_peers.py` because
 import contextlib
 
 import pytest
-
 from session_revive_peers import Restarting, _run
 
 
