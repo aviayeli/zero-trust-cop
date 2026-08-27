@@ -77,6 +77,9 @@ async def play_series(apps: dict, call, sub_games: int, seed: int, wait,
         # our negotiate round-trip. That deadlocked a live series on
         # 2026-08-25: we waited for a step 1 we had accepted and deleted.
         app.inbox.clear()
+        # Same treatment, same line: sub-game 4's log must not inherit
+        # sub-game 3's audit (PRD 22 FR5).
+        app.audits.clear()
         # AFTER the clear, never before (PRD_14 FR4): a peer that relaunches
         # per sub-game may push its step 1 during this window, and clearing
         # afterwards would delete exactly that turn.
@@ -116,6 +119,9 @@ async def play_series(apps: dict, call, sub_games: int, seed: int, wait,
             # opens their queue and verifies nothing, and a series played on
             # one is not a series we checked.
             "handshake_counter_signed": handshake["counter_signed"],
+            # Harvested BEFORE the next sub-game clears it. Their disclosed
+            # chain crosses the wire once; unharvested it dies with us.
+            "their_disclosed_audits": [dict(entry) for entry in app.audits],
             **summary,
         }
         summaries.append(closed)

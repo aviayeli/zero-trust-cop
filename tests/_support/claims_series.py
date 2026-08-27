@@ -102,7 +102,7 @@ TERMS = {"board_size": 7, "max_steps": 35}
 
 @pytest.fixture
 def apps(config):
-    return {role: SimpleNamespace(config=config, inbox=[], policy=StubPolicy(),
+    return {role: SimpleNamespace(config=config, inbox=[], audits=[], policy=StubPolicy(),
                                   terms=dict(TERMS),
                                   identity=lambda: {"group_name": "aviayeli"})
             for role in ("police", "thief")}

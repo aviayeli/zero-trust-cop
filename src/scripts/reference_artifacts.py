@@ -61,6 +61,10 @@ def build_log(ids: dict, summary: dict, group_id: str, barriers) -> dict:
         "barriers": [list(cell) for cell in sorted(barriers)],
         "result_claim": summary["result_claim"],
         "their_audit_response": summary.get("their_audit_response"),
+        # THEIR disclosed chain and our verdict on it (PRD 22). Distinct from
+        # `their_audit_response`, which is their RECEIPT for our payload. A
+        # list, empty when none arrived: absent and empty must not look alike.
+        "their_disclosed_audits": list(summary.get("their_disclosed_audits") or []),
         "handshake_counter_signed": summary.get("handshake_counter_signed"),
         "turns": [
             _turn_record(record, by_step.get(record["payload"]["step"]))
